@@ -20,7 +20,7 @@ def component = "cms"
 def channel = '#div-dev'
 
 List<LinkedHashMap<String, Object>> secrets = [
-    secret("ccd-submission-s2s-auth-secret", "IDAM_AUTH_SECRET")
+    secret("ccd-submission-s2s-auth-secret", "CCD_IDAM_AUTH_SECRET")
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
