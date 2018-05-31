@@ -1,42 +1,16 @@
 package uk.gov.hmcts.reform.divorce;
 
-import com.nimbusds.jwt.JWTParser;
 import io.restassured.RestAssured;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.Base64;
-import java.util.Map;
 
 @Service
 class IDAMUtils {
 
     @Value("${auth.idam.client.baseUrl}")
     private String idamUserBaseUrl;
-
-
-    public String getUserId(String encodedJwt) {
-        String jwt = encodedJwt.replaceFirst("Bearer ", "");
-        Map<String, Object> claims;
-        try {
-            claims = JWTParser.parse(jwt).getJWTClaimsSet().getClaims();
-
-        } catch (ParseException e) {
-            throw new IllegalStateException("Cannot find user from authorization token ", e);
-        }
-        return (String) claims.get("id");
-    }
-
-    void createUserInIdam(String username, String password) {
-        String s = "{\"email\":\"" + username + "@test.com\", \"forename\":\"" + username +
-            "\",\"surname\":\"User\",\"password\":\"" + password + "\"}";
-
-        RestAssured.given()
-                .header("Content-Type", "application/json")
-                .body(s)
-                .post(idamCreateUrl());
-    }
 
     void createDivorceCaseworkerUserInIdam(String username, String password) {
         String body = "{\"email\":\"" + username + "@test.com" + "\", "

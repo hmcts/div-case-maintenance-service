@@ -67,7 +67,7 @@ public class HealthCheckITest {
     @Value("${idam.s2s-auth.url}")
     private String serviceAuthHealthUrl;
 
-    @Value("${service.service-auth-provider.health.context-path}")
+    @Value("${idam.s2s-auth.health.context-path}")
     private String serviceAuthHealthContextPath;
 
     @ClassRule
@@ -158,7 +158,7 @@ public class HealthCheckITest {
     @TestConfiguration
     public static class LocalRibbonClientConfiguration {
         @Bean
-        public ServerList<Server> ribbonServerList(@Value("${auth.provider.service.client.port}") int serverPort) {
+        public ServerList<Server> ribbonServerList(@Value("${idam.s2s-auth.port}") int serverPort) {
             return new StaticServerList<>(new Server("localhost", serverPort));
         }
     }
