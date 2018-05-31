@@ -1,0 +1,43 @@
+#!groovy
+
+properties([
+    [
+        $class: 'GithubProjectProperty',
+        displayName: 'Divorce Case Management Service',
+        projectUrlStr: 'https://github.com/hmcts/div-case-management-service'
+    ],
+    pipelineTriggers([
+        [$class: 'GitHubPushTrigger']
+    ])
+])
+
+@Library("Infrastructure")
+
+def type = "java"
+def product = "div"
+def component = "cms"
+
+def channel = '#div-dev'
+
+List<LinkedHashMap<String, Object>> secrets = [
+    secret("ccd-submission-s2s-auth-secret", "IDAM_AUTH_SECRET")
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [ $class: 'AzureKeyVaultSecret',
+      secretType: 'Secret',
+      name: secretName,
+      version: '',
+      envVariable: envVar
+    ]
+}
+
+withPipeline(type , product, component) {
+    loadVaultSecrets(secrets)
+
+    after('checkout') {
+        echo '${product}-${component} checked out'
+    }
+
+    enableSlackNotifications(channel)
+}
