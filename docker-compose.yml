@@ -2,16 +2,35 @@
 version: '3'
 
 services:
-  service-auth-provider-api:
-    image: docker.artifactory.reform.hmcts.net/auth/service-auth-provider-api:latest
-    healthcheck:
-      disable: true
-    ports:
-      - 4502:8080
-    environment:
-      - 'SPRING_APPLICATION_JSON={
-          "auth.provider.service.testing-support.enabled" : true,
-          "auth.provider.service.server.jwtKey" : "wThK0f0/lh3FlxFcL4xUWDMI5C1J9KyQBgXV4wseh1e5J1uYJIjvTvArHxQDrYoHJ23xFxjHkOnvNbR5dXRoxA==",
-          "auth.provider.service.server.microserviceKeys.sscs" : "AAAAAAAAAAAAAAAA",
-          "auth.provider.service.server.microserviceKeys.em_gw" : "AAAAAAAAAAAAAAAA"
-      }'
+    case-management-service:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - http_proxy
+                - https_proxy
+                - no_proxy
+        healthcheck:
+            disable: true
+        ports:
+            - 4008:4008
+        environment:
+            - AUTH_PROVIDER_SERVICE_CLIENT_BASEURL=http://service-auth-provider-api:4502
+        links:
+            - service-auth-provider-api
+        depends_on:
+            - service-auth-provider-api
+
+    service-auth-provider-api:
+        image: docker.artifactory.reform.hmcts.net/auth/service-auth-provider-api:latest
+        healthcheck:
+            disable: true
+        ports:
+            - 4502:8080
+        environment:
+            - 'SPRING_APPLICATION_JSON={
+              "auth.provider.service.testing-support.enabled" : true,
+              "auth.provider.service.server.jwtKey" : "wThK0f0/lh3FlxFcL4xUWDMI5C1J9KyQBgXV4wseh1e5J1uYJIjvTvArHxQDrYoHJ23xFxjHkOnvNbR5dXRoxA==",
+              "auth.provider.service.server.microserviceKeys.sscs" : "AAAAAAAAAAAAAAAA",
+              "auth.provider.service.server.microserviceKeys.em_gw" : "AAAAAAAAAAAAAAAA"
+            }'

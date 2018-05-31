@@ -4,7 +4,7 @@ info:
 
 spring:
   application:
-    name: div-dgs
+    name: div-cms
   resources:
     static-locations:
 
