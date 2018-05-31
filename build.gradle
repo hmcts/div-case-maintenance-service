@@ -100,8 +100,6 @@ def versions = [
     jsonAssert: '1.2.3',
     junit: '4.12',
     lombok: '1.16.16',
-    logstashLogBackEncoder: '4.8',
-    nimbus: '5.1',
     powerMock: '1.7.3',
     puppyCrawl: '7.6',
     reformsJavaLogging: '2.1.1',
@@ -127,7 +125,6 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: versions.commonsIo
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
-    compile group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: versions.logstashLogBackEncoder
     compile group: 'org.apache.commons', name: 'commons-lang3', version : versions.commonsLang3
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging', version: versions.reformsJavaLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformsJavaLogging
@@ -155,7 +152,6 @@ dependencies {
 
     //integration test
     integrationTestCompile group: 'com.mashape.unirest', name: 'unirest-java', version: versions.unirest
-    integrationTestCompile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: versions.nimbus
     integrationTestCompile group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
     integrationTestCompile group: 'junit', name: 'junit', version: versions.junit
     integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
@@ -167,7 +163,6 @@ dependencies {
     integrationTestCompile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     integrationTestCompile group: 'org.skyscreamer', name:'jsonassert', version: versions.jsonAssert
     integrationTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    integrationTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     integrationTestCompile group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator
 }
 

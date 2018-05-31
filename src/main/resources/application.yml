@@ -13,8 +13,8 @@ server:
 
 idam:
   s2s-auth:
-    microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:sscs}
-    totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AAAAAAAAAAAAAAAA}
+    microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
+    totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
     url: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://localhost:4502}
 
 http:
