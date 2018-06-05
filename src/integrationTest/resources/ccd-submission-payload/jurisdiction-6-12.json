@@ -1,0 +1,99 @@
+{
+    "createdDate":"2018-06-07",
+    "D8ScreenHasMarriageBroken":"YES",
+    "D8ScreenHasRespondentAddress":"YES",
+    "D8ScreenHasMarriageCert":"YES",
+    "D8ScreenHasPrinter":"YES",
+    "D8DivorceWho":"wife",
+    "D8MarriageIsSameSexCouple":"NO",
+    "D8MarriageDate":"2001-02-02",
+    "D8PetitionerNameDifferentToMarriageCert":"YES",
+    "D8PetitionerEmail":"email@email.com",
+    "D8PetitionerPhoneNumber":"01234567890",
+    "D8PetitionerFirstName":"John",
+    "D8PetitionerLastName":"Smith",
+    "D8DerivedPetitionerCurrentFullName":"John Smith",
+    "D8PetitionerNameChangedHow":[
+        "marriageCertificate"
+    ],
+    "D8PetitionerContactDetailsConfidential":"share",
+    "D8PetitionerHomeAddress":{
+        "PostCode":"SW9 9PE"
+    },
+    "D8DerivedPetitionerHomeAddress":"82 Landor Road\nLondon\nSW9 9PE",
+    "D8PetitionerCorrespondenceAddress":{
+        "PostCode":"SW9 9PE"
+    },
+    "D8DerivedPetitionerCorrespondenceAddr":"82 Landor Road\nLondon\nSW9 9PE",
+    "D8PetitionerCorrespondenceUseHomeAddress":"YES",
+    "D8RespondentFirstName":"Jane",
+    "D8RespondentLastName":"Jamed",
+    "D8DerivedRespondentCurrentName":"Jane Jamed",
+    "D8RespondentHomeAddress":{
+        "PostCode":"SW9 9PE"
+    },
+    "D8DerivedRespondentHomeAddress":"82 Landor Road\nLondon\nSW9 9PE",
+    "D8RespondentCorrespondenceAddress":{
+        "PostCode":"SW9 9PE"
+    },
+    "D8DerivedRespondentCorrespondenceAddr":"82 Landor Road\nLondon\nSW9 9PE",
+    "D8RespondentCorrespondenceUseHomeAddress":"No",
+    "D8LivingArrangementsLiveTogether":"YES",
+    "D8LegalProceedings":"YES",
+    "D8LegalProceedingsRelated":[
+        "children"
+    ],
+    "D8LegalProceedingsDetails":"The legal proceeding details",
+    "D8ReasonForDivorce":"unreasonable-behaviour",
+    "D8DerivedStatementOfCase":"My wife is having an affair this week.",
+    "D8ReasonForDivorceBehaviourDetails":"My wife is having an affair this week.",
+    "D8ReasonForDivorceAdulteryIsNamed":"NO",
+    "D8FinancialOrder":"YES",
+    "D8FinancialOrderFor":[
+        "petitioner",
+        "children"
+    ],
+    "D8HelpWithFeesNeedHelp":"YES",
+    "D8HelpWithFeesAppliedForFees":"YES",
+    "D8HelpWithFeesReferenceNumber":"HWF-123-123",
+    "D8DivorceCostsClaim":"YES",
+    "D8DivorceClaimFrom":[
+        "respondent"
+    ],
+    "D8JurisdictionConfidentLegal":"NO",
+    "D8JurisdictionConnection":[
+        "B",
+        "E",
+        "F"
+    ],
+    "D8JurisdictionLastTwelveMonths":"NO",
+    "D8JurisdictionPetitionerDomicile":"YES",
+    "D8JurisdictionPetitionerResidence":"YES",
+    "D8JurisdictionRespondentDomicile":"YES",
+    "D8JurisdictionRespondentResidence":"NO",
+    "D8JurisdictionHabituallyResLast6Months":"YES",
+    "D8DivorceUnit":"eastMidlands",
+    "D8ReasonForDivorceShowAdultery":"YES",
+    "D8ReasonForDivorceShowUnreasonableBehavi":"YES",
+    "D8ReasonForDivorceShowTwoYearsSeparation":"YES",
+    "D8ReasonForDivorceShowDesertion":"YES",
+    "D8ReasonForDivorceLimitReasons":"NO",
+    "D8ReasonForDivorceEnableAdultery":"YES",
+    "D8ClaimsCostsAppliedForFees":"NO",
+    "D8ReasonForDivorceClaimingAdultery":"NO",
+    "D8MarriageCanDivorce":"YES",
+    "D8MarriagePetitionerName":"John Doe",
+    "D8MarriageRespondentName":"Jenny Benny",
+    "D8Connections":{
+        "B":"The Petitioner and the Respondent were last habitually resident, insofar as one of them still resides there",
+        "E":"The Petitioner is domiciled and habitually resident in England and Wales and has resided there for at least six months immediately prior to the petition",
+        "F":"The Petitioner and Respondent are both domiciled in England and Wales"
+    },
+    "D8ConnectionSummary":"Yes",
+    "D8ReasonForDivorceHasMarriage":"YES",
+    "D8ReasonForDivorceShowFiveYearsSeparatio":"YES",
+    "D8ReasonForDivorceClaiming5YearSeparatio":"NO",
+    "D8Cohort":"onlineSubmissionPrivateBeta",
+    "D8InferredPetitionerGender":"male",
+    "D8InferredRespondentGender":"female"
+}

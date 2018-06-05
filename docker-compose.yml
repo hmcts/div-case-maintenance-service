@@ -13,7 +13,7 @@ services:
         healthcheck:
             disable: true
         ports:
-            - 4008:4008
+            - 4009:4009
         environment:
             - AUTH_PROVIDER_SERVICE_CLIENT_BASEURL=http://service-auth-provider-api:4502
         links:

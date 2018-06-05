@@ -9,9 +9,12 @@ spring:
     static-locations:
 
 server:
-  port: 4008
+  port: 4009
 
 idam:
+  api:
+    url: ${IDAM_API_BASEURL:http://localhost:4503}
+
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
     totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
@@ -19,6 +22,21 @@ idam:
     port: ${AUTH_PROVIDER_SERVICE_CLIENT_PORT:4502}
     health:
         context-path: ${AUTH_PROVIDER_SERVICE_CLIENT_HEALTH_CONTEXT_PATH:/health}
+
+ccd:
+  jurisdictionid: DIVORCE
+  casetype: DIVORCE
+  eventid:
+    create: create
+  server:
+    port: 4452
+    health:
+      context-path: /status/health
+
+core_case_data:
+  api:
+    url: ${CASE_DATA_STORE_BASEURL:http://localhost:4452}
+
 
 http:
   connect:
@@ -36,37 +54,19 @@ documentation:
 # Enable default health indicators
 # Enable disk space health check
 management:
-  info:
-    defaults:
-      enabled: true
-    security:
-      enabled: false
-  health:
-    defaults:
-      enabled: true
-    diskspace:
-      enabled: true
-  security:
-    enabled: false
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+      cache:
+        time-to-live: 4000
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        health: health
+      exposure:
+        include: info, health, metrics
 
-
-# HEALTH ENDPOINT CONFIG
-# Enable the health endpoint
-# Enable sensitive health information
-# Defines the URL of the health check to ${management.context-path}/health
-# Caching period in milliseconds of health endpoint
-# METRICS ENDPOINT CONFIG
-# Enable the metrics endpoint
-# Enable sensitive metrics information
-endpoints:
-  health:
-    enabled: true
-    sensitive: false
-    id: health
-    time-to-live: 1000
-  metrics:
-    enabled: true
-    sensitive: false
 
 logging:
   level:

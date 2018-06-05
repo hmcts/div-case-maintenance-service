@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.divorce;
 
 import io.restassured.RestAssured;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 
@@ -12,14 +11,14 @@ class IdamUtils {
     @Value("${auth.idam.client.baseUrl}")
     private String idamUserBaseUrl;
 
-    void createDivorceCaseworkerUserInIdam(String username, String password) {
-        String body = "{\"email\":\"" + username + "@test.com" + "\", "
-                + "\"forename\":" + "\"" + username + "\"," + "\"surname\":\"User\",\"password\":\"" + password + "\", "
-                + "\"roles\":[\"caseworker-divorce\"], \"userGroup\":{\"code\":\"caseworker\"}}";
+    void createUserInIdam(String username, String password) {
+        String s = "{\"email\":\"" + username + "@test.com\", \"forename\":\"" + username +
+            "\",\"surname\":\"User\",\"password\":\"" + password + "\"}";
+
         RestAssured.given()
-                .header("Content-Type", "application/json")
-                .body(body)
-                .post(idamCreateUrl());
+            .header("Content-Type", "application/json")
+            .body(s)
+            .post(idamCreateUrl());
     }
 
     private String idamCreateUrl() {

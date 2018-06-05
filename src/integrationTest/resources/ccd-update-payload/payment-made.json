@@ -1,0 +1,12 @@
+{
+    "payment":{
+        "PaymentChannel":"card",
+        "PaymentTransactionId":"111222333",
+        "PaymentReference":"111222333",
+        "PaymentDate":"02022001",
+        "PaymentAmount":"55000",
+        "PaymentStatus":"success",
+        "PaymentFeeId":"X0165",
+        "PaymentSiteId":"AA00"
+    }
+}

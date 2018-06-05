@@ -4,22 +4,17 @@ import net.serenitybdd.junit.spring.integration.SpringIntegrationMethodRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
+
+import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {ServiceContextConfiguration.class})
-@EnableFeignClients(basePackageClasses = ServiceAuthorisationApi.class)
 public abstract class IntegrationTest {
-
-    private static final String CITIZEN_USER_NAME = "CaseWorkerTest";
-    private static final String CITIZEN_USER_PASSWORD = "password";
-
-    @Autowired
-    private AuthTokenGenerator authTokenGenerator;
+    @Value("${case.management.service.base.uri}")
+    String serverUrl;
 
     @Autowired
     private IdamUtils idamTestSupportUtil;
@@ -27,19 +22,16 @@ public abstract class IntegrationTest {
     @Rule
     public SpringIntegrationMethodRule springMethodIntegration;
 
-    private static String userToken = null;
-
-    public IntegrationTest() {
+    IntegrationTest() {
         this.springMethodIntegration = new SpringIntegrationMethodRule();
     }
 
-    private synchronized String getUserToken() {
-        if (userToken == null) {
-            idamTestSupportUtil.createDivorceCaseworkerUserInIdam(CITIZEN_USER_NAME, CITIZEN_USER_PASSWORD);
 
-            userToken = idamTestSupportUtil.generateUserTokenWithNoRoles(CITIZEN_USER_NAME, CITIZEN_USER_PASSWORD);
-        }
+    synchronized String getUserToken(){
+        String username = "simulate-delivered" + UUID.randomUUID() + "@notifications.service.gov.uk";
+        String password = UUID.randomUUID().toString();
 
-        return userToken;
+        idamTestSupportUtil.createUserInIdam(username, password);
+        return idamTestSupportUtil.generateUserTokenWithNoRoles(username, password);
     }
 }
