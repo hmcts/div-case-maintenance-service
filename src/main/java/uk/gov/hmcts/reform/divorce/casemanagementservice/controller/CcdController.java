@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemanagementservice.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -19,6 +21,8 @@ import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdUpdateServic
 import javax.ws.rs.core.MediaType;
 
 @RestController
+@RequestMapping(path = "casemanagement")
+@Api(value = "Case Management Services", consumes = "application/json", produces = "application/json")
 public class CcdController {
     @Autowired
     private CcdSubmissionService ccdSubmissionService;
@@ -30,8 +34,8 @@ public class CcdController {
         produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Submits a divorce session to CCD")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the complete "
-            + "case back", response = CaseDetails.class),
+        @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the case "
+            + "status", response = CaseDetails.class),
         }
     )
     public ResponseEntity<CaseDetails> submitCase(
@@ -46,7 +50,7 @@ public class CcdController {
     @ApiOperation(value = "Updates case details")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A request to update the case details was sent to CCD. The body payload "
-            + "will return the latest version of the case after the update.", response = CaseDetails.class),
+            + "will return the case status.", response = CaseDetails.class),
         }
     )
     public ResponseEntity<CaseDetails> updateCase(
