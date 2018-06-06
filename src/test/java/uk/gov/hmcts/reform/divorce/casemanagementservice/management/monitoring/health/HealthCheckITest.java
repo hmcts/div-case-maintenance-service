@@ -54,7 +54,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
     "endpoints.health.time-to-live=0",
     "feign.hystrix.enabled=true",
     "eureka.client.enabled=false"
-})
+    })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class HealthCheckITest {
 

@@ -19,26 +19,26 @@ public class AuthUtilUTest {
     }
 
     @Test
-    public void givenTokenIsNull_whenGetBearToken_thenReturnNull(){
+    public void givenTokenIsNull_whenGetBearToken_thenReturnNull() {
         testGetBearToken(null, null);
     }
 
     @Test
-    public void givenTokenIsBlank_whenGetBearToken_thenReturnBlank(){
+    public void givenTokenIsBlank_whenGetBearToken_thenReturnBlank() {
         testGetBearToken(" ", " ");
     }
 
     @Test
-    public void givenTokenDoesNotHaveBearer_whenGetBearToken_thenReturnWithBearer(){
+    public void givenTokenDoesNotHaveBearer_whenGetBearToken_thenReturnWithBearer() {
         testGetBearToken("SomeToken", "Bearer SomeToken");
     }
 
     @Test
-    public void givenTokenDoesHaveBearer_whenGetBearToken_thenReturnWithBearer(){
+    public void givenTokenDoesHaveBearer_whenGetBearToken_thenReturnWithBearer() {
         testGetBearToken("Bearer SomeToken", "Bearer SomeToken");
     }
 
-    private void testGetBearToken(String input, String expected){
+    private void testGetBearToken(String input, String expected) {
         assertEquals(AuthUtil.getBearToken(input), expected);
     }
 

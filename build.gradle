@@ -204,7 +204,7 @@ pmd {
 pitest {
     targetClasses = ['**uk.gov.hmcts.reform.divorce..*']
     excludedClasses = ['uk.gov.hmcts.reform.divorce.casemanagementservice.config.*',
-                       'uk.gov.hmcts.reform.divorce.casemanagementservice.model.*']
+                       'uk.gov.hmcts.reform.divorce.casemanagementservice.domain.model.*']
     threads = 1
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
@@ -213,7 +213,6 @@ pitest {
 
 def sonarExclusions = [
     '**uk/gov/hmcts/reform/divorce/casemanagementservice/domain/**/*',
-    '**uk/gov/hmcts/reform/divorce/casemanagementservice/exception/*',
     '**uk/gov/hmcts/reform/divorce/casemanagementservice/**/config/**/*',
     '**uk/gov/hmcts/reform/divorce/casemanagementservice/CaseManagementServiceApplication.java'
 ]

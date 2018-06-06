@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemanagementservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.IdamUserService;
 
 import static org.junit.Assert.assertEquals;
@@ -37,14 +37,14 @@ public class CcdUpdateServiceImplUTest {
     private CcdUpdateServiceImpl classUnderTest;
 
     @Before
-    public void setup(){
+    public void setup() {
         ReflectionTestUtils.setField(classUnderTest, "jurisdictionId", JURISDICTION_ID);
         ReflectionTestUtils.setField(classUnderTest, "caseType", CASE_TYPE);
         ReflectionTestUtils.setField(classUnderTest, "createEventId", CREATE_EVENT_ID);
     }
 
     @Test
-    public void whenUpdate_thenProceedAsExpected(){
+    public void whenUpdate_thenProceedAsExpected() {
         final String caseId = "caseId";
         final String userId = "someUserId";
         final String authorisation = "authorisation";

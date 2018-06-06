@@ -7,7 +7,7 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemanagementservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.IdamUserService;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.util.AuthUtil;

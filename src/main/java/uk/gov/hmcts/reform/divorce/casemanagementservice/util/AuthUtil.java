@@ -9,8 +9,8 @@ public class AuthUtil {
 
     private static final String BEARER = "Bearer ";
 
-    public static String getBearToken(String token){
-        if(StringUtils.isBlank(token)){
+    public static String getBearToken(String token) {
+        if (StringUtils.isBlank(token)) {
             return token;
         }
 

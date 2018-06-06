@@ -20,7 +20,8 @@ public class SwaggerConfiguration {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage(CaseManagementServiceApplication.class.getPackage().getName()))
+                .apis(RequestHandlerSelectors
+                    .basePackage(CaseManagementServiceApplication.class.getPackage().getName()))
                 .build()
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo());

@@ -32,7 +32,7 @@ public class CcdControllerUTest {
     private CcdController classUnderTest;
 
     @Test
-    public void whenSubmitCase_thenProceedAsExpected(){
+    public void whenSubmitCase_thenProceedAsExpected() {
         when(ccdSubmissionService.submitCase(CASE_DATA_CONTENT, JWT_TOKEN)).thenReturn(CASE_DETAILS);
 
         ResponseEntity<CaseDetails> responseEntity = classUnderTest.submitCase(CASE_DATA_CONTENT, JWT_TOKEN);
@@ -44,7 +44,7 @@ public class CcdControllerUTest {
     }
 
     @Test
-    public void whenUpdateCase_thenProceedAsExpected(){
+    public void whenUpdateCase_thenProceedAsExpected() {
         final String caseId = "caseId";
 
         when(ccdUpdateService.update(caseId, CASE_DATA_CONTENT, JWT_TOKEN)).thenReturn(CASE_DETAILS);

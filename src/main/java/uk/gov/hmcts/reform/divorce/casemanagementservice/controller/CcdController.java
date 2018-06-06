@@ -32,7 +32,8 @@ public class CcdController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the complete "
             + "case back", response = CaseDetails.class),
-    })
+        }
+    )
     public ResponseEntity<CaseDetails> submitCase(
         @RequestBody @ApiParam(value = "Case Date", required = true) CaseDataContent caseDataContent,
         @RequestHeader("Authorization")
@@ -46,7 +47,8 @@ public class CcdController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A request to update the case details was sent to CCD. The body payload "
             + "will return the latest version of the case after the update.", response = CaseDetails.class),
-    })
+        }
+    )
     public ResponseEntity<CaseDetails> updateCase(
         @RequestBody
         @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId,
