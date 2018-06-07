@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdUpdateServic
 @Service
 public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {
     @Override
-    public CaseDetails update(String caseId, Object data, String authorisation) {
+    public CaseDetails update(String caseId, Object data, String eventId, String authorisation) {
         UserDetails userDetails = getUserDetails(authorisation);
 
         StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(
@@ -21,7 +21,7 @@ public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdat
             jurisdictionId,
             caseType,
             caseId,
-            createEventId);
+            eventId);
 
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())

@@ -46,14 +46,16 @@ public class CcdControllerUTest {
     @Test
     public void whenUpdateCase_thenProceedAsExpected() {
         final String caseId = "caseId";
+        final String eventId = "eventId";
 
-        when(ccdUpdateService.update(caseId, CASE_DATA_CONTENT, JWT_TOKEN)).thenReturn(CASE_DETAILS);
+        when(ccdUpdateService.update(caseId, CASE_DATA_CONTENT,  eventId, JWT_TOKEN)).thenReturn(CASE_DETAILS);
 
-        ResponseEntity<CaseDetails> responseEntity = classUnderTest.updateCase(caseId, CASE_DATA_CONTENT, JWT_TOKEN);
+        ResponseEntity<CaseDetails> responseEntity =
+            classUnderTest.updateCase(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
 
         assertEquals(responseEntity.getBody(), CASE_DETAILS);
         assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
 
-        verify(ccdUpdateService).update(caseId, CASE_DATA_CONTENT, JWT_TOKEN);
+        verify(ccdUpdateService).update(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
     }
 }

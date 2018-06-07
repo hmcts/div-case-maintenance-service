@@ -44,7 +44,7 @@ public class CcdController {
         return ResponseEntity.ok(ccdSubmissionService.submitCase(data, jwt));
     }
 
-    @PostMapping(path = "/version/1/updateCase/{caseId}", consumes = MediaType.APPLICATION_JSON,
+    @PostMapping(path = "/version/1/updateCase/{caseId}/{eventId}", consumes = MediaType.APPLICATION_JSON,
         produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Updates case details")
     @ApiResponses(value = {
@@ -55,9 +55,10 @@ public class CcdController {
     public ResponseEntity<CaseDetails> updateCase(
         @RequestBody
         @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId,
+        @PathVariable("eventId") @ApiParam(value = "Update Event Type Id", required = true) String eventId,
         @ApiParam("The update event that requires the resubmission to CCD") Object data,
         @RequestHeader("Authorization")
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
-        return ResponseEntity.ok(ccdUpdateService.update(caseId, data, jwt));
+        return ResponseEntity.ok(ccdUpdateService.update(caseId, data, eventId, jwt));
     }
 }

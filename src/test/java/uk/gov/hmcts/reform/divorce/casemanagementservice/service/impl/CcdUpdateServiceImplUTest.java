@@ -85,16 +85,16 @@ public class CcdUpdateServiceImplUTest {
         when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi.startEventForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
-            CASE_TYPE, caseId, CREATE_EVENT_ID)).thenReturn(startEventResponse);
+            CASE_TYPE, caseId, eventId)).thenReturn(startEventResponse);
         when(coreCaseDataApi.submitEventForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
             CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
 
-        CaseDetails actual = classUnderTest.update(caseId, caseData, authorisation);
+        CaseDetails actual = classUnderTest.update(caseId, caseData, eventId, authorisation);
 
         assertEquals(actual, expected);
 
         verify(coreCaseDataApi).startEventForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
-            CASE_TYPE, caseId, CREATE_EVENT_ID);
+            CASE_TYPE, caseId, eventId);
         verify(coreCaseDataApi).submitEventForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
             CASE_TYPE, caseId,true, caseDataContent);
     }
