@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdUpdateService;
@@ -34,15 +33,15 @@ public class CcdController {
         produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Submits a divorce session to CCD")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the case "
-            + "status", response = CaseDetails.class),
+        @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the complete "
+            + "case back", response = CaseDetails.class),
         }
     )
     public ResponseEntity<CaseDetails> submitCase(
-        @RequestBody @ApiParam(value = "Case Date", required = true) CaseDataContent caseDataContent,
+        @RequestBody @ApiParam(value = "Case Data", required = true) Object data,
         @RequestHeader("Authorization")
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
-        return ResponseEntity.ok(ccdSubmissionService.submitCase(caseDataContent, jwt));
+        return ResponseEntity.ok(ccdSubmissionService.submitCase(data, jwt));
     }
 
     @PostMapping(path = "/version/1/updateCase/{caseId}", consumes = MediaType.APPLICATION_JSON,
@@ -50,15 +49,15 @@ public class CcdController {
     @ApiOperation(value = "Updates case details")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A request to update the case details was sent to CCD. The body payload "
-            + "will return the case status.", response = CaseDetails.class),
+            + "will return the latest version of the case after the update.", response = CaseDetails.class),
         }
     )
     public ResponseEntity<CaseDetails> updateCase(
         @RequestBody
         @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId,
-        @ApiParam("The update event that requires the resubmission to CCD") CaseDataContent caseDataContent,
+        @ApiParam("The update event that requires the resubmission to CCD") Object data,
         @RequestHeader("Authorization")
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
-        return ResponseEntity.ok(ccdUpdateService.update(caseId, caseDataContent, jwt));
+        return ResponseEntity.ok(ccdUpdateService.update(caseId, data, jwt));
     }
 }

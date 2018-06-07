@@ -1,50 +1,47 @@
 package uk.gov.hmcts.reform.divorce.casemanagementservice.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
+import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdUpdateService;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.service.IdamUserService;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.util.AuthUtil;
 
 @Service
-public class CcdUpdateServiceImpl implements CcdUpdateService {
-    @Value("${ccd.jurisdictionid}")
-    private String jurisdictionId;
-
-    @Value("${ccd.casetype}")
-    private String caseType;
-
-    @Value("${ccd.eventid.create}")
-    private String createEventId;
-
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
-
-    @Autowired
-    private IdamUserService idamUserService;
-
-    @Autowired
-    private AuthTokenGenerator authTokenGenerator;
-
+public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {
     @Override
-    public CaseDetails update(String caseId, CaseDataContent caseDataContent, String authorisation) {
+    public CaseDetails update(String caseId, Object data, String authorisation) {
+        UserDetails userDetails = getUserDetails(authorisation);
 
-        UserDetails userDetails = idamUserService.retrieveUserDetails(authorisation);
-
-        String bearerUserToken = AuthUtil.getBearToken(authorisation);
-        String serviceToken = authTokenGenerator.generate();
-        String userId = userDetails.getId();
-
-        coreCaseDataApi.startEventForCitizen(bearerUserToken, serviceToken, userId, jurisdictionId, caseType, caseId,
+        StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(
+            getBearerUserToken(authorisation),
+            getServiceAuthToken(),
+            userDetails.getId(),
+            jurisdictionId,
+            caseType,
+            caseId,
             createEventId);
 
-        return coreCaseDataApi.submitEventForCitizen(bearerUserToken, serviceToken, userId, jurisdictionId, caseType,
-            caseId, true, caseDataContent);
+        CaseDataContent caseDataContent = CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(
+                Event.builder()
+                    .id(startEventResponse.getEventId())
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(data)
+            .build();
+
+        return coreCaseDataApi.submitEventForCitizen(
+            getBearerUserToken(authorisation),
+            getServiceAuthToken(),
+            userDetails.getId(),
+            jurisdictionId,
+            caseType,
+            caseId,
+            true,
+            caseDataContent);
     }
 }

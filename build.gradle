@@ -121,6 +121,15 @@ def versions = [
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-web')
+
+    compile group: 'org.springframework', name: 'spring-context-support'
+    compile group: 'org.springframework.retry', name: 'spring-retry'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
+
+    compile group: 'io.github.openfeign', name: 'feign-httpclient', version: '9.5.1'
+    compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: '1.1.0'
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
     compile group: 'com.puppycrawl.tools', name: 'checkstyle', version:  versions.puppyCrawl
     compile group: 'commons-io', name: 'commons-io', version: versions.commonsIo
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
@@ -130,9 +139,9 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformsJavaLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformsJavaLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformsJavaLogging
-    compile (group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator)
+    compile group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator
 
-    compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.1.1'
+    compile group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: '4.1.0'
 
     compile group: 'org.pitest', name: 'pitest', version: versions.pitest
     compile group:'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
@@ -140,7 +149,7 @@ dependencies {
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testCompile group: 'com.github.tomakehurst', name:'wiremock', version: versions.wiremockVersion
-   testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
     runtime('org.springframework.boot:spring-boot-devtools')
 
     //integration test

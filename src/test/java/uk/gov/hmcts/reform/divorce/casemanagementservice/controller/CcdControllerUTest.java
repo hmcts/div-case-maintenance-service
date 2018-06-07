@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CcdControllerUTest {
     private static final CaseDetails CASE_DETAILS = CaseDetails.builder().build();
-    private static final CaseDataContent CASE_DATA_CONTENT = CaseDataContent.builder().build();
+    private static final Object CASE_DATA_CONTENT = CaseDataContent.builder().build();
     private static final String JWT_TOKEN = "token";
 
     @Mock

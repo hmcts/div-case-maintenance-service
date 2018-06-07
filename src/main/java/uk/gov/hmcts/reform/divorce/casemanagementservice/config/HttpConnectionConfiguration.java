@@ -30,11 +30,6 @@ import static java.util.Arrays.asList;
 @Configuration
 public class HttpConnectionConfiguration {
 
-    private static final MediaType MEDIA_TYPE_HAL_JSON =
-            new MediaType("application",
-                    "vnd.uk.gov.hmcts.dm.document-collection.v1+hal+json",
-                    MappingJackson2HttpMessageConverter.DEFAULT_CHARSET);
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -53,7 +48,7 @@ public class HttpConnectionConfiguration {
         objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
         jackson2HttpCoverter.setObjectMapper(objectMapper);
-        jackson2HttpCoverter.setSupportedMediaTypes(ImmutableList.of(MEDIA_TYPE_HAL_JSON, MediaType.APPLICATION_JSON));
+        jackson2HttpCoverter.setSupportedMediaTypes(ImmutableList.of(MediaType.APPLICATION_JSON));
 
         RestTemplate restTemplate = new RestTemplate(asList(jackson2HttpCoverter,
                 new FormHttpMessageConverter(),
