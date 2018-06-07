@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+@SuppressWarnings("squid:S1118")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthUtil {
 

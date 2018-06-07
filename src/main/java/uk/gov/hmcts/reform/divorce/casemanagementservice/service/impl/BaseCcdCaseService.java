@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.divorce.casemanagementservice.domain.model.UserDetail
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.IdamUserService;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.util.AuthUtil;
 
-abstract class BaseCcdCaseService {
+class BaseCcdCaseService {
     static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce case submission event";
     static final String DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION = "Submitting Divorce Case";
 
@@ -30,15 +30,15 @@ abstract class BaseCcdCaseService {
     @Autowired
     private AuthTokenGenerator authTokenGenerator;
 
-    UserDetails getUserDetails(String userToken){
+    UserDetails getUserDetails(String userToken) {
         return idamUserService.retrieveUserDetails(getBearerUserToken(userToken));
     }
 
-    String getBearerUserToken(String userToken){
+    String getBearerUserToken(String userToken) {
         return AuthUtil.getBearToken(userToken);
     }
 
-    String getServiceAuthToken(){
+    String getServiceAuthToken() {
         return authTokenGenerator.generate();
     }
 }

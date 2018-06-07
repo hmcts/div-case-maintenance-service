@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdUpdateService;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CcdControllerUTest {
     private static final CaseDetails CASE_DETAILS = CaseDetails.builder().build();
-    private static final Object CASE_DATA_CONTENT = CaseDataContent.builder().build();
+    private static final Object CASE_DATA_CONTENT = new Object();
     private static final String JWT_TOKEN = "token";
 
     @Mock
