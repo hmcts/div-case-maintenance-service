@@ -16,9 +16,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.cloud.netflix.ribbon.StaticServerList;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -51,9 +51,9 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
         classes = {CaseManagementServiceApplication.class, HealthCheckITest.LocalRibbonClientConfiguration.class})
 @PropertySource(value = "classpath:application.properties")
 @TestPropertySource(properties = {
-        "endpoints.health.time-to-live=0",
-        "feign.hystrix.enabled=true",
-        "eureka.client.enabled=false"
+    "endpoints.health.time-to-live=0",
+    "feign.hystrix.enabled=true",
+    "eureka.client.enabled=false"
     })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class HealthCheckITest {
@@ -67,14 +67,18 @@ public class HealthCheckITest {
     @Value("${idam.s2s-auth.url}")
     private String serviceAuthHealthUrl;
 
-    @Value("${idam.s2s-auth.health.context-path}")
-    private String serviceAuthHealthContextPath;
+    @Value("${ccd.server.health.context-path}")
+    private String ccdHealthContextPath;
 
-    @ClassRule
-    public static WireMockClassRule serviceAuthServer = new WireMockClassRule(4502);
+    @Value("${idam.api.url}")
+    private String idamApiHealthUrl;
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @ClassRule
+    public static WireMockClassRule ccdServer = new WireMockClassRule(4452);
+
 
     private String healthUrl;
     private MockRestServiceServer mockRestServiceServer;
@@ -102,42 +106,102 @@ public class HealthCheckITest {
 
     @Test
     public void givenAllDependenciesAreUp_whenCheckHealth_thenReturnStatusUp() throws Exception {
+        mockEndpointAndResponse(idamApiHealthUrl, true);
         mockEndpointAndResponse(serviceAuthHealthUrl, true);
-        mockServiceAuthFeignHealthCheck();
+        mockServiceCcdHealthCheck(true);
 
         HttpResponse response = getHealth();
         String body = EntityUtils.toString(response.getEntity());
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(200));
         assertThat(JsonPath.read(body, "$.status").toString(), equalTo("UP"));
-        assertThat(JsonPath.read(body, "$.serviceAuthProviderHealthCheck.status").toString(), equalTo("UP"));
-        assertThat(JsonPath.read(body, "$.diskSpace.status").toString(), equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.idamApiHealthCheck.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.serviceAuthProviderHealthCheck.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.coreCaseData.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.diskSpace.status").toString(), equalTo("UP"));
     }
 
     @Test
     public void givenAllDependenciesAreDown_whenCheckHealth_thenReturnStatusDown() throws Exception {
+        mockEndpointAndResponse(idamApiHealthUrl, false);
         mockEndpointAndResponse(serviceAuthHealthUrl, false);
+        mockServiceCcdHealthCheck(false);
 
         HttpResponse response = getHealth();
         String body = EntityUtils.toString(response.getEntity());
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(503));
         assertThat(JsonPath.read(body, "$.status").toString(), equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.serviceAuthProviderHealthCheck.status").toString(), equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.diskSpace.status").toString(), equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.idamApiHealthCheck.status").toString(),
+            equalTo("DOWN"));
+        assertThat(JsonPath.read(body, "$.details.serviceAuthProviderHealthCheck.status").toString(),
+            equalTo("DOWN"));
+        assertThat(JsonPath.read(body, "$.details.coreCaseData.status").toString(),
+            equalTo("DOWN"));
+        assertThat(JsonPath.read(body, "$.details.diskSpace.status").toString(), equalTo("UP"));
+    }
+
+    @Test
+    public void givenIdamApiIsDown_whenCheckHealth_thenReturnStatusDown() throws Exception {
+        mockEndpointAndResponse(idamApiHealthUrl, false);
+        mockEndpointAndResponse(serviceAuthHealthUrl, true);
+        mockServiceCcdHealthCheck(true);
+
+        HttpResponse response = getHealth();
+        String body = EntityUtils.toString(response.getEntity());
+
+        assertThat(response.getStatusLine().getStatusCode(), equalTo(503));
+        assertThat(JsonPath.read(body, "$.status").toString(), equalTo("DOWN"));
+        assertThat(JsonPath.read(body, "$.details.idamApiHealthCheck.status").toString(),
+            equalTo("DOWN"));
+        assertThat(JsonPath.read(body, "$.details.serviceAuthProviderHealthCheck.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.coreCaseData.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.diskSpace.status").toString(), equalTo("UP"));
     }
 
     @Test
     public void givenAuthServiceIsDown_whenCheckHealth_thenReturnStatusDown() throws Exception {
+        mockEndpointAndResponse(idamApiHealthUrl, true);
         mockEndpointAndResponse(serviceAuthHealthUrl, false);
+        mockServiceCcdHealthCheck(true);
 
         HttpResponse response = getHealth();
         String body = EntityUtils.toString(response.getEntity());
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(503));
         assertThat(JsonPath.read(body, "$.status").toString(), equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.serviceAuthProviderHealthCheck.status").toString(), equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.diskSpace.status").toString(), equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.idamApiHealthCheck.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.serviceAuthProviderHealthCheck.status").toString(),
+            equalTo("DOWN"));
+        assertThat(JsonPath.read(body, "$.details.coreCaseData.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.diskSpace.status").toString(), equalTo("UP"));
+    }
+
+    @Test
+    public void givenCcdIsDown_whenCheckHealth_thenReturnStatusDown() throws Exception {
+        mockEndpointAndResponse(idamApiHealthUrl, true);
+        mockEndpointAndResponse(serviceAuthHealthUrl, true);
+        mockServiceCcdHealthCheck(false);
+
+        HttpResponse response = getHealth();
+        String body = EntityUtils.toString(response.getEntity());
+
+        assertThat(response.getStatusLine().getStatusCode(), equalTo(503));
+        assertThat(JsonPath.read(body, "$.status").toString(), equalTo("DOWN"));
+        assertThat(JsonPath.read(body, "$.details.idamApiHealthCheck.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.serviceAuthProviderHealthCheck.status").toString(),
+            equalTo("UP"));
+        assertThat(JsonPath.read(body, "$.details.coreCaseData.status").toString(),
+            equalTo("DOWN"));
+        assertThat(JsonPath.read(body, "$.details.diskSpace.status").toString(), equalTo("UP"));
     }
 
     private void mockEndpointAndResponse(String requestUrl, boolean serviceUp) {
@@ -147,18 +211,18 @@ public class HealthCheckITest {
                         .contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
-    private void mockServiceAuthFeignHealthCheck() {
-        serviceAuthServer.stubFor(get(serviceAuthHealthContextPath)
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.OK.value())
-                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                        .withBody(HEALTH_UP_RESPONSE)));
+    private void mockServiceCcdHealthCheck(boolean serviceUp) {
+        ccdServer.stubFor(get(ccdHealthContextPath)
+            .willReturn(aResponse()
+                .withStatus(serviceUp ? HttpStatus.OK.value() : HttpStatus.SERVICE_UNAVAILABLE.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .withBody(serviceUp ? HEALTH_UP_RESPONSE : HEALTH_DOWN_RESPONSE)));
     }
 
     @TestConfiguration
     public static class LocalRibbonClientConfiguration {
         @Bean
-        public ServerList<Server> ribbonServerList(@Value("${idam.s2s-auth.port}") int serverPort) {
+        public ServerList<Server> ribbonServerList(@Value("${ccd.server.port}") int serverPort) {
             return new StaticServerList<>(new Server("localhost", serverPort));
         }
     }

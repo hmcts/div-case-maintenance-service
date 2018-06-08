@@ -1,10 +1,8 @@
 package uk.gov.hmcts.reform.divorce.casemanagementservice.management.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -15,15 +13,15 @@ import uk.gov.hmcts.reform.divorce.casemanagementservice.CaseManagementServiceAp
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
-    @Value("${documentation.swagger.enabled}")
-    private boolean swaggerEnabled;
+@ConditionalOnProperty(value = "documentation.swagger.enabled", havingValue = "true")
+public class SwaggerConfiguration {
 
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage(CaseManagementServiceApplication.class.getPackage().getName()))
+                .apis(RequestHandlerSelectors
+                    .basePackage(CaseManagementServiceApplication.class.getPackage().getName()))
                 .build()
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo());
@@ -34,16 +32,4 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
                 .title("Divorce Case Management Service")
                 .build();
     }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        super.addResourceHandlers(registry);
-        if (swaggerEnabled) {
-            registry.addResourceHandler("/swagger-ui.html**")
-                    .addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
-            registry.addResourceHandler("/webjars/**")
-                    .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        }
-    }
-
 }

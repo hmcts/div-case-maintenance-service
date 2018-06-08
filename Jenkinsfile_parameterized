@@ -11,19 +11,5 @@ properties([
     ])
 ])
 
-List<LinkedHashMap<String, Object>> secrets = [
-    secret("ccd-submission-s2s-auth-secret", "CCD_IDAM_AUTH_SECRET")
-]
-
-static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-    [ $class: 'AzureKeyVaultSecret',
-      secretType: 'Secret',
-      name: secretName,
-      version: '',
-      envVariable: envVar
-    ]
-}
-
 withParameterizedPipeline(params.TYPE, params.PRODUCT_NAME, params.APP, params.ENVIRONMENT, params.SUBSCRIPTION) {
-    loadVaultSecrets(secrets)
 }

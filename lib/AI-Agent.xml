@@ -5,6 +5,12 @@
         <BuiltIn enabled="true">
             <HTTP enabled="true"/>
         </BuiltIn>
+        <Class name="uk.gov.hmcts.reform.divorce.casemanagementservice.service.impl.CcdSubmissionServiceImpl">
+            <Method name="submitCase" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemanagementservice.service.impl.CcdUpdateServiceImpl">
+            <Method name="update" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
     </Instrumentation>
 </ApplicationInsightsAgent>
 
