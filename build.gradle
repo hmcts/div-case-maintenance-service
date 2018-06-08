@@ -5,6 +5,8 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
+
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -52,10 +54,7 @@ repositories {
     mavenLocal()
     jcenter()
 
-    maven {
-        url 'https://repo.spring.io/libs-milestone'
-    }
-
+    maven { url 'https://repo.spring.io/libs-milestone' }
     maven { url "https://dl.bintray.com/hmcts/hmcts-maven" }
     maven { url "http://repo.maven.apache.org/maven2" }
 }
