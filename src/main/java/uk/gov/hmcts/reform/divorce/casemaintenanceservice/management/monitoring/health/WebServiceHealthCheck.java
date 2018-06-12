@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemaintenanceservice.maintenance.monitoring.health;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.monitoring.health;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.health.Health;
