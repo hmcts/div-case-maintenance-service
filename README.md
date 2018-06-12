@@ -1,8 +1,8 @@
-# Divorce Case Management Service
+# Divorce Case Maintenance Service
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is a case management service. This service facilitates all the communication between Core Case Data and the
+This is a case maintenance service. This service facilitates all the communication between Core Case Data and the
 Divorce system.
 
 ## Getting started
@@ -31,7 +31,7 @@ First you need to create distribution by executing following command:
     ./gradlew installDist
 ```
 
-When the distribution has been created in `build/install/div-case-management-service` directory,
+When the distribution has been created in `build/install/div-case-maintenance-service` directory,
 you can run the application by executing following command:
 
 ```bash

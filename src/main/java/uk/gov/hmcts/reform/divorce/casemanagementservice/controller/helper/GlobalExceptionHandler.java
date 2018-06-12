@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.controller.helper;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller.helper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

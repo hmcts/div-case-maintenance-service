@@ -35,7 +35,7 @@ documentation:
 # Allow actuator endpoints to be accessed without requiring authentication
 # Enable default health indicators
 # Enable disk space health check
-management:
+maintenance:
   info:
     defaults:
       enabled: true
@@ -53,7 +53,7 @@ management:
 # HEALTH ENDPOINT CONFIG
 # Enable the health endpoint
 # Enable sensitive health information
-# Defines the URL of the health check to ${management.context-path}/health
+# Defines the URL of the health check to ${maintenance.context-path}/health
 # Caching period in milliseconds of health endpoint
 # METRICS ENDPOINT CONFIG
 # Enable the metrics endpoint
@@ -71,7 +71,7 @@ endpoints:
 logging:
   level:
     org.springframework.web: ERROR
-    uk.gov.hmcts.reform.divorce.casemanagementservice: DEBUG
+    uk.gov.hmcts.reform.divorce.casemaintenanceservice: DEBUG
   pattern:
     console: "%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n"
 

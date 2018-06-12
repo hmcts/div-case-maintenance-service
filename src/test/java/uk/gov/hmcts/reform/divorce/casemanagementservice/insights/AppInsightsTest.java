@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.insights;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.insights;
 
 import com.microsoft.applicationinsights.TelemetryClient;
 import com.microsoft.applicationinsights.telemetry.TelemetryContext;

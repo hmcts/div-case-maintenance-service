@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.management.monitoring.health;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.maintenance.monitoring.health;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

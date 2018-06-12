@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.management.monitoring.health;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.maintenance.monitoring.health;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.jayway.jsonpath.JsonPath;
@@ -32,7 +32,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.CaseManagementServiceApplication;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -48,7 +48,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(
-        classes = {CaseManagementServiceApplication.class, HealthCheckITest.LocalRibbonClientConfiguration.class})
+        classes = {CaseMaintenanceServiceApplication.class, HealthCheckITest.LocalRibbonClientConfiguration.class})
 @PropertySource(value = "classpath:application.properties")
 @TestPropertySource(properties = {
         "endpoints.health.time-to-live=0",

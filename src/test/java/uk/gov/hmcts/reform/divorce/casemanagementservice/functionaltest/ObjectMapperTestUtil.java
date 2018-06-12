@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.functionaltest;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

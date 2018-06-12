@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice;
 
 
 import org.junit.Test;
@@ -9,12 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import uk.gov.hmcts.reform.divorce.casemanagementservice.category.SmokeTest;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.category.SmokeTest;
 
 @RunWith(SpringRunner.class)
 @Category(SmokeTest.class)
 @SpringBootTest
-public class CaseManagementServiceApplicationTests {
+public class CaseMaintenanceServiceApplicationTests {
 
     @Autowired
     private ApplicationContext applicationArguments;

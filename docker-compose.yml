@@ -2,7 +2,7 @@
 version: '3'
 
 services:
-    case-management-service:
+    case-maintenance-service:
         build:
             context: .
             dockerfile: Dockerfile

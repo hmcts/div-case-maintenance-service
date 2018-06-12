@@ -4,7 +4,7 @@
 properties([
         parameters([
                 string(name: 'PRODUCT_NAME', defaultValue: 'div', description: 'Divorce'),
-                string(name: 'APP', defaultValue: 'cms', description: 'Divorce Case Management Service'),
+                string(name: 'APP', defaultValue: 'cms', description: 'Divorce Case Maintenance Service'),
                 string(name: 'TYPE', defaultValue: 'java', description: ''),
                 string(name: 'ENVIRONMENT', defaultValue: 'saat', description: 'Environment where code should be built and deployed'),
                 choice(name: 'SUBSCRIPTION', choices: 'sandbox\nnonprod\nprod', description: 'Azure subscriptions available to build in')

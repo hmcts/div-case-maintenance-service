@@ -5,7 +5,7 @@ as we have some expectations related to the content and quality of change sets.
 
 ## What you should know about this application
 
-This is a case management service. This service facilitates all the communication between Core Case Data and the
+This is a case maintenance service. This service facilitates all the communication between Core Case Data and the
 Divorce system.
 
 ## Before contributing
