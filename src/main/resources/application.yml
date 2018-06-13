@@ -35,7 +35,7 @@ documentation:
 # Allow actuator endpoints to be accessed without requiring authentication
 # Enable default health indicators
 # Enable disk space health check
-maintenance:
+management:
   info:
     defaults:
       enabled: true
