@@ -23,7 +23,10 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage(CaseMaintenanceServiceApplication.class.getPackage().getName()))
+                .apis(RequestHandlerSelectors
+                    .basePackage(CaseMaintenanceServiceApplication
+                        .class.getPackage()
+                        .getName()))
                 .build()
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo());

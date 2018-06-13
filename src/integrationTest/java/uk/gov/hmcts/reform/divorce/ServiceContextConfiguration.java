@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGeneratorFactory;
 
 @Lazy
 @Configuration
-@ComponentScan(basePackages = {"uk.gov.hmcts.reform.divorce.divorce", "uk.gov.hmcts.auth.provider.service"})
+@ComponentScan(basePackages = {"uk.gov.hmcts.reform.divorce"})
 @ContextConfiguration(classes = {ServiceContextConfiguration.class})
 @ImportAutoConfiguration({RibbonAutoConfiguration.class,HttpMessageConvertersAutoConfiguration.class,
     FeignRibbonClientAutoConfiguration.class, FeignAutoConfiguration.class})
@@ -38,7 +38,7 @@ public class ServiceContextConfiguration {
     }
 
     @Bean
-    public IDAMUtils getIDAMUtil() {
-        return new IDAMUtils();
+    public IdamUtils getIdamUtil() {
+        return new IdamUtils();
     }
 }

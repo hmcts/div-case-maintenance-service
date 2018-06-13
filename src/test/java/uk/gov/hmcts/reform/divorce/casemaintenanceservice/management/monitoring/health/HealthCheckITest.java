@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemaintenanceservice.maintenance.monitoring.health;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.monitoring.health;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.jayway.jsonpath.JsonPath;

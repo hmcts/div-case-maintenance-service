@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Base64;
 
 @Service
-class IDAMUtils {
+class IdamUtils {
 
     @Value("${auth.idam.client.baseUrl}")
     private String idamUserBaseUrl;
