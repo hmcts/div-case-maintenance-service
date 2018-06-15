@@ -28,7 +28,7 @@ group = 'uk.gov.hmcts.reform.divorce'
 version = '1.0.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-jar.archiveName = 'div-case-management-service.jar'
+jar.archiveName = 'div-case-maintenance-service.jar'
 
 jar {
     manifest {
@@ -37,7 +37,7 @@ jar {
     }
 }
 
-mainClassName = 'uk.gov.hmcts.reform.divorce.casemanagementservice.CaseManagementServiceApplication'
+mainClassName = 'uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication'
 
 compileJava {
     options.compilerArgs << '-parameters' << '-Xlint:deprecation'
@@ -185,7 +185,7 @@ dependencies {
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
     useJUnit {
-        includeCategories 'uk.gov.hmcts.reform.divorce.casemanagementservice.category.SmokeTest'
+        includeCategories 'uk.gov.hmcts.reform.divorce.casemaintenanceservice.category.SmokeTest'
     }
 }
 
@@ -210,7 +210,7 @@ pmd {
 
 pitest {
     targetClasses = ['**uk.gov.hmcts.reform.divorce..*']
-    excludedClasses = ['uk.gov.hmcts.reform.divorce.casemanagementservice.config.*']
+    excludedClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.config.*']
     threads = 1
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
@@ -218,10 +218,10 @@ pitest {
 }
 
 def sonarExclusions = [
-    '**uk/gov/hmcts/reform/divorce/casemanagementservice/domain/**/*',
-    '**uk/gov/hmcts/reform/divorce/casemanagementservice/exception/*',
-    '**uk/gov/hmcts/reform/divorce/casemanagementservice/**/config/**/*',
-    '**uk/gov/hmcts/reform/divorce/casemanagementservice/CaseManagementServiceApplication.java'
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/domain/**/*',
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/exception/*',
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/**/config/**/*',
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/CaseMaintenanceServiceApplication.java'
 ]
 
 sonarqube {
@@ -229,8 +229,8 @@ sonarqube {
         property "sonar.exclusions", sonarExclusions.join(", ")
         property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/apiTest.exec"
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
-        property "sonar.projectKey", "DivorceCaseManagementService"
-        property "sonar.projectName", "Divorce :: case-management-service"
+        property "sonar.projectKey", "DivorceCaseMaintenanceService"
+        property "sonar.projectName", "Divorce :: case-maintenance-service"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
     }

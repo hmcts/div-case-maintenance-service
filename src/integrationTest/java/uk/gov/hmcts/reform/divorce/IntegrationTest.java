@@ -22,7 +22,7 @@ public abstract class IntegrationTest {
     private AuthTokenGenerator authTokenGenerator;
 
     @Autowired
-    private IDAMUtils idamTestSupportUtil;
+    private IdamUtils idamTestSupportUtil;
 
     @Rule
     public SpringIntegrationMethodRule springMethodIntegration;
@@ -33,9 +33,8 @@ public abstract class IntegrationTest {
         this.springMethodIntegration = new SpringIntegrationMethodRule();
     }
 
-
-    private synchronized String getUserToken(){
-        if(userToken == null){
+    private synchronized String getUserToken() {
+        if (userToken == null) {
             idamTestSupportUtil.createDivorceCaseworkerUserInIdam(CITIZEN_USER_NAME, CITIZEN_USER_PASSWORD);
 
             userToken = idamTestSupportUtil.generateUserTokenWithNoRoles(CITIZEN_USER_NAME, CITIZEN_USER_PASSWORD);

@@ -3,8 +3,8 @@
 properties([
     [
         $class: 'GithubProjectProperty',
-        displayName: 'Divorce Case Management Service',
-        projectUrlStr: 'https://github.com/hmcts/div-case-management-service'
+        displayName: 'Divorce Case Maintenance Service',
+        projectUrlStr: 'https://github.com/hmcts/div-case-maintenance-service'
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']
