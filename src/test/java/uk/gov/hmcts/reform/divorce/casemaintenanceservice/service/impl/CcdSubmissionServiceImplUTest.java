@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.service.impl;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +13,8 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.domain.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.service.IdamUserService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;

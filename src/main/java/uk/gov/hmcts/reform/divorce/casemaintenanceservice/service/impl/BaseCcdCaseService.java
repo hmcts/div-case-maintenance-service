@@ -1,12 +1,12 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.service.impl;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.domain.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.service.IdamUserService;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.util.AuthUtil;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil;
 
 class BaseCcdCaseService {
     static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce case submission event";

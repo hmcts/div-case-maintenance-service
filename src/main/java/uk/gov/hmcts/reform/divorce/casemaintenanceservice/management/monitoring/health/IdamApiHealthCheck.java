@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.management.monitoring.health;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.monitoring.health;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

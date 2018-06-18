@@ -8,8 +8,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdSubmissionService;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdUpdateService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller.CcdController;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;

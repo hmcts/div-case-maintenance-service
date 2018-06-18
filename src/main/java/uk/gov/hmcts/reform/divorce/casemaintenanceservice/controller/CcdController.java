@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.controller;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdSubmissionService;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdUpdateService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
 import javax.ws.rs.core.MediaType;
 

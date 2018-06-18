@@ -1,12 +1,12 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.service.impl;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.domain.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.casemanagementservice.service.CcdUpdateService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
 @Service
 public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {

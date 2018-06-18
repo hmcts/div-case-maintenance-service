@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.divorce;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
+import org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.FeignAutoConfiguration;
+import org.springframework.cloud.openfeign.ribbon.FeignRibbonClientAutoConfiguration;
+import org.springframework.context.annotation.*;
+import org.springframework.test.context.ContextConfiguration;
+import uk.gov.hmcts.reform.authorisation.ServiceAuthorisationApi;
 
 @Lazy
 @Configuration
@@ -13,7 +17,7 @@ import org.springframework.context.annotation.PropertySource;
 @ImportAutoConfiguration({RibbonAutoConfiguration.class,HttpMessageConvertersAutoConfiguration.class,
     FeignRibbonClientAutoConfiguration.class, FeignAutoConfiguration.class})
 @EnableFeignClients(basePackageClasses = ServiceAuthorisationApi.class)
-@ComponentScan(basePackages = {"uk.gov.hmcts.reform.divorce.divorce"})
+@ComponentScan(basePackages = {"uk.gov.hmcts.reform.divorce"})
 @PropertySource({"classpath:application.properties"})
 public class ServiceContextConfiguration {
     @Bean

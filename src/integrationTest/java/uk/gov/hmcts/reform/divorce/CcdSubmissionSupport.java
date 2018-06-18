@@ -45,7 +45,7 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     }
 
     String loadJson(String fileName, String contextPath) throws Exception{
-        return ResourceLoader.loadJSON(contextPath + fileName);
+        return ResourceLoader.loadJson(contextPath + fileName);
     }
 
     String getSubmissionRequestUrl(){

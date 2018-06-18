@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.service;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service;
 
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 

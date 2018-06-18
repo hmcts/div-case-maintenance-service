@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemanagementservice.util;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.util;
 
 import org.junit.Test;
 
