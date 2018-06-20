@@ -191,6 +191,13 @@ dependencies {
     integrationTestCompile group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3
     integrationTestCompile group: 'org.skyscreamer', name:'jsonassert', version: versions.jsonAssert
     integrationTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    integrationTestCompile (group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: versions.ccdStoreClient)
+        {
+            exclude group: 'io.reactivex', module: 'io.reactivex'
+            exclude group: 'io.reactivex', module: 'rxnetty'
+            exclude group: 'io.reactivex', module: 'rxnetty-contexts'
+            exclude group: 'io.reactivex', module: 'rxnetty-servo'
+        }
 }
 
 sourceSets {
