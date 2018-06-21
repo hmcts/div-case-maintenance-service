@@ -2,11 +2,9 @@ package uk.gov.hmcts.reform.divorce;
 
 import io.restassured.RestAssured;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 
-@Service
 class IdamUtils {
 
     @Value("${auth.idam.client.baseUrl}")

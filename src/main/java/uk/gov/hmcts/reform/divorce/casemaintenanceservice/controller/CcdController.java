@@ -20,8 +20,8 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateServi
 import javax.ws.rs.core.MediaType;
 
 @RestController
-@RequestMapping(path = "casemanagement")
-@Api(value = "Case Management Services", consumes = "application/json", produces = "application/json")
+@RequestMapping(path = "casemaintenance")
+@Api(value = "Case Maintenance Services", consumes = "application/json", produces = "application/json")
 public class CcdController {
     @Autowired
     private CcdSubmissionService ccdSubmissionService;

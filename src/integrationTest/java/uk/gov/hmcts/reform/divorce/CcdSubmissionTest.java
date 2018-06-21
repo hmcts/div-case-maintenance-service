@@ -15,8 +15,8 @@ public class CcdSubmissionTest extends CcdSubmissionSupport {
     private static final String  UNAUTHORISED_JWT_EXCEPTION= "status 403 reading "
         + "IdamUserService#retrieveUserDetails(String); content:\n";
     private static final String REQUEST_BODY_NOT_FOUND = "Required request body is missing: public org.springframework."
-        + "http.ResponseEntity<uk.gov.hmcts.reform.ccd.client.model.CaseDetails> uk.gov.hmcts.reform.divorce.casemanage"
-        + "mentservice.controller.CcdController.submitCase(java.lang.Object,java.lang.String)";
+        + "http.ResponseEntity<uk.gov.hmcts.reform.ccd.client.model.CaseDetails> uk.gov.hmcts.reform.divorce.casemainte"
+        + "nanceservice.controller.CcdController.submitCase(java.lang.Object,java.lang.String)";
 
 
     @Test

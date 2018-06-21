@@ -13,7 +13,7 @@ import java.util.UUID;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {ServiceContextConfiguration.class})
 public abstract class IntegrationTest {
-    @Value("${case.management.service.base.uri}")
+    @Value("${case.maintenance.service.base.uri}")
     String serverUrl;
 
     @Autowired

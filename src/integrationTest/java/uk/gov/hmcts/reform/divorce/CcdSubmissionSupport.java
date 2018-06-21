@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotEquals;
 public abstract class CcdSubmissionSupport extends IntegrationTest {
     private static final String PAYLOAD_CONTEXT_PATH = "ccd-submission-payload/";
 
-    @Value("${case.management.submission.context-path}")
+    @Value("${case.maintenance.submission.context-path}")
     private String contextPath;
 
     void submitAndAssertSuccess(String fileName) throws Exception {

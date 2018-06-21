@@ -23,7 +23,7 @@ public class CcdUpdateTest extends CcdSubmissionSupport {
 
     private static final String EVENT_ID = "paymentMade";
 
-    @Value("${case.management.update.context-path}")
+    @Value("${case.maintenance.update.context-path}")
     private String contextPath;
 
     @Test
