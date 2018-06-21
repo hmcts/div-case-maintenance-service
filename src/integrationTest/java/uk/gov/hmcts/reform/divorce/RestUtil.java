@@ -8,7 +8,7 @@ import java.util.Map;
 class RestUtil {
 
     static Response postToRestService(String url, Map<String, Object> headers, String requestBody) {
-        if(requestBody != null){
+        if (requestBody != null) {
             return SerenityRest.given()
                 .headers(headers)
                 .body(requestBody)

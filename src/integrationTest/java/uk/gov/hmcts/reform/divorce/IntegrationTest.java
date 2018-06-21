@@ -27,7 +27,7 @@ public abstract class IntegrationTest {
     }
 
 
-    synchronized String getUserToken(){
+    synchronized String getUserToken() {
         String username = "simulate-delivered" + UUID.randomUUID() + "@notifications.service.gov.uk";
         String password = UUID.randomUUID().toString();
 

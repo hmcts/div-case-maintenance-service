@@ -18,7 +18,7 @@ public class CcdUpdateTest extends CcdSubmissionSupport {
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrVU";
 
-    private static final String UNAUTHORISED_JWT_EXCEPTION= "status 403 reading "
+    private static final String UNAUTHORISED_JWT_EXCEPTION = "status 403 reading "
         + "IdamUserService#retrieveUserDetails(String); content:\n";
 
     private static final String EVENT_ID = "paymentMade";
@@ -109,7 +109,7 @@ public class CcdUpdateTest extends CcdSubmissionSupport {
             );
     }
 
-    private String getRequestUrl(Long caseId, String eventId){
+    private String getRequestUrl(Long caseId, String eventId) {
         return serverUrl + contextPath + "/" + caseId + "/" + eventId;
     }
 

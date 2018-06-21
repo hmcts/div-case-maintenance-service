@@ -11,12 +11,12 @@ class IdamUtils {
     private String idamUserBaseUrl;
 
     void createUserInIdam(String username, String password) {
-        String s = "{\"email\":\"" + username + "@test.com\", \"forename\":\"" + username +
-            "\",\"surname\":\"User\",\"password\":\"" + password + "\"}";
+        String payload = "{\"email\":\"" + username + "@test.com\", \"forename\":\"" + username
+            + "\",\"surname\":\"User\",\"password\":\"" + password + "\"}";
 
         RestAssured.given()
             .header("Content-Type", "application/json")
-            .body(s)
+            .body(payload)
             .post(idamCreateUrl());
     }
 

@@ -40,23 +40,23 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
             );
     }
 
-    private String loadJson(String fileName) throws Exception{
+    private String loadJson(String fileName) throws Exception {
         return loadJson(fileName, PAYLOAD_CONTEXT_PATH);
     }
 
-    String loadJson(String fileName, String contextPath) throws Exception{
+    String loadJson(String fileName, String contextPath) throws Exception {
         return ResourceLoader.loadJson(contextPath + fileName);
     }
 
-    String getSubmissionRequestUrl(){
+    String getSubmissionRequestUrl() {
         return serverUrl + contextPath;
     }
 
-    Map<String, Object> getHeaders(){
+    Map<String, Object> getHeaders() {
         return getHeaders(getUserToken());
     }
 
-    Map<String, Object> getHeaders(String userToken){
+    Map<String, Object> getHeaders(String userToken) {
         Map<String, Object> headers = new HashMap<>();
         headers.put("Content-type", MediaType.APPLICATION_JSON_UTF8_VALUE);
         headers.put("Authorization", userToken);
