@@ -53,9 +53,9 @@ public class CcdController {
         }
     )
     public ResponseEntity<CaseDetails> updateCase(
-        @RequestBody
         @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId,
-        @ApiParam("The update event that requires the resubmission to CCD") Object data,
+        @RequestBody
+        @ApiParam(value = "The update event that requires the resubmission to CCD", required = true) Object data,
         @PathVariable("eventId") @ApiParam(value = "Update Event Type Id", required = true) String eventId,
         @RequestHeader("Authorization")
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {

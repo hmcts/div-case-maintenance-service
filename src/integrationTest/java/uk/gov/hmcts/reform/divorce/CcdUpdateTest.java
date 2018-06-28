@@ -56,8 +56,8 @@ public class CcdUpdateTest extends CcdSubmissionSupport {
 
         Response cmsResponse = updateCase("payment-made.json", -1L, EVENT_ID, userToken);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), cmsResponse.getStatusCode());
-        assertThat(cmsResponse.getBody().path("message"), containsString("Case reference is not valid"));
+        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
+        assertThat(cmsResponse.asString(), containsString("Case reference is not valid"));
     }
 
     @Test
@@ -68,8 +68,8 @@ public class CcdUpdateTest extends CcdSubmissionSupport {
 
         Response cmsResponse = updateCase("payment-made.json", caseId, "InvalidEvenId", userToken);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), cmsResponse.getStatusCode());
-        assertThat(cmsResponse.getBody().path("message"),
+        assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
+        assertThat(cmsResponse.asString(),
             containsString("Cannot findCaseEvent event InvalidEvenId for case type DIVORCE"));
     }
 
@@ -83,8 +83,8 @@ public class CcdUpdateTest extends CcdSubmissionSupport {
 
         Response cmsResponse = updateCase("payment-made.json", caseId, EVENT_ID, userToken);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), cmsResponse.getStatusCode());
-        assertThat(cmsResponse.getBody().path("message"),
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), cmsResponse.getStatusCode());
+        assertThat(cmsResponse.asString(),
             containsString("The case status did not qualify for the event"));
     }
 
@@ -96,8 +96,8 @@ public class CcdUpdateTest extends CcdSubmissionSupport {
 
         Response cmsResponse = updateCase("payment-made.json", caseId, EVENT_ID, INVALID_USER_TOKEN);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), cmsResponse.getStatusCode());
-        assertEquals(UNAUTHORISED_JWT_EXCEPTION, cmsResponse.path("message"));
+        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
+        assertEquals(UNAUTHORISED_JWT_EXCEPTION, cmsResponse.asString());
     }
 
     private Response updateCase(String fileName, Long caseId, String eventId, String userToken) throws Exception {

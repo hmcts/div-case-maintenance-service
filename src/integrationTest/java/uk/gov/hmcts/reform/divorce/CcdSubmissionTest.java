@@ -73,8 +73,8 @@ public class CcdSubmissionTest extends CcdSubmissionSupport {
     public void shouldReturnErrorForInvalidUserJwtToken() throws Exception {
         Response cmsResponse = submitCase("addresses.json", INVALID_USER_TOKEN);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), cmsResponse.getStatusCode());
-        assertEquals(UNAUTHORISED_JWT_EXCEPTION, cmsResponse.path("message"));
+        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
+        assertEquals(UNAUTHORISED_JWT_EXCEPTION, cmsResponse.asString());
     }
 
     @Test
