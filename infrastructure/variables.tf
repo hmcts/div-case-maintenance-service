@@ -26,6 +26,14 @@ variable "appinsights_instrumentation_key" {
     default = ""
 }
 
+variable "idam_api_baseurl" {
+    type = "string"
+}
+
+variable "capacity" {
+    default = "1"
+}
+
 variable "idam_s2s_url_prefix" {
   default = "rpe-service-auth-provider"
 }

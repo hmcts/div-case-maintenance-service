@@ -1,10 +1,12 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.12.RELEASE'
+        springBootVersion = '2.0.2.RELEASE'
     }
     repositories {
         mavenLocal()
         jcenter()
+
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -15,9 +17,10 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'com.github.ben-manes.versions' version '0.17.0'
-    id 'io.spring.dependency-management' version '1.0.3.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+    id 'com.jfrog.bintray' version '1.8.0'
     id 'jacoco'
-    id 'org.owasp.dependencycheck' version '3.1.2'
+    id 'org.owasp.dependencycheck' version '3.2.1'
     id 'org.sonarqube' version '2.5'
     id 'org.springframework.boot' version '1.5.12.RELEASE'
     id 'pmd'
@@ -28,9 +31,17 @@ group = 'uk.gov.hmcts.reform.divorce'
 version = '1.0.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-jar.archiveName = 'div-case-maintenance-service.jar'
 
 jar {
+    manifest {
+        attributes 'Implementation-Title': project.name,
+            'Implementation-Version': project.version
+    }
+    archiveName = 'div-case-maintenance-service.jar'
+}
+
+bootJar {
+    archiveName = 'div-case-maintenance-service.jar'
     manifest {
         attributes 'Implementation-Title': project.name,
             'Implementation-Version': project.version
@@ -51,6 +62,7 @@ repositories {
     mavenLocal()
     jcenter()
 
+    maven { url 'https://repo.spring.io/libs-milestone' }
     maven { url "https://dl.bintray.com/hmcts/hmcts-maven" }
     maven { url "http://repo.maven.apache.org/maven2" }
 }
@@ -96,18 +108,19 @@ dependencyCheck {
 def versions = [
     commonsLang3: '3.7',
     commonsIo: '2.5',
-    jacksonCore: '2.9.5',
     jsonAssert: '1.2.3',
     junit: '4.12',
     lombok: '1.16.16',
-    powerMock: '1.7.3',
     puppyCrawl: '7.6',
-    reformsJavaLogging: '2.1.1',
+    reformsJavaLogging: '3.0.1',
     restAssured: '3.0.3',
     serenity: '1.5.2',
     serenityCucumber: '1.1.3',
-    serviceTokenGenerator: '0.6.0',
-    springfoxSwagger: '2.7.0',
+    serviceTokenGenerator: '1.0.0',
+    ccdStoreClient: '4.1.0',
+    feignHttpClient: '9.5.1',
+    reformSpringBootAutoConfigure: '1.1.0',
+    springfoxSwagger: '2.9.0',
     unirest: '1.4.9',
     wiremockVersion: '2.8.0',
     pitest: '1.3.2',
@@ -117,10 +130,21 @@ def versions = [
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.boot:spring-boot-actuator-docs')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksonCore
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jacksonCore
+
+    compile group: 'org.springframework', name: 'spring-context-support'
+    compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')
+        {
+            exclude group: 'io.reactivex', module: 'io.reactivex'
+            exclude group: 'io.reactivex', module: 'rxnetty'
+            exclude group: 'io.reactivex', module: 'rxnetty-contexts'
+            exclude group: 'io.reactivex', module: 'rxnetty-servo'
+        }
+
+    compile group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
+    compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: versions.reformSpringBootAutoConfigure
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
     compile group: 'com.puppycrawl.tools', name: 'checkstyle', version:  versions.puppyCrawl
     compile group: 'commons-io', name: 'commons-io', version: versions.commonsIo
     compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
@@ -130,12 +154,21 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformsJavaLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformsJavaLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformsJavaLogging
-    compile (group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator){
-        exclude group: 'io.reactivex', module: 'io.reactivex'
-        exclude group: 'io.reactivex', module: 'rxnetty'
-        exclude group: 'io.reactivex', module: 'rxnetty-contexts'
-        exclude group: 'io.reactivex', module: 'rxnetty-servo'
-    }
+    compile (group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator)
+        {
+            exclude group: 'io.reactivex', module: 'io.reactivex'
+            exclude group: 'io.reactivex', module: 'rxnetty'
+            exclude group: 'io.reactivex', module: 'rxnetty-contexts'
+            exclude group: 'io.reactivex', module: 'rxnetty-servo'
+        }
+
+    compile (group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: versions.ccdStoreClient)
+        {
+            exclude group: 'io.reactivex', module: 'io.reactivex'
+            exclude group: 'io.reactivex', module: 'rxnetty'
+            exclude group: 'io.reactivex', module: 'rxnetty-contexts'
+            exclude group: 'io.reactivex', module: 'rxnetty-servo'
+        }
 
     compile group: 'org.pitest', name: 'pitest', version: versions.pitest
     compile group:'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
@@ -143,11 +176,7 @@ dependencies {
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testCompile group: 'com.github.tomakehurst', name:'wiremock', version: versions.wiremockVersion
-    testCompile group: 'org.powermock', name:'powermock-api-mockito', version:versions.powerMock
-    testCompile group: 'org.powermock', name: 'powermock-api-mockito-common', version:versions.powerMock
-    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: versions.powerMock
     testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile('org.springframework.security:spring-security-test')
     runtime('org.springframework.boot:spring-boot-devtools')
 
     //integration test
@@ -160,10 +189,15 @@ dependencies {
     integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     integrationTestCompile group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3
-    integrationTestCompile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     integrationTestCompile group: 'org.skyscreamer', name:'jsonassert', version: versions.jsonAssert
     integrationTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    integrationTestCompile group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator
+    integrationTestCompile (group: 'uk.gov.hmcts.reform', name: 'core-case-data-store-client', version: versions.ccdStoreClient)
+        {
+            exclude group: 'io.reactivex', module: 'io.reactivex'
+            exclude group: 'io.reactivex', module: 'rxnetty'
+            exclude group: 'io.reactivex', module: 'rxnetty-contexts'
+            exclude group: 'io.reactivex', module: 'rxnetty-servo'
+        }
 }
 
 sourceSets {
@@ -194,12 +228,6 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
     setClasspath(sourceSets.integrationTest.runtimeClasspath)
 }
 
-task printVersion {
-    doLast {
-        print project.version
-    }
-}
-
 pmd {
     toolVersion = "5.8.1"
     ignoreFailures = true
@@ -210,7 +238,8 @@ pmd {
 
 pitest {
     targetClasses = ['**uk.gov.hmcts.reform.divorce..*']
-    excludedClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.config.*']
+    excludedClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.config.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*']
     threads = 1
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
@@ -219,7 +248,6 @@ pitest {
 
 def sonarExclusions = [
     '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/domain/**/*',
-    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/exception/*',
     '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/**/config/**/*',
     '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/CaseMaintenanceServiceApplication.java'
 ]
@@ -250,6 +278,16 @@ jacocoTestReport {
 
         html {
             enabled true
+        }
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.9
+            }
         }
     }
 }

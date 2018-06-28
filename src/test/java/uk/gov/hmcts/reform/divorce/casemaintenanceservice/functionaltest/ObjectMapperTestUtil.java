@@ -2,17 +2,17 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ObjectMapperTestUtil {
+class ObjectMapperTestUtil {
 
-    public static byte[] convertObjectToJsonBytes(final Object object) {
+    static <T> T convertStringToObject(String data, Class type) {
         try {
-            return new ObjectMapper().writeValueAsBytes(object);
+            return (T)new ObjectMapper().readValue(data, type);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static String convertObjectToJsonString(final Object object) {
+    static String convertObjectToJsonString(final Object object) {
         try {
             return new ObjectMapper().writeValueAsString(object);
         } catch (Exception e) {
