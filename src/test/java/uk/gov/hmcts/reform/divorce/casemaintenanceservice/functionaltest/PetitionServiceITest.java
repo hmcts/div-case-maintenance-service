@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
     "eureka.client.enabled=false"
-})
+    })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PetitionServiceITest {
@@ -281,7 +281,7 @@ public class PetitionServiceITest {
     }
 
     @Test
-    public void givenMultipleAwaitingPaymentAndOtherNonSubmittedCaseInCcd_whenRetrievePetition_thenThrowException()
+    public void givenMultipleAwaitingPaymentAndOtherNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnError()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
@@ -308,7 +308,7 @@ public class PetitionServiceITest {
     }
 
     @Test
-    public void givenCasesInNotAwaitingPaymentAndNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnNull()
+    public void givenCasesInNotAwaitingPaymentOrNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnNull()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
@@ -354,7 +354,7 @@ public class PetitionServiceITest {
                 .build());
     }
 
-    private CaseDetails createCaseDetails(Long id, String state){
+    private CaseDetails createCaseDetails(Long id, String state) {
         return CaseDetails.builder().id(id).state(state).build();
     }
 }

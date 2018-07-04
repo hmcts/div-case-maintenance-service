@@ -2,9 +2,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
@@ -21,9 +19,6 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     private static final String AWAITING_PAYMENT_STATE = "AwaitingPayment";
     private static final String SUBMITTED_PAYMENT_STATE = "Submitted";
 
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
-
     @Override
     public CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException {
         UserDetails userDetails = getUserDetails(authorisation);
@@ -37,11 +32,11 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
                 caseType,
                 Collections.emptyMap());
 
-        if (CollectionUtils.isEmpty(caseDetailsList)){
+        if (CollectionUtils.isEmpty(caseDetailsList)) {
             return null;
         }
 
-        if(caseDetailsList.size() > 1){
+        if (caseDetailsList.size() > 1) {
             log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getForename());
         }
 
@@ -51,21 +46,21 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         List<CaseDetails> submittedCases = statusCaseDetailsMap.get(SUBMITTED_PAYMENT_STATE);
 
-        if(CollectionUtils.isNotEmpty(submittedCases)){
-            return caseDetailsList.get(0);
+        if (CollectionUtils.isNotEmpty(submittedCases)) {
+            return submittedCases.get(0);
         }
 
         List<CaseDetails> awaitingPaymentCases = statusCaseDetailsMap.get(AWAITING_PAYMENT_STATE);
 
-        if (CollectionUtils.isEmpty(awaitingPaymentCases)){
+        if (CollectionUtils.isEmpty(awaitingPaymentCases)) {
             return null;
         } else if (awaitingPaymentCases.size() > 1) {
             String message = String.format("[%d] cases in awaiting payment found for the user [%s]",
-                awaitingPaymentCases.size(), userDetails.getForename());
+                awaitingPaymentCases.size(), userDetails.getEmail());
             log.warn(message);
             throw new DuplicateCaseException(message);
         }
 
-        return caseDetailsList.get(0);
+        return awaitingPaymentCases.get(0);
     }
 }

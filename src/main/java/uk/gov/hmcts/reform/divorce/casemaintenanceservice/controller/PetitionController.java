@@ -31,7 +31,7 @@ public class PetitionController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
         @ApiResponse(code = 300, message = "Multiple Petition found")
-    })
+        })
     public ResponseEntity<Object> retrievePetition(
         @RequestHeader("Authorization")
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,

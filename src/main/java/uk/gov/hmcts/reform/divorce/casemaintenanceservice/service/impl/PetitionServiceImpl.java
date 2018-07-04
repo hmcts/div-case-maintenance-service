@@ -15,7 +15,7 @@ public class PetitionServiceImpl implements PetitionService {
 
     @Override
     public CaseDetails retrievePetition(String authorisation, boolean checkCcd) throws DuplicateCaseException {
-        if(checkCcd) {
+        if (checkCcd) {
             return ccdRetrievalService.retrievePetition(authorisation);
         }
 

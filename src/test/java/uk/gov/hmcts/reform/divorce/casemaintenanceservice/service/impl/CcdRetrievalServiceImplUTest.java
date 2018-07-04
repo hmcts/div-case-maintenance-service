@@ -295,7 +295,7 @@ public class CcdRetrievalServiceImplUTest {
             Collections.emptyMap());
     }
 
-    private CaseDetails createCaseDetails(Long id, String state){
+    private CaseDetails createCaseDetails(Long id, String state) {
         return CaseDetails.builder().id(id).state(state).build();
     }
 
