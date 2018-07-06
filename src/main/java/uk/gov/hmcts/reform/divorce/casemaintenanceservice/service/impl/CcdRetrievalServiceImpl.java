@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
@@ -16,8 +17,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRetrievalService {
-    private static final String AWAITING_PAYMENT_STATE = "AwaitingPayment";
-    private static final String SUBMITTED_PAYMENT_STATE = "Submitted";
 
     @Override
     public CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException {
@@ -40,17 +39,17 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getForename());
         }
 
-        Map<String, List<CaseDetails>> statusCaseDetailsMap =
+        Map<CitizenCaseState, List<CaseDetails>> statusCaseDetailsMap =
             caseDetailsList.stream()
-                .collect(Collectors.groupingBy(CaseDetails::getState));
+                .collect(Collectors.groupingBy(caseDetails -> CitizenCaseState.getState(caseDetails.getState())));
 
-        List<CaseDetails> submittedCases = statusCaseDetailsMap.get(SUBMITTED_PAYMENT_STATE);
+        List<CaseDetails> submittedCases = statusCaseDetailsMap.get(CitizenCaseState.COMPLETE);
 
         if (CollectionUtils.isNotEmpty(submittedCases)) {
             return submittedCases.get(0);
         }
 
-        List<CaseDetails> awaitingPaymentCases = statusCaseDetailsMap.get(AWAITING_PAYMENT_STATE);
+        List<CaseDetails> awaitingPaymentCases = statusCaseDetailsMap.get(CitizenCaseState.INCOMPLETE);
 
         if (CollectionUtils.isEmpty(awaitingPaymentCases)) {
             return null;

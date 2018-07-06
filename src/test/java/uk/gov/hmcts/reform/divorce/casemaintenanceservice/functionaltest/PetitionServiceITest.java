@@ -22,15 +22,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,10 +59,8 @@ public class PetitionServiceITest {
     private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
     private static final String USER_ID = "1";
 
-    private static final String AWAITING_PAYMENT_STATE =
-        (String)ReflectionTestUtils.getField(CcdRetrievalServiceImpl.class, "AWAITING_PAYMENT_STATE");
-    private static final String SUBMITTED_PAYMENT_STATE =
-        (String)ReflectionTestUtils.getField(CcdRetrievalServiceImpl.class, "SUBMITTED_PAYMENT_STATE");
+    private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.INCOMPLETE.getStates().get(0);
+    private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.COMPLETE.getStates().get(0);
 
     private static final String USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
         + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
@@ -176,15 +173,17 @@ public class PetitionServiceITest {
         final Long caseId1 = 1L;
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
+        final Long caseId4 = 4L;
 
         final CaseDetails caseDetails1 = createCaseDetails(caseId1, SUBMITTED_PAYMENT_STATE);
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, SUBMITTED_PAYMENT_STATE);
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, SUBMITTED_PAYMENT_STATE);
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.COMPLETE.getStates().get(1));
+        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CitizenCaseState.COMPLETE.getStates().get(2));
+        final CaseDetails caseDetails4 = createCaseDetails(caseId4, CitizenCaseState.COMPLETE.getStates().get(2));
 
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
+            .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4));
 
         webClient.perform(get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -207,7 +206,7 @@ public class PetitionServiceITest {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, SUBMITTED_PAYMENT_STATE);
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CitizenCaseState.COMPLETE.getStates().get(2));
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, SUBMITTED_PAYMENT_STATE);
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, AWAITING_PAYMENT_STATE);
 
@@ -292,7 +291,7 @@ public class PetitionServiceITest {
         final Long caseId3 = 3L;
 
         final CaseDetails caseDetails1 = createCaseDetails(caseId1, AWAITING_PAYMENT_STATE);
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, AWAITING_PAYMENT_STATE);
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.INCOMPLETE.getStates().get(1));
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
