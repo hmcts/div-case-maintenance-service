@@ -237,13 +237,13 @@ pmd {
 }
 
 pitest {
-    targetClasses = ['**uk.gov.hmcts.reform.divorce..*']
+    targetClasses = ['**uk.gov.hmcts.reform.divorce.casemaintenanceservice.*']
     excludedClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.config.*',
     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*']
     threads = 1
     outputFormats = ['XML', 'HTML']
     timestampedReports = true
-    mutationThreshold = 90
+    mutationThreshold = 50
 }
 
 def sonarExclusions = [
@@ -259,6 +259,7 @@ sonarqube {
         property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.projectKey", "DivorceCaseMaintenanceService"
         property "sonar.projectName", "Divorce :: case-maintenance-service"
+        property "sonar.host.url", "https://sonar.reform.hmcts.net/"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
     }
