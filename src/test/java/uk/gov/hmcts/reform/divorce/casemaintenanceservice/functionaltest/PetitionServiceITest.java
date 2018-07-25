@@ -54,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PetitionServiceITest {
-    private static final String API_URL = "/casemaintenance/version/1/retrievePetition";
+    private static final String API_URL = "/casemaintenance/version/1/retrieveAllDrafts";
     private static final String CHECK_CCD_PARAM = "checkCcd";
     private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
     private static final String USER_ID = "1";

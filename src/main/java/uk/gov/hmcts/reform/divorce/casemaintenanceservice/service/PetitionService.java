@@ -10,5 +10,7 @@ public interface PetitionService {
 
     void saveDraft(String authorisation, JsonNode data);
 
-    DraftList testMethod(String authorisation);
+    DraftList getAllDrafts(String authorisation);
+
+    void deleteDraft(String authorisation);
 }

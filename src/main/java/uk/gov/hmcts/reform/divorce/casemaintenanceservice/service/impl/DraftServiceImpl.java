@@ -42,11 +42,6 @@ public class DraftServiceImpl implements DraftService {
             getSecret(userToken));
     }
 
-    private DraftList getAllDrafts(String userToken, String after){
-        return draftStoreClient.getAllDrafts(after, getBearerToken(userToken), serviceTokenGenerator.generate(),
-            getSecret(userToken));
-    }
-
     @Override
     public void saveDraft(String userToken, JsonNode data) {
         Draft draft = getDraft(userToken);
@@ -70,7 +65,18 @@ public class DraftServiceImpl implements DraftService {
     }
 
     @Override
-    public Draft getDraft(String userToken){
+    public void deleteDraft(String authorisation) {
+        log.debug("Deleting the divorce session draft");
+        Draft draft = getDraft(authorisation);
+
+        if (draft != null) {
+            draftStoreClient.deleteSingleDraft(draft.getId(), getBearerToken(authorisation),
+                serviceTokenGenerator.generate());
+        }
+    }
+
+    @Override
+    public Draft getDraft(String userToken) {
         DraftList draftList = getAllDrafts(userToken);
 
         return findDivorceDraft(userToken, draftList).orElse(null);
@@ -81,19 +87,25 @@ public class DraftServiceImpl implements DraftService {
             Optional<Draft> divorceDraft = draftList.getData().stream()
                 .filter(draft -> modelFactory.isDivorceDraft(draft))
                 .findFirst();
-            if (!divorceDraft.isPresent()) {
+
+            if (divorceDraft.isPresent()) {
+                log.debug("Divorce session draft found");
+                return divorceDraft;
+            } else {
                 if (draftList.getPaging().getAfter() != null) {
                     log.debug("Divorce session draft could not be found on the current page with drafts. "
                         + "Going to next page");
                     return findDivorceDraft(userToken, getAllDrafts(userToken, draftList.getPaging().getAfter()));
                 }
-            } else {
-                log.debug("Divorce session draft found");
-                return divorceDraft;
             }
         }
         log.debug("Divorce session draft could not be found");
         return Optional.empty();
+    }
+
+    private DraftList getAllDrafts(String userToken, String after){
+        return draftStoreClient.getAllDrafts(after, getBearerToken(userToken), serviceTokenGenerator.generate(),
+            getSecret(userToken));
     }
 
     private String getSecret(String userToken){

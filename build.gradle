@@ -131,6 +131,7 @@ def versions = [
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-aop')
 
     compile group: 'org.springframework', name: 'spring-context-support'
     compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')

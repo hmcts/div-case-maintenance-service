@@ -40,16 +40,6 @@ public interface DraftStoreClient {
                            @RequestHeader(SECRET_HEADER_NAME) String secret);
 
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/drafts/{draftId}",
-        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
-    )
-    DraftList getSingleDraft(@PathVariable("draftId") String draftId,
-                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
-                             @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation,
-                             @RequestHeader(SECRET_HEADER_NAME) String secret);
-
-    @RequestMapping(
         method = RequestMethod.POST,
         value = "/drafts",
         headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
@@ -75,7 +65,7 @@ public interface DraftStoreClient {
         value = "/drafts/{draftId}",
         headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
     )
-    DraftList deleletSingleDraft(@PathVariable("draftId") String draftId,
-                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
-                                 @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation);
+    DraftList deleteSingleDraft(@PathVariable("draftId") String draftId,
+                                @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
+                                @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation);
 }
