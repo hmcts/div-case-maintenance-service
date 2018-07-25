@@ -28,6 +28,7 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
 
@@ -54,10 +55,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PetitionServiceITest {
-    private static final String API_URL = "/casemaintenance/version/1/retrieveAllDrafts";
+    private static final String API_URL = "/casemaintenance/version/1/retrievePetition";
     private static final String CHECK_CCD_PARAM = "checkCcd";
     private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
+    private static final String GET_ALL_DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String USER_ID = "1";
+    private static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
 
     private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.INCOMPLETE.getStates().get(0);
     private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.COMPLETE.getStates().get(0);
@@ -70,6 +73,9 @@ public class PetitionServiceITest {
 
     @ClassRule
     public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(4503);
+
+    @ClassRule
+    public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
@@ -121,10 +127,12 @@ public class PetitionServiceITest {
     }
 
     @Test
-    public void givenNoCaseInCcd_whenRetrievePetition_thenReturnNull() throws Exception {
+    public void givenNoCaseInCcdOrDraftStore_whenRetrievePetition_thenReturnNull() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
+
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubGetDraftEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
 
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
 
@@ -136,7 +144,7 @@ public class PetitionServiceITest {
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
+            .andExpect(status().isNoContent())
             .andExpect(content().string(""));
     }
 
@@ -144,6 +152,7 @@ public class PetitionServiceITest {
     public void givenOneSubmittedCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
+
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final Long caseId = 1L;
@@ -307,11 +316,13 @@ public class PetitionServiceITest {
     }
 
     @Test
-    public void givenCasesInNotAwaitingPaymentOrNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnNull()
+    public void givenCasesInNotAwaitingPaymentOrNonSubmittedCaseInCcdOrNoDraft_whenRetrievePetition_thenReturnNull()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
+
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubGetDraftEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
 
         final Long caseId1 = 1L;
         final Long caseId2 = 2L;
@@ -330,13 +341,25 @@ public class PetitionServiceITest {
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
+            .andExpect(status().isNoContent())
             .andExpect(content().string(""));
     }
 
     private void stubUserDetailsEndpoint(HttpStatus status, StringValuePattern authHeader, String message) {
         idamUserDetailsServer.stubFor(WireMock.get(IDAM_USER_DETAILS_CONTEXT_PATH)
             .withHeader(HttpHeaders.AUTHORIZATION, authHeader)
+            .willReturn(aResponse()
+                .withStatus(status.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .withBody(message)));
+    }
+
+    private void stubGetDraftEndpoint(HttpStatus status, StringValuePattern authHeader,
+                                      StringValuePattern serviceToken, String message) {
+        draftStoreServer.stubFor(WireMock.get(GET_ALL_DRAFTS_CONTEXT_PATH)
+            .withHeader(HttpHeaders.AUTHORIZATION, authHeader)
+            .withHeader(DraftStoreClient.SERVICE_AUTHORIZATION_HEADER_NAME, serviceToken)
+            .withHeader(DraftStoreClient.SECRET_HEADER_NAME, new EqualToPattern(ENCRYPTED_USER_ID))
             .willReturn(aResponse()
                 .withStatus(status.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.formatterservice.FormatterServiceClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
@@ -129,4 +130,16 @@ public class PetitionServiceImplUTest {
 
         verify(draftService).deleteDraft(AUTHORISATION);
     }
+
+    @Test
+    public void whenOnApplicationEvent_thenProceedAsExpected() {
+        final CaseSubmittedEvent caseSubmittedEvent = mock(CaseSubmittedEvent.class);
+
+        when(caseSubmittedEvent.getAuthToken()).thenReturn(AUTHORISATION);
+
+        classUnderTest.onApplicationEvent(caseSubmittedEvent);
+
+        verify(draftService).deleteDraft(AUTHORISATION);
+    }
+
 }

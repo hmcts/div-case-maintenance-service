@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class UpdateDraft {
-
     private final JsonNode document;
     private final String type;
 }

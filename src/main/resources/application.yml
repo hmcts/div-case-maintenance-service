@@ -13,15 +13,16 @@ server:
 
 idam:
   api:
-    url: ${IDAM_API_BASEURL:https://preprod-idamapi.reform.hmcts.net:3511}
+    url: ${IDAM_API_BASEURL:http://localhost:4503}
 
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
-    totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:DWYML5ONMS7KG44R}
-    url: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://rpe-service-auth-provider-aat.service.core-compute-aat.internal}
+    totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
+    url: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://localhost:4502}
     port: ${AUTH_PROVIDER_SERVICE_CLIENT_PORT:4502}
     health:
         context-path: ${AUTH_PROVIDER_SERVICE_CLIENT_HEALTH_CONTEXT_PATH:/health}
+
 
 ccd:
   jurisdictionid: DIVORCE
@@ -40,7 +41,7 @@ core_case_data:
 draft:
   store:
     api:
-      baseurl: ${DRAFT_STORE_API_BASEURL:http://draft-store-service-aat.service.core-compute-aat.internal}
+      baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:4601}
       document:
         type: divorcedraft
       max:
