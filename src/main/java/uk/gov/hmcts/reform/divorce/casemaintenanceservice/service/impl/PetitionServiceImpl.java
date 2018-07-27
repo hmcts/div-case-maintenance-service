@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,8 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.formatterservice.FormatterServiceClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
+
+import java.util.Map;
 
 @Service
 public class PetitionServiceImpl implements PetitionService, ApplicationListener<CaseSubmittedEvent> {
@@ -40,7 +41,7 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
             if(draft != null){
                 caseDetails = CaseDetails.builder()
                     .data(
-                        formatterServiceClient.transformToCCDFormat(draft.getDocument(), authorisation))
+                        getFormattedPetition(draft, authorisation))
                     .build();
             }
         }
@@ -49,7 +50,7 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     }
 
     @Override
-    public void saveDraft(String authorisation, JsonNode data){
+    public void saveDraft(String authorisation, Map<String, Object> data){
         draftService.saveDraft(authorisation, data);
     }
 
@@ -66,5 +67,13 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     @Override
     public void onApplicationEvent(CaseSubmittedEvent event) {
         deleteDraft(event.getAuthToken());
+    }
+
+    private Map<String, Object> getFormattedPetition(Draft draft, String authorisation){
+        if(draft.isInCcdFormat()){
+            return draft.getDocument();
+        } else {
+            return formatterServiceClient.transformToCCDFormat(draft.getDocument(), authorisation);
+        }
     }
 }

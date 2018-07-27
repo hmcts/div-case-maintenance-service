@@ -39,6 +39,8 @@ core_case_data:
     url: ${CASE_DATA_STORE_BASEURL:http://localhost:4452}
 
 draft:
+  delete:
+    async: true
   store:
     api:
       baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:4601}

@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
+
+import java.util.Map;
 
 @Data
 public class Draft {
     private final String id;
-    private final JsonNode document;
+    private final Map<String, Object> document;
     private final String type;
+    private final boolean isInCcdFormat;
 }

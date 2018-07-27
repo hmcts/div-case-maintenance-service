@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class ResourceLoader {
+class ResourceLoader {
 
     static String loadJson(final String filePath) throws Exception {
         return new String(loadResource(filePath), Charset.forName("utf-8"));

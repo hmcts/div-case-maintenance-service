@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +12,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.formatterservice.FormatterServiceClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,11 +87,32 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
+    public void givenCheckCcdFalseAndDraftExistsInCcdFormat_whenRetrievePetition_thenReturnDataFromDraftStore()
+        throws DuplicateCaseException {
+
+        final Map<String, Object> document = Collections.emptyMap();
+        final Draft draft = new Draft("1", document, null, true);
+
+        final Map<String, Object> caseData = new HashMap<>();
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
+
+        when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
+
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, false);
+
+        assertEquals(caseDetails, actual);
+
+        verifyZeroInteractions(ccdRetrievalService);
+        verify(draftService).getDraft(AUTHORISATION);
+        verifyZeroInteractions(formatterServiceClient);
+    }
+
+    @Test
     public void givenCheckCcdFalseAndDraftExists_whenRetrievePetition_thenReturnDataFromDraftStore()
         throws DuplicateCaseException {
 
-        final JsonNode document = mock(JsonNode.class);
-        final Draft draft = new Draft("1", document, null);
+        final Map<String, Object> document = Collections.emptyMap();
+        final Draft draft = new Draft("1", document, null, false);
 
         final Map<String, Object> caseData = new HashMap<>();
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
@@ -110,7 +131,7 @@ public class PetitionServiceImplUTest {
 
     @Test
     public void whenSaveDraft_thenProceedAsExpected() {
-        final JsonNode data = mock(JsonNode.class);
+        final Map<String, Object> data = Collections.emptyMap();
 
         classUnderTest.saveDraft(AUTHORISATION, data);
 

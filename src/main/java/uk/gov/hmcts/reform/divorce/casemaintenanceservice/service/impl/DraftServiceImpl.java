@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.DraftService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -43,7 +43,7 @@ public class DraftServiceImpl implements DraftService {
     }
 
     @Override
-    public void saveDraft(String userToken, JsonNode data) {
+    public void saveDraft(String userToken, Map<String, Object> data) {
         Draft draft = getDraft(userToken);
 
         if(draft == null) {

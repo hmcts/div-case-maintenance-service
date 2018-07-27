@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,11 +17,12 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Updat
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,8 +63,8 @@ public class DraftServiceImplUTest {
     @Test
     public void givenDraftsExists_whenGetAllDrafts_thenReturnDrafts() {
         final DraftList draftList = new DraftList(Arrays.asList(
-            createDraft("1", null),
-            createDraft("2", null)),
+            createDraft("1"),
+            createDraft("2")),
             null);
 
         mockGetDraftsAndReturn(null, draftList);
@@ -78,8 +78,8 @@ public class DraftServiceImplUTest {
     public void givenDraftsDoesNotExist_whenSaveDraft_thenCreateNewDraft() {
         mockGetDraftsAndReturn(null, null);
 
-        final JsonNode data = mock(JsonNode.class);
-        final CreateDraft createDraft = new CreateDraft(data, null, 2);
+        final Map<String, Object> data = Collections.emptyMap();
+        final CreateDraft createDraft = new CreateDraft(data, null, 2, true);
 
         when(modelFactory.createDraft(data)).thenReturn(createDraft);
         when(draftStoreClient.createSingleDraft(createDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID))
@@ -93,17 +93,17 @@ public class DraftServiceImplUTest {
     @Test
     public void givenDraftsExist_whenSaveDraft_thenUpdateExistingDraft() {
         final String draftId = "1";
-        final Draft draft = createDraft(draftId, null);
+        final Draft draft = createDraft(draftId);
 
         final DraftList draftList = new DraftList(Arrays.asList(
             draft,
-            createDraft("2", null)),
+            createDraft("2")),
             new DraftList.PagingCursors(null));
 
         mockGetDraftsAndReturn(null, draftList);
 
-        final JsonNode data = mock(JsonNode.class);
-        final UpdateDraft updateDraft = new UpdateDraft(data, null);
+        final Map<String, Object> data = Collections.emptyMap();
+        final UpdateDraft updateDraft = new UpdateDraft(data, null, false);
 
         when(modelFactory.updateDraft(data)).thenReturn(updateDraft);
         when(modelFactory.isDivorceDraft(draft)).thenReturn(true);
@@ -130,11 +130,11 @@ public class DraftServiceImplUTest {
     @Test
     public void givenDraftExists_whenDeleteDraft_thenDeleteTheFirstDraft() {
         final String draftId = "1";
-        final Draft draft = createDraft(draftId, null);
+        final Draft draft = createDraft(draftId);
 
         final DraftList draftList = new DraftList(Arrays.asList(
             draft,
-            createDraft("2", null)),
+            createDraft("2")),
             new DraftList.PagingCursors(null));
 
         mockGetDraftsAndReturn(null, draftList);
@@ -157,8 +157,8 @@ public class DraftServiceImplUTest {
     @Test
     public void givenNoDivorceDrafts_whenGetDraft_thenReturnNull() {
         final DraftList draftList = new DraftList(Arrays.asList(
-            new Draft("1", null, "somerandomtype"),
-            new Draft("2", null, "somerandomtype")),
+            new Draft("1", null, "somerandomtype", true),
+            new Draft("2", null, "somerandomtype", true)),
             new DraftList.PagingCursors(null));
 
         mockGetDraftsAndReturn(null, draftList);
@@ -168,11 +168,11 @@ public class DraftServiceImplUTest {
 
     @Test
     public void givenDataAvailableOnFirstPage_whenDeleteDraft_thenReturnTheDraft() {
-        final Draft draft = createDraft("1", null);
+        final Draft draft = createDraft("1");
 
         final DraftList draftList = new DraftList(Arrays.asList(
             draft,
-            createDraft("2", null)),
+            createDraft("2")),
             new DraftList.PagingCursors(null));
 
         mockGetDraftsAndReturn(null, draftList);
@@ -185,17 +185,17 @@ public class DraftServiceImplUTest {
 
     @Test
     public void givenDataAvailableOnSubsequentPage_whenDeleteDraft_thenReturnTheDraft() {
-        final Draft draft = createDraft("3", null);
+        final Draft draft = createDraft("3");
         final String after = "1";
 
         final DraftList firstPage = new DraftList(Arrays.asList(
-            new Draft("1", null, "somerandomtype"),
-            new Draft("2", null, "somerandomtype")),
+            new Draft("1", null, "somerandomtype", true),
+            new Draft("2", null, "somerandomtype", false)),
             new DraftList.PagingCursors(after));
 
         final DraftList secondPage = new DraftList(Arrays.asList(
             draft,
-            createDraft("4", null)),
+            createDraft("4")),
             new DraftList.PagingCursors(null));
 
         mockGetDraftsAndReturn(null, firstPage);
@@ -227,7 +227,7 @@ public class DraftServiceImplUTest {
         return UserDetails.builder().id(USER_ID).build();
     }
 
-    private Draft createDraft(String id, JsonNode document){
-        return new Draft(id, document, DRAFT_DOCUMENT_TYPE);
+    private Draft createDraft(String id){
+        return new Draft(id, null, DRAFT_DOCUMENT_TYPE, true);
     }
 }

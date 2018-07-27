@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,21 +13,24 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Creat
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.UpdateDraft;
 
-import static org.junit.Assert.*;
+import java.util.Collections;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DraftModelFactoryUTest {
+    private static final Map<String, Object> DATA = Collections.emptyMap();
 
     @Value("${draft.store.api.document.type}")
     private String draftType;
 
     @Value("${draft.store.api.max.age}")
     private int maxAge;
-
-    @Mock
-    private JsonNode jsonNode;
 
     @Mock
     private Draft draft;
@@ -43,7 +45,7 @@ public class DraftModelFactoryUTest {
 
     @Test
     public void createDraftShouldCreateADivorceDraft() {
-        CreateDraft createDraft = underTest.createDraft(jsonNode);
+        CreateDraft createDraft = underTest.createDraft(DATA);
 
         assertEquals(draftType, createDraft.getType());
         assertEquals(maxAge, createDraft.getMaxAge());
@@ -51,7 +53,7 @@ public class DraftModelFactoryUTest {
 
     @Test
     public void updateDraftShouldCreateADivorceDraft() {
-        UpdateDraft updateDraft = underTest.updateDraft(jsonNode);
+        UpdateDraft updateDraft = underTest.updateDraft(DATA);
 
         assertEquals(draftType, updateDraft.getType());
     }

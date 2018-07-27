@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,6 +25,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionServic
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.MediaType;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "casemaintenance")
@@ -71,7 +71,7 @@ public class PetitionController {
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
         @RequestBody
         @ApiParam(value = "The divorce case draft", required = true)
-        @NotNull final JsonNode data) {
+        @NotNull final Map<String, Object> data) {
         log.debug("Received request to save a divorce session draft");
         petitionService.saveDraft(jwt, data);
         return ResponseEntity.ok().build();
