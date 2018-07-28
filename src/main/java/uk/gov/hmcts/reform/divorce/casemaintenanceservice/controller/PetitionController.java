@@ -26,9 +26,10 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionServic
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.MediaType;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "casemaintenance")
+@RequestMapping(path = "casemaintenance/version/1")
 @Api(value = "Case Maintenance Services", consumes = "application/json", produces = "application/json")
 @Slf4j
 public class PetitionController {
@@ -36,7 +37,7 @@ public class PetitionController {
     @Autowired
     private PetitionService petitionService;
 
-    @GetMapping(path = "/version/1/retrievePetition", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(path = "/retrievePetition", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Retrieves a divorce case from CCD of Draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
@@ -50,19 +51,16 @@ public class PetitionController {
         @ApiParam(value = "Boolean flag enabling CCD check for petition") final Boolean checkCcd) {
 
         try {
-            CaseDetails caseDetails = petitionService.retrievePetition(jwt, checkCcd == null ? false : checkCcd);
+            CaseDetails caseDetails = petitionService.retrievePetition(jwt,
+                Optional.ofNullable(checkCcd).orElse(false));
 
-            if(caseDetails == null){
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.ok(caseDetails);
-            }
+            return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
         } catch (DuplicateCaseException e) {
             return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
         }
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON)
+    @PutMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Saves a divorce case to draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Draft saved")})
@@ -77,7 +75,7 @@ public class PetitionController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping(path = "/drafts")
     @ApiOperation(value = "Deletes a divorce case draft")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "The divorce case draft has been deleted successfully")})
@@ -89,13 +87,13 @@ public class PetitionController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(path = "/version/1/retrieveDrafts", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(path = "/drafts", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Retrieve All the Drafts for a given user")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Returns all the saved drafts for a given user")})
     public ResponseEntity<DraftList> retrieveAllDrafts(@RequestHeader(HttpHeaders.AUTHORIZATION)
                                                         @ApiParam(value = "JWT authorisation token issued by IDAM",
-                                                            required = true)final String jwt){
+                                                            required = true)final String jwt) {
         return ResponseEntity.ok(petitionService.getAllDrafts(jwt));
     }
 }

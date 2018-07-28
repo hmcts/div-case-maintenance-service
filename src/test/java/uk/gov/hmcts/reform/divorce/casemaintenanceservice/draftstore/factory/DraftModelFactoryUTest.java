@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.UpdateDraft;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -67,7 +68,7 @@ public class DraftModelFactoryUTest {
 
     @Test
     public void isDivorceDraftShouldIgnoreTheCase() {
-        given(draft.getType()).willReturn(draftType.toLowerCase());
+        given(draft.getType()).willReturn(draftType.toLowerCase(Locale.ENGLISH));
 
         assertTrue(underTest.isDivorceDraft(draft));
     }

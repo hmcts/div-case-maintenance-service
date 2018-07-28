@@ -155,6 +155,14 @@ public class DraftServiceImplUTest {
     }
 
     @Test
+    public void givenDraftListIsEmpty_whenGetDraft_thenReturnNull() {
+        mockGetDraftsAndReturn(null,
+            new DraftList(Collections.emptyList(), new DraftList.PagingCursors(null)));
+
+        assertNull(classUnderTest.getDraft(AUTH_TOKEN));
+    }
+
+    @Test
     public void givenNoDivorceDrafts_whenGetDraft_thenReturnNull() {
         final DraftList draftList = new DraftList(Arrays.asList(
             new Draft("1", null, "somerandomtype", true),
@@ -216,10 +224,12 @@ public class DraftServiceImplUTest {
         when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(encryptionKeyFactory.createEncryptionKey(USER_ID)).thenReturn(ENCRYPTED_USER_ID);
 
-        if(after == null) {
-            when(draftStoreClient.getAllDrafts(BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID)).thenReturn(draftList);
+        if (after == null) {
+            when(draftStoreClient.getAllDrafts(BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID))
+                .thenReturn(draftList);
         } else {
-            when(draftStoreClient.getAllDrafts(after, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID)).thenReturn(draftList);
+            when(draftStoreClient.getAllDrafts(after, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID))
+                .thenReturn(draftList);
         }
     }
 
@@ -227,7 +237,7 @@ public class DraftServiceImplUTest {
         return UserDetails.builder().id(USER_ID).build();
     }
 
-    private Draft createDraft(String id){
+    private Draft createDraft(String id) {
         return new Draft(id, null, DRAFT_DOCUMENT_TYPE, true);
     }
 }

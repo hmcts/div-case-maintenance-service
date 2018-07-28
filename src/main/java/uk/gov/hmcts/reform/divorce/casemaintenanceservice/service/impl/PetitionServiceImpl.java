@@ -34,11 +34,11 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
             caseDetails = ccdRetrievalService.retrievePetition(authorisation);
         }
 
-        if(caseDetails == null) {
+        if (caseDetails == null) {
             //check it in the draft store
             Draft draft = draftService.getDraft(authorisation);
 
-            if(draft != null){
+            if (draft != null) {
                 caseDetails = CaseDetails.builder()
                     .data(
                         getFormattedPetition(draft, authorisation))
@@ -50,12 +50,12 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     }
 
     @Override
-    public void saveDraft(String authorisation, Map<String, Object> data){
+    public void saveDraft(String authorisation, Map<String, Object> data) {
         draftService.saveDraft(authorisation, data);
     }
 
     @Override
-    public DraftList getAllDrafts(String authorisation){
+    public DraftList getAllDrafts(String authorisation) {
         return draftService.getAllDrafts(authorisation);
     }
 
@@ -69,8 +69,8 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
         deleteDraft(event.getAuthToken());
     }
 
-    private Map<String, Object> getFormattedPetition(Draft draft, String authorisation){
-        if(draft.isInCcdFormat()){
+    private Map<String, Object> getFormattedPetition(Draft draft, String authorisation) {
+        if (draft.isInCcdFormat()) {
             return draft.getDocument();
         } else {
             return formatterServiceClient.transformToCCDFormat(draft.getDocument(), authorisation);

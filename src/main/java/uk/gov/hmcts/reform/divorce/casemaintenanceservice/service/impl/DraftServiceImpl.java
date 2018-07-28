@@ -37,8 +37,13 @@ public class DraftServiceImpl implements DraftService {
     private DraftModelFactory modelFactory;
 
     @Override
-    public DraftList getAllDrafts(String userToken){
+    public DraftList getAllDrafts(String userToken) {
         return draftStoreClient.getAllDrafts(getBearerToken(userToken), serviceTokenGenerator.generate(),
+            getSecret(userToken));
+    }
+
+    private DraftList getAllDrafts(String userToken, String after) {
+        return draftStoreClient.getAllDrafts(after, getBearerToken(userToken), serviceTokenGenerator.generate(),
             getSecret(userToken));
     }
 
@@ -46,7 +51,7 @@ public class DraftServiceImpl implements DraftService {
     public void saveDraft(String userToken, Map<String, Object> data) {
         Draft draft = getDraft(userToken);
 
-        if(draft == null) {
+        if (draft == null) {
             log.debug("Creating a new divorce session draft");
             draftStoreClient.createSingleDraft(
                 modelFactory.createDraft(data),
@@ -103,18 +108,13 @@ public class DraftServiceImpl implements DraftService {
         return Optional.empty();
     }
 
-    private DraftList getAllDrafts(String userToken, String after){
-        return draftStoreClient.getAllDrafts(after, getBearerToken(userToken), serviceTokenGenerator.generate(),
-            getSecret(userToken));
-    }
-
-    private String getSecret(String userToken){
+    private String getSecret(String userToken) {
         UserDetails userDetails = idamUserService.retrieveUserDetails(getBearerToken(userToken));
 
         return encryptionKeyFactory.createEncryptionKey(userDetails.getId());
     }
 
-    private String getBearerToken(String userToken){
+    private String getBearerToken(String userToken) {
         return AuthUtil.getBearToken(userToken);
     }
 }

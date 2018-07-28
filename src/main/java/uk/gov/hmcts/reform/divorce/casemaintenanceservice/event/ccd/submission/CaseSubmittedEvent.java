@@ -9,7 +9,7 @@ public class CaseSubmittedEvent extends ApplicationEvent {
     private final CaseDetails caseDetails;
     private final String authToken;
 
-    CaseSubmittedEvent(Object source, CaseDetails caseDetails, String authToken) {
+    public CaseSubmittedEvent(Object source, CaseDetails caseDetails, String authToken) {
         super(source);
 
         this.authToken = authToken;

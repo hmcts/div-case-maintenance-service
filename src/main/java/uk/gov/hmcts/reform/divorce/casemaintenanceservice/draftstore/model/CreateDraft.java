@@ -11,5 +11,5 @@ public class CreateDraft {
     private final String type;
     @JsonProperty("max_age")
     private final int maxAge;
-    private final boolean ccdFormat;
+    private final boolean inCcdFormat;
 }

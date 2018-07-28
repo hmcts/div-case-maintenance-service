@@ -17,7 +17,7 @@ public interface FormatterServiceClient {
 
     @RequestMapping(
         method = RequestMethod.POST,
-        value = "/to-ccd-format",
+        value = "caseformatter/version/1/to-ccd-format",
         headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
     )
     Map<String, Object> transformToCCDFormat(@RequestBody Object data,

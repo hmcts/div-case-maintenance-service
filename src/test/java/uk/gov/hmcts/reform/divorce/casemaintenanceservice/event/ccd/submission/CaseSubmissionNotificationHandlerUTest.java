@@ -70,5 +70,4 @@ public class CaseSubmissionNotificationHandlerUTest {
                 && actual.getCaseDetails() == expected.getCaseDetails();
         }
     }
-
 }

@@ -32,12 +32,17 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdSubmissionServiceImpl;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.mock;
@@ -54,7 +59,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PropertySource(value = "classpath:application.yml")
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
-    "eureka.client.enabled=false"
+    "eureka.client.enabled=false",
+    "draft.delete.async=false"
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -62,7 +68,13 @@ public class CcdSubmissionITest {
     private static final String API_URL = "/casemaintenance/version/1/submit";
     private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/addresses.json";
     private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
+    private static final String DRAFTS_CONTEXT_PATH = "/drafts";
+    private static final String DRAFT_DOCUMENT_TYPE = "divorcedraft";
     private static final String USER_ID = "1";
+    private static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
+    private static final String DRAFT_ID = "1";
+    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE, true);
+
 
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
@@ -79,6 +91,9 @@ public class CcdSubmissionITest {
 
     @ClassRule
     public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(4503);
+
+    @ClassRule
+    public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
@@ -223,6 +238,7 @@ public class CcdSubmissionITest {
         final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
+        final DraftList draftList = new DraftList(Collections.singletonList(DRAFT), null);
 
         final String eventId = "eventId";
         final String token = "token";
@@ -244,6 +260,10 @@ public class CcdSubmissionITest {
 
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceAuthToken),
+            ObjectMapperTestUtil.convertObjectToJsonString(draftList));
+
+        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceAuthToken));
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
@@ -290,5 +310,24 @@ public class CcdSubmissionITest {
         when(feignException.getMessage()).thenReturn(errorMessage);
 
         return feignException;
+    }
+
+    private void stubGetDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken, String message) {
+        draftStoreServer.stubFor(get(DRAFTS_CONTEXT_PATH)
+            .withHeader(HttpHeaders.AUTHORIZATION, authHeader)
+            .withHeader(DraftStoreClient.SERVICE_AUTHORIZATION_HEADER_NAME, serviceToken)
+            .withHeader(DraftStoreClient.SECRET_HEADER_NAME, new EqualToPattern(ENCRYPTED_USER_ID))
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .withBody(message)));
+    }
+
+    private void stubDeleteDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken) {
+        draftStoreServer.stubFor(delete(DRAFTS_CONTEXT_PATH + "/" + DRAFT_ID)
+            .withHeader(HttpHeaders.AUTHORIZATION, authHeader)
+            .withHeader(DraftStoreClient.SERVICE_AUTHORIZATION_HEADER_NAME, serviceToken)
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())));
     }
 }
