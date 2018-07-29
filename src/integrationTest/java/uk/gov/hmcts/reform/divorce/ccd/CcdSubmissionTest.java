@@ -3,12 +3,15 @@ package uk.gov.hmcts.reform.divorce.ccd;
 import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.divorce.support.CcdSubmissionSupport;
+import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class CcdSubmissionTest extends CcdSubmissionSupport {
+public class CcdSubmissionTest extends PetitionSupport {
     private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
         + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
         + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
@@ -69,6 +72,28 @@ public class CcdSubmissionTest extends CcdSubmissionSupport {
     @Test
     public void shouldReturnCaseIdForValidD8DocumentSessionData() throws Exception {
         submitAndAssertSuccess("d8-document.json");
+    }
+
+    @Test
+    public void shouldReturnCaseIdForValidAddressesSessionDataAndDeleteDraft() throws Exception {
+        final String userToken = getUserToken();
+
+        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json", Collections.emptyMap());
+
+        Response draftsResponseBefore = getAllDraft(userToken);
+
+        assertEquals(1, ((List)draftsResponseBefore.getBody().path("data")).size());
+
+        Response cmsResponse = submitCase("addresses.json", userToken);
+
+        assertOkResponseAndCaseIdIsNotZero(cmsResponse);
+
+        //allow enough time for the async delete to process
+        Thread.sleep(20000);
+
+        Response draftsResponseAfter = getAllDraft(userToken);
+
+        assertEquals(0, ((List)draftsResponseAfter.getBody().path("data")).size());
     }
 
     @Test

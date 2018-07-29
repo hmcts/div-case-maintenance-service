@@ -71,7 +71,7 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
         return headers;
     }
 
-    private void assertOkResponseAndCaseIdIsNotZero(Response cmsResponse) {
+    protected void assertOkResponseAndCaseIdIsNotZero(Response cmsResponse) {
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertNotEquals((Long)0L, cmsResponse.getBody().path("caseId"));
     }
