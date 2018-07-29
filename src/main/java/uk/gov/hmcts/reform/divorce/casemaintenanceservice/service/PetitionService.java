@@ -11,6 +11,8 @@ public interface PetitionService {
 
     void saveDraft(String authorisation, Map<String, Object> data, boolean divorceFormat);
 
+    void createDraft(String authorisation, Map<String, Object> data, boolean divorceFormat);
+
     DraftList getAllDrafts(String authorisation);
 
     void deleteDraft(String authorisation);

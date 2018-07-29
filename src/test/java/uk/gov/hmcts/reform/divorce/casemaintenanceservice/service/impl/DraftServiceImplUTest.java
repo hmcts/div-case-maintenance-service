@@ -123,6 +123,23 @@ public class DraftServiceImplUTest {
     }
 
     @Test
+    public void whenCreateDraft_thenProceedAsExpected() {
+        final Map<String, Object> data = Collections.emptyMap();
+        final CreateDraft createDraft = new CreateDraft(data, null, 2);
+
+        when(idamUserService.retrieveUserDetails(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
+        when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(encryptionKeyFactory.createEncryptionKey(USER_ID)).thenReturn(ENCRYPTED_USER_ID);
+        when(modelFactory.createDraft(data, DIVORCE_FORMAT)).thenReturn(createDraft);
+        doNothing().when(draftStoreClient)
+            .createSingleDraft(createDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID);
+
+        classUnderTest.createDraft(AUTH_TOKEN, data, DIVORCE_FORMAT);
+
+        verify(draftStoreClient).createSingleDraft(createDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID);
+    }
+
+    @Test
     public void givenDraftDoesNotExist_whenDeleteDraft_thenDoNothing() {
         mockGetDraftsAndReturn(null, null);
 

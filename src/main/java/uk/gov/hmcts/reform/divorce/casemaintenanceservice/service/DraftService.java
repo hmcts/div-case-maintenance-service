@@ -12,6 +12,8 @@ public interface DraftService {
 
     Draft getDraft(String userToken);
 
+    void createDraft(String userToken, Map<String, Object> data, boolean divorceFormat);
+
     void deleteDraft(String authorisation);
 
     boolean isInCcdFormat(Draft draft);

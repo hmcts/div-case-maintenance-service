@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -62,26 +63,43 @@ public class PetitionController {
     }
 
     @PutMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Saves a divorce case to draft store")
+    @ApiOperation(value = "Saves or updates a draft to draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Draft saved")})
     public ResponseEntity<Void> saveDraft(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
         @RequestBody
-        @ApiParam(value = "The divorce case draft", required = true)
+        @ApiParam(value = "The case draft", required = true)
         @NotNull final Map<String, Object> data,
         @RequestParam(value = "divorceFormat", required = false)
-        @ApiParam(value = "Boolean flag forcing the data to be stored in divorce format") final Boolean divorceFormat) {
-        log.debug("Received request to save a divorce session draft");
+        @ApiParam(value = "Boolean flag indicting the data is in divorce format") final Boolean divorceFormat) {
+        log.debug("Received request to save a draft");
         petitionService.saveDraft(jwt, data, Optional.ofNullable(divorceFormat).orElse(false));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Create a new draft in draft store")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Draft saved")})
+    public ResponseEntity<Void> createDraft(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @RequestBody
+        @ApiParam(value = "The  case draft", required = true)
+        @NotNull final Map<String, Object> data,
+        @RequestParam(value = "divorceFormat", required = false)
+        @ApiParam(value = "Boolean flag indicting the data is in divorce format") final Boolean divorceFormat) {
+        log.debug("Received request to create a draft");
+        petitionService.createDraft(jwt, data, Optional.ofNullable(divorceFormat).orElse(false));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/drafts")
     @ApiOperation(value = "Deletes a divorce case draft")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The divorce case draft has been deleted successfully")})
+        @ApiResponse(code = 200, message = "The divorce draft has been deleted successfully")})
     public ResponseEntity<Void> deleteDraft(@RequestHeader("Authorization")
                                             @ApiParam(value = "JWT authorisation token issued by IDAM",
                                                 required = true) final String jwt) {

@@ -142,6 +142,15 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
+    public void whenCreateDraft_thenProceedAsExpected() {
+        final Map<String, Object> data = Collections.emptyMap();
+
+        classUnderTest.createDraft(AUTHORISATION, data, DIVORCE_FORMAT);
+
+        verify(draftService).createDraft(AUTHORISATION, data, DIVORCE_FORMAT);
+    }
+
+    @Test
     public void whenGetAllDrafts_thenProceedAsExpected() {
         classUnderTest.getAllDrafts(AUTHORISATION);
 

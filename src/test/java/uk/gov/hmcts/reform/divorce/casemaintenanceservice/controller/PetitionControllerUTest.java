@@ -125,6 +125,36 @@ public class PetitionControllerUTest {
     }
 
     @Test
+    public void givenDivorceFormatIsNull_whenCreateDraft_thenProceedAsExpected() {
+        final Map<String, Object> data = Collections.emptyMap();
+
+        ResponseEntity<Void> response = classUnderTest.createDraft(AUTHORISATION, data, null);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(petitionService).createDraft(AUTHORISATION, data, false);
+    }
+
+    @Test
+    public void givenDivorceFormatIsFalse_whenCreateDraft_thenProceedAsExpected() {
+        final Map<String, Object> data = Collections.emptyMap();
+
+        ResponseEntity<Void> response = classUnderTest.createDraft(AUTHORISATION, data, false);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(petitionService).createDraft(AUTHORISATION, data, false);
+    }
+
+    @Test
+    public void givenDivorceFormatIsTrue_whenCreateDraft_thenProceedAsExpected() {
+        final Map<String, Object> data = Collections.emptyMap();
+
+        ResponseEntity<Void> response = classUnderTest.createDraft(AUTHORISATION, data, true);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(petitionService).createDraft(AUTHORISATION, data, true);
+    }
+
+    @Test
     public void whenDeleteDraft_thenProceedAsExpected() {
         ResponseEntity<Void> response = classUnderTest.deleteDraft(AUTHORISATION);
 

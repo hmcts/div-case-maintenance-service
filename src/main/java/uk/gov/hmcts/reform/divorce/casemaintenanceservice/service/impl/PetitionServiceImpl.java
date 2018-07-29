@@ -54,6 +54,11 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     }
 
     @Override
+    public void createDraft(String authorisation, Map<String, Object> data, boolean divorceFormat) {
+        draftService.createDraft(authorisation, data, divorceFormat);
+    }
+
+    @Override
     public DraftList getAllDrafts(String authorisation) {
         return draftService.getAllDrafts(authorisation);
     }

@@ -34,6 +34,16 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
+    protected Response createDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
+        return
+            RestUtil.postToRestService(
+                draftsRequestUrl(),
+                getHeaders(userToken),
+                fileName == null ? null : ResourceLoader.loadJson(fileName),
+                params
+            );
+    }
+
     protected Response deleteDraft(String userToken) {
         return
             RestUtil.deleteOnRestService(

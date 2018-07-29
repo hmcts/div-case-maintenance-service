@@ -53,20 +53,29 @@ public class DraftServiceImpl implements DraftService {
 
         if (draft == null) {
             log.debug("Creating a new divorce session draft");
-            draftStoreClient.createSingleDraft(
-                modelFactory.createDraft(data, divorceFormat),
-                getBearerToken(userToken),
-                serviceTokenGenerator.generate(),
-                getSecret(userToken));
+            createDraft(userToken, data, divorceFormat);
         } else {
             log.debug("Updating the existing divorce session draft");
-            draftStoreClient.updateSingleDraft(
-                draft.getId(),
-                modelFactory.updateDraft(data, divorceFormat),
-                getBearerToken(userToken),
-                serviceTokenGenerator.generate(),
-                getSecret(userToken));
+            updateDraft(userToken, data, divorceFormat, draft);
         }
+    }
+
+    @Override
+    public void createDraft(String userToken, Map<String, Object> data, boolean divorceFormat) {
+        draftStoreClient.createSingleDraft(
+            modelFactory.createDraft(data, divorceFormat),
+            getBearerToken(userToken),
+            serviceTokenGenerator.generate(),
+            getSecret(userToken));
+    }
+
+    private void updateDraft(String userToken, Map<String, Object> data, boolean divorceFormat, Draft draft) {
+        draftStoreClient.updateSingleDraft(
+            draft.getId(),
+            modelFactory.updateDraft(data, divorceFormat),
+            getBearerToken(userToken),
+            serviceTokenGenerator.generate(),
+            getSecret(userToken));
     }
 
     @Override

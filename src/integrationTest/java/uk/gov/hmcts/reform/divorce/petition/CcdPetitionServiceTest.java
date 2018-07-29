@@ -130,7 +130,7 @@ public class CcdPetitionServiceTest extends PetitionSupport {
 
         final String caseInCcdFormatFileName = CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json";
 
-        saveDraft(userToken, caseInCcdFormatFileName, Collections.emptyMap());
+        createDraft(userToken, caseInCcdFormatFileName, Collections.emptyMap());
 
         Response cmsResponse = getPetition(userToken, false);
 
@@ -143,13 +143,16 @@ public class CcdPetitionServiceTest extends PetitionSupport {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenDoNotCheckCcdAndPetitionInDivorceFormat_whenRetrievePetition_thenReturnLatestPetition()
+    public void givenDoNotCheckCcdAndMultiplePetitionsInDivorceFormat_whenRetrievePetition_thenReturnLatestPetition()
         throws Exception {
         final UserDetails userDetails = getUserDetails();
 
-        final String caseInCcdFormatFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        final String caseInCcdFormatFileName1 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        final String caseInCcdFormatFileName2 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "jurisdiction-6-12.json";
 
-        saveDraft(userDetails.getAuthToken(), caseInCcdFormatFileName,
+        createDraft(userDetails.getAuthToken(), caseInCcdFormatFileName1,
+            Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
+        createDraft(userDetails.getAuthToken(), caseInCcdFormatFileName2,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
         Response cmsResponse = getPetition(userDetails.getAuthToken(), false);
@@ -166,6 +169,7 @@ public class CcdPetitionServiceTest extends PetitionSupport {
 
         assertEquals(cmsResponse.getBody().path(CASE_DATA_JSON_PATH), expected);
 
+        deleteDraft(userDetails.getAuthToken());
         deleteDraft(userDetails.getAuthToken());
     }
 
