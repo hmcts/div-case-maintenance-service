@@ -57,9 +57,9 @@ public class RetrieveAllDraftsServiceITest {
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String USER_ID = "1";
     private static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
-    private static final String DRAFT_DOCUMENT_TYPE = "divorcedraft";
+    private static final String DRAFT_DOCUMENT_TYPE = "divorcedraftccdformat";
     private static final String DRAFT_ID = "1";
-    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE, true);
+    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE);
 
     private static final String USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
         + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"

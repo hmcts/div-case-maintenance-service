@@ -10,10 +10,6 @@ import uk.gov.hmcts.reform.authorisation.healthcheck.ServiceAuthHealthIndicator;
 public class CaseMaintenanceServiceApplication {
 
     public static void main(String[] args) {
-        System.setProperty("http.proxyHost", "proxyout.reform.hmcts.net");
-        System.setProperty("http.proxyPort", "8080");
-        System.setProperty("https.proxyHost", "proxyout.reform.hmcts.net");
-        System.setProperty("https.proxyPort", "8080");
         SpringApplication.run(CaseMaintenanceServiceApplication.class, args);
     }
 }

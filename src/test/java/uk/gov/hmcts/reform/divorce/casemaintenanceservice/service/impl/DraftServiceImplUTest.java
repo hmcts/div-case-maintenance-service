@@ -22,7 +22,10 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,7 +37,9 @@ public class DraftServiceImplUTest {
     private static final String AUTH_TOKEN = "someToken";
     private static final String BEARER_AUTH_TOKEN = "Bearer someToken";
     private static final String SERVICE_TOKEN = "serviceToken";
-    private static final String DRAFT_DOCUMENT_TYPE = "divorcedraft";
+    private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
+    private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
+    private static final boolean DIVORCE_FORMAT = false;
 
     @Mock
     private AuthTokenGenerator serviceTokenGenerator;
@@ -79,13 +84,14 @@ public class DraftServiceImplUTest {
         mockGetDraftsAndReturn(null, null);
 
         final Map<String, Object> data = Collections.emptyMap();
-        final CreateDraft createDraft = new CreateDraft(data, null, 2, true);
+        final CreateDraft createDraft = new CreateDraft(data, null, 2);
 
-        when(modelFactory.createDraft(data)).thenReturn(createDraft);
-        when(draftStoreClient.createSingleDraft(createDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID))
-            .thenReturn(null);
+        when(modelFactory.createDraft(data, DIVORCE_FORMAT)).thenReturn(createDraft);
+        doNothing().when(draftStoreClient)
+            .createSingleDraft(createDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID);
 
-        classUnderTest.saveDraft(AUTH_TOKEN, data);
+
+        classUnderTest.saveDraft(AUTH_TOKEN, data, DIVORCE_FORMAT);
 
         verify(draftStoreClient).createSingleDraft(createDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID);
     }
@@ -103,15 +109,14 @@ public class DraftServiceImplUTest {
         mockGetDraftsAndReturn(null, draftList);
 
         final Map<String, Object> data = Collections.emptyMap();
-        final UpdateDraft updateDraft = new UpdateDraft(data, null, false);
+        final UpdateDraft updateDraft = new UpdateDraft(data, null);
 
-        when(modelFactory.updateDraft(data)).thenReturn(updateDraft);
+        when(modelFactory.updateDraft(data, DIVORCE_FORMAT)).thenReturn(updateDraft);
         when(modelFactory.isDivorceDraft(draft)).thenReturn(true);
-        when(draftStoreClient
-            .updateSingleDraft(draftId, updateDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID))
-            .thenReturn(null);
+        doNothing().when(draftStoreClient)
+            .updateSingleDraft(draftId, updateDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID);
 
-        classUnderTest.saveDraft(AUTH_TOKEN, data);
+        classUnderTest.saveDraft(AUTH_TOKEN, data, DIVORCE_FORMAT);
 
         verify(draftStoreClient)
             .updateSingleDraft(draftId, updateDraft, BEARER_AUTH_TOKEN, SERVICE_TOKEN, ENCRYPTED_USER_ID);
@@ -140,7 +145,7 @@ public class DraftServiceImplUTest {
         mockGetDraftsAndReturn(null, draftList);
 
         when(modelFactory.isDivorceDraft(draft)).thenReturn(true);
-        when(draftStoreClient.deleteSingleDraft(draftId, BEARER_AUTH_TOKEN, SERVICE_TOKEN)).thenReturn(null);
+        doNothing().when(draftStoreClient).deleteSingleDraft(draftId, BEARER_AUTH_TOKEN, SERVICE_TOKEN);
 
         classUnderTest.deleteDraft(AUTH_TOKEN);
 
@@ -165,13 +170,22 @@ public class DraftServiceImplUTest {
     @Test
     public void givenNoDivorceDrafts_whenGetDraft_thenReturnNull() {
         final DraftList draftList = new DraftList(Arrays.asList(
-            new Draft("1", null, "somerandomtype", true),
-            new Draft("2", null, "somerandomtype", true)),
+            new Draft("1", null, "somerandomtype"),
+            new Draft("2", null, "somerandomtype")),
             new DraftList.PagingCursors(null));
 
         mockGetDraftsAndReturn(null, draftList);
 
         assertNull(classUnderTest.getDraft(AUTH_TOKEN));
+    }
+
+    @Test
+    public void whenIsInCcdFormat_thenProceedAsExpected() {
+        Draft draft = mock(Draft.class);
+
+        when(modelFactory.isDivorceDraftInCcdFormat(draft)).thenReturn(true);
+
+        assertTrue(classUnderTest.isInCcdFormat(draft));
     }
 
     @Test
@@ -193,12 +207,12 @@ public class DraftServiceImplUTest {
 
     @Test
     public void givenDataAvailableOnSubsequentPage_whenDeleteDraft_thenReturnTheDraft() {
-        final Draft draft = createDraft("3");
+        final Draft draft = createDraft("3", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT);
         final String after = "1";
 
         final DraftList firstPage = new DraftList(Arrays.asList(
-            new Draft("1", null, "somerandomtype", true),
-            new Draft("2", null, "somerandomtype", false)),
+            new Draft("1", null, "somerandomtype"),
+            new Draft("2", null, "somerandomtype")),
             new DraftList.PagingCursors(after));
 
         final DraftList secondPage = new DraftList(Arrays.asList(
@@ -238,6 +252,10 @@ public class DraftServiceImplUTest {
     }
 
     private Draft createDraft(String id) {
-        return new Draft(id, null, DRAFT_DOCUMENT_TYPE, true);
+        return createDraft(id, DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
+    }
+
+    private Draft createDraft(String id, String documentType) {
+        return new Draft(id, null, documentType);
     }
 }

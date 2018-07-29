@@ -8,9 +8,11 @@ import java.util.Map;
 public interface DraftService {
     DraftList getAllDrafts(String userToken);
 
-    void saveDraft(String userToken, Map<String, Object> data);
+    void saveDraft(String userToken, Map<String, Object> data, boolean divorceFormat);
 
     Draft getDraft(String userToken);
 
     void deleteDraft(String authorisation);
+
+    boolean isInCcdFormat(Draft draft);
 }

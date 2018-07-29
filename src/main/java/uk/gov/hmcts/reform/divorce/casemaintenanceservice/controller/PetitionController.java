@@ -23,10 +23,10 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.core.MediaType;
 import java.util.Map;
 import java.util.Optional;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.MediaType;
 
 @RestController
 @RequestMapping(path = "casemaintenance/version/1")
@@ -56,6 +56,7 @@ public class PetitionController {
 
             return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
         } catch (DuplicateCaseException e) {
+            log.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
         }
     }
@@ -69,9 +70,11 @@ public class PetitionController {
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
         @RequestBody
         @ApiParam(value = "The divorce case draft", required = true)
-        @NotNull final Map<String, Object> data) {
+        @NotNull final Map<String, Object> data,
+        @RequestParam(value = "divorceFormat", required = false)
+        @ApiParam(value = "Boolean flag forcing the data to be stored in divorce format") final Boolean divorceFormat) {
         log.debug("Received request to save a divorce session draft");
-        petitionService.saveDraft(jwt, data);
+        petitionService.saveDraft(jwt, data, Optional.ofNullable(divorceFormat).orElse(false));
         return ResponseEntity.ok().build();
     }
 

@@ -44,7 +44,7 @@ public interface DraftStoreClient {
         value = "/drafts",
         headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
     )
-    DraftList createSingleDraft(@RequestBody CreateDraft draft,
+    void createSingleDraft(@RequestBody CreateDraft draft,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
                                 @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation,
                                 @RequestHeader(SECRET_HEADER_NAME) String secret);
@@ -54,7 +54,7 @@ public interface DraftStoreClient {
         value = "/drafts/{draftId}",
         headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
     )
-    DraftList updateSingleDraft(@PathVariable("draftId") String draftId,
+    void updateSingleDraft(@PathVariable("draftId") String draftId,
                                 @RequestBody UpdateDraft draft,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
                                 @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation,
@@ -65,7 +65,7 @@ public interface DraftStoreClient {
         value = "/drafts/{draftId}",
         headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
     )
-    DraftList deleteSingleDraft(@PathVariable("draftId") String draftId,
+    void deleteSingleDraft(@PathVariable("draftId") String draftId,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
                                 @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation);
 }

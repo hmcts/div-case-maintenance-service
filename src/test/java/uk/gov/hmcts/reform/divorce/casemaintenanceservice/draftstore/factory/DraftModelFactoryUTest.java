@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.UpdateDraft;
 
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -26,9 +25,13 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 public class DraftModelFactoryUTest {
     private static final Map<String, Object> DATA = Collections.emptyMap();
+    private static final String DRAFT_TYPE_NON_DIVORCE = "NonDivorceFormat";
 
-    @Value("${draft.store.api.document.type}")
-    private String draftType;
+    @Value("${draft.store.api.document.type.divorceFormat}")
+    private String draftTypeDivorceFormat;
+
+    @Value("${draft.store.api.document.type.ccdFormat}")
+    private String draftTypeCcdFormat;
 
     @Value("${draft.store.api.max.age}")
     private int maxAge;
@@ -45,38 +48,68 @@ public class DraftModelFactoryUTest {
     }
 
     @Test
-    public void createDraftShouldCreateADivorceDraft() {
-        CreateDraft createDraft = underTest.createDraft(DATA);
+    public void givenDivorceFormat_whenCreateDraft_thenCreateDraftInDivorceFormat() {
+        CreateDraft createDraft = underTest.createDraft(DATA, true);
 
-        assertEquals(draftType, createDraft.getType());
+        assertEquals(draftTypeDivorceFormat, createDraft.getType());
         assertEquals(maxAge, createDraft.getMaxAge());
     }
 
     @Test
-    public void updateDraftShouldCreateADivorceDraft() {
-        UpdateDraft updateDraft = underTest.updateDraft(DATA);
+    public void givenCcdFormat_whenCreateDraft_thenCreateDraftInCcdFormat() {
+        CreateDraft createDraft = underTest.createDraft(DATA, false);
 
-        assertEquals(draftType, updateDraft.getType());
+        assertEquals(draftTypeCcdFormat, createDraft.getType());
+        assertEquals(maxAge, createDraft.getMaxAge());
     }
 
     @Test
-    public void isDivorceDraftShouldReturnTrueForADivorceDraft() {
-        given(draft.getType()).willReturn(draftType);
+    public void givenDivorceFormat_whenUpdateDraft_thenCreateInDivorceFormat() {
+        UpdateDraft updateDraft = underTest.updateDraft(DATA, true);
 
-        assertTrue(underTest.isDivorceDraft(draft));
+        assertEquals(draftTypeDivorceFormat, updateDraft.getType());
     }
 
     @Test
-    public void isDivorceDraftShouldIgnoreTheCase() {
-        given(draft.getType()).willReturn(draftType.toLowerCase(Locale.ENGLISH));
+    public void givenCcdFormat_whenUpdateDraft_thenCreateInCcdFormat() {
+        UpdateDraft updateDraft = underTest.updateDraft(DATA, false);
 
-        assertTrue(underTest.isDivorceDraft(draft));
+        assertEquals(draftTypeCcdFormat, updateDraft.getType());
     }
 
     @Test
-    public void isDivorceDraftShouldReturnFalseForANonDivorceDraft() {
-        given(draft.getType()).willReturn("cmcdraft");
+    public void givenNonDivorceFormat_whenIsDivorceDraft_thenReturnFalse() {
+        given(draft.getType()).willReturn(DRAFT_TYPE_NON_DIVORCE);
 
         assertFalse(underTest.isDivorceDraft(draft));
     }
+
+    @Test
+    public void givenDivorceFormat_whenIsDivorceDraft_thenReturnTrue() {
+        given(draft.getType()).willReturn(draftTypeDivorceFormat);
+
+        assertTrue(underTest.isDivorceDraft(draft));
+    }
+
+    @Test
+    public void givenCcdFormat_whenIsDivorceDraft_thenReturnTrue() {
+        given(draft.getType()).willReturn(draftTypeCcdFormat);
+
+        assertTrue(underTest.isDivorceDraft(draft));
+    }
+
+    @Test
+    public void givenCcdFormat_whenIsDivorceDraftInCcdFormat_thenReturnTrue() {
+        given(draft.getType()).willReturn(draftTypeCcdFormat);
+
+        assertTrue(underTest.isDivorceDraftInCcdFormat(draft));
+    }
+
+    @Test
+    public void givenNotInCcdFormat_whenIsDivorceDraftInCcdFormat_thenReturnTrue() {
+        given(draft.getType()).willReturn(draftTypeDivorceFormat);
+
+        assertFalse(underTest.isDivorceDraftInCcdFormat(draft));
+    }
+
 }

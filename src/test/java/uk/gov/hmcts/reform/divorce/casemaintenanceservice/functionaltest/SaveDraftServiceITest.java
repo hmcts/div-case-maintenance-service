@@ -63,10 +63,12 @@ public class SaveDraftServiceITest {
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String USER_ID = "1";
     private static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
-    private static final String DRAFT_DOCUMENT_TYPE = "divorcedraft";
+    private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
+    private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
     private static final String DRAFT_ID = "1";
-    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE, true);
+    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
     private static final String DATA_TO_SAVE = "{}";
+    private static final String DIVORCE_FORMAT_KEY = "divorceFormat";
 
     private static final String USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
         + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
@@ -137,11 +139,11 @@ public class SaveDraftServiceITest {
     }
 
     @Test
-    public void givenThereIsNoDraft_whenSaveDraft_thenReturnSaveDraft() throws Exception {
+    public void givenThereIsNoDraft_whenSaveDraft_thenSaveDraft() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
-        final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(), DRAFT_DOCUMENT_TYPE, maxAge,true);
+        final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(), DRAFT_DOCUMENT_TYPE_CCD_FORMAT, maxAge);
 
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
 
@@ -152,6 +154,7 @@ public class SaveDraftServiceITest {
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .content(DATA_TO_SAVE)
+            .param(DIVORCE_FORMAT_KEY, "false")
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -159,13 +162,37 @@ public class SaveDraftServiceITest {
     }
 
     @Test
-    public void givenThereIsAlreadyADraft_whenSaveDraft_thenReturnUpdateDraft() throws Exception {
+    public void givenThereIsNoDraftAndDivorceFormatTrue_whenSaveDraft_thenSaveDraft() throws Exception {
+        final String message = getUserDetails();
+        final String serviceToken = "serviceToken";
+
+        final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(),
+            DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
+
+        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
+
+        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubSaveDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
+
+        webClient.perform(MockMvcRequestBuilders.put(API_URL)
+            .content(DATA_TO_SAVE)
+            .param(DIVORCE_FORMAT_KEY, "true")
+            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void givenThereIsAlreadyADraft_whenSaveDraft_thenUpdateDraft() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
         final DraftList draftList = new DraftList(Collections.singletonList(DRAFT), null);
 
-        final UpdateDraft updateDraft = new UpdateDraft(Collections.emptyMap(), DRAFT_DOCUMENT_TYPE, true);
+        final UpdateDraft updateDraft = new UpdateDraft(Collections.emptyMap(), DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
 
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
 

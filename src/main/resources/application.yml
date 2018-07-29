@@ -23,7 +23,6 @@ idam:
     health:
         context-path: ${AUTH_PROVIDER_SERVICE_CLIENT_HEALTH_CONTEXT_PATH:/health}
 
-
 ccd:
   jurisdictionid: DIVORCE
   casetype: DIVORCE
@@ -45,7 +44,9 @@ draft:
     api:
       baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:4601}
       document:
-        type: divorcedraft
+        type:
+          divorceFormat: divorcedraft
+          ccdFormat: divorcedraftccdformat
       max:
         age: 150
       encryption:

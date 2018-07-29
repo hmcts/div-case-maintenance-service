@@ -8,5 +8,4 @@ import java.util.Map;
 public class UpdateDraft {
     private final Map<String, Object> document;
     private final String type;
-    private final boolean inCcdFormat;
 }

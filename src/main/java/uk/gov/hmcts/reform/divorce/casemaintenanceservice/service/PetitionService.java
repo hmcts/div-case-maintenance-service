@@ -9,7 +9,7 @@ import java.util.Map;
 public interface PetitionService {
     CaseDetails retrievePetition(String authorisation, boolean checkCcd) throws DuplicateCaseException;
 
-    void saveDraft(String authorisation, Map<String, Object> data);
+    void saveDraft(String authorisation, Map<String, Object> data, boolean divorceFormat);
 
     DraftList getAllDrafts(String authorisation);
 

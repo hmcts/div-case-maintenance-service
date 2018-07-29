@@ -6,10 +6,10 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 
 @Getter
 public class CaseSubmittedEvent extends ApplicationEvent {
-    private final CaseDetails caseDetails;
+    private final transient CaseDetails caseDetails;
     private final String authToken;
 
-    public CaseSubmittedEvent(Object source, CaseDetails caseDetails, String authToken) {
+    CaseSubmittedEvent(Object source, CaseDetails caseDetails, String authToken) {
         super(source);
 
         this.authToken = authToken;

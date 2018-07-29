@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PetitionServiceImplUTest {
     private static final String AUTHORISATION = "userToken";
+    private static final boolean DIVORCE_FORMAT = false;
 
     @Mock
     private CcdRetrievalService ccdRetrievalService;
@@ -91,12 +92,13 @@ public class PetitionServiceImplUTest {
         throws DuplicateCaseException {
 
         final Map<String, Object> document = Collections.emptyMap();
-        final Draft draft = new Draft("1", document, null, true);
+        final Draft draft = new Draft("1", document, null);
 
         final Map<String, Object> caseData = new HashMap<>();
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
 
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
+        when(draftService.isInCcdFormat(draft)).thenReturn(true);
 
         CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, false);
 
@@ -112,12 +114,13 @@ public class PetitionServiceImplUTest {
         throws DuplicateCaseException {
 
         final Map<String, Object> document = Collections.emptyMap();
-        final Draft draft = new Draft("1", document, null, false);
+        final Draft draft = new Draft("1", document, null);
 
         final Map<String, Object> caseData = new HashMap<>();
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
 
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
+        when(draftService.isInCcdFormat(draft)).thenReturn(false);
         when(formatterServiceClient.transformToCCDFormat(document, AUTHORISATION)).thenReturn(caseData);
 
         CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, false);
@@ -133,9 +136,9 @@ public class PetitionServiceImplUTest {
     public void whenSaveDraft_thenProceedAsExpected() {
         final Map<String, Object> data = Collections.emptyMap();
 
-        classUnderTest.saveDraft(AUTHORISATION, data);
+        classUnderTest.saveDraft(AUTHORISATION, data, DIVORCE_FORMAT);
 
-        verify(draftService).saveDraft(AUTHORISATION, data);
+        verify(draftService).saveDraft(AUTHORISATION, data, DIVORCE_FORMAT);
     }
 
     @Test

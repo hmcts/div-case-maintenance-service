@@ -48,13 +48,13 @@ public class DraftServiceImpl implements DraftService {
     }
 
     @Override
-    public void saveDraft(String userToken, Map<String, Object> data) {
+    public void saveDraft(String userToken, Map<String, Object> data, boolean divorceFormat) {
         Draft draft = getDraft(userToken);
 
         if (draft == null) {
             log.debug("Creating a new divorce session draft");
             draftStoreClient.createSingleDraft(
-                modelFactory.createDraft(data),
+                modelFactory.createDraft(data, divorceFormat),
                 getBearerToken(userToken),
                 serviceTokenGenerator.generate(),
                 getSecret(userToken));
@@ -62,7 +62,7 @@ public class DraftServiceImpl implements DraftService {
             log.debug("Updating the existing divorce session draft");
             draftStoreClient.updateSingleDraft(
                 draft.getId(),
-                modelFactory.updateDraft(data),
+                modelFactory.updateDraft(data, divorceFormat),
                 getBearerToken(userToken),
                 serviceTokenGenerator.generate(),
                 getSecret(userToken));
@@ -85,6 +85,11 @@ public class DraftServiceImpl implements DraftService {
         DraftList draftList = getAllDrafts(userToken);
 
         return findDivorceDraft(userToken, draftList).orElse(null);
+    }
+
+    @Override
+    public boolean isInCcdFormat(Draft draft) {
+        return modelFactory.isDivorceDraftInCcdFormat(draft);
     }
 
     private Optional<Draft> findDivorceDraft(String userToken, DraftList draftList) {

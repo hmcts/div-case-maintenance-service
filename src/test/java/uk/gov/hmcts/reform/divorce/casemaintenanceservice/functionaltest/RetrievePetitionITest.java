@@ -67,7 +67,8 @@ public class RetrievePetitionITest {
     private static final String TRANSFORM_TO_CCD_CONTEXT_PATH = "/caseformatter/version/1/to-ccd-format";
     private static final String USER_ID = "1";
     private static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
-    private static final String DRAFT_DOCUMENT_TYPE = "divorcedraft";
+    private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
+    private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
 
     private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.INCOMPLETE.getStates().get(0);
     private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.COMPLETE.getStates().get(0);
@@ -378,7 +379,8 @@ public class RetrievePetitionITest {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
-        final DraftList draftList = new DraftList(Collections.singletonList(createDraft("1", true)), null);
+        final DraftList draftList = new DraftList(Collections.singletonList(
+            createDraft("1", DRAFT_DOCUMENT_TYPE_CCD_FORMAT)), null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -408,7 +410,7 @@ public class RetrievePetitionITest {
         final Map<String, Object> caseData = Collections.emptyMap();
 
         final DraftList draftList = new DraftList(Collections.singletonList(
-            new Draft("1", divorceSessionData, DRAFT_DOCUMENT_TYPE, false)),
+            new Draft("1", divorceSessionData, DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
             null);
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
@@ -440,8 +442,8 @@ public class RetrievePetitionITest {
         final String serviceToken = "serviceToken";
 
         final DraftList draftList = new DraftList(Arrays.asList(
-            createDraft("1", true),
-            createDraft("2", false)),
+            createDraft("1", DRAFT_DOCUMENT_TYPE_CCD_FORMAT),
+            createDraft("2", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
             null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -503,7 +505,7 @@ public class RetrievePetitionITest {
         return CaseDetails.builder().id(id).state(state).build();
     }
 
-    private Draft createDraft(String id, boolean inCcdFormat) {
-        return new Draft(id, null, DRAFT_DOCUMENT_TYPE, inCcdFormat);
+    private Draft createDraft(String id, String documentType) {
+        return new Draft(id, null, documentType);
     }
 }

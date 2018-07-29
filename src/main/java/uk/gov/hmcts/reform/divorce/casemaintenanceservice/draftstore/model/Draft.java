@@ -9,5 +9,4 @@ public class Draft {
     private final String id;
     private final Map<String, Object> document;
     private final String type;
-    private final boolean inCcdFormat;
 }

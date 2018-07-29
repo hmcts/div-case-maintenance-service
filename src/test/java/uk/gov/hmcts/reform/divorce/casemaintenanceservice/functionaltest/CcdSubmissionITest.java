@@ -73,7 +73,7 @@ public class CcdSubmissionITest {
     private static final String USER_ID = "1";
     private static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
     private static final String DRAFT_ID = "1";
-    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE, true);
+    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE);
 
 
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =

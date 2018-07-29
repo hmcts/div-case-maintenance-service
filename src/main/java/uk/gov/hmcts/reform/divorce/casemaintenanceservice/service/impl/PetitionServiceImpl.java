@@ -35,7 +35,6 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
         }
 
         if (caseDetails == null) {
-            //check it in the draft store
             Draft draft = draftService.getDraft(authorisation);
 
             if (draft != null) {
@@ -50,8 +49,8 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     }
 
     @Override
-    public void saveDraft(String authorisation, Map<String, Object> data) {
-        draftService.saveDraft(authorisation, data);
+    public void saveDraft(String authorisation, Map<String, Object> data, boolean divorceFormat) {
+        draftService.saveDraft(authorisation, data, divorceFormat);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     }
 
     private Map<String, Object> getFormattedPetition(Draft draft, String authorisation) {
-        if (draft.isInCcdFormat()) {
+        if (draftService.isInCcdFormat(draft)) {
             return draft.getDocument();
         } else {
             return formatterServiceClient.transformToCCDFormat(draft.getDocument(), authorisation);

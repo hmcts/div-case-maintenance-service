@@ -10,23 +10,32 @@ import java.util.Map;
 
 @Component
 public class DraftModelFactory {
+    @Value("${draft.store.api.document.type.divorceFormat}")
+    private String documentTypeDivorceFormat;
 
-    @Value("${draft.store.api.document.type}")
-    private String documentType;
+    @Value("${draft.store.api.document.type.ccdFormat}")
+    private String documentTypeCcdFormat;
 
     @Value("${draft.store.api.max.age}")
     private int maxAge;
 
-    public CreateDraft createDraft(Map<String, Object> data) {
-        return new CreateDraft(data, documentType, maxAge, true);
+    public CreateDraft createDraft(Map<String, Object> data, boolean divorceFormat) {
+        return new CreateDraft(data, getDocumentType(divorceFormat), maxAge);
     }
 
-    public UpdateDraft updateDraft(Map<String, Object> data) {
-        return new UpdateDraft(data, documentType, true);
+    public UpdateDraft updateDraft(Map<String, Object> data, boolean divorceFormat) {
+        return new UpdateDraft(data, getDocumentType(divorceFormat));
     }
 
     public boolean isDivorceDraft(Draft draft) {
-        return draft.getType().equalsIgnoreCase(documentType);
+        return draft.getType().equals(documentTypeDivorceFormat) || isDivorceDraftInCcdFormat(draft);
     }
 
+    public boolean isDivorceDraftInCcdFormat(Draft draft) {
+        return draft.getType().equals(documentTypeCcdFormat);
+    }
+
+    private String getDocumentType(boolean divorceFormat) {
+        return divorceFormat ? documentTypeDivorceFormat : documentTypeCcdFormat;
+    }
 }

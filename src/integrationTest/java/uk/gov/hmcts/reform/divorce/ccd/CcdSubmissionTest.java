@@ -1,8 +1,10 @@
-package uk.gov.hmcts.reform.divorce;
+package uk.gov.hmcts.reform.divorce.ccd;
 
 import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.divorce.support.CcdSubmissionSupport;
+import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
 import static org.junit.Assert.assertEquals;
 
