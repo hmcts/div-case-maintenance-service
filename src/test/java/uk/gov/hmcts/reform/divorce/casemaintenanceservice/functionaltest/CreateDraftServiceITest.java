@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,17 +21,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.DraftStoreClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 
 import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.when;
@@ -53,34 +47,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class CreateDraftServiceITest {
+public class CreateDraftServiceITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/drafts";
-    private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
-    private static final String USER_ID = "1";
-    private static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
     private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
     private static final String DATA_TO_SAVE = "{}";
     private static final String DIVORCE_FORMAT_KEY = "divorceFormat";
 
-    private static final String USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
-
     @Value("${draft.store.api.max.age}")
     private int maxAge;
 
-    @MockBean
-    private AuthTokenGenerator authTokenGenerator;
-
     @Autowired
     private MockMvc webClient;
-
-    @ClassRule
-    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(4503);
 
     @ClassRule
     public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
@@ -120,7 +99,7 @@ public class CreateDraftServiceITest {
     public void givenCouldNotConnectToAuthService_whenCreateDraft_thenReturnHttp503() throws Exception {
         final String message = getUserDetails();
 
-        when(authTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
+        when(serviceTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -140,7 +119,7 @@ public class CreateDraftServiceITest {
         final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(),
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCreateDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
@@ -162,7 +141,7 @@ public class CreateDraftServiceITest {
         final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(),
             DRAFT_DOCUMENT_TYPE_CCD_FORMAT, maxAge);
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCreateDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
@@ -176,15 +155,6 @@ public class CreateDraftServiceITest {
             .andExpect(status().isOk());
     }
 
-    private void stubUserDetailsEndpoint(HttpStatus status, StringValuePattern authHeader, String message) {
-        idamUserDetailsServer.stubFor(get(IDAM_USER_DETAILS_CONTEXT_PATH)
-            .withHeader(HttpHeaders.AUTHORIZATION, authHeader)
-            .willReturn(aResponse()
-                .withStatus(status.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .withBody(message)));
-    }
-
     private void stubCreateDraftEndpoint(StringValuePattern serviceToken, CreateDraft createDraft) {
         draftStoreServer.stubFor(post(DRAFTS_CONTEXT_PATH)
             .withRequestBody(equalToJson(ObjectMapperTestUtil.convertObjectToJsonString(createDraft)))
@@ -195,15 +165,5 @@ public class CreateDraftServiceITest {
                 .withStatus(HttpStatus.OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                 .withBody("{}")));
-    }
-
-    private String getUserDetails() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(
-            UserDetails.builder()
-                .id(USER_ID)
-                .email("test@test.com")
-                .forename("forename")
-                .surname("surname")
-                .build());
     }
 }

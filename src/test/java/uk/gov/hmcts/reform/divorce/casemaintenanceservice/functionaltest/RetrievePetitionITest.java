@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
@@ -24,13 +22,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 
@@ -59,28 +55,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class RetrievePetitionITest {
+public class RetrievePetitionITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrievePetition";
     private static final String CHECK_CCD_PARAM = "checkCcd";
-    private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String TRANSFORM_TO_CCD_CONTEXT_PATH = "/caseformatter/version/1/to-ccd-format";
-    private static final String USER_ID = "1";
-    private static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
     private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
 
     private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.INCOMPLETE.getStates().get(0);
     private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.COMPLETE.getStates().get(0);
-
-    private static final String USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
-
-    @ClassRule
-    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(4503);
 
     @ClassRule
     public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
@@ -93,9 +77,6 @@ public class RetrievePetitionITest {
 
     @Value("${ccd.casetype}")
     private String caseType;
-
-    @MockBean
-    private AuthTokenGenerator authTokenGenerator;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -128,7 +109,7 @@ public class RetrievePetitionITest {
         final String message = getUserDetails();
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(authTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
+        when(serviceTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -145,7 +126,7 @@ public class RetrievePetitionITest {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
 
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
@@ -167,7 +148,7 @@ public class RetrievePetitionITest {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -187,7 +168,7 @@ public class RetrievePetitionITest {
         final Long caseId = 1L;
         final CaseDetails caseDetails = createCaseDetails(caseId, SUBMITTED_PAYMENT_STATE);
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Collections.singletonList(caseDetails));
@@ -218,7 +199,7 @@ public class RetrievePetitionITest {
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, CitizenCaseState.COMPLETE.getStates().get(2));
         final CaseDetails caseDetails4 = createCaseDetails(caseId4, CitizenCaseState.COMPLETE.getStates().get(2));
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4));
@@ -248,7 +229,7 @@ public class RetrievePetitionITest {
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, SUBMITTED_PAYMENT_STATE);
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, AWAITING_PAYMENT_STATE);
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
@@ -272,7 +253,7 @@ public class RetrievePetitionITest {
         final Long caseId = 1L;
         final CaseDetails caseDetails = createCaseDetails(caseId, AWAITING_PAYMENT_STATE);
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Collections.singletonList(caseDetails));
@@ -302,7 +283,7 @@ public class RetrievePetitionITest {
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, "state1");
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
@@ -332,7 +313,7 @@ public class RetrievePetitionITest {
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.INCOMPLETE.getStates().get(1));
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
@@ -361,7 +342,7 @@ public class RetrievePetitionITest {
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, "state2");
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state3");
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
@@ -384,7 +365,7 @@ public class RetrievePetitionITest {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
 
         stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken),
             ObjectMapperTestUtil.convertObjectToJsonString(draftList));
@@ -417,7 +398,7 @@ public class RetrievePetitionITest {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
 
         stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken),
             ObjectMapperTestUtil.convertObjectToJsonString(draftList));
@@ -448,7 +429,7 @@ public class RetrievePetitionITest {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
 
         stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken),
             ObjectMapperTestUtil.convertObjectToJsonString(draftList));
@@ -459,15 +440,6 @@ public class RetrievePetitionITest {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails.builder().build())));
-    }
-
-    private void stubUserDetailsEndpoint(HttpStatus status, StringValuePattern authHeader, String message) {
-        idamUserDetailsServer.stubFor(get(IDAM_USER_DETAILS_CONTEXT_PATH)
-            .withHeader(HttpHeaders.AUTHORIZATION, authHeader)
-            .willReturn(aResponse()
-                .withStatus(status.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .withBody(message)));
     }
 
     private void stubGetDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken, String message) {
@@ -489,16 +461,6 @@ public class RetrievePetitionITest {
                 .withStatus(HttpStatus.OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                 .withBody(response)));
-    }
-
-    private String getUserDetails() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(
-            UserDetails.builder()
-                .id(USER_ID)
-                .email("test@test.com")
-                .forename("forename")
-                .surname("surname")
-                .build());
     }
 
     private CaseDetails createCaseDetails(Long id, String state) {
