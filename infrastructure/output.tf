@@ -1,3 +1,3 @@
-output "idam_s2s_url" {
-    value = "http://${var.idam_s2s_url_prefix}-${local.local_env}.service.core-compute-${local.local_env}.internal"
+output "auth_idam_client_baseUrl" {
+    value = "${var.idam_api_baseurl}"
 }
