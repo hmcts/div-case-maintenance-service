@@ -20,8 +20,14 @@ public class CaseSubmissionNotificationHandler {
         Object caseDetails = joinPoint.proceed();
 
         if (caseDetails != null) {
-            applicationEventPublisher.publishEvent(new CaseSubmittedEvent(joinPoint.getThis(), (CaseDetails)caseDetails,
-                (String)joinPoint.getArgs()[joinPoint.getArgs().length - 1]));
+            applicationEventPublisher
+                .publishEvent(
+                    new CaseSubmittedEvent(
+                        joinPoint.getThis(),
+                        (CaseDetails)caseDetails,
+                        (String)joinPoint.getArgs()[joinPoint.getArgs().length - 1]
+                    )
+                );
         }
 
         return caseDetails;

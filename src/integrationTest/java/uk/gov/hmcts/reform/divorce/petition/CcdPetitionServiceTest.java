@@ -169,6 +169,7 @@ public class CcdPetitionServiceTest extends PetitionSupport {
 
         assertEquals(cmsResponse.getBody().path(CASE_DATA_JSON_PATH), expected);
 
+        //delete removes only the first draft. So delete needs to be called twice here
         deleteDraft(userDetails.getAuthToken());
         deleteDraft(userDetails.getAuthToken());
     }

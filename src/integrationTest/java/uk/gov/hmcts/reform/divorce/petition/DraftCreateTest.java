@@ -94,6 +94,7 @@ public class DraftCreateTest extends PetitionSupport {
         assertEquals(draftsResponseAfter.getBody().path("data[1].document"),
             ResourceLoader.loadJsonToObject(filePath2, Map.class));
 
+        //delete removes only the first draft. So delete needs to be called twice here
         deleteDraft(userToken);
         deleteDraft(userToken);
     }
