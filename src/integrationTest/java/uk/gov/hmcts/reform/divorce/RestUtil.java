@@ -23,4 +23,21 @@ class RestUtil {
                 .andReturn();
         }
     }
+
+    static Response getFromRestService(String url, Map<String, Object> headers, Map<String, Object> params) {
+        if (params != null) {
+            return SerenityRest.given()
+                .headers(headers)
+                .params(params)
+                .when()
+                .get(url)
+                .andReturn();
+        } else {
+            return SerenityRest.given()
+                .headers(headers)
+                .when()
+                .get(url)
+                .andReturn();
+        }
+    }
 }

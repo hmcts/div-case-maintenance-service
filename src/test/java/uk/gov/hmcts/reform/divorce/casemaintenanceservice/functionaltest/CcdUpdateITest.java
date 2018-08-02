@@ -116,7 +116,7 @@ public class CcdUpdateITest {
     }
 
     @Test
-    public void givenInvalidUserToken_whenUpdateCase_thenReturnForBiddenError() throws Exception {
+    public void givenInvalidUserToken_whenUpdateCase_thenReturnForbiddenError() throws Exception {
         final String message = "some message";
         stubUserDetailsEndpoint(HttpStatus.FORBIDDEN, new EqualToPattern(USER_TOKEN), message);
 

@@ -117,7 +117,7 @@ public class CcdSubmissionITest {
     }
 
     @Test
-    public void givenInvalidUserToken_whenSubmitCase_thenReturnForBiddenError() throws Exception {
+    public void givenInvalidUserToken_whenSubmitCase_thenReturnForbiddenError() throws Exception {
         final String message = "some message";
         stubUserDetailsEndpoint(HttpStatus.FORBIDDEN, new EqualToPattern(USER_TOKEN), message);
 

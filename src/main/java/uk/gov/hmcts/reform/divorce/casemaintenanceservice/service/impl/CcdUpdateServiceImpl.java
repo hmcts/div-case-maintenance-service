@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateServi
 
 @Service
 public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {
+
     @Override
     public CaseDetails update(String caseId, Object data, String eventId, String authorisation) {
         UserDetails userDetails = getUserDetails(authorisation);
