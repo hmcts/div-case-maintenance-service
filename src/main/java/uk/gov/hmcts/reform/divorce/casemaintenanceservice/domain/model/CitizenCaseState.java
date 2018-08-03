@@ -10,16 +10,13 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public enum CitizenCaseState {
-    INCOMPLETE(Arrays.asList("AwaitingPayment", "AwaitingHWFDecision")),
-    COMPLETE(Arrays.asList("Submitted", "Issued", "PendingRejection", "AwaitingDocuments")),
-    UNKNOWN(Collections.EMPTY_LIST);
+    AWAITING_PAYMENT("AwaitingPayment"),
+    AWAITING_HWF_DECISION("AwaitingHWFDecision"),
+    SUBMITTED("Submitted"),
+    ISSUED("Issued"),
+    PENDING_REJECTION("PendingRejection"),
+    AWAITING_DOCUMENTS("AwaitingDocuments"),
+    AWAITING_DECREE_NISI("AwaitingDecreeNisi");
 
-    List<String> states;
-
-    public static CitizenCaseState getState(String state) {
-        return Arrays.stream(CitizenCaseState.values())
-            .filter(citizenCaseState -> citizenCaseState.states.contains(state))
-            .findFirst()
-            .orElse(UNKNOWN);
-    }
+    private final String value;
 }

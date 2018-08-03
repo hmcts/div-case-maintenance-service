@@ -59,8 +59,8 @@ public class PetitionServiceITest {
     private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
     private static final String USER_ID = "1";
 
-    private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.INCOMPLETE.getStates().get(0);
-    private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.COMPLETE.getStates().get(0);
+    private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.AWAITING_PAYMENT.getValue();
+    private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.SUBMITTED.getValue();
 
     private static final String USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
         + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
@@ -176,9 +176,9 @@ public class PetitionServiceITest {
         final Long caseId4 = 4L;
 
         final CaseDetails caseDetails1 = createCaseDetails(caseId1, SUBMITTED_PAYMENT_STATE);
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.COMPLETE.getStates().get(1));
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CitizenCaseState.COMPLETE.getStates().get(2));
-        final CaseDetails caseDetails4 = createCaseDetails(caseId4, CitizenCaseState.COMPLETE.getStates().get(2));
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.ISSUED.getValue());
+        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CitizenCaseState.PENDING_REJECTION.getValue());
+        final CaseDetails caseDetails4 = createCaseDetails(caseId4, CitizenCaseState.PENDING_REJECTION.getValue());
 
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -206,7 +206,7 @@ public class PetitionServiceITest {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CitizenCaseState.COMPLETE.getStates().get(2));
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CitizenCaseState.PENDING_REJECTION.getValue());
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, SUBMITTED_PAYMENT_STATE);
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, AWAITING_PAYMENT_STATE);
 
@@ -291,7 +291,7 @@ public class PetitionServiceITest {
         final Long caseId3 = 3L;
 
         final CaseDetails caseDetails1 = createCaseDetails(caseId1, AWAITING_PAYMENT_STATE);
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.INCOMPLETE.getStates().get(1));
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.AWAITING_HWF_DECISION.getValue());
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
         when(authTokenGenerator.generate()).thenReturn(serviceToken);

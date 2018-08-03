@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseStateType;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
@@ -39,17 +39,17 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getForename());
         }
 
-        Map<CitizenCaseState, List<CaseDetails>> statusCaseDetailsMap =
+        Map<CitizenCaseStateType, List<CaseDetails>> statusCaseDetailsMap =
             caseDetailsList.stream()
-                .collect(Collectors.groupingBy(caseDetails -> CitizenCaseState.getState(caseDetails.getState())));
+                .collect(Collectors.groupingBy(caseDetails -> CitizenCaseStateType.getState(caseDetails.getState())));
 
-        List<CaseDetails> submittedCases = statusCaseDetailsMap.get(CitizenCaseState.COMPLETE);
+        List<CaseDetails> submittedCases = statusCaseDetailsMap.get(CitizenCaseStateType.COMPLETE);
 
         if (CollectionUtils.isNotEmpty(submittedCases)) {
             return submittedCases.get(0);
         }
 
-        List<CaseDetails> awaitingPaymentCases = statusCaseDetailsMap.get(CitizenCaseState.INCOMPLETE);
+        List<CaseDetails> awaitingPaymentCases = statusCaseDetailsMap.get(CitizenCaseStateType.INCOMPLETE);
 
         if (CollectionUtils.isEmpty(awaitingPaymentCases)) {
             return null;
