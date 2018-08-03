@@ -26,10 +26,17 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CcdRetrievalServiceImplUTest {
+
     private static final String JURISDICTION_ID = "someJurisdictionId";
     private static final String CASE_TYPE = "someCaseType";
     private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.AWAITING_PAYMENT.getValue();
     private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.SUBMITTED.getValue();
+    private static final String AUTHORISATION = "authorisation";
+    private static final String BEARER_AUTHORISATION = "Bearer authorisation";
+    private static final String SERVICE_TOKEN = "serviceToken";
+    private static final String USER_ID = "someUserId";
+    private static final UserDetails USER_DETAILS = UserDetails.builder().id(USER_ID).build();
+    private static final Long CASE_ID_1 = 1L;
 
     @Mock
     private CoreCaseDataApi coreCaseDataApi;
@@ -42,12 +49,6 @@ public class CcdRetrievalServiceImplUTest {
 
     @InjectMocks
     private CcdRetrievalServiceImpl classUnderTest;
-    private static final String AUTHORISATION = "authorisation";
-    private static final String BEARER_AUTHORISATION = "Bearer authorisation";
-    private static final String SERVICE_TOKEN = "serviceToken";
-    private static final String USER_ID = "someUserId";
-    private static final UserDetails USER_DETAILS = UserDetails.builder().id(USER_ID).build();
-    private static final Long CASE_ID_1 = 1L;
 
     @Before
     public void setup() {
@@ -143,7 +144,8 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
-    public void givenMultipleSubmittedAndOtherCaseInCcd_whenRetrievePetition_thenReturnFirstSubmittedCase() throws Exception {
+    public void givenMultipleSubmittedAndOtherCaseInCcd_whenRetrievePetition_thenReturnFirstSubmittedCase()
+        throws Exception {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
@@ -163,7 +165,8 @@ public class CcdRetrievalServiceImplUTest {
 
         verify(idamUserService).retrieveUserDetails(BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi).searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+        verify(coreCaseDataApi)
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
             Collections.emptyMap());
     }
 
@@ -171,7 +174,8 @@ public class CcdRetrievalServiceImplUTest {
     public void givenCaseInAwaitingDecreeNisiState_whenRetrievePetition_thenReturnTheCase() throws Exception {
 
         // given
-        final CaseDetails expectedCaseDetails = createCaseDetails(CASE_ID_1, CitizenCaseState.AWAITING_DECREE_NISI.getValue());
+        final CaseDetails expectedCaseDetails = createCaseDetails(CASE_ID_1,
+            CitizenCaseState.AWAITING_DECREE_NISI.getValue());
 
         when(idamUserService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(USER_DETAILS);
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
