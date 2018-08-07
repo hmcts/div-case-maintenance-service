@@ -26,8 +26,8 @@ public class CaseSubmissionNotificationHandler {
                         joinPoint.getThis(),
                         (CaseDetails)caseDetails,
                         (String)joinPoint.getArgs()[joinPoint.getArgs().length - 1]
-                    )
-                );
+                )
+            );
         }
 
         return caseDetails;
