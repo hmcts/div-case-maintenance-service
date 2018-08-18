@@ -8,10 +8,9 @@ locals {
     draft_store_api_baseurl   = "http://draft-store-service-${local.local_env}.service.core-compute-${local.local_env}.internal"
     petitioner_fe_baseurl     = "http://div-pfe-${local.local_env}.service.core-compute-${local.local_env}.internal"
 
-    previewVaultName          = "${var.product}-aat"
-    nonPreviewVaultName       = "${var.product}-${var.env}"
+    previewVaultName          = "${var.raw_product}-aat"
+    nonPreviewVaultName       = "${var.raw_product}-${var.env}"
     vaultName                 = "${(var.env == "preview" || var.env == "spreview") ? local.previewVaultName : local.nonPreviewVaultName}"
-
 }
 
 module "div-cms" {
