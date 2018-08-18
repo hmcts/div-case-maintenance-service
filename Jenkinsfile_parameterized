@@ -12,8 +12,8 @@ properties([
 ])
 
 List<LinkedHashMap<String, Object>> secrets = [
-    secret("ccd_submission_s2s_auth_secret", "AUTH_PROVIDER_CCDSUBMISSION_CLIENT_KEY"),
-    secret("idam_secret", "AUTH_IDAM_CLIENT_SECRET")
+    secret("ccd-submission-s2s-auth-secret", "AUTH_PROVIDER_CCDSUBMISSION_CLIENT_KEY"),
+    secret("idam-secret", "AUTH_IDAM_CLIENT_SECRET")
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
