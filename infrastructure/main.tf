@@ -40,8 +40,8 @@ module "div-cms" {
         DRAFT_STORE_API_BASEURL                               = "${local.draft_store_api_baseurl}"
         DRAFT_STORE_API_ENCRYPTION_KEY                        = "${data.azurerm_key_vault_secret.draft-store-api-encryption-key.value}"
         AUTH2_CLIENT_SECRET                                   = "${data.azurerm_key_vault_secret.idam-secret.value}"
-        IDAM_CASEWORKER_USERNAME                              = "${data.azurerm_key_vault_secret.idam_caseworker_username.value}"
-        IDAM_CASEWORKER_PASSWORD                              = "${data.azurerm_key_vault_secret.idam_caseworker_password.value}"
+        IDAM_CASEWORKER_USERNAME                              = "${data.azurerm_key_vault_secret.idam-caseworker-username.value}"
+        IDAM_CASEWORKER_PASSWORD                              = "${data.azurerm_key_vault_secret.idam-caseworker-password.value}"
         IDAM_API_REDIRECT_URL                                 = "${local.petitioner_fe_baseurl}/authenticated"
     }
 }
@@ -66,12 +66,12 @@ data "azurerm_key_vault_secret" "idam-secret" {
     vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
 }
 
-data "azurerm_key_vault_secret" "idam_caseworker_username" {
-    name = "idam_caseworker_username"
+data "azurerm_key_vault_secret" "idam-caseworker-username" {
+    name = "idam-caseworker-username"
     vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
 }
 
-data "azurerm_key_vault_secret" "idam_caseworker_password" {
-    name = "idam_caseworker_password"
+data "azurerm_key_vault_secret" "idam-caseworker-password" {
+    name = "idam-caseworker-password"
     vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
 }
