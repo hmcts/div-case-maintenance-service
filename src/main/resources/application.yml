@@ -13,12 +13,15 @@ server:
 
 idam:
   api:
-    url: ${IDAM_API_BASEURL:http://localhost:4503}
-
+    url: ${IDAM_API_BASEURL:https://preprod-idamapi.reform.hmcts.net:3511}
+    redirect-url: ${IDAM_API_REDIRECT_URL:https://div-pfe-aat.service.core-compute-aat.internal/authenticated}
+  caseworker:
+    username: mathanmathan@test.com
+    password: mathan
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
-    totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
-    url: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://localhost:4502}
+    totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:DWYML5ONMS7KG44R}
+    url: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://rpe-service-auth-provider-aat.service.core-compute-aat.internal}
     port: ${AUTH_PROVIDER_SERVICE_CLIENT_PORT:4502}
     health:
         context-path: ${AUTH_PROVIDER_SERVICE_CLIENT_HEALTH_CONTEXT_PATH:/health}
@@ -35,14 +38,14 @@ ccd:
 
 core_case_data:
   api:
-    url: ${CASE_DATA_STORE_BASEURL:http://localhost:4452}
+    url: ${CASE_DATA_STORE_BASEURL:http://ccd-data-store-api-aat.service.core-compute-aat.internal}
 
 draft:
   delete:
     async: true
   store:
     api:
-      baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:4601}
+      baseurl: ${DRAFT_STORE_API_BASEURL:http://draft-store-service-aat.service.core-compute-aat.internal}
       document:
         type:
           divorceFormat: divorcedraft
@@ -58,7 +61,12 @@ case:
   formatter:
     service:
       api:
-        baseurl: ${CASE_FORMATTER_SERVICE_API_BASEURL:http://localhost:4011}
+        baseurl: ${CASE_FORMATTER_SERVICE_API_BASEURL:http://div-cfs-aat.service.core-compute-aat.internal}
+
+auth2:
+  client:
+    id: divorce
+    secret: thUphEveC2Ekuqedaneh4jEcRuba4t2t
 
 http:
   connect:
@@ -88,7 +96,6 @@ management:
         health: health
       exposure:
         include: info, health, metrics
-
 
 logging:
   level:

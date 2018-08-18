@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
 import javax.ws.rs.core.MediaType;
 
 @RestController
-@RequestMapping(path = "casemaintenance")
+@RequestMapping(path = "casemaintenance/version/1")
 @Api(value = "Case Maintenance Services", consumes = "application/json", produces = "application/json")
 public class CcdController {
     @Autowired
@@ -29,12 +30,15 @@ public class CcdController {
     @Autowired
     private CcdUpdateService ccdUpdateService;
 
-    @PostMapping(path = "/version/1/submit", consumes = MediaType.APPLICATION_JSON,
+    @Autowired
+    private CcdAccessService ccdAccessService;
+
+    @PostMapping(path = "/submit", consumes = MediaType.APPLICATION_JSON,
         produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Submits a divorce session to CCD")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the complete "
-            + "case back", response = CaseDetails.class),
+            + "case back", response = CaseDetails.class)
         }
     )
     public ResponseEntity<CaseDetails> submitCase(
@@ -44,12 +48,12 @@ public class CcdController {
         return ResponseEntity.ok(ccdSubmissionService.submitCase(data, jwt));
     }
 
-    @PostMapping(path = "/version/1/updateCase/{caseId}/{eventId}", consumes = MediaType.APPLICATION_JSON,
+    @PostMapping(path = "/updateCase/{caseId}/{eventId}", consumes = MediaType.APPLICATION_JSON,
         produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Updates case details")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A request to update the case details was sent to CCD. The body payload "
-            + "will return the latest version of the case after the update.", response = CaseDetails.class),
+            + "will return the latest version of the case after the update.", response = CaseDetails.class)
         }
     )
     public ResponseEntity<CaseDetails> updateCase(
@@ -60,5 +64,25 @@ public class CcdController {
         @RequestHeader("Authorization")
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         return ResponseEntity.ok(ccdUpdateService.update(caseId, data, eventId, jwt));
+    }
+
+    @PostMapping(path = "/link-respondent/{caseId}/{letterHolderId}")
+    @ApiOperation(value = "Updates case details")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Returned when case with id and letter holder id exists and the access is "
+            + "granted to the respondent user"),
+        @ApiResponse(code = 404, message = "Returned when case with id not found or letter holder id doesn't match"),
+        }
+    )
+    public ResponseEntity<Void> linkRespondent(
+        @RequestHeader("Authorization")
+        @ApiParam(value = "JWT authorisation token of the respondent", required = true) final String authToken,
+        @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId,
+        @PathVariable("letterHolderId")
+        @ApiParam(value = "Letter holder id from the pin user", required = true) String letterHolderId) {
+
+        ccdAccessService.linkRespondent(authToken, caseId, letterHolderId);
+
+        return ResponseEntity.ok().build();
     }
 }

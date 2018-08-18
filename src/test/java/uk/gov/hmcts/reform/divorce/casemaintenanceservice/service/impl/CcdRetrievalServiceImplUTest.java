@@ -10,10 +10,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,19 +22,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CcdRetrievalServiceImplUTest {
     private static final String JURISDICTION_ID = "someJurisdictionId";
     private static final String CASE_TYPE = "someCaseType";
-    private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.INCOMPLETE.getStates().get(0);
-    private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.COMPLETE.getStates().get(0);
 
     @Mock
     private CoreCaseDataApi coreCaseDataApi;
 
     @Mock
-    private IdamUserService idamUserService;
+    private UserService userService;
 
     @Mock
     private AuthTokenGenerator authTokenGenerator;
@@ -49,7 +48,7 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
-    public void givenNoCaseInCcd_whenRetrievePetition_thenReturnNull() throws Exception {
+    public void givenNoCaseInCcd_whenRetrieveCase_thenReturnNull() throws Exception {
         final String userId = "someUserId";
         final String authorisation = "authorisation";
         final String bearerAuthorisation = "Bearer authorisation";
@@ -57,24 +56,24 @@ public class CcdRetrievalServiceImplUTest {
 
         final UserDetails userDetails = UserDetails.builder().id(userId).build();
 
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
                 Collections.emptyMap())).thenReturn(null);
 
-        CaseDetails actual = classUnderTest.retrievePetition(authorisation);
+        CaseDetails actual = classUnderTest.retrieveCase(authorisation, PETITIONER_CASE_STATE_GROUPING);
 
         assertNull(actual);
 
-        verify(idamUserService).retrieveUserDetails(bearerAuthorisation);
+        verify(userService).retrieveUserDetails(bearerAuthorisation);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
             Collections.emptyMap());
     }
 
     @Test
-    public void givenOneSubmittedCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
+    public void givenOneCompleteCaseInCcd_whenRetrieveCase_thenReturnTheCase() throws Exception {
         final String userId = "someUserId";
         final String authorisation = "authorisation";
         final String bearerAuthorisation = "Bearer authorisation";
@@ -82,28 +81,28 @@ public class CcdRetrievalServiceImplUTest {
 
         final Long caseId = 1L;
 
-        final CaseDetails caseDetails = createCaseDetails(caseId, SUBMITTED_PAYMENT_STATE);
+        final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.SUBMITTED.getValue());
 
         final UserDetails userDetails = UserDetails.builder().id(userId).build();
 
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
                 Collections.emptyMap())).thenReturn(Collections.singletonList(caseDetails));
 
-        CaseDetails actual = classUnderTest.retrievePetition(authorisation);
+        CaseDetails actual = classUnderTest.retrieveCase(authorisation, PETITIONER_CASE_STATE_GROUPING);
 
         assertEquals(caseDetails, actual);
 
-        verify(idamUserService).retrieveUserDetails(bearerAuthorisation);
+        verify(userService).retrieveUserDetails(bearerAuthorisation);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
             Collections.emptyMap());
     }
 
     @Test
-    public void givenMultipleSubmittedCaseInCcd_whenRetrievePetition_thenReturnTheFirstCase() throws Exception {
+    public void givenMultipleCompletedCaseInCcd_whenRetrieveCase_thenReturnTheFirstCase() throws Exception {
         final String userId = "someUserId";
         final String authorisation = "authorisation";
         final String bearerAuthorisation = "Bearer authorisation";
@@ -114,127 +113,32 @@ public class CcdRetrievalServiceImplUTest {
         final Long caseId3 = 3L;
         final Long caseId4 = 4L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, SUBMITTED_PAYMENT_STATE);
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.COMPLETE.getStates().get(1));
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CitizenCaseState.COMPLETE.getStates().get(2));
-        final CaseDetails caseDetails4 = createCaseDetails(caseId4, CitizenCaseState.COMPLETE.getStates().get(3));
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.SUBMITTED.getValue());
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.ISSUED.getValue());
+        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CaseState.PENDING_REJECTION.getValue());
+        final CaseDetails caseDetails4 = createCaseDetails(caseId4, CaseState.AWAITING_DOCUMENTS.getValue());
 
         final UserDetails userDetails = UserDetails.builder().id(userId).build();
 
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
                 Collections.emptyMap()))
             .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4));
 
-        CaseDetails actual = classUnderTest.retrievePetition(authorisation);
+        CaseDetails actual = classUnderTest.retrieveCase(authorisation, PETITIONER_CASE_STATE_GROUPING);
 
         assertEquals(caseDetails1, actual);
 
-        verify(idamUserService).retrieveUserDetails(bearerAuthorisation);
+        verify(userService).retrieveUserDetails(bearerAuthorisation);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
             Collections.emptyMap());
     }
 
     @Test
-    public void givenMultipleSubmittedAndOtherCaseInCcd_whenRetrievePetition_thenReturnFirstSubmittedCase() throws Exception {
-        final String userId = "someUserId";
-        final String authorisation = "authorisation";
-        final String bearerAuthorisation = "Bearer authorisation";
-        final String serviceToken = "serviceToken";
-
-        final Long caseId1 = 1L;
-        final Long caseId2 = 2L;
-        final Long caseId3 = 3L;
-
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CitizenCaseState.COMPLETE.getStates().get(1));
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, SUBMITTED_PAYMENT_STATE);
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, AWAITING_PAYMENT_STATE);
-
-        final UserDetails userDetails = UserDetails.builder().id(userId).build();
-
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
-        when(coreCaseDataApi
-            .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
-                Collections.emptyMap())).thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
-
-        CaseDetails actual = classUnderTest.retrievePetition(authorisation);
-
-        assertEquals(caseDetails1, actual);
-
-        verify(idamUserService).retrieveUserDetails(bearerAuthorisation);
-        verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
-            Collections.emptyMap());
-    }
-
-    @Test
-    public void givenOneAwaitingPaymentCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
-        final String userId = "someUserId";
-        final String authorisation = "authorisation";
-        final String bearerAuthorisation = "Bearer authorisation";
-        final String serviceToken = "serviceToken";
-
-        final Long caseId = 1L;
-
-        final CaseDetails caseDetails = createCaseDetails(caseId, AWAITING_PAYMENT_STATE);
-
-        final UserDetails userDetails = UserDetails.builder().id(userId).build();
-
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
-        when(coreCaseDataApi
-            .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
-                Collections.emptyMap())).thenReturn(Collections.singletonList(caseDetails));
-
-        CaseDetails actual = classUnderTest.retrievePetition(authorisation);
-
-        assertEquals(caseDetails, actual);
-
-        verify(idamUserService).retrieveUserDetails(bearerAuthorisation);
-        verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
-            Collections.emptyMap());
-    }
-
-    @Test
-    public void givenOneAwaitingPaymentAndOtherNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnAwaitingPaymentCase() throws Exception {
-        final String userId = "someUserId";
-        final String authorisation = "authorisation";
-        final String bearerAuthorisation = "Bearer authorisation";
-        final String serviceToken = "serviceToken";
-
-        final Long caseId1 = 1L;
-        final Long caseId2 = 2L;
-        final Long caseId3 = 3L;
-
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, AWAITING_PAYMENT_STATE);
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, "state1");
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
-
-        final UserDetails userDetails = UserDetails.builder().id(userId).build();
-
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
-        when(coreCaseDataApi
-            .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
-                Collections.emptyMap())).thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
-
-        CaseDetails actual = classUnderTest.retrievePetition(authorisation);
-
-        assertEquals(caseDetails1, actual);
-
-        verify(idamUserService).retrieveUserDetails(bearerAuthorisation);
-        verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
-            Collections.emptyMap());
-    }
-
-    @Test(expected = DuplicateCaseException.class)
-    public void givenMultipleAwaitingPaymentAndOtherNonSubmittedCaseInCcd_whenRetrievePetition_thenThrowException()
+    public void givenMultipleCompletedAndOtherCaseInCcd_whenRetrieveCase_thenReturnFirstCompleteCase()
         throws Exception {
         final String userId = "someUserId";
         final String authorisation = "authorisation";
@@ -245,28 +149,125 @@ public class CcdRetrievalServiceImplUTest {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, AWAITING_PAYMENT_STATE);
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.INCOMPLETE.getStates().get(1));
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.ISSUED.getValue());
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.SUBMITTED.getValue());
+        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CaseState.AWAITING_PAYMENT.getValue());
 
         final UserDetails userDetails = UserDetails.builder().id(userId).build();
 
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
                 Collections.emptyMap())).thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
 
-        classUnderTest.retrievePetition(authorisation);
+        CaseDetails actual = classUnderTest.retrieveCase(authorisation, PETITIONER_CASE_STATE_GROUPING);
 
-        verify(idamUserService).retrieveUserDetails(bearerAuthorisation);
+        assertEquals(caseDetails1, actual);
+
+        verify(userService).retrieveUserDetails(bearerAuthorisation);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
             Collections.emptyMap());
     }
 
     @Test
-    public void givenCasesInNotAwaitingPaymentAndNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnNull() throws Exception {
+    public void givenOneInCompleteCaseInCcd_whenRetrieveCase_thenReturnTheCase() throws Exception {
+        final String userId = "someUserId";
+        final String authorisation = "authorisation";
+        final String bearerAuthorisation = "Bearer authorisation";
+        final String serviceToken = "serviceToken";
+
+        final Long caseId = 1L;
+
+        final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.AWAITING_PAYMENT.getValue());
+
+        final UserDetails userDetails = UserDetails.builder().id(userId).build();
+
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(coreCaseDataApi
+            .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(Collections.singletonList(caseDetails));
+
+        CaseDetails actual = classUnderTest.retrieveCase(authorisation, PETITIONER_CASE_STATE_GROUPING);
+
+        assertEquals(caseDetails, actual);
+
+        verify(userService).retrieveUserDetails(bearerAuthorisation);
+        verify(authTokenGenerator).generate();
+        verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
+            Collections.emptyMap());
+    }
+
+    @Test
+    public void givenOneInCompleteAndOtherNonSubmittedCaseInCcd_whenRetrieveCase_thenReturnInCompleteCase()
+        throws Exception {
+        final String userId = "someUserId";
+        final String authorisation = "authorisation";
+        final String bearerAuthorisation = "Bearer authorisation";
+        final String serviceToken = "serviceToken";
+
+        final Long caseId1 = 1L;
+        final Long caseId2 = 2L;
+        final Long caseId3 = 3L;
+
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AWAITING_PAYMENT.getValue());
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, "state1");
+        final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
+
+        final UserDetails userDetails = UserDetails.builder().id(userId).build();
+
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(coreCaseDataApi
+            .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
+
+        CaseDetails actual = classUnderTest.retrieveCase(authorisation, PETITIONER_CASE_STATE_GROUPING);
+
+        assertEquals(caseDetails1, actual);
+
+        verify(userService).retrieveUserDetails(bearerAuthorisation);
+        verify(authTokenGenerator).generate();
+        verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
+            Collections.emptyMap());
+    }
+
+    @Test(expected = DuplicateCaseException.class)
+    public void givenMultipleInCompleteAndOtherNonCompletedCaseInCcd_whenRetrieveCase_thenThrowException()
+        throws Exception {
+        final String userId = "someUserId";
+        final String authorisation = "authorisation";
+        final String bearerAuthorisation = "Bearer authorisation";
+        final String serviceToken = "serviceToken";
+
+        final Long caseId1 = 1L;
+        final Long caseId2 = 2L;
+        final Long caseId3 = 3L;
+
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AWAITING_PAYMENT.getValue());
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AWAITING_HWF_DECISION.getValue());
+        final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
+
+        final UserDetails userDetails = UserDetails.builder().id(userId).build();
+
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(coreCaseDataApi
+            .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
+
+        classUnderTest.retrieveCase(authorisation, PETITIONER_CASE_STATE_GROUPING);
+
+        verify(userService).retrieveUserDetails(bearerAuthorisation);
+        verify(authTokenGenerator).generate();
+        verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
+            Collections.emptyMap());
+    }
+
+    @Test
+    public void givenCasesInNonNonCompleteAndNonCompleteCaseInCcd_whenRetrieveCase_thenReturnNull() throws Exception {
         final String userId = "someUserId";
         final String authorisation = "authorisation";
         final String bearerAuthorisation = "Bearer authorisation";
@@ -282,17 +283,17 @@ public class CcdRetrievalServiceImplUTest {
 
         final UserDetails userDetails = UserDetails.builder().id(userId).build();
 
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
             .searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
                 Collections.emptyMap())).thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
 
-        CaseDetails actual = classUnderTest.retrievePetition(authorisation);
+        CaseDetails actual = classUnderTest.retrieveCase(authorisation, PETITIONER_CASE_STATE_GROUPING);
 
         assertNull(actual);
 
-        verify(idamUserService).retrieveUserDetails(bearerAuthorisation);
+        verify(userService).retrieveUserDetails(bearerAuthorisation);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi).searchForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID, CASE_TYPE,
             Collections.emptyMap());

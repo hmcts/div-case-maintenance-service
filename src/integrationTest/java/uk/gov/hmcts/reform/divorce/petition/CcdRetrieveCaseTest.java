@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class CcdPetitionServiceTest extends PetitionSupport {
+public class CcdRetrieveCaseTest extends PetitionSupport {
     private static final String CASE_DATA_JSON_PATH = "case_data";
 
     private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
@@ -25,55 +25,55 @@ public class CcdPetitionServiceTest extends PetitionSupport {
         + "CJOQrVU";
 
     @Test
-    public void givenJWTTokenIsNull_whenRetrievePetition_thenReturnBadRequest() {
-        Response cmsResponse = getPetition(null, null);
+    public void givenJWTTokenIsNull_whenRetrieveCase_thenReturnBadRequest() {
+        Response cmsResponse = getCase(null, null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
-    public void givenInvalidUserToken_whenRetrievePetition_thenReturnForbiddenError() {
-        Response cmsResponse = getPetition(INVALID_USER_TOKEN, true);
+    public void givenInvalidUserToken_whenRetrieveCase_thenReturnForbiddenError() {
+        Response cmsResponse = getCase(INVALID_USER_TOKEN, true);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @Test
-    public void givenNoCaseInCcdOrDraftStore_whenRetrievePetition_thenReturnNull() {
-        Response cmsResponse = getPetition(getUserToken(), true);
+    public void givenNoCaseInCcdOrDraftStore_whenRetrieveCase_thenReturnNull() {
+        Response cmsResponse = getCase(getUserToken(), true);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
     }
 
     @Test
-    public void givenOneSubmittedCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
+    public void givenOneSubmittedCaseInCcd_whenRetrieveCase_thenReturnTheCase() throws Exception {
         final String userToken = getUserToken();
 
         Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = getPetition(userToken, true);
+        Response cmsResponse = getCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
     }
 
     @Test
-    public void givenMultipleSubmittedCaseInCcd_whenRetrievePetition_thenReturnTheFirstCase() throws Exception {
+    public void givenMultipleSubmittedCaseInCcd_whenRetrieveCase_thenReturnTheFirstCase() throws Exception {
         final String userToken = getUserToken();
 
         Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userToken);
 
         createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = getPetition(userToken, true);
+        Response cmsResponse = getCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
     }
 
     @Test
-    public void givenMultipleSubmittedAndOtherCaseInCcd_whenRetrievePetition_thenReturnFirstSubmittedCase()
+    public void givenMultipleSubmittedAndOtherCaseInCcd_whenRetrieveCase_thenReturnFirstSubmittedCase()
         throws Exception {
         final String userToken = getUserToken();
 
@@ -83,56 +83,56 @@ public class CcdPetitionServiceTest extends PetitionSupport {
 
         createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = getPetition(userToken, true);
+        Response cmsResponse = getCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
     }
 
     @Test
-    public void givenOneAwaitingPaymentCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
+    public void givenOneAwaitingPaymentCaseInCcd_whenRetrieveCase_thenReturnTheCase() throws Exception {
         final String userToken = getUserToken();
 
         final Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = getPetition(userToken, true);
+        Response cmsResponse = getCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
     }
 
     @Test
-    public void givenMultipleAwaitingPaymentAndNoSubmittedCaseInCcd_whenRetrievePetition_thenReturnMultipleChoice()
+    public void givenMultipleAwaitingPaymentAndNoSubmittedCaseInCcd_whenRetrieveCase_thenReturnMultipleChoice()
         throws Exception {
         final String userToken = getUserToken();
 
         getCaseIdFromSubmittingANewCase(userToken);
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = getPetition(userToken, true);
+        Response cmsResponse = getCase(userToken, true);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
 
     @Test
-    public void givenCasesInNotAwaitingPaymentOrNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnNull() {
+    public void givenCasesInNotAwaitingPaymentOrNonSubmittedCaseInCcd_whenRetrieveCase_thenReturnNull() {
         final String userToken = getUserToken();
 
-        Response cmsResponse = getPetition(userToken, true);
+        Response cmsResponse = getCase(userToken, true);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
     }
 
     @Test
-    public void givenDoNotCheckCcdAndOnePetitionInCcdFormat_whenRetrievePetition_thenReturnPetition() throws Exception {
+    public void givenDoNotCheckCcdAndOnePetitionInCcdFormat_whenRetrieveCase_thenReturnPetition() throws Exception {
         final String userToken = getUserToken();
 
         final String caseInCcdFormatFileName = CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json";
 
         createDraft(userToken, caseInCcdFormatFileName, Collections.emptyMap());
 
-        Response cmsResponse = getPetition(userToken, false);
+        Response cmsResponse = getCase(userToken, false);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.getBody().path(CASE_DATA_JSON_PATH),
@@ -143,7 +143,7 @@ public class CcdPetitionServiceTest extends PetitionSupport {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenDoNotCheckCcdAndMultiplePetitionsInDivorceFormat_whenRetrievePetition_thenReturnLatestPetition()
+    public void givenDoNotCheckCcdAndMultiplePetitionsInDivorceFormat_whenRetrieveCase_thenReturnLatestPetition()
         throws Exception {
         final UserDetails userDetails = getUserDetails();
 
@@ -155,7 +155,7 @@ public class CcdPetitionServiceTest extends PetitionSupport {
         createDraft(userDetails.getAuthToken(), caseInCcdFormatFileName2,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
-        Response cmsResponse = getPetition(userDetails.getAuthToken(), false);
+        Response cmsResponse = getCase(userDetails.getAuthToken(), false);
 
         Map<String, Object> expected =
             ResourceLoader.loadJsonToObject(CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json", Map.class);
