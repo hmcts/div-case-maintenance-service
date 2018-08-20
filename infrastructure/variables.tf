@@ -1,3 +1,7 @@
+variable "reform_service_name" {
+    default = "cms"
+}
+
 variable "product" {
     type = "string"
 }
@@ -28,6 +32,10 @@ variable "appinsights_instrumentation_key" {
 
 variable "idam_api_baseurl" {
     type = "string"
+}
+
+variable "reform_team" {
+    default = "div"
 }
 
 variable "capacity" {

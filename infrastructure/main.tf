@@ -5,6 +5,9 @@ locals {
   idam_s2s_url              = "http://${var.idam_s2s_url_prefix}-${local.local_env}.service.core-compute-${local.local_env}.internal"
   ccd_casedatastore_baseurl = "http://ccd-data-store-api-${local.local_env}.service.core-compute-${local.local_env}.internal"
 
+  previewVaultName = "${var.product}-${var.reform_service_name}"
+  nonPreviewVaultName = "${var.reform_team}-${var.reform_service_name}-${var.env}"
+  vaultName = "${var.env == "preview" ? local.previewVaultName : local.nonPreviewVaultName}"
 }
 
 module "div-cms" {
@@ -25,7 +28,7 @@ module "div-cms" {
     REFORM_ENVIRONMENT                                    = "${var.env}"
     AUTH_PROVIDER_SERVICE_CLIENT_BASEURL                  = "${local.idam_s2s_url}"
     AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE             = "${var.auth_provider_service_client_microservice}"
-    AUTH_PROVIDER_SERVICE_CLIENT_KEY                      = "${data.vault_generic_secret.ccd-submission-s2s-auth-secret.data["value"]}"
+    AUTH_PROVIDER_SERVICE_CLIENT_KEY                      = "${data.azurerm_key_vault_secret.ccd-submission-s2s-auth-secret.value}"
     AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS = "${var.auth_provider_service_client_tokentimetoliveinseconds}"
     CASE_DATA_STORE_BASEURL                               = "${local.ccd_casedatastore_baseurl}"
     IDAM_API_BASEURL                                      = "${var.idam_api_baseurl}"
@@ -36,6 +39,12 @@ provider "vault" {
   address = "https://vault.reform.hmcts.net:6200"
 }
 
-data "vault_generic_secret" "ccd-submission-s2s-auth-secret" {
-    path = "secret/${var.vault_env}/ccidam/service-auth-provider/api/microservice-keys/divorceCcdSubmission"
+data "azurerm_key_vault" "div_key_vault" {
+    name                = "${local.vaultName}"
+    resource_group_name = "${local.vaultName}"
+}
+
+data "azurerm_key_vault_secret" "ccd-submission-s2s-auth-secret" {
+    name      = "ccd-submission-s2s-auth-secret"
+    vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
 }
