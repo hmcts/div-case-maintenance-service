@@ -5,12 +5,14 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.NotifyCaseSubmission;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 
 @Service
 public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdSubmissionService {
 
+    @NotifyCaseSubmission
     @Override
     public CaseDetails submitCase(Object data, String authorisation) {
         UserDetails userDetails = getUserDetails(authorisation);
