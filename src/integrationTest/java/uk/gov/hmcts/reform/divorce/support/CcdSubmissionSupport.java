@@ -1,9 +1,13 @@
-package uk.gov.hmcts.reform.divorce;
+package uk.gov.hmcts.reform.divorce.support;
 
 import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import uk.gov.hmcts.reform.divorce.context.IntegrationTest;
+import uk.gov.hmcts.reform.divorce.util.ResourceLoader;
+import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +21,7 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     @Value("${case.maintenance.submission.context-path}")
     private String contextPath;
 
-    void submitAndAssertSuccess(String fileName) throws Exception {
+    protected void submitAndAssertSuccess(String fileName) throws Exception {
         Response cmsResponse = submitCase(fileName);
         assertOkResponseAndCaseIdIsNotZero(cmsResponse);
     }
@@ -31,7 +35,7 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
             );
     }
 
-    Response submitCase(String fileName, String userToken) throws Exception {
+    protected Response submitCase(String fileName, String userToken) throws Exception {
         return
             RestUtil.postToRestService(
                 getSubmissionRequestUrl(),
@@ -48,26 +52,26 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
         return ResourceLoader.loadJson(contextPath + fileName);
     }
 
-    String getSubmissionRequestUrl() {
+    protected String getSubmissionRequestUrl() {
         return serverUrl + contextPath;
     }
 
-    Map<String, Object> getHeaders() {
+    protected Map<String, Object> getHeaders() {
         return getHeaders(getUserToken());
     }
 
     Map<String, Object> getHeaders(String userToken) {
         Map<String, Object> headers = new HashMap<>();
-        headers.put("Content-type", MediaType.APPLICATION_JSON_UTF8_VALUE);
+        headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
 
-        if(userToken != null) {
-            headers.put("Authorization", userToken);
+        if (userToken != null) {
+            headers.put(HttpHeaders.AUTHORIZATION, userToken);
         }
 
         return headers;
     }
 
-    private void assertOkResponseAndCaseIdIsNotZero(Response cmsResponse) {
+    protected void assertOkResponseAndCaseIdIsNotZero(Response cmsResponse) {
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertNotEquals((Long)0L, cmsResponse.getBody().path("caseId"));
     }

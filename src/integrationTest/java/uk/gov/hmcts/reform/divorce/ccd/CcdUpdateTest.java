@@ -1,8 +1,9 @@
-package uk.gov.hmcts.reform.divorce;
+package uk.gov.hmcts.reform.divorce.ccd;
 
 import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.divorce.support.CcdUpdateSupport;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +23,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
     public void shouldReturnCaseIdWhenUpdatingDataAfterInitialSubmit() throws Exception {
         String userToken = getUserToken();
 
-        Long caseId = getCaseIdFromSubmittingANewCase("addresses.json", userToken);
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
         Response cmsResponse = updateCase("update-addresses.json", caseId, EVENT_ID, userToken);
 
@@ -34,7 +35,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
     public void shouldReturnCaseIdWhenUpdatingPaymentAfterUpdatingWithPaymentReference() throws Exception {
         String userToken = getUserToken();
 
-        Long caseId = getCaseIdFromSubmittingANewCase("addresses.json", userToken);
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
         Response cmsResponse = updateCase("payment-made.json", caseId, EVENT_ID, userToken);
 
@@ -56,7 +57,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
     public void shouldReturnErrorForInvalidEventId() throws Exception {
         String userToken = getUserToken();
 
-        Long caseId = getCaseIdFromSubmittingANewCase("addresses.json", userToken);
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
         Response cmsResponse = updateCase("payment-made.json", caseId, "InvalidEvenId", userToken);
 
@@ -69,7 +70,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
     public void shouldReturnErrorUpdatingWithCaseSameEventId() throws Exception {
         String userToken = getUserToken();
 
-        Long caseId = getCaseIdFromSubmittingANewCase("addresses.json", userToken);
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
         updateCase("payment-made.json", caseId, EVENT_ID, userToken);
 
@@ -84,7 +85,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
     public void shouldReturnErrorForInvalidUserJwtToken() throws Exception {
         String userToken = getUserToken();
 
-        Long caseId = getCaseIdFromSubmittingANewCase("addresses.json", userToken);
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
         Response cmsResponse = updateCase("payment-made.json", caseId, EVENT_ID, INVALID_USER_TOKEN);
 

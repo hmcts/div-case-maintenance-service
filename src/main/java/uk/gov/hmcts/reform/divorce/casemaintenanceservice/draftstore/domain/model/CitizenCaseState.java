@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

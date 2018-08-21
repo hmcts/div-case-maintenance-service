@@ -1,13 +1,15 @@
-package uk.gov.hmcts.reform.divorce;
+package uk.gov.hmcts.reform.divorce.util;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-class ResourceLoader {
+public class ResourceLoader {
 
-    static String loadJson(final String filePath) throws Exception {
+    public static String loadJson(final String filePath) throws Exception {
         return new String(loadResource(filePath), Charset.forName("utf-8"));
     }
 
@@ -19,5 +21,13 @@ class ResourceLoader {
         }
 
         return Files.readAllBytes(Paths.get(url.toURI()));
+    }
+
+    public static <T> T loadJsonToObject(String filePath, Class<T> type) {
+        try {
+            return new ObjectMapper().readValue(loadJson(filePath), type);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

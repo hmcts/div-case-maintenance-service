@@ -10,9 +10,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseStateType;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
 

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ObjectMapperTestUtil {
 
-    static <T> T convertStringToObject(String data, Class type) {
+    static <T> T convertStringToObject(String data, Class<T> type) {
         try {
-            return (T)new ObjectMapper().readValue(data, type);
+            return new ObjectMapper().readValue(data, type);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

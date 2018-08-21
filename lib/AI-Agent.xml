@@ -11,6 +11,39 @@
         <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdUpdateServiceImpl">
             <Method name="update" reportCaughtExceptions="true" reportExecutionTime="true"/>
         </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl">
+            <Method name="retrievePetition" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService">
+            <Method name="retrieveUserDetails" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.DraftServiceImpl">
+            <Method name="getAllDrafts" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.DraftServiceImpl">
+            <Method name="saveDraft" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.DraftServiceImpl">
+            <Method name="createDraft" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.DraftServiceImpl">
+            <Method name="deleteDraft" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.PetitionServiceImpl">
+            <Method name="retrievePetition" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.PetitionServiceImpl">
+            <Method name="saveDraft" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.PetitionServiceImpl">
+            <Method name="createDraft" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.PetitionServiceImpl">
+            <Method name="getAllDrafts" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.PetitionServiceImpl">
+            <Method name="deleteDraft" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
     </Instrumentation>
 </ApplicationInsightsAgent>
 

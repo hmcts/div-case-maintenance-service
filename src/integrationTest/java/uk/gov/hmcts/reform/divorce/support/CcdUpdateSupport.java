@@ -1,17 +1,18 @@
-package uk.gov.hmcts.reform.divorce;
+package uk.gov.hmcts.reform.divorce.support;
 
 import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
 public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
     private static final String PAYLOAD_CONTEXT_PATH = "ccd-update-payload/";
 
-    static final String EVENT_ID = "paymentMade";
+    protected static final String EVENT_ID = "paymentMade";
 
     @Value("${case.maintenance.update.context-path}")
     private String contextPath;
 
-    Response updateCase(String fileName, Long caseId, String eventId, String userToken) throws Exception {
+    protected Response updateCase(String fileName, Long caseId, String eventId, String userToken) throws Exception {
         return
             RestUtil.postToRestService(
                 getRequestUrl(caseId, eventId),
@@ -24,8 +25,8 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
         return serverUrl + contextPath + "/" + caseId + "/" + eventId;
     }
 
-    Long getCaseIdFromSubmittingANewCase(String filePath, String userToken) throws Exception {
-        Response cmsResponse = submitCase(filePath, userToken);
+    protected Long getCaseIdFromSubmittingANewCase(String userToken) throws Exception {
+        Response cmsResponse = submitCase("addresses.json", userToken);
 
         return cmsResponse.path("id");
     }

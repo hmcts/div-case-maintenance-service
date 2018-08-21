@@ -1,17 +1,17 @@
-package uk.gov.hmcts.reform.divorce;
+package uk.gov.hmcts.reform.divorce.util;
 
 import io.restassured.RestAssured;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Base64;
 
-class IdamUtils {
+public class IdamUtils {
 
     @Value("${auth.idam.client.baseUrl}")
     private String idamUserBaseUrl;
 
-    void createUserInIdam(String username, String password) {
-        String payload = "{\"email\":\"" + username + "@test.com\", \"forename\":\"" + username
+    public void createUserInIdam(String username, String emailAddress,  String password) {
+        String payload = "{\"email\":\"" + emailAddress + "\", \"forename\":\"" + username
             + "\",\"surname\":\"User\",\"password\":\"" + password + "\"}";
 
         RestAssured.given()
@@ -29,8 +29,8 @@ class IdamUtils {
                             + "https://www.preprod.ccd.reform.hmcts.net/oauth2redirect";
     }
 
-    String generateUserTokenWithNoRoles(String username, String password) {
-        String userLoginDetails = String.join(":", username + "@test.com", password);
+    public String generateUserTokenWithNoRoles(String emailAddress, String password) {
+        String userLoginDetails = String.join(":", emailAddress, password);
         final String authHeader = "Basic " + new String(Base64.getEncoder().encode((userLoginDetails).getBytes()));
 
         final String token = RestAssured.given()

@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
@@ -25,22 +23,24 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.HttpClientErrorException;
-import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.DraftStoreClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdSubmissionServiceImpl;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -54,15 +54,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PropertySource(value = "classpath:application.yml")
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
-    "eureka.client.enabled=false"
+    "eureka.client.enabled=false",
+    "draft.delete.async=false"
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class CcdSubmissionITest {
+public class CcdSubmissionITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/submit";
     private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/addresses.json";
-    private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
-    private static final String USER_ID = "1";
+    private static final String DRAFTS_CONTEXT_PATH = "/drafts";
+    private static final String DRAFT_DOCUMENT_TYPE = "divorcedraft";
+    private static final String DRAFT_ID = "1";
+    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE);
 
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
@@ -71,14 +74,8 @@ public class CcdSubmissionITest {
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
             "DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION");
 
-    private static final String USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
-
     @ClassRule
-    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(4503);
+    public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
@@ -92,8 +89,6 @@ public class CcdSubmissionITest {
     @Autowired
     private MockMvc webClient;
 
-    @MockBean
-    private AuthTokenGenerator serviceTokenGenerator;
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
@@ -150,9 +145,8 @@ public class CcdSubmissionITest {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
-        final String feignErrorMessage = "some error message";
 
-        final FeignException feignException = getMockedFeignException(feignStatusCode, feignErrorMessage);
+        final FeignException feignException = getMockedFeignException(feignStatusCode);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -167,7 +161,7 @@ public class CcdSubmissionITest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().is(feignStatusCode))
-            .andExpect(content().string(containsString(feignErrorMessage)));
+            .andExpect(content().string(containsString(FEIGN_ERROR)));
     }
 
     @Test
@@ -176,9 +170,8 @@ public class CcdSubmissionITest {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
-        final String feignErrorMessage = "some error message";
 
-        final FeignException feignException = getMockedFeignException(feignStatusCode, feignErrorMessage);
+        final FeignException feignException = getMockedFeignException(feignStatusCode);
 
         final String eventId = "eventId";
         final String token = "token";
@@ -215,7 +208,7 @@ public class CcdSubmissionITest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().is(feignStatusCode))
-            .andExpect(content().string(containsString(feignErrorMessage)));
+            .andExpect(content().string(containsString(FEIGN_ERROR)));
     }
 
     @Test
@@ -223,6 +216,7 @@ public class CcdSubmissionITest {
         final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
+        final DraftList draftList = new DraftList(Collections.singletonList(DRAFT), null);
 
         final String eventId = "eventId";
         final String token = "token";
@@ -244,6 +238,10 @@ public class CcdSubmissionITest {
 
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceAuthToken),
+            ObjectMapperTestUtil.convertObjectToJsonString(draftList));
+
+        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceAuthToken));
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
@@ -264,31 +262,22 @@ public class CcdSubmissionITest {
             .andExpect(content().string(containsString(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails))));
     }
 
-    private void stubUserDetailsEndpoint(HttpStatus status, StringValuePattern authHeader, String message) {
-        idamUserDetailsServer.stubFor(get(IDAM_USER_DETAILS_CONTEXT_PATH)
+    private void stubGetDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken, String message) {
+        draftStoreServer.stubFor(get(DRAFTS_CONTEXT_PATH)
             .withHeader(HttpHeaders.AUTHORIZATION, authHeader)
+            .withHeader(DraftStoreClient.SERVICE_AUTHORIZATION_HEADER_NAME, serviceToken)
+            .withHeader(DraftStoreClient.SECRET_HEADER_NAME, new EqualToPattern(ENCRYPTED_USER_ID))
             .willReturn(aResponse()
-                .withStatus(status.value())
+                .withStatus(HttpStatus.OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                 .withBody(message)));
     }
 
-    private String getUserDetails() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(
-            UserDetails.builder()
-                .id(USER_ID)
-                .email("test@test.com")
-                .forename("forename")
-                .surname("surname")
-        .build());
-    }
-
-    private FeignException getMockedFeignException(int statusCode, String errorMessage) {
-        final FeignException feignException = mock(FeignException.class);
-
-        when(feignException.status()).thenReturn(statusCode);
-        when(feignException.getMessage()).thenReturn(errorMessage);
-
-        return feignException;
+    private void stubDeleteDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken) {
+        draftStoreServer.stubFor(delete(DRAFTS_CONTEXT_PATH + "/" + DRAFT_ID)
+            .withHeader(HttpHeaders.AUTHORIZATION, authHeader)
+            .withHeader(DraftStoreClient.SERVICE_AUTHORIZATION_HEADER_NAME, serviceToken)
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())));
     }
 }
