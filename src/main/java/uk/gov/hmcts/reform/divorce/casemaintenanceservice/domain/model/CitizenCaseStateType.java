@@ -2,18 +2,19 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_LIST;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState.AWAITING_DECREE_NISI;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState.AWAITING_DOCUMENTS;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState.AWAITING_HWF_DECISION;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState.AWAITING_PAYMENT;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState.ISSUED;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState.PENDING_REJECTION;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CitizenCaseState.SUBMITTED;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState.AWAITING_DECREE_NISI;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState.AWAITING_DOCUMENTS;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState.AWAITING_HWF_DECISION;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState.AWAITING_PAYMENT;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState.ISSUED;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState.PENDING_REJECTION;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState.SUBMITTED;
 
 @AllArgsConstructor
 @Getter

@@ -3,10 +3,6 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.mod
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 @AllArgsConstructor
 @Getter
 public enum CitizenCaseState {
