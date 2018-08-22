@@ -14,7 +14,7 @@ public class IdamTestSupport {
     private static final String CASE_WORKER_USERNAME = "CASE_WORKER_USER_NAME";
     private static final String CASE_WORKER_PASSWORD = "CASE_WORKER_PASSWORD";
 
-    private UserDetails caseWorkerUser;
+    private UserDetails _caseWorkerUser;
 
     @Autowired
     private IdamUtils idamUtils;
@@ -44,11 +44,11 @@ public class IdamTestSupport {
 
     public UserDetails createAnonymousCaseWorkerUser() {
         synchronized (this) {
-            if (caseWorkerUser == null) {
-                caseWorkerUser = createNewUser(CASE_WORKER_USERNAME, CASE_WORKER_PASSWORD, true);
+            if (_caseWorkerUser == null) {
+                _caseWorkerUser = createNewUser(CASE_WORKER_USERNAME, CASE_WORKER_PASSWORD, true);
             }
 
-            return caseWorkerUser;
+            return _caseWorkerUser;
         }
     }
 
@@ -89,7 +89,7 @@ public class IdamTestSupport {
                 .email(emailAddress)
                 .forename(username)
                 .password(password)
-                .roles(new String[]{"caseworker-divorce", "caseworker-divorce-courtadmin", "caseworker"})
+                .roles(new String[]{"caseworker-divorce", "caseworker-divorce-courtadmin", "caseworker", "citizen"})
                 .userGroup(UserGroup.builder().code("caseworker").build())
                 .build();
 
