@@ -17,7 +17,7 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
             RestUtil.postToRestService(
                 getRequestUrl(caseId, eventId),
                 getHeaders(userToken),
-                loadJson(fileName, PAYLOAD_CONTEXT_PATH)
+                fileName == null ? "{}" : loadJson(fileName, PAYLOAD_CONTEXT_PATH)
             );
     }
 

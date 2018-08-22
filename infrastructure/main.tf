@@ -6,6 +6,11 @@ locals {
     ccd_casedatastore_baseurl = "http://ccd-data-store-api-${local.local_env}.service.core-compute-${local.local_env}.internal"
     case_formatter_baseurl    = "http://div-cfs-${local.local_env}.service.core-compute-${local.local_env}.internal"
     draft_store_api_baseurl   = "http://draft-store-service-${local.local_env}.service.core-compute-${local.local_env}.internal"
+    petitioner_fe_baseurl     = "https://div-pfe-${local.local_env}.service.core-compute-${local.local_env}.internal"
+
+    previewVaultName          = "${var.raw_product}-aat"
+    nonPreviewVaultName       = "${var.raw_product}-${var.env}"
+    vaultName                 = "${(var.env == "preview" || var.env == "spreview") ? local.previewVaultName : local.nonPreviewVaultName}"
 }
 
 module "div-cms" {
@@ -26,24 +31,46 @@ module "div-cms" {
         REFORM_ENVIRONMENT                                    = "${var.env}"
         AUTH_PROVIDER_SERVICE_CLIENT_BASEURL                  = "${local.idam_s2s_url}"
         AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE             = "${var.auth_provider_service_client_microservice}"
-        AUTH_PROVIDER_SERVICE_CLIENT_KEY                      = "${data.vault_generic_secret.ccd-submission-s2s-auth-secret.data["value"]}"
+        AUTH_PROVIDER_SERVICE_CLIENT_KEY                      = "${data.azurerm_key_vault_secret.ccd-submission-s2s-auth-secret.value}"
         AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS = "${var.auth_provider_service_client_tokentimetoliveinseconds}"
         CASE_DATA_STORE_BASEURL                               = "${local.ccd_casedatastore_baseurl}"
         IDAM_API_BASEURL                                      = "${var.idam_api_baseurl}"
         CASE_FORMATTER_SERVICE_API_BASEURL                    = "${local.case_formatter_baseurl}"
         DRAFT_STORE_API_BASEURL                               = "${local.draft_store_api_baseurl}"
-        DRAFT_STORE_API_ENCRYPTION_KEY                        = "${data.vault_generic_secret.draft-store-api-encryption-key.data["value"]}"
+        DRAFT_STORE_API_ENCRYPTION_KEY                        = "${data.azurerm_key_vault_secret.draft-store-api-encryption-key.value}"
+        AUTH2_CLIENT_SECRET                                   = "${data.azurerm_key_vault_secret.idam-secret.value}"
+        IDAM_CASEWORKER_USERNAME                              = "${data.azurerm_key_vault_secret.idam-caseworker-username.value}"
+        IDAM_CASEWORKER_PASSWORD                              = "${data.azurerm_key_vault_secret.idam-caseworker-password.value}"
+        IDAM_API_REDIRECT_URL                                 = "${local.petitioner_fe_baseurl}/authenticated"
     }
 }
 
-provider "vault" {
-    address = "https://vault.reform.hmcts.net:6200"
+data "azurerm_key_vault" "div_key_vault" {
+    name = "${local.vaultName}"
+    resource_group_name = "${local.vaultName}"
 }
 
-data "vault_generic_secret" "ccd-submission-s2s-auth-secret" {
-    path = "secret/${var.vault_env}/ccidam/service-auth-provider/api/microservice-keys/divorceCcdSubmission"
+data "azurerm_key_vault_secret" "ccd-submission-s2s-auth-secret" {
+    name = "ccd-submission-s2s-auth-secret"
+    vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
 }
 
-data "vault_generic_secret" "draft-store-api-encryption-key" {
-    path = "secret/${var.vault_env}/divorce/draft/encryption_key"
+data "azurerm_key_vault_secret" "draft-store-api-encryption-key" {
+    name = "draft-store-api-encryption-key"
+    vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "idam-secret" {
+    name = "idam-secret"
+    vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "idam-caseworker-username" {
+    name = "idam-caseworker-username"
+    vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "idam-caseworker-password" {
+    name = "idam-caseworker-password"
+    vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
 }

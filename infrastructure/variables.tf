@@ -6,6 +6,10 @@ variable "component" {
   type = "string"
 }
 
+variable "raw_product" {
+    default = "div"
+}
+
 variable "env" {
   type = "string"
 }

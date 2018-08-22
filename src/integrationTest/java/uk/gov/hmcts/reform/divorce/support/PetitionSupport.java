@@ -52,7 +52,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
-    protected Response getPetition(String userToken, Boolean checkCcd) {
+    protected Response getCase(String userToken, Boolean checkCcd) {
         return
             RestUtil.getFromRestService(
                 getRequestUrl(),
@@ -70,7 +70,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
-    private String getRequestUrl() {
+    protected String getRequestUrl() {
         return serverUrl + petitionContextPath;
     }
 }

@@ -7,6 +7,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -29,6 +30,19 @@ public class GlobalExceptionHandlerUTest {
         ResponseEntity<Object> response = classUnderTest.handleBadRequestException(feignException);
 
         assertEquals(statusCode, response.getStatusCodeValue());
+        assertEquals(errorMessage, response.getBody());
+    }
+
+    @Test
+    public void whenHandleCaseNotFoundException_thenReturnUnderLyingError() {
+        final HttpStatus statusCode = HttpStatus.NOT_FOUND;
+        final String errorMessage = "Error Message";
+
+        final CaseNotFoundException exception = new CaseNotFoundException(errorMessage);
+
+        ResponseEntity<Object> response = classUnderTest.handleCaseNotFoundException(exception);
+
+        assertEquals(statusCode, response.getStatusCode());
         assertEquals(errorMessage, response.getBody());
     }
 

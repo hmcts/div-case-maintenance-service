@@ -19,7 +19,23 @@ def component = "cms"
 
 def channel = '#div-dev'
 
+List<LinkedHashMap<String, Object>> secrets = [
+    secret("ccd-submission-s2s-auth-secret", "AUTH_PROVIDER_CCDSUBMISSION_CLIENT_KEY"),
+    secret("idam-secret", "AUTH_IDAM_CLIENT_SECRET")
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [ $class: 'AzureKeyVaultSecret',
+      secretType: 'Secret',
+      name: secretName,
+      version: '',
+      envVariable: envVar
+    ]
+}
+
 withPipeline(type , product, component) {
+    loadVaultSecrets(secrets)
+
     after('checkout') {
         echo '${product}-${component} checked out'
     }

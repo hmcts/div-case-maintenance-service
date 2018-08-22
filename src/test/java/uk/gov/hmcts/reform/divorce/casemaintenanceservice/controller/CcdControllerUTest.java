@@ -8,10 +8,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +28,9 @@ public class CcdControllerUTest {
 
     @Mock
     private CcdUpdateService ccdUpdateService;
+
+    @Mock
+    private CcdAccessService ccdAccessService;
 
     @InjectMocks
     private CcdController classUnderTest;
@@ -56,5 +61,20 @@ public class CcdControllerUTest {
         assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
 
         verify(ccdUpdateService).update(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
+    }
+
+    @Test
+    public void whenLinkRespondent_thenProceedAsExpected() {
+        final String caseId = "caseId";
+        final String letterHolderId = "letterHolderId";
+
+        doNothing().when(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId);
+
+        ResponseEntity responseEntity =
+            classUnderTest.linkRespondent(JWT_TOKEN, caseId, letterHolderId);
+
+        assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
+
+        verify(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId);
     }
 }

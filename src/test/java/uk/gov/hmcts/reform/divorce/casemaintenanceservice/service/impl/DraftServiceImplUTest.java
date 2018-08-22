@@ -6,15 +6,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.DraftStoreClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.DraftModelFactory;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.EncryptionKeyFactory;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.UpdateDraft;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,7 +48,7 @@ public class DraftServiceImplUTest {
     private DraftStoreClient draftStoreClient;
 
     @Mock
-    private IdamUserService idamUserService;
+    private UserService userService;
 
     @Mock
     private EncryptionKeyFactory encryptionKeyFactory;
@@ -127,7 +127,7 @@ public class DraftServiceImplUTest {
         final Map<String, Object> data = Collections.emptyMap();
         final CreateDraft createDraft = new CreateDraft(data, null, 2);
 
-        when(idamUserService.retrieveUserDetails(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
+        when(userService.retrieveUserDetails(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
         when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(encryptionKeyFactory.createEncryptionKey(USER_ID)).thenReturn(ENCRYPTED_USER_ID);
         when(modelFactory.createDraft(data, DIVORCE_FORMAT)).thenReturn(createDraft);
@@ -251,7 +251,7 @@ public class DraftServiceImplUTest {
     }
 
     private void mockGetDraftsAndReturn(String after, DraftList draftList) {
-        when(idamUserService.retrieveUserDetails(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
+        when(userService.retrieveUserDetails(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
         when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(encryptionKeyFactory.createEncryptionKey(USER_ID)).thenReturn(ENCRYPTED_USER_ID);
 
