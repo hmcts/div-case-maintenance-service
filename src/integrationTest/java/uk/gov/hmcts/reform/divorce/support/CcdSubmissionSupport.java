@@ -36,11 +36,15 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     }
 
     protected Response submitCase(String fileName, String userToken) throws Exception {
+        return submitCaseJson(loadJson(fileName), userToken);
+    }
+
+    protected Response submitCaseJson(String jsonCase, String userToken) {
         return
             RestUtil.postToRestService(
                 getSubmissionRequestUrl(),
                 getHeaders(userToken),
-                loadJson(fileName)
+                jsonCase
             );
     }
 

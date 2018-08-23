@@ -25,7 +25,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.DraftStoreClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
@@ -56,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RetrievePetitionITest extends AuthIdamMockSupport {
-    private static final String API_URL = "/casemaintenance/version/1/retrievePetition";
+    private static final String API_URL = "/casemaintenance/version/1/retrieveCase";
     private static final String CHECK_CCD_PARAM = "checkCcd";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String TRANSFORM_TO_CCD_CONTEXT_PATH = "/caseformatter/version/1/to-ccd-format";
@@ -159,14 +160,14 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenOneSubmittedCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
+    public void givenCompletedCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final Long caseId = 1L;
-        final CaseDetails caseDetails = createCaseDetails(caseId, SUBMITTED_PAYMENT_STATE);
+        final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.SUBMITTED.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -184,7 +185,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenMultipleSubmittedCaseInCcd_whenRetrievePetition_thenReturnTheFirstCase() throws Exception {
+    public void givenMultipleCompletedCaseInCcd_whenRetrievePetition_thenReturnTheFirstCase() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -215,7 +216,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenMultipleSubmittedAndOtherCaseInCcd_whenRetrievePetition_thenReturnFirstSubmittedCase()
+    public void givenMultipleCompletedAndOtherCaseInCcd_whenRetrievePetition_thenReturnFirstCompletedCase()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
@@ -245,13 +246,13 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenOneAwaitingPaymentCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
+    public void givenOneInCompleteCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final Long caseId = 1L;
-        final CaseDetails caseDetails = createCaseDetails(caseId, AWAITING_PAYMENT_STATE);
+        final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.AWAITING_PAYMENT.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -269,7 +270,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenOneAwaitingPaymentAndOtherNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnAwaitingPaymentCase()
+    public void givenOneInCompleteAndOtherNonCompleteCaseInCcd_whenRetrievePetition_thenReturnInComplete()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
@@ -279,7 +280,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, AWAITING_PAYMENT_STATE);
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AWAITING_PAYMENT.getValue());
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, "state1");
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
@@ -299,7 +300,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenMultipleAwaitingPaymentAndOtherNonSubmittedCaseInCcd_whenRetrievePetition_thenReturnError()
+    public void givenMultipleInCompleteAndOtherNonCompleteCaseInCcd_whenRetrievePetition_thenReturnError()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
@@ -326,7 +327,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenCasesInNotAwaitingPaymentOrNonSubmittedCaseInCcdOrNoDraft_whenRetrievePetition_thenReturnNull()
+    public void givenCasesInNotInCompleteOrNonCompleteCaseInCcdOrNoDraft_whenRetrievePetition_thenReturnNull()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";

@@ -13,8 +13,8 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -37,7 +37,7 @@ public class CcdUpdateServiceImplUTest {
     private CoreCaseDataApi coreCaseDataApi;
 
     @Mock
-    private IdamUserService idamUserService;
+    private UserService userService;
 
     @Mock
     private AuthTokenGenerator authTokenGenerator;
@@ -82,7 +82,7 @@ public class CcdUpdateServiceImplUTest {
         final UserDetails userDetails = UserDetails.builder().id(userId).build();
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(idamUserService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi.startEventForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
             CASE_TYPE, caseId, eventId)).thenReturn(startEventResponse);

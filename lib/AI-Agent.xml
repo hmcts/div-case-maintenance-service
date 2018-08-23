@@ -14,8 +14,17 @@
         <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl">
             <Method name="retrievePetition" reportCaughtExceptions="true" reportExecutionTime="true"/>
         </Class>
-        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService">
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdAccessServiceImpl">
+            <Method name="linkRespondent" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.IdamApiClient">
             <Method name="retrieveUserDetails" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.IdamApiClient">
+            <Method name="authenticateUser" reportCaughtExceptions="true" reportExecutionTime="true"/>
+        </Class>
+        <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.IdamApiClient">
+            <Method name="exchangeCode" reportCaughtExceptions="true" reportExecutionTime="true"/>
         </Class>
         <Class name="uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.DraftServiceImpl">
             <Method name="getAllDrafts" reportCaughtExceptions="true" reportExecutionTime="true"/>

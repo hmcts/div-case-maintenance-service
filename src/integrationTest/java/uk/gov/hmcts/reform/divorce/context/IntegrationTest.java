@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.util.IdamUtils;
-
-import java.util.UUID;
+import uk.gov.hmcts.reform.divorce.support.IdamTestSupport;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {ServiceContextConfiguration.class})
@@ -19,32 +17,24 @@ public abstract class IntegrationTest {
     protected String serverUrl;
 
     @Autowired
-    private IdamUtils idamTestSupportUtil;
+    protected IdamTestSupport idamTestSupport;
 
     @Rule
     public SpringIntegrationMethodRule springMethodIntegration;
 
     protected IntegrationTest() {
-        this.springMethodIntegration = new SpringIntegrationMethodRule();
+       this.springMethodIntegration = new SpringIntegrationMethodRule();
     }
 
-    protected synchronized UserDetails getUserDetails() {
-        final String username = "simulate-delivered" + UUID.randomUUID();
-        final String emailAddress =  username + "@notifications.service.gov.uk";
-        final String password = UUID.randomUUID().toString();
-
-        idamTestSupportUtil.createUserInIdam(username, emailAddress, password);
-        final String authToken = idamTestSupportUtil.generateUserTokenWithNoRoles(emailAddress, password);
-
-        return UserDetails.builder()
-            .username(username)
-            .emailAddress(emailAddress)
-            .password(password)
-            .authToken(authToken)
-            .build();
+    protected UserDetails getUserDetails() {
+        return idamTestSupport.createAnonymousCitizenUser();
     }
 
     protected String getUserToken() {
         return getUserDetails().getAuthToken();
+    }
+
+    protected UserDetails getCaseWorkerUser() {
+        return idamTestSupport.createAnonymousCaseWorkerUser();
     }
 }

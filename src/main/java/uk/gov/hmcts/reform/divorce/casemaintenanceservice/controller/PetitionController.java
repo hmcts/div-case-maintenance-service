@@ -20,10 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.validation.constraints.NotNull;
@@ -38,7 +42,7 @@ public class PetitionController {
     @Autowired
     private PetitionService petitionService;
 
-    @GetMapping(path = "/retrievePetition", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(path = "/retrieveCase", produces = MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Retrieves a divorce case from CCD of Draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
@@ -51,8 +55,31 @@ public class PetitionController {
         @RequestParam(value = "checkCcd", required = false)
         @ApiParam(value = "Boolean flag enabling CCD check for petition") final Boolean checkCcd) {
 
+        return retrieveCase(jwt, CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING, checkCcd);
+    }
+
+    @GetMapping(path = "/retrieveAosCase", produces = MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Retrieves a divorce case from CCD of Draft store")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
+        @ApiResponse(code = 204, message = "When there are no petition exists"),
+        @ApiResponse(code = 300, message = "Multiple Petition found")
+        })
+    public ResponseEntity<CaseDetails> retrieveCaseForRespondent(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @RequestParam(value = "checkCcd", required = false)
+        @ApiParam(value = "Boolean flag enabling CCD check for petition") final Boolean checkCcd) {
+
+        return retrieveCase(jwt, CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING, checkCcd);
+    }
+
+    private ResponseEntity<CaseDetails> retrieveCase(String jwt,
+                                                     Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
+                                                     Boolean checkCcd) {
+
         try {
-            CaseDetails caseDetails = petitionService.retrievePetition(jwt,
+            CaseDetails caseDetails = petitionService.retrievePetition(jwt, caseStateGrouping,
                 Optional.ofNullable(checkCcd).orElse(false));
 
             return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);

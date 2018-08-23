@@ -14,7 +14,10 @@ server:
 idam:
   api:
     url: ${IDAM_API_BASEURL:http://localhost:4503}
-
+    redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
+  caseworker:
+    username: dummycaseworker@test.com
+    password: dummy
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
     totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
@@ -60,6 +63,11 @@ case:
       api:
         baseurl: ${CASE_FORMATTER_SERVICE_API_BASEURL:http://localhost:4011}
 
+auth2:
+  client:
+    id: divorce
+    secret: dummysecret
+
 http:
   connect:
     timeout: 60000
@@ -88,7 +96,6 @@ management:
         health: health
       exposure:
         include: info, health, metrics
-
 
 logging:
   level:

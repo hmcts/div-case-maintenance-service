@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil;
 
 class BaseCcdCaseService {
@@ -25,13 +25,17 @@ class BaseCcdCaseService {
     CoreCaseDataApi coreCaseDataApi;
 
     @Autowired
-    private IdamUserService idamUserService;
+    private UserService userService;
 
     @Autowired
     private AuthTokenGenerator authTokenGenerator;
 
     UserDetails getUserDetails(String userToken) {
-        return idamUserService.retrieveUserDetails(getBearerUserToken(userToken));
+        return userService.retrieveUserDetails(getBearerUserToken(userToken));
+    }
+
+    UserDetails getAnonymousCaseWorkerDetails() {
+        return userService.retrieveAnonymousCaseWorkerDetails();
     }
 
     String getBearerUserToken(String userToken) {

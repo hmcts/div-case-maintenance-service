@@ -4,14 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.DraftStoreClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.DraftModelFactory;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.EncryptionKeyFactory;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.DraftService;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.IdamUserService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil;
 
 import java.util.Map;
@@ -28,7 +28,7 @@ public class DraftServiceImpl implements DraftService {
     private DraftStoreClient draftStoreClient;
 
     @Autowired
-    private IdamUserService idamUserService;
+    private UserService userService;
 
     @Autowired
     private EncryptionKeyFactory encryptionKeyFactory;
@@ -123,7 +123,7 @@ public class DraftServiceImpl implements DraftService {
     }
 
     private String getSecret(String userToken) {
-        UserDetails userDetails = idamUserService.retrieveUserDetails(getBearerToken(userToken));
+        UserDetails userDetails = userService.retrieveUserDetails(getBearerToken(userToken));
 
         return encryptionKeyFactory.createEncryptionKey(userDetails.getId());
     }
