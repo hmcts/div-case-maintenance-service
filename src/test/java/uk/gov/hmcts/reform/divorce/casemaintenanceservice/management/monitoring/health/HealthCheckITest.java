@@ -55,7 +55,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
     "feign.hystrix.enabled=true",
     "eureka.client.enabled=false"
     })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class HealthCheckITest {
 
     private static final String HEALTH_UP_RESPONSE = "{ \"status\": \"UP\"}";
