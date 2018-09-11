@@ -27,6 +27,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 
@@ -62,6 +63,9 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     private static final String TRANSFORM_TO_CCD_CONTEXT_PATH = "/caseformatter/version/1/to-ccd-format";
     private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
+
+    private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.AWAITING_PAYMENT.getValue();
+    private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.SUBMITTED.getValue();
 
     @ClassRule
     public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
@@ -191,10 +195,10 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final Long caseId3 = 3L;
         final Long caseId4 = 4L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.SUBMITTED.getValue());
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AWAITING_PAYMENT.getValue());
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CaseState.PENDING_REJECTION.getValue());
-        final CaseDetails caseDetails4 = createCaseDetails(caseId4, CaseState.ISSUED.getValue());
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, SUBMITTED_PAYMENT_STATE);
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.ISSUED.getValue());
+        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CitizenCaseState.PENDING_REJECTION.getValue());
+        final CaseDetails caseDetails4 = createCaseDetails(caseId4, CitizenCaseState.PENDING_REJECTION.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -222,9 +226,9 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.ISSUED.getValue());
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.SUBMITTED.getValue());
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CaseState.AWAITING_PAYMENT.getValue());
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CitizenCaseState.PENDING_REJECTION.getValue());
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, SUBMITTED_PAYMENT_STATE);
+        final CaseDetails caseDetails3 = createCaseDetails(caseId3, AWAITING_PAYMENT_STATE);
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -306,8 +310,8 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AWAITING_PAYMENT.getValue());
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AWAITING_HWF_DECISION.getValue());
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, AWAITING_PAYMENT_STATE);
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CitizenCaseState.AWAITING_HWF_DECISION.getValue());
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
