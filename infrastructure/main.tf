@@ -75,6 +75,3 @@ data "azurerm_key_vault_secret" "idam-caseworker-password" {
     vault_uri = "${data.azurerm_key_vault.div_key_vault.vault_uri}"
 }
 
-provider "vault" {
-    address = "https://vault.reform.hmcts.net:6200"
-}
