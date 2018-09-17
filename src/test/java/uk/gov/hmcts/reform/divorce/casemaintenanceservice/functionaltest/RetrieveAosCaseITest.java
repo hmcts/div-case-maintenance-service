@@ -244,7 +244,7 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final Long caseId = 1L;
-        final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.AOS_RESPONDED.getValue());
+        final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.AOS_STARTED.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -272,7 +272,7 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AOS_RESPONDED.getValue());
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AOS_STARTED.getValue());
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, "state1");
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
@@ -302,8 +302,8 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AOS_RESPONDED.getValue());
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AOS_RESPONDED.getValue());
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AOS_STARTED.getValue());
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AOS_STARTED.getValue());
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);

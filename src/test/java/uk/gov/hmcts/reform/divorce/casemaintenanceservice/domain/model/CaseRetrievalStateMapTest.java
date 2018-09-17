@@ -32,7 +32,7 @@ public class CaseRetrievalStateMapTest {
     public void respondantCaseStateGroupingStateTest() {
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.INCOMPLETE))
             .contains(
-                CaseState.AOS_RESPONDED
+                CaseState.AOS_STARTED
             );
 
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.COMPLETE))

@@ -15,7 +15,7 @@ public enum CaseState {
     PENDING_REJECTION("PendingRejection"),
     AWAITING_DOCUMENTS("AwaitingDocuments"),
     AOS_AWAITING("AosAwaiting"),
-    AOS_RESPONDED("AosResponded"),
+    AOS_STARTED("AosStarted"),
     AOS_COMPLETED("AosCompleted"),
     AWAITING_DECREE_NISI("AwaitingDecreeNisi"),
     UNKNOWN("Unknown");
