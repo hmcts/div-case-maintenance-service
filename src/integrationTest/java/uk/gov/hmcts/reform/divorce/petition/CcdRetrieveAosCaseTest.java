@@ -15,7 +15,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrVU";
 
-    private static final String TEST_AOS_RESPONDED_EVENT = "testAosResponded";
+    private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
     private static final String TEST_AOS_COMPLETED_EVENT = "testAosCompleted";
 
     @Value("${case.maintenance.aos-case.context-path}")
@@ -87,7 +87,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     }
 
     @Test
-    public void givenAosRespondedCaseInCcd_whenRetrieveAosCase_thenReturnTheCase() throws Exception {
+    public void givenAosStartedCaseInCcd_whenRetrieveAosCase_thenReturnTheCase() throws Exception {
         final String userToken = getUserToken();
 
         final Long caseId = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
@@ -99,7 +99,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     }
 
     @Test
-    public void givenMultipleAosRespondedAndNoAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnMultipleChoice()
+    public void givenMultipleAosStartedAndNoAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnMultipleChoice()
         throws Exception {
         final String userToken = getUserToken();
 

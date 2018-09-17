@@ -33,7 +33,7 @@ public class CaseRetrievalStateMap {
         ImmutableMap.of(
             CaseStateGrouping.INCOMPLETE,
             Collections.singletonList(
-                CaseState.AOS_RESPONDED),
+                CaseState.AOS_STARTED),
             CaseStateGrouping.COMPLETE,
             Collections.singletonList(
                 CaseState.AOS_COMPLETED
