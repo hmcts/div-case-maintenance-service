@@ -4,6 +4,10 @@ import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
+import java.util.Map;
+
+import static uk.gov.hmcts.reform.divorce.util.ResourceLoader.objectToJson;
+
 public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
     private static final String PAYLOAD_CONTEXT_PATH = "ccd-update-payload/";
 
@@ -18,6 +22,15 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
                 getRequestUrl(caseId, eventId),
                 getHeaders(userToken),
                 fileName == null ? "{}" : loadJson(fileName, PAYLOAD_CONTEXT_PATH)
+            );
+    }
+
+    protected Response updateCase(Map<String, Object> data, Long caseId, String eventId, String userToken) {
+        return
+            RestUtil.postToRestService(
+                getRequestUrl(caseId, eventId),
+                getHeaders(userToken),
+                data == null ? "{}" : objectToJson(data)
             );
     }
 

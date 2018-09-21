@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
@@ -110,6 +111,7 @@ public class CcdAccessServiceImplUTest {
     @Test(expected = CaseNotFoundException.class)
     public void givenLetterHolderIdIsNull_whenLinkRespondent_thenThrowCaseNotFoundException() {
         CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AOS_AWAITING.getValue())
             .data(Collections.singletonMap(
                 LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID
             )).build();
@@ -129,6 +131,7 @@ public class CcdAccessServiceImplUTest {
     @Test(expected = CaseNotFoundException.class)
     public void givenLetterHolderIdIsBlank_whenLinkRespondent_thenThrowCaseNotFoundException() {
         CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AOS_AWAITING.getValue())
             .data(Collections.singletonMap(
                 LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID
             )).build();
@@ -147,7 +150,9 @@ public class CcdAccessServiceImplUTest {
 
     @Test(expected = CaseNotFoundException.class)
     public void givenLetterHolderIdInCaseIsNull_whenLinkRespondent_thenThrowCaseNotFoundException() {
-        CaseDetails caseDetails = CaseDetails.builder().data(Collections.emptyMap()).build();
+        CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AOS_AWAITING.getValue())
+            .data(Collections.emptyMap()).build();
 
         when(coreCaseDataApi.readForCaseWorker(
             CASEWORKER_AUTHORISATION,
@@ -164,6 +169,27 @@ public class CcdAccessServiceImplUTest {
     @Test(expected = CaseNotFoundException.class)
     public void givenLetterHolderIdsDoNotMatch_whenLinkRespondent_thenThrowCaseNotFoundException() {
         CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AOS_AWAITING.getValue())
+            .data(Collections.singletonMap(
+                LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID
+            )).build();
+
+        when(coreCaseDataApi.readForCaseWorker(
+            CASEWORKER_AUTHORISATION,
+            SERVICE_TOKEN,
+            CASEWORKER_USER_ID,
+            JURISDICTION_ID,
+            CASE_TYPE,
+            CASE_ID
+        )).thenReturn(caseDetails);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, "Letter holder id no match");
+    }
+
+    @Test(expected = CaseNotFoundException.class)
+    public void givenCaseStateNotAosAwaiting_whenLinkRespondent_thenThrowCaseNotFoundException() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.ISSUED.getValue())
             .data(Collections.singletonMap(
                 LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID
             )).build();
@@ -181,8 +207,9 @@ public class CcdAccessServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdMatches_whenLinkRespondent_thenProceedAsExpected() {
+    public void givenLetterHolderIdAndCaseStateMatches_whenLinkRespondent_thenProceedAsExpected() {
         CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AOS_AWAITING.getValue())
             .data(Collections.singletonMap(
                 LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID
             )).build();

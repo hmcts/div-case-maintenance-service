@@ -30,9 +30,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             caseId
         );
 
-        if (!letterHolderIdMatches(caseDetails, letterHolderId)) {
-            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found",
-                caseId, letterHolderId));
+        if (!letterHolderIdAndCaseStateMatches(caseDetails, letterHolderId)) {
+            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found or"
+                    + " case not in awaiting aos state", caseId, letterHolderId));
         }
 
         UserDetails respondentUser = getUserDetails(authorisation);
@@ -52,11 +52,12 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
     }
 
-    private boolean letterHolderIdMatches(CaseDetails caseDetails, String letterHolderId) {
+    private boolean letterHolderIdAndCaseStateMatches(CaseDetails caseDetails, String letterHolderId) {
         if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
             return false;
         }
 
-        return letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
+        return //CaseState.AOS_AWAITING.getValue().equals(caseDetails.getState())
+             letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
     }
 }

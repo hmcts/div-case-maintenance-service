@@ -126,7 +126,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     private Response createACaseUpdateStateAndReturnTheCase(String userToken, String eventName) throws Exception {
         Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
-        return updateCase(null, caseId, eventName, userToken);
+        return updateCase((String)null, caseId, eventName, userToken);
     }
 
     @Override
