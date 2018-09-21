@@ -203,7 +203,7 @@ public class CcdAccessServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, "Letter holder id no match");
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
 
     @Test

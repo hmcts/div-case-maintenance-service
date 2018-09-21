@@ -82,19 +82,6 @@ public class LinkRespondentTest extends PetitionSupport {
     @SuppressWarnings("unchecked")
     @Test
     public void givenCaseStateNotAosAwaiting_whenLinkRespondent_thenReturnNotFound() {
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
-        caseData.put("AosLetterHolderId", "nonMatchingLetterHolderId");
-
-        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
-
-        Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
-
-        assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -103,6 +90,25 @@ public class LinkRespondentTest extends PetitionSupport {
         caseData.put("AosLetterHolderId", pinResponse.getUserId());
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+
+        Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() throws Exception {
+        final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
+
+        final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
+
+        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        caseData.put("AosLetterHolderId", pinResponse.getUserId());
+
+        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+
+        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
         Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
 

@@ -214,7 +214,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
-            .data(Collections.singletonMap(LETTER_HOLDER_CASE_FIELD, "nonmatchingletterholderid"))
+            .data(Collections.singletonMap(LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
