@@ -179,7 +179,7 @@ public class CcdRetrievalServiceImplUTest {
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(coreCaseDataApi
             .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
-                Collections.emptyMap())).thenReturn(Arrays.asList(expectedCaseDetails));
+                Collections.emptyMap())).thenReturn(Collections.singletonList(expectedCaseDetails));
 
         // when
         CaseDetails caseDetails = classUnderTest.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
