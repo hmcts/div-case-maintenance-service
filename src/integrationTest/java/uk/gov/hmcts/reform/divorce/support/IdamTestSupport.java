@@ -14,7 +14,7 @@ public class IdamTestSupport {
     private static final String CASE_WORKER_USERNAME = "CASE_WORKER_USER_NAME";
     private static final String CASE_WORKER_PASSWORD = "CASE_WORKER_PASSWORD";
 
-    private UserDetails _caseWorkerUser;
+    private UserDetails defaultCaseWorkerUser;
 
     @Autowired
     private IdamUtils idamUtils;
@@ -44,11 +44,11 @@ public class IdamTestSupport {
 
     public UserDetails createAnonymousCaseWorkerUser() {
         synchronized (this) {
-            if (_caseWorkerUser == null) {
-                _caseWorkerUser = createNewUser(CASE_WORKER_USERNAME, CASE_WORKER_PASSWORD, true);
+            if (defaultCaseWorkerUser == null) {
+                defaultCaseWorkerUser = createNewUser(CASE_WORKER_USERNAME, CASE_WORKER_PASSWORD, true);
             }
 
-            return _caseWorkerUser;
+            return defaultCaseWorkerUser;
         }
     }
 

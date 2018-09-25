@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.ccd;
 
+import com.google.common.collect.ImmutableMap;
 import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 
 public class LinkRespondentTest extends PetitionSupport {
     private static final String PAYLOAD_CONTEXT_PATH = "ccd-submission-payload/";
+    private static final String RESPONDENT_EMAIL_ADDRESS = "RespEmailAddress";
+    private static final String START_AOS_EVENT_ID = "startAos";
+    private static final String TEST_AOS_AWAITING_EVENT_ID = "testAosAwaiting";
 
     private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
         + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
@@ -30,6 +34,9 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @Value("${case.maintenance.link-respondent.context-path}")
     private String linkRespondentContextPath;
+
+    @Value("${case.maintenance.aos-case.context-path}")
+    private String retrieveAosCaseContextPath;
 
     @Autowired
     private CcdClientSupport ccdClientSupport;
@@ -74,7 +81,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() {
+    public void givenCaseStateNotAosAwaiting_whenLinkRespondent_thenReturnNotFound() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -84,6 +91,25 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
+        Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() throws Exception {
+        final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
+
+        final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
+
+        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        caseData.put("AosLetterHolderId", pinResponse.getUserId());
+
+        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+
+        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+
         Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
@@ -91,7 +117,9 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenLetterHolderIdMatches_whenLinkRespondent_thenShouldBeAbleToAccessTheCase() {
+    public void givenLetterHolderIdAndCaseStateMatches_whenLinkRespondent_thenShouldBeAbleToAccessTheCase()
+        throws Exception {
+
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -103,7 +131,12 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
+        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+
         linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
+
+        updateCase(ImmutableMap.of(RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
+            caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
         Response response = getCase(upliftedUser.getAuthToken(), true);
 
@@ -115,5 +148,10 @@ public class LinkRespondentTest extends PetitionSupport {
             serverUrl + linkRespondentContextPath + "/" + caseId + "/" + letterHolderId,
             Collections.singletonMap(HttpHeaders.AUTHORIZATION, authToken),
             null);
+    }
+
+    @Override
+    protected String getRequestUrl() {
+        return serverUrl + retrieveAosCaseContextPath;
     }
 }

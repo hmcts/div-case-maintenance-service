@@ -54,7 +54,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         List<CaseDetails> completedCases = statusCaseDetailsMap.get(CaseStateGrouping.COMPLETE);
 
         if (CollectionUtils.isNotEmpty(completedCases)) {
-            return completedCases.get(0);
+            return updateApplicationStatus(completedCases.get(0));
         }
 
         List<CaseDetails> inCompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
@@ -68,6 +68,12 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             throw new DuplicateCaseException(message);
         }
 
-        return inCompleteCases.get(0);
+        return updateApplicationStatus(inCompleteCases.get(0));
+    }
+
+    private CaseDetails updateApplicationStatus(CaseDetails caseDetails) {
+        caseDetails.setState(CaseState.getState(caseDetails.getState()).getStatus().getValue());
+
+        return caseDetails;
     }
 }
