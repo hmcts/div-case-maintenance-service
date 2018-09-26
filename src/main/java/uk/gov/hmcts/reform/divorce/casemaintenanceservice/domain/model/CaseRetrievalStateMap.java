@@ -35,8 +35,10 @@ public class CaseRetrievalStateMap {
             Collections.singletonList(
                 CaseState.AOS_STARTED),
             CaseStateGrouping.COMPLETE,
-            Collections.singletonList(
-                CaseState.AOS_COMPLETED
+            Arrays.asList(
+                CaseState.AOS_COMPLETED,
+                CaseState.AOS_COMPLETED_AWAITING_ANSWER,
+                CaseState.AWAITING_DECREE_NISI
             )
         );
 }
