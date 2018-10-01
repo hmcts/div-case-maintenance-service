@@ -9,7 +9,7 @@ spring:
     static-locations:
 
 server:
-  port: 4009
+  port: 4010
 
 idam:
   api:

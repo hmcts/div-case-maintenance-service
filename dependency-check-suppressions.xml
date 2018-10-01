@@ -64,4 +64,9 @@
         <cpe>cpe:/a:apache_tomcat:apache_tomcat</cpe>
         <cpe>cpe:/a:apache_software_foundation:tomcat</cpe>
     </suppress>
+    <suppress>
+        <gav regex="true">.*</gav>
+        <cve>CVE-2018-11039</cve>
+        <cve>CVE-2018-11040</cve>        
+    </suppress>
 </suppressions>
