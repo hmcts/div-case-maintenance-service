@@ -28,7 +28,7 @@ To build project please execute the following command:
 First you need to create distribution by executing following command:
 
 ```bash
-    ./gradlew installDist
+    ./gradlew build
 ```
 
 When the distribution has been created in `build/install/div-case-maintenance-service` directory,
@@ -39,12 +39,12 @@ you can run the application by executing following command:
 ```
 
 As a result the following container(s) will get created and started:
- - long living container for API application exposing port `4009`
+ - long living container for API application exposing port `4010`
 
 ### API documentation
 
 API documentation is provided with Swagger:
- - `http://localhost:4009/swagger-ui.html` - UI to interact with the API resources
+ - `http://localhost:4010/swagger-ui.html` - UI to interact with the API resources
 
 ## Developing
 
