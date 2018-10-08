@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.core.MediaType;
 
 @RestController
 @RequestMapping(path = "casemaintenance/version/1")
@@ -42,7 +42,7 @@ public class PetitionController {
     @Autowired
     private PetitionService petitionService;
 
-    @GetMapping(path = "/retrieveCase", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(path = "/retrieveCase", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Retrieves a divorce case from CCD of Draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
@@ -58,7 +58,7 @@ public class PetitionController {
         return retrieveCase(jwt, CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING, checkCcd);
     }
 
-    @GetMapping(path = "/retrieveAosCase", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(path = "/retrieveAosCase", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Retrieves a divorce case from CCD of Draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
@@ -89,7 +89,7 @@ public class PetitionController {
         }
     }
 
-    @PutMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON)
+    @PutMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Saves or updates a draft to draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Draft saved")})
@@ -106,7 +106,7 @@ public class PetitionController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON)
+    @PostMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a new draft in draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Draft saved")})
@@ -135,7 +135,7 @@ public class PetitionController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(path = "/drafts", produces = MediaType.APPLICATION_JSON)
+    @GetMapping(path = "/drafts", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Retrieve All the Drafts for a given user")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Returns all the saved drafts for a given user")})
