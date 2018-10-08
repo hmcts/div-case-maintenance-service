@@ -145,7 +145,6 @@ dependencies {
 
     compile group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
     compile group: 'uk.gov.hmcts.reform', name: 'http-proxy-spring-boot-autoconfigure', version: versions.reformSpringBootAutoConfigure
-    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: versions.javaxWsRs
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
     compile group: 'com.puppycrawl.tools', name: 'checkstyle', version:  versions.puppyCrawl
