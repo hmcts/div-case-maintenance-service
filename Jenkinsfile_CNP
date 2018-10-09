@@ -38,8 +38,11 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withPipeline(type , product, component) {
-    enableDockerBuild()
-    enableDeployToAKS()
+    if (!env.CHANGE_TITLE.startsWith('[PREVIEW]')) {
+        enableDockerBuild()
+        enableDeployToAKS()
+    }
+
     loadVaultSecrets(secrets)
     setVaultName('div')
 
