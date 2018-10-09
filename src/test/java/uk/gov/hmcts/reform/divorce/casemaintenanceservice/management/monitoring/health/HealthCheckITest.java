@@ -2,8 +2,6 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.monitoring
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.jayway.jsonpath.JsonPath;
-import com.netflix.loadbalancer.Server;
-import com.netflix.loadbalancer.ServerList;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -17,10 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.cloud.netflix.ribbon.StaticServerList;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -28,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -48,13 +42,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(
-        classes = {CaseMaintenanceServiceApplication.class, HealthCheckITest.LocalRibbonClientConfiguration.class})
+        classes = {CaseMaintenanceServiceApplication.class})
 @PropertySource(value = "classpath:application.properties")
-@TestPropertySource(properties = {
-    "endpoints.health.time-to-live=0",
-    "feign.hystrix.enabled=true",
-    "eureka.client.enabled=false"
-    })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class HealthCheckITest {
 
@@ -304,13 +293,5 @@ public class HealthCheckITest {
                 .withStatus(serviceUp ? HttpStatus.OK.value() : HttpStatus.SERVICE_UNAVAILABLE.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                 .withBody(serviceUp ? HEALTH_UP_RESPONSE : HEALTH_DOWN_RESPONSE)));
-    }
-
-    @TestConfiguration
-    public static class LocalRibbonClientConfiguration {
-        @Bean
-        public ServerList<Server> ribbonServerList(@Value("${ccd.server.port}") int serverPort) {
-            return new StaticServerList<>(new Server("localhost", serverPort));
-        }
     }
 }

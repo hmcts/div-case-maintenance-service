@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,6 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
-
-import javax.ws.rs.core.MediaType;
 
 @RestController
 @RequestMapping(path = "casemaintenance/version/1")
@@ -33,8 +32,8 @@ public class CcdController {
     @Autowired
     private CcdAccessService ccdAccessService;
 
-    @PostMapping(path = "/submit", consumes = MediaType.APPLICATION_JSON,
-        produces = MediaType.APPLICATION_JSON)
+    @PostMapping(path = "/submit", consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Submits a divorce session to CCD")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the complete "
@@ -48,8 +47,8 @@ public class CcdController {
         return ResponseEntity.ok(ccdSubmissionService.submitCase(data, jwt));
     }
 
-    @PostMapping(path = "/updateCase/{caseId}/{eventId}", consumes = MediaType.APPLICATION_JSON,
-        produces = MediaType.APPLICATION_JSON)
+    @PostMapping(path = "/updateCase/{caseId}/{eventId}", consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Updates case details")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A request to update the case details was sent to CCD. The body payload "
