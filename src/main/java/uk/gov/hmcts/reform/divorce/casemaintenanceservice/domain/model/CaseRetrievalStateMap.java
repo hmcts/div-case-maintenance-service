@@ -20,13 +20,18 @@ public class CaseRetrievalStateMap {
             Arrays.asList(
                 CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_HWF_DECISION,
-                CaseState.AWAITING_DECREE_NISI),
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_PETITIONER),
             CaseStateGrouping.COMPLETE,
             Arrays.asList(
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,
                 CaseState.PENDING_REJECTION,
-                CaseState.AWAITING_DOCUMENTS)
+                CaseState.AWAITING_DOCUMENTS,
+                CaseState.AOS_AWAITING,
+                CaseState.AOS_COMPLETED,
+                CaseState.AOS_COMPLETED_AWAITING_ANSWER,
+                CaseState.AWAITING_DECREE_NISI)
         );
 
     public static final Map<CaseStateGrouping, List<CaseState>> RESPONDENT_CASE_STATE_GROUPING =

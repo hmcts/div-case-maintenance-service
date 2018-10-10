@@ -8,11 +8,12 @@ import java.util.Arrays;
 @AllArgsConstructor
 @Getter
 public enum CaseState {
+    AWAITING_PETITIONER("AwaitingPetitioner", ApplicationStatus.AWAITING_PETITIONER),
     AWAITING_PAYMENT("AwaitingPayment", ApplicationStatus.AWAITING_PAYMENT),
     AWAITING_HWF_DECISION("AwaitingHWFDecision", ApplicationStatus.PETITION_COMPLETED),
     SUBMITTED("Submitted", ApplicationStatus.PETITION_COMPLETED),
     ISSUED("Issued", ApplicationStatus.PETITION_COMPLETED),
-    PENDING_REJECTION("PendingRejection", ApplicationStatus.PETITION_COMPLETED),
+    PENDING_REJECTION("PendingRejection", ApplicationStatus.PENDING_REJECTION),
     AWAITING_DOCUMENTS("AwaitingDocuments", ApplicationStatus.PETITION_COMPLETED),
     AOS_AWAITING("AosAwaiting", ApplicationStatus.AOS_AWAITING),
     AOS_STARTED("AosStarted", ApplicationStatus.AOS_STARTED),
