@@ -6,8 +6,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ApplicationStatus {
+    AWAITING_PETITIONER("AwaitingPetitioner"),
     AWAITING_PAYMENT("AwaitingPayment"),
     PETITION_COMPLETED("PetitionCompleted"),
+    PENDING_REJECTION("PendingRejection"),
     AOS_AWAITING("AosAwaiting"),
     AOS_STARTED("AosStarted"),
     AOS_COMPLETED("AosCompleted"),
