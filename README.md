@@ -63,6 +63,14 @@ To run all checks (including unit tests) please execute following command:
 ```bash
     ./gradlew check
 ```
+### Mutation tests
+
+To run all mutation tests execute the following command:
+
+```
+/gradlew pitest
+
+```
 
 ## Versioning
 

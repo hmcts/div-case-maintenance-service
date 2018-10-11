@@ -123,7 +123,7 @@ def versions = [
     springfoxSwagger: '2.9.0',
     unirest: '1.4.9',
     wiremockVersion: '2.8.0',
-    pitest: '1.3.2',
+    pitest: '1.4.2',
     gradlePitest: '1.3.0',
     sonarPitest: '0.5'
 ]
@@ -257,13 +257,17 @@ pmd {
 }
 
 pitest {
-    targetClasses = ['**uk.gov.hmcts.reform.divorce..*']
+    targetClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.*']
     excludedClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.config.*',
-    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*']
-    threads = 1
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.config.*']
+    threads = 10
     outputFormats = ['XML', 'HTML']
-    timestampedReports = true
-    mutationThreshold = 90
+    timestampedReports = false
+    mutationThreshold = 80
 }
 
 def sonarExclusions = [
