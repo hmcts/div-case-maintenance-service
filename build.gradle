@@ -263,7 +263,8 @@ pitest {
     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.*',
     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.*',
     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.*',
-    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.config.*']
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.config.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent']
     threads = 10
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
