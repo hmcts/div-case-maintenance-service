@@ -48,7 +48,7 @@ withPipeline(type , product, component) {
 
     after('checkout') {
         echo '${product}-${component} checked out'
-        this.steps.sh(script: "stage(\'mathan\') { echo \'mathan\'}")
+        this.steps.sh(script: "stage(\'mathan\') { sh echo \'mathan\'}")
     }
 
     enableSlackNotifications(channel)
