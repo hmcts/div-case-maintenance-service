@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.divorce.petition;
 import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.ProxyUtils;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 import uk.gov.hmcts.reform.divorce.util.ResourceLoader;
@@ -123,20 +122,20 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     }
 
     @Test
-    public void givenDoNotCheckCcdAndOnePetitionInDivorcdFormat_whenRetrieveCase_thenReturnPetition() throws Exception {
+    public void givenDoNotCheckCcdAndOnePetitionInDivorceFormat_whenRetrieveCase_thenReturnPetition() throws Exception {
         final String userToken = getUserToken();
 
-        final String caseInCcdFormatFileName = CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json";
+        final String caseInDivorceFormatFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
 
-        createDraft(userToken, caseInCcdFormatFileName,
+        createDraft(userToken, caseInDivorceFormatFileName,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
         Response cmsResponse = getCase(userToken, false);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
 
-        assertEquals(cmsResponse.getBody().path(CASE_DATA_JSON_PATH),
-            ResourceLoader.loadJsonToObject(caseInCcdFormatFileName, Map.class));
+        assertEquals( ResourceLoader.loadJsonToObject(caseInDivorceFormatFileName, Map.class),
+            cmsResponse.getBody().path(CASE_DATA_JSON_PATH));
 
         deleteDraft(userToken);
     }
