@@ -31,7 +31,7 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED,
                 CaseState.AOS_COMPLETED,
-                CaseState.AOS_COMPLETED_AWAITING_ANSWER,
+                CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_DECREE_NISI)
         );
 
@@ -43,7 +43,7 @@ public class CaseRetrievalStateMap {
             CaseStateGrouping.COMPLETE,
             Arrays.asList(
                 CaseState.AOS_COMPLETED,
-                CaseState.AOS_COMPLETED_AWAITING_ANSWER,
+                CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_DECREE_NISI
             )
         );

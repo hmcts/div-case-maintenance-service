@@ -23,7 +23,7 @@ public abstract class IntegrationTest {
     public SpringIntegrationMethodRule springMethodIntegration;
 
     protected IntegrationTest() {
-       this.springMethodIntegration = new SpringIntegrationMethodRule();
+        this.springMethodIntegration = new SpringIntegrationMethodRule();
     }
 
     protected UserDetails getUserDetails() {
