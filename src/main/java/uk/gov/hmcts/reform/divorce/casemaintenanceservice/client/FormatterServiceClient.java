@@ -22,4 +22,13 @@ public interface FormatterServiceClient {
     )
     Map<String, Object> transformToCCDFormat(@RequestBody Object data,
                                              @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation);
+
+    @RequestMapping(
+        method = RequestMethod.POST,
+        value = "caseformatter/version/1/to-divorce-format",
+        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
+    )
+    Map<String, Object> transformToDivorceFormat(@RequestBody Object data,
+                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation);
+
 }

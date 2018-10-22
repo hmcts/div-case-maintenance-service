@@ -1,12 +1,4 @@
 {
-    "cookie": {
-        "originalMaxAge": null,
-        "expires": null,
-        "secure": false,
-        "httpOnly": true,
-        "path": "/"
-    },
-    "expires": 1507919805739,
     "screenHasMarriageBroken": "Yes",
     "screenHasRespondentAddress": "Yes",
     "screenHasMarriageCert": "Yes",

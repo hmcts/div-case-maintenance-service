@@ -100,7 +100,7 @@ public class PetitionServiceImplUTest {
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
 
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
-        when(draftService.isInCcdFormat(draft)).thenReturn(true);
+        when(draftService.isInCcdFormat(draft)).thenReturn(false);
 
         CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,false);
 
@@ -118,12 +118,12 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> document = Collections.emptyMap();
         final Draft draft = new Draft("1", document, null);
 
-        final Map<String, Object> caseData = new HashMap<>();
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
+        final Map<String, Object> draftDocument = new HashMap<>();
+        final CaseDetails caseDetails = CaseDetails.builder().data(draftDocument).build();
 
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
-        when(draftService.isInCcdFormat(draft)).thenReturn(false);
-        when(formatterServiceClient.transformToCCDFormat(document, AUTHORISATION)).thenReturn(caseData);
+        when(draftService.isInCcdFormat(draft)).thenReturn(true);
+        when(formatterServiceClient.transformToDivorceFormat(document, AUTHORISATION)).thenReturn(draftDocument);
 
         CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,false);
 
@@ -131,7 +131,7 @@ public class PetitionServiceImplUTest {
 
         verifyZeroInteractions(ccdRetrievalService);
         verify(draftService).getDraft(AUTHORISATION);
-        verify(formatterServiceClient).transformToCCDFormat(document, AUTHORISATION);
+        verify(formatterServiceClient).transformToDivorceFormat(document, AUTHORISATION);
     }
 
     @Test
