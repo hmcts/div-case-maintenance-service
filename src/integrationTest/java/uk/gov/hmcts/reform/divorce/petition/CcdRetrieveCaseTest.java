@@ -3,18 +3,15 @@ package uk.gov.hmcts.reform.divorce.petition;
 import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.ProxyUtils;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 import uk.gov.hmcts.reform.divorce.util.ResourceLoader;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 public class CcdRetrieveCaseTest extends PetitionSupport {
     private static final String CASE_DATA_JSON_PATH = "case_data";
@@ -126,16 +123,18 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     }
 
     @Test
-    public void givenDoNotCheckCcdAndOnePetitionInCcdFormat_whenRetrieveCase_thenReturnPetition() throws Exception {
+    public void givenDoNotCheckCcdAndOnePetitionInDivorcdFormat_whenRetrieveCase_thenReturnPetition() throws Exception {
         final String userToken = getUserToken();
 
         final String caseInCcdFormatFileName = CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json";
 
-        createDraft(userToken, caseInCcdFormatFileName, Collections.emptyMap());
+        createDraft(userToken, caseInCcdFormatFileName,
+            Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
         Response cmsResponse = getCase(userToken, false);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
+
         assertEquals(cmsResponse.getBody().path(CASE_DATA_JSON_PATH),
             ResourceLoader.loadJsonToObject(caseInCcdFormatFileName, Map.class));
 
