@@ -25,17 +25,31 @@ public class CaseStateTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "AwaitingLegalAdvisorReferral", "AwaitingLegalAdvisorReferral" },
-                { "AwaitingConsiderationDN", "AwaitingConsiderationDN" },
-                { "AwaitingClarification", "AwaitingClarification" },
-                { "AwaitingListing", "AwaitingListing" },
-                { "AwaitingPronouncement", "AwaitingPronouncement" }
+        return Arrays.asList(new Object[][]{
+                {"AwaitingPetitioner", "AwaitingPetitioner"},
+                {"AwaitingPayment", "AwaitingPayment"},
+                {"AwaitingHWFDecision", "PetitionCompleted"},
+                {"Submitted", "PetitionCompleted"},
+                {"Issued", "PetitionCompleted"},
+                {"PendingRejection", "PendingRejection"},
+                {"AwaitingDocuments", "PetitionCompleted"},
+                {"AosAwaiting", "AosAwaiting"},
+                {"AosStarted", "AosStarted"},
+                {"AosCompleted", "AosCompleted"},
+                {"AosSubmittedAwaitingAnswer", "AosCompleted"},
+                {"AwaitingDecreeNisi", "DNAwaiting"},
+                {"Rejected", "Rejected"},
+                {"AwaitingLegalAdvisorReferral", "AwaitingLegalAdvisorReferral"},
+                {"AwaitingConsiderationDN", "AwaitingConsiderationDN"},
+                {"AwaitingClarification", "AwaitingClarification"},
+                {"AwaitingListing", "AwaitingListing"},
+                {"AwaitingPronouncement", "AwaitingPronouncement"},
+                {"Unknown", "DNCompleted"}
         });
     }
 
     @Test
-    public void testCCDStatesMatchExpectedApplicationStatus(){
+    public void testCCDStatesMatchExpectedApplicationStatus() {
         ApplicationStatus applicationStatus = CaseState.getState(ccdState).getStatus();
 
         assertThat(applicationStatus.getValue(), equalTo(expectedApplicationStatus));
