@@ -16,14 +16,12 @@ public class CaseRetrievalStateMap {
 
     public static final Map<CaseStateGrouping, List<CaseState>> PETITIONER_CASE_STATE_GROUPING =
         ImmutableMap.of(
-            CaseStateGrouping.INCOMPLETE,
-            Arrays.asList(
+            CaseStateGrouping.INCOMPLETE, Arrays.asList(
                 CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_HWF_DECISION,
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_PETITIONER),
-            CaseStateGrouping.COMPLETE,
-            Arrays.asList(
+            CaseStateGrouping.COMPLETE, Arrays.asList(
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,
                 CaseState.PENDING_REJECTION,
@@ -37,14 +35,17 @@ public class CaseRetrievalStateMap {
 
     public static final Map<CaseStateGrouping, List<CaseState>> RESPONDENT_CASE_STATE_GROUPING =
         ImmutableMap.of(
-            CaseStateGrouping.INCOMPLETE,
-            Collections.singletonList(
-                CaseState.AOS_STARTED),
-            CaseStateGrouping.COMPLETE,
-            Arrays.asList(
+            CaseStateGrouping.INCOMPLETE, Collections.singletonList(CaseState.AOS_STARTED),
+            CaseStateGrouping.COMPLETE, Arrays.asList(
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
-                CaseState.AWAITING_DECREE_NISI
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
+                CaseState.AWAITING_CONSIDERATION_DN,
+                CaseState.AWAITING_CLARIFICATION,
+                CaseState.AWAITING_LISTING,
+                CaseState.AWAITING_PRONOUNCEMENT
             )
         );
+
 }
