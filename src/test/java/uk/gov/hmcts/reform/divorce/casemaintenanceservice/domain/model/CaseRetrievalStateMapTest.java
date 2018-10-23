@@ -6,7 +6,6 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState.AWAITING_DECREE_NISI;
 
 public class CaseRetrievalStateMapTest {
 
@@ -16,7 +15,7 @@ public class CaseRetrievalStateMapTest {
             .contains(
                 CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_HWF_DECISION,
-                AWAITING_DECREE_NISI
+                CaseState.AWAITING_DECREE_NISI
             );
 
         assertThat(PETITIONER_CASE_STATE_GROUPING.get(CaseStateGrouping.COMPLETE))
