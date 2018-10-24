@@ -4,7 +4,6 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
 
@@ -37,7 +36,11 @@ public class CaseRetrievalStateMapTest {
 
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.COMPLETE))
             .contains(
-                CaseState.AOS_COMPLETED
+                CaseState.AOS_COMPLETED,
+                CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
+                CaseState.DEFENDED_DIVORCE
             );
     }
 

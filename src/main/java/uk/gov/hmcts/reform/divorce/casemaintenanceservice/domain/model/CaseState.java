@@ -21,6 +21,8 @@ public enum CaseState {
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer", ApplicationStatus.AOS_COMPLETED),
     AWAITING_DECREE_NISI("AwaitingDecreeNisi", ApplicationStatus.DN_AWAITING),
     REJECTED("Rejected", ApplicationStatus.REJECTED),
+    AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral", ApplicationStatus.AWAITING_LEGAL_ADVISOR_REFERRAL),
+    DEFENDED_DIVORCE("DefendedDivorce", ApplicationStatus.DEFENDED_DIVORCE),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;
@@ -32,4 +34,5 @@ public enum CaseState {
             .findFirst()
             .orElse(UNKNOWN);
     }
+
 }

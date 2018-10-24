@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.ApplicationStatus;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
-
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 
@@ -41,15 +41,18 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getForename());
         }
 
-        Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap =
-            caseDetailsList.stream()
-                .collect(Collectors.groupingBy(
-                    caseDetails -> caseStateGrouping.entrySet().stream()
-                        .filter(caseStateGroupingEntry -> caseStateGroupingEntry.getValue()
-                            .contains(CaseState.getState(caseDetails.getState())))
-                            .map(Map.Entry::getKey)
-                            .findFirst()
-                        .orElse(CaseStateGrouping.UNKNOWN)));
+        Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap = caseDetailsList.stream()
+            .collect(Collectors.groupingBy(
+                caseDetails -> caseStateGrouping.entrySet().stream()
+                    .filter(caseStateGroupingEntry -> caseStateGroupingEntry.getValue()
+                        .contains(
+                            CaseState.getState(caseDetails.getState())
+                        )
+                    )
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(CaseStateGrouping.UNKNOWN)
+            ));
 
         List<CaseDetails> completedCases = statusCaseDetailsMap.get(CaseStateGrouping.COMPLETE);
 
@@ -57,23 +60,27 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             return updateApplicationStatus(completedCases.get(0));
         }
 
-        List<CaseDetails> inCompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
+        List<CaseDetails> incompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
 
-        if (CollectionUtils.isEmpty(inCompleteCases)) {
+        if (CollectionUtils.isEmpty(incompleteCases)) {
             return null;
-        } else if (inCompleteCases.size() > 1) {
+        } else if (incompleteCases.size() > 1) {
             String message = String.format("[%d] cases in incomplete status found for the user [%s]",
-                inCompleteCases.size(), userDetails.getEmail());
+                incompleteCases.size(), userDetails.getEmail());
             log.warn(message);
             throw new DuplicateCaseException(message);
         }
 
-        return updateApplicationStatus(inCompleteCases.get(0));
+        return updateApplicationStatus(incompleteCases.get(0));
     }
 
     private CaseDetails updateApplicationStatus(CaseDetails caseDetails) {
-        caseDetails.setState(CaseState.getState(caseDetails.getState()).getStatus().getValue());
+        String ccdStateName = caseDetails.getState();
+        ApplicationStatus applicationStatus = CaseState.getState(ccdStateName).getStatus();
+
+        caseDetails.setState(applicationStatus.getValue());
 
         return caseDetails;
     }
+
 }
