@@ -18,10 +18,7 @@ public enum ApplicationStatus {
     DN_COMPLETED("DNCompleted"),
     REJECTED("Rejected"),
     AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral"),
-    AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN"),
-    AWAITING_CLARIFICATION("AwaitingClarification"),
-    AWAITING_LISTING("AwaitingListing"),
-    AWAITING_PRONOUNCEMENT("AwaitingPronouncement"),
+    DEFENDED_DIVORCE("DefendedDivorce"),
     UNKNOWN("DNCompleted");
 
     private final String value;

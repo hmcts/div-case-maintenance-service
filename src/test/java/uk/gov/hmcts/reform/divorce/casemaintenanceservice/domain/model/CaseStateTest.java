@@ -40,10 +40,7 @@ public class CaseStateTest {
                 {"AwaitingDecreeNisi", "DNAwaiting"},
                 {"Rejected", "Rejected"},
                 {"AwaitingLegalAdvisorReferral", "AwaitingLegalAdvisorReferral"},
-                {"AwaitingConsiderationDN", "AwaitingConsiderationDN"},
-                {"AwaitingClarification", "AwaitingClarification"},
-                {"AwaitingListing", "AwaitingListing"},
-                {"AwaitingPronouncement", "AwaitingPronouncement"},
+                {"DefendedDivorce", "DefendedDivorce"},
                 {"Unknown", "DNCompleted"}
         });
     }

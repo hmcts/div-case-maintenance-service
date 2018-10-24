@@ -22,10 +22,7 @@ public enum CaseState {
     AWAITING_DECREE_NISI("AwaitingDecreeNisi", ApplicationStatus.DN_AWAITING),
     REJECTED("Rejected", ApplicationStatus.REJECTED),
     AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral", ApplicationStatus.AWAITING_LEGAL_ADVISOR_REFERRAL),
-    AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN", ApplicationStatus.AWAITING_CONSIDERATION_DN),
-    AWAITING_CLARIFICATION("AwaitingClarification", ApplicationStatus.AWAITING_CLARIFICATION),
-    AWAITING_LISTING("AwaitingListing", ApplicationStatus.AWAITING_LISTING),
-    AWAITING_PRONOUNCEMENT("AwaitingPronouncement", ApplicationStatus.AWAITING_PRONOUNCEMENT),
+    DEFENDED_DIVORCE("DefendedDivorce", ApplicationStatus.DEFENDED_DIVORCE),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;
