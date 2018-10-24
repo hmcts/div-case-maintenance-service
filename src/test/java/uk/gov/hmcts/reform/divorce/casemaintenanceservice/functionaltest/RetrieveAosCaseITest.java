@@ -59,7 +59,7 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrieveAosCase";
     private static final String CHECK_CCD_PARAM = "checkCcd";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
-    private static final String TRANSFORM_TO_CCD_CONTEXT_PATH = "/caseformatter/version/1/to-ccd-format";
+    private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
     private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
 
@@ -354,7 +354,7 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         final String serviceToken = "serviceToken";
 
         final DraftList draftList = new DraftList(Collections.singletonList(
-            createDraft("1", DRAFT_DOCUMENT_TYPE_CCD_FORMAT)), null);
+            createDraft("1", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)), null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -395,7 +395,7 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
 
         stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken),
             ObjectMapperTestUtil.convertObjectToJsonString(draftList));
-        stubToCcdFormatEndpoint(divorceSessionData,
+        stubToDivorceFormatEndpoint(divorceSessionData,
             ObjectMapperTestUtil.convertObjectToJsonString(caseData));
 
         when(coreCaseDataApi
@@ -416,8 +416,8 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         final String serviceToken = "serviceToken";
 
         final DraftList draftList = new DraftList(Arrays.asList(
-            createDraft("1", DRAFT_DOCUMENT_TYPE_CCD_FORMAT),
-            createDraft("2", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
+            createDraft("1", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT),
+            createDraft("2", DRAFT_DOCUMENT_TYPE_CCD_FORMAT)),
             null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -446,8 +446,8 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
                 .withBody(message)));
     }
 
-    private void stubToCcdFormatEndpoint(Object request, String response) {
-        caseFormatterServer.stubFor(post(TRANSFORM_TO_CCD_CONTEXT_PATH)
+    private void stubToDivorceFormatEndpoint(Object request, String response) {
+        caseFormatterServer.stubFor(post(TRANSFORM_TO_DIVORCE_CONTEXT_PATH)
             .withRequestBody(equalToJson(ObjectMapperTestUtil.convertObjectToJsonString(request)))
             .withHeader(HttpHeaders.AUTHORIZATION, new EqualToPattern(RetrieveAosCaseITest.USER_TOKEN))
             .willReturn(aResponse()

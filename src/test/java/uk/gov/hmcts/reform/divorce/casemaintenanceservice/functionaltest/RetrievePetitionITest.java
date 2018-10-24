@@ -362,7 +362,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final String serviceToken = "serviceToken";
 
         final DraftList draftList = new DraftList(Collections.singletonList(
-            createDraft("1", DRAFT_DOCUMENT_TYPE_CCD_FORMAT)), null);
+            createDraft("1", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)), null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -424,8 +424,8 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final String serviceToken = "serviceToken";
 
         final DraftList draftList = new DraftList(Arrays.asList(
-            createDraft("1", DRAFT_DOCUMENT_TYPE_CCD_FORMAT),
-            createDraft("2", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
+            createDraft("1", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT),
+            createDraft("2", DRAFT_DOCUMENT_TYPE_CCD_FORMAT)),
             null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);

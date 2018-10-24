@@ -79,9 +79,9 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
 
     private Map<String, Object> getFormattedPetition(Draft draft, String authorisation) {
         if (draftService.isInCcdFormat(draft)) {
-            return draft.getDocument();
+            return formatterServiceClient.transformToDivorceFormat(draft.getDocument(), authorisation);
         } else {
-            return formatterServiceClient.transformToCCDFormat(draft.getDocument(), authorisation);
+            return draft.getDocument();
         }
     }
 }

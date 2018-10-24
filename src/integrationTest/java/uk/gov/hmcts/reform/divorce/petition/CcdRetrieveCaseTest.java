@@ -7,16 +7,10 @@ import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 import uk.gov.hmcts.reform.divorce.util.ResourceLoader;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 public class CcdRetrieveCaseTest extends PetitionSupport {
     private static final String CASE_DATA_JSON_PATH = "case_data";
@@ -128,18 +122,20 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     }
 
     @Test
-    public void givenDoNotCheckCcdAndOnePetitionInCcdFormat_whenRetrieveCase_thenReturnPetition() throws Exception {
+    public void givenDoNotCheckCcdAndOnePetitionInDivorceFormat_whenRetrieveCase_thenReturnPetition() throws Exception {
         final String userToken = getUserToken();
 
-        final String caseInCcdFormatFileName = CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json";
+        final String caseInDivorceFormatFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
 
-        createDraft(userToken, caseInCcdFormatFileName, Collections.emptyMap());
+        createDraft(userToken, caseInDivorceFormatFileName,
+            Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
         Response cmsResponse = getCase(userToken, false);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
-        assertEquals(cmsResponse.getBody().path(CASE_DATA_JSON_PATH),
-            ResourceLoader.loadJsonToObject(caseInCcdFormatFileName, Map.class));
+
+        assertEquals( ResourceLoader.loadJsonToObject(caseInDivorceFormatFileName, Map.class),
+            cmsResponse.getBody().path(CASE_DATA_JSON_PATH));
 
         deleteDraft(userToken);
     }
@@ -150,27 +146,22 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         throws Exception {
         final UserDetails userDetails = getUserDetails();
 
-        final String caseInCcdFormatFileName1 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        final String caseInDivorceFormatFileName1 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
         final String caseInCcdFormatFileName2 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "jurisdiction-6-12.json";
 
-        createDraft(userDetails.getAuthToken(), caseInCcdFormatFileName1,
+        createDraft(userDetails.getAuthToken(), caseInDivorceFormatFileName1,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
         createDraft(userDetails.getAuthToken(), caseInCcdFormatFileName2,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
         Response cmsResponse = getCase(userDetails.getAuthToken(), false);
 
-        HashMap<String, Object> expected =
-            ResourceLoader.loadJsonToObject(CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json", HashMap.class);
-
-        final String dateString =
-            LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH));
-        expected.put("createdDate", dateString);
-        expected.put("D8PetitionerEmail", userDetails.getEmailAddress());
+        Map<String, Object> expected =
+            ResourceLoader.loadJsonToObject(caseInDivorceFormatFileName1, Map.class);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
 
-        assertThat(cmsResponse.getBody().path(CASE_DATA_JSON_PATH), samePropertyValuesAs(expected));
+        assertEquals(cmsResponse.getBody().path(CASE_DATA_JSON_PATH), expected);
 
         //delete removes only the first draft. So delete needs to be called twice here
         deleteDraft(userDetails.getAuthToken());
