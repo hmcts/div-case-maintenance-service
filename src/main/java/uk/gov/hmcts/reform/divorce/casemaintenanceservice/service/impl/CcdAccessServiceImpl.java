@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessServi
 @Service
 public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAccessService {
     private static final String LETTER_HOLDER_CASE_FIELD = "AosLetterHolderId";
+    private static final String RECEIVED_AOS_FIELD = "ReceivedAOSfromResp";
 
     @Autowired
     private CaseAccessApi caseAccessApi;
@@ -54,11 +55,11 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     }
 
     private boolean letterHolderIdAndCaseStateMatches(CaseDetails caseDetails, String letterHolderId) {
-        if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
+        if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId) ||
+            caseDetails.getData().get(RECEIVED_AOS_FIELD) == null) {
             return false;
         }
 
-        return CaseState.AOS_AWAITING.getValue().equals(caseDetails.getState())
-             && letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
+        return letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
     }
 }
