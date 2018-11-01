@@ -17,8 +17,8 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
+
 import java.util.Collections;
-import java.util.HashMap;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
@@ -33,8 +32,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
 
         if (!letterHolderIdAndCaseStateMatches(caseDetails, letterHolderId)) {
-            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found or"
-                    + " case not in awaiting aos state", caseId, letterHolderId));
+            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found "
+                    + "or case already has linked respondent",
+                caseId, letterHolderId));
         }
 
         UserDetails respondentUser = getUserDetails(authorisation);
@@ -55,8 +55,10 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     }
 
     private boolean letterHolderIdAndCaseStateMatches(CaseDetails caseDetails, String letterHolderId) {
-        if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId) ||
-            caseDetails.getData().get(RECEIVED_AOS_FIELD) == null) {
+        if (caseDetails == null
+            || caseDetails.getData() == null
+            || StringUtils.isBlank(letterHolderId)
+            || caseDetails.getData().get(RECEIVED_AOS_FIELD) != null) {
             return false;
         }
 
