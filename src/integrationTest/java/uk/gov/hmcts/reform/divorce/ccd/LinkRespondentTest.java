@@ -81,7 +81,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenCaseStateAlreadyLinked_whenLinkRespondent_thenReturnNotFound() {
+    public void givenCaseAlreadyLinked_whenLinkRespondent_thenReturnNotFound() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);

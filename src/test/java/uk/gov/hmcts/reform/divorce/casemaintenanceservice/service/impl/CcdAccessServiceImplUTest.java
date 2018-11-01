@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFound
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.Collections;
+import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -191,11 +192,12 @@ public class CcdAccessServiceImplUTest {
     }
 
     @Test(expected = CaseNotFoundException.class)
-    public void givenCaseStateNotAosAwaiting_whenLinkRespondent_thenThrowCaseNotFoundException() {
+    public void givenCaseAlreadyLinked_whenLinkRespondent_thenThrowCaseNotFoundException() {
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
-            .data(Collections.singletonMap(
-                LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID
+            .data(ImmutableMap.of(
+                Objects.requireNonNull(LETTER_HOLDER_CASE_FIELD), LETTER_HOLDER_ID,
+                Objects.requireNonNull(RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
             )).build();
 
         when(coreCaseDataApi.readForCaseWorker(
@@ -214,11 +216,9 @@ public class CcdAccessServiceImplUTest {
     public void givenLetterHolderIdAndCaseStateMatches_whenLinkRespondent_thenProceedAsExpected() {
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
-            .data(ImmutableMap.of(
-                LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID,
-                RECEIVED_AOS_FIELD, RECEIVED_AOS_FIELD_VALUE
-            ))
-            .build();
+            .data(Collections.singletonMap(
+                LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID
+            )).build();
 
         when(coreCaseDataApi.readForCaseWorker(
             CASEWORKER_AUTHORISATION,

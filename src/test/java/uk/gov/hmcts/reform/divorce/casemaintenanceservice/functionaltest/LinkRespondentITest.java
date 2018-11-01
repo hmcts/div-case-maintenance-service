@@ -219,7 +219,10 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
-            .data(Collections.singletonMap(LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID))
+            .data(ImmutableMap.of(
+                Objects.requireNonNull(LETTER_HOLDER_CASE_FIELD), LETTER_HOLDER_ID,
+                Objects.requireNonNull(RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
+            ))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -247,10 +250,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
-            .data(ImmutableMap.of(
-                Objects.requireNonNull(LETTER_HOLDER_CASE_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
-            ))
+            .data(Collections.singletonMap(LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -283,10 +283,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
-            .data(ImmutableMap.of(
-                Objects.requireNonNull(LETTER_HOLDER_CASE_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
-            ))
+            .data(Collections.singletonMap(LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -326,10 +323,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
-            .data(ImmutableMap.of(
-                Objects.requireNonNull(LETTER_HOLDER_CASE_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
-            ))
+            .data(Collections.singletonMap(LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
