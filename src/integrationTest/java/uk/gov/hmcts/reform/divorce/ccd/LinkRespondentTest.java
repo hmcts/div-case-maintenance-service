@@ -108,7 +108,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
-        updateCase((String) null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
         Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
 
@@ -131,7 +131,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
-        updateCase((String) null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
         linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 

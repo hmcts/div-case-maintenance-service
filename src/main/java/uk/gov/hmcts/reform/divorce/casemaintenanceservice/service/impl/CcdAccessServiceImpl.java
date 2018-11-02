@@ -31,7 +31,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             caseId
         );
 
-        if (!letterHolderIdAndCaseStateMatches(caseDetails, letterHolderId)) {
+        if (!letterHolderIdMatchesAndNotLinked(caseDetails, letterHolderId)) {
             throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found "
                     + "or case already has linked respondent",
                 caseId, letterHolderId));
@@ -54,14 +54,12 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
     }
 
-    private boolean letterHolderIdAndCaseStateMatches(CaseDetails caseDetails, String letterHolderId) {
-        if (caseDetails == null
-            || caseDetails.getData() == null
-            || StringUtils.isBlank(letterHolderId)
-            || caseDetails.getData().get(RECEIVED_AOS_FIELD) != null) {
+    private boolean letterHolderIdMatchesAndNotLinked(CaseDetails caseDetails, String letterHolderId) {
+        if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
             return false;
         }
 
-        return letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
+        return caseDetails.getData().get(RECEIVED_AOS_FIELD) == null
+            && letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
     }
 }
