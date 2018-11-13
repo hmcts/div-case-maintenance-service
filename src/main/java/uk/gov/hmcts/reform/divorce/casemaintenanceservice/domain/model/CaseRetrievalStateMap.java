@@ -25,11 +25,13 @@ public class CaseRetrievalStateMap {
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,
                 CaseState.PENDING_REJECTION,
+                CaseState.AWAITING_CONSIDERATION_GENERAL_APPLICATION,
                 CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED,
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
+                CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI)
         );
 

@@ -23,6 +23,10 @@ public enum CaseState {
     REJECTED("Rejected", ApplicationStatus.REJECTED),
     AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral", ApplicationStatus.AWAITING_LEGAL_ADVISOR_REFERRAL),
     DEFENDED_DIVORCE("DefendedDivorce", ApplicationStatus.DEFENDED_DIVORCE),
+    AWAITING_CONSIDERATION_GENERAL_APPLICATION("AwaitingConsiderationGeneralApplication",
+        ApplicationStatus.AWAITING_CONSIDERATION_GENERAL_APPLICATION),
+    AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN",
+        ApplicationStatus.AWAITING_CONSIDERATION_GENERAL_APPLICATION),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;
