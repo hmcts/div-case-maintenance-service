@@ -20,7 +20,8 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_HWF_DECISION,
                 CaseState.AWAITING_DECREE_NISI,
-                CaseState.AWAITING_PETITIONER),
+                CaseState.AWAITING_PETITIONER
+            ),
             CaseStateGrouping.COMPLETE, Arrays.asList(
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,

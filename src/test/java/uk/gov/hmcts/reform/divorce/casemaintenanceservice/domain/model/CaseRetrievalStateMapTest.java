@@ -15,7 +15,8 @@ public class CaseRetrievalStateMapTest {
             .contains(
                 CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_HWF_DECISION,
-                CaseState.AWAITING_DECREE_NISI
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_PETITIONER
             );
 
         assertThat(PETITIONER_CASE_STATE_GROUPING.get(CaseStateGrouping.COMPLETE))
@@ -23,7 +24,14 @@ public class CaseRetrievalStateMapTest {
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,
                 CaseState.PENDING_REJECTION,
-                CaseState.AWAITING_DOCUMENTS
+                CaseState.AWAITING_CONSIDERATION_GENERAL_APPLICATION,
+                CaseState.AWAITING_DOCUMENTS,
+                CaseState.AOS_AWAITING,
+                CaseState.AOS_STARTED,
+                CaseState.AOS_COMPLETED,
+                CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
+                CaseState.AWAITING_CONSIDERATION_DN,
+                CaseState.AWAITING_DECREE_NISI
             );
     }
 
@@ -36,11 +44,17 @@ public class CaseRetrievalStateMapTest {
 
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.COMPLETE))
             .contains(
+                CaseState.SUBMITTED,
+                CaseState.ISSUED,
+                CaseState.PENDING_REJECTION,
+                CaseState.AWAITING_CONSIDERATION_GENERAL_APPLICATION,
+                CaseState.AWAITING_DOCUMENTS,
+                CaseState.AOS_AWAITING,
+                CaseState.AOS_STARTED,
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
-                CaseState.AWAITING_DECREE_NISI,
-                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
-                CaseState.DEFENDED_DIVORCE
+                CaseState.AWAITING_CONSIDERATION_DN,
+                CaseState.AWAITING_DECREE_NISI
             );
     }
 
