@@ -19,6 +19,7 @@ public enum ApplicationStatus {
     REJECTED("Rejected"),
     AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral"),
     DEFENDED_DIVORCE("DefendedDivorce"),
+    AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer"),
     UNKNOWN("DNCompleted");
 
     private final String value;
