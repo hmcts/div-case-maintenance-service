@@ -23,6 +23,7 @@ public enum ApplicationStatus {
     AWAITING_CONSIDERATION_GENERAL_APPLICATION("AwaitingConsiderationGeneralApplication"),
     AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN"),
     DEFENDED_DIVORCE("DefendedDivorce"),
+    AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer"),
     UNKNOWN("DNCompleted");
 
     private final String value;
