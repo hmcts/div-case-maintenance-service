@@ -13,6 +13,8 @@ public enum ApplicationStatus {
     AOS_AWAITING("AosAwaiting"),
     AOS_STARTED("AosStarted"),
     AOS_COMPLETED("AosCompleted"),
+    AOS_OVERDUE("AosOverdue"),
+    AWAITING_REISSUE("AwaitingReissue"),
     DN_AWAITING("DNAwaiting"),
     DN_STARTED("DNStarted"),
     DN_COMPLETED("DNCompleted"),
