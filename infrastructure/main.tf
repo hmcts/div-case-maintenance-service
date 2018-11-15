@@ -41,7 +41,7 @@ module "div-cms" {
         IDAM_API_BASEURL                                      = "${var.idam_api_baseurl}"
         CASE_FORMATTER_SERVICE_API_BASEURL                    = "${local.case_formatter_baseurl}"
         DRAFT_STORE_API_BASEURL                               = "${local.draft_store_api_baseurl}"
-        DRAFT_STORE_API_ENCRYPTION_KEY                        = "${data.azurerm_key_vault_secret.draft-store-api-encryption-key.value}"
+        DRAFT_STORE_API_ENCRYPTION_KEY_VALUE                  = "${data.azurerm_key_vault_secret.draft-store-api-encryption-key.value}"
         AUTH2_CLIENT_SECRET                                   = "${data.azurerm_key_vault_secret.idam-secret.value}"
         IDAM_CASEWORKER_USERNAME                              = "${data.azurerm_key_vault_secret.idam-caseworker-username.value}"
         IDAM_CASEWORKER_PASSWORD                              = "${data.azurerm_key_vault_secret.idam-caseworker-password.value}"
