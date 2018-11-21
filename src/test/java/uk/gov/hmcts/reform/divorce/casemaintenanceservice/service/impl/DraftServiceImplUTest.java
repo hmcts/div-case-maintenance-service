@@ -149,11 +149,11 @@ public class DraftServiceImplUTest {
 
         mockGetDraftsAndReturn(null, draftList);
 
-        doNothing().when(draftStoreClient).deleteAllDraft(BEARER_AUTH_TOKEN, SERVICE_TOKEN);
+        doNothing().when(draftStoreClient).deleteAllDrafts(BEARER_AUTH_TOKEN, SERVICE_TOKEN);
 
         classUnderTest.deleteDraft(AUTH_TOKEN);
 
-        verify(draftStoreClient).deleteAllDraft(BEARER_AUTH_TOKEN, SERVICE_TOKEN);
+        verify(draftStoreClient).deleteAllDrafts(BEARER_AUTH_TOKEN, SERVICE_TOKEN);
     }
 
     @Test
