@@ -14,9 +14,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(Parameterized.class)
 public class CaseStateTest {
 
-    private String ccdState;
+    private final String ccdState;
 
-    private String expectedApplicationStatus;
+    private final String expectedApplicationStatus;
 
     public CaseStateTest(String ccdState, String expectedApplicationStatus) {
         this.ccdState = ccdState;
