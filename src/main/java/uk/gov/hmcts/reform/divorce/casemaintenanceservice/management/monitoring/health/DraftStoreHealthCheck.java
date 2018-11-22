@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class DraftStoreHealthCheck extends WebServiceHealthCheck {
     @Autowired
     public DraftStoreHealthCheck(HttpEntityFactory httpEntityFactory, RestTemplate restTemplate,
-                                 @Value("${draft.store.api.baseurl}") String uri) {
+                                 @Value("${draft.store.api.baseurl}/health") String uri) {
         super(httpEntityFactory, restTemplate, uri);
     }
 }

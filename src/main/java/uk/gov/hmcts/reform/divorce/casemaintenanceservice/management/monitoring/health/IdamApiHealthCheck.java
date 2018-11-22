@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class IdamApiHealthCheck extends WebServiceHealthCheck {
     @Autowired
     public IdamApiHealthCheck(HttpEntityFactory httpEntityFactory, RestTemplate restTemplate,
-                              @Value("${idam.api.url}") String uri) {
+                              @Value("${idam.api.url}/health") String uri) {
         super(httpEntityFactory, restTemplate, uri);
     }
 }

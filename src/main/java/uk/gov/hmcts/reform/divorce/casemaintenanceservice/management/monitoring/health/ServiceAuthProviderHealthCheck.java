@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class ServiceAuthProviderHealthCheck extends WebServiceHealthCheck {
     @Autowired
     public ServiceAuthProviderHealthCheck(HttpEntityFactory httpEntityFactory, RestTemplate restTemplate,
-                                          @Value("${idam.s2s-auth.url}") String uri) {
+                                          @Value("${idam.s2s-auth.url}/health") String uri) {
         super(httpEntityFactory, restTemplate, uri);
     }
 }
