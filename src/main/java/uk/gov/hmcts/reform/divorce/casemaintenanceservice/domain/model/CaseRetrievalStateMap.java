@@ -30,7 +30,8 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_STARTED,
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
-                CaseState.AWAITING_DECREE_NISI)
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL)
         );
 
     public static final Map<CaseStateGrouping, List<CaseState>> RESPONDENT_CASE_STATE_GROUPING =
