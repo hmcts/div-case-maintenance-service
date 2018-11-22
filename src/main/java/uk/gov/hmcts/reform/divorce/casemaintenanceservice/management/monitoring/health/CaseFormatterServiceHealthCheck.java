@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class CaseFormatterServiceHealthCheck extends WebServiceHealthCheck {
     @Autowired
     public CaseFormatterServiceHealthCheck(HttpEntityFactory httpEntityFactory, RestTemplate restTemplate,
-                                           @Value("${case.formatter.service.api.baseurl}") String uri) {
+                                           @Value("${case.formatter.service.api.baseurl}/health") String uri) {
         super(httpEntityFactory, restTemplate, uri);
     }
 }

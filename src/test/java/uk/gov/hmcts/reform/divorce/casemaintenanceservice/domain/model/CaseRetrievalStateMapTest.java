@@ -24,6 +24,8 @@ public class CaseRetrievalStateMapTest {
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,
                 CaseState.PENDING_REJECTION,
+                CaseState.AWAITING_DOCUMENTS,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_CONSIDERATION_GENERAL_APPLICATION,
                 CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,

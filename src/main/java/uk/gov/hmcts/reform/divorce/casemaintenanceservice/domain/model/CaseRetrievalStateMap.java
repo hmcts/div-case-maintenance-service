@@ -33,6 +33,8 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI
             )

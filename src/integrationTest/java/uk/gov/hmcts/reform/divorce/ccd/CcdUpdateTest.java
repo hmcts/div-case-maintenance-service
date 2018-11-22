@@ -63,7 +63,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
 
         assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
         assertThat(cmsResponse.asString(),
-            containsString("Cannot findCaseEvent event InvalidEvenId for case type DIVORCE"));
+            containsString("Cannot find event InvalidEvenId for case type DIVORCE"));
     }
 
     @Test
