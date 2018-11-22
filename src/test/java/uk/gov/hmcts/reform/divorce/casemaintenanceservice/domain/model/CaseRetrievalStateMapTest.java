@@ -23,7 +23,8 @@ public class CaseRetrievalStateMapTest {
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,
                 CaseState.PENDING_REJECTION,
-                CaseState.AWAITING_DOCUMENTS
+                CaseState.AWAITING_DOCUMENTS,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL
             );
     }
 
