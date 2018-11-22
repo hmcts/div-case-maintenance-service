@@ -53,19 +53,19 @@ public class HealthCheckITest {
     @LocalServerPort
     private int port;
 
-    @Value("${idam.s2s-auth.url}")
+    @Value("${idam.s2s-auth.url}/health")
     private String serviceAuthHealthUrl;
 
-    @Value("${case.formatter.service.api.baseurl}")
+    @Value("${case.formatter.service.api.baseurl}/health")
     private String caseFormatterServiceHealthUrl;
 
-    @Value("${draft.store.api.baseurl}")
+    @Value("${draft.store.api.baseurl}/health")
     private String draftStoreHealthUrl;
 
     @Value("${ccd.server.health.context-path}")
     private String ccdHealthContextPath;
 
-    @Value("${idam.api.url}")
+    @Value("${idam.api.url}/health")
     private String idamApiHealthUrl;
 
     @Autowired
