@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
@@ -14,6 +13,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessServi
 @Service
 public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAccessService {
     private static final String LETTER_HOLDER_CASE_FIELD = "AosLetterHolderId";
+    private static final String RECEIVED_AOS_FIELD = "ReceivedAOSfromResp";
 
     @Autowired
     private CaseAccessApi caseAccessApi;
@@ -31,9 +31,10 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             caseId
         );
 
-        if (!letterHolderIdAndCaseStateMatches(caseDetails, letterHolderId)) {
-            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found or"
-                    + " case not in awaiting aos state", caseId, letterHolderId));
+        if (!letterHolderIdMatchesAndNotLinked(caseDetails, letterHolderId)) {
+            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found "
+                    + "or case already has linked respondent",
+                caseId, letterHolderId));
         }
 
         UserDetails respondentUser = getUserDetails(authorisation);
@@ -53,12 +54,12 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
     }
 
-    private boolean letterHolderIdAndCaseStateMatches(CaseDetails caseDetails, String letterHolderId) {
+    private boolean letterHolderIdMatchesAndNotLinked(CaseDetails caseDetails, String letterHolderId) {
         if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
             return false;
         }
 
-        return CaseState.AOS_AWAITING.getValue().equals(caseDetails.getState())
-             && letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
+        return caseDetails.getData().get(RECEIVED_AOS_FIELD) == null
+            && letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
     }
 }

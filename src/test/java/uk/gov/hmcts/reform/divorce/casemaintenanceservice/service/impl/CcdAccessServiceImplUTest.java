@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFound
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.Collections;
+import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -32,6 +34,8 @@ public class CcdAccessServiceImplUTest {
 
     private static final String LETTER_HOLDER_CASE_FIELD =
         (String)ReflectionTestUtils.getField(CcdAccessServiceImpl.class, "LETTER_HOLDER_CASE_FIELD");
+    private static final String RECEIVED_AOS_FIELD =
+        (String)ReflectionTestUtils.getField(CcdAccessServiceImpl.class, "RECEIVED_AOS_FIELD");
 
     private static final String RESPONDENT_AUTHORISATION = "Bearer RespondentAuthToken";
     private static final String CASEWORKER_AUTHORISATION = "CaseWorkerAuthToken";
@@ -40,6 +44,7 @@ public class CcdAccessServiceImplUTest {
     private static final String CASEWORKER_USER_ID = "1";
     private static final String RESPONDENT_USER_ID = "2";
     private static final String SERVICE_TOKEN = "ServiceToken";
+    private static final String RECEIVED_AOS_FIELD_VALUE = "Yes";
 
     private static final UserDetails CASE_WORKER_USER = UserDetails.builder()
         .authToken(CASEWORKER_AUTHORISATION)
@@ -187,11 +192,12 @@ public class CcdAccessServiceImplUTest {
     }
 
     @Test(expected = CaseNotFoundException.class)
-    public void givenCaseStateNotAosAwaiting_whenLinkRespondent_thenThrowCaseNotFoundException() {
+    public void givenCaseAlreadyLinked_whenLinkRespondent_thenThrowCaseNotFoundException() {
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
-            .data(Collections.singletonMap(
-                LETTER_HOLDER_CASE_FIELD, LETTER_HOLDER_ID
+            .data(ImmutableMap.of(
+                Objects.requireNonNull(LETTER_HOLDER_CASE_FIELD), LETTER_HOLDER_ID,
+                Objects.requireNonNull(RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
             )).build();
 
         when(coreCaseDataApi.readForCaseWorker(

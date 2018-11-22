@@ -81,12 +81,12 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenCaseStateNotAosAwaiting_whenLinkRespondent_thenReturnNotFound() {
+    public void givenCaseAlreadyLinked_whenLinkRespondent_thenReturnNotFound() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "linked-case.json", Map.class);
         caseData.put("AosLetterHolderId", pinResponse.getUserId());
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
