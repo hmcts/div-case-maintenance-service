@@ -50,7 +50,7 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
             caseDataContent);
     }
 
-    private String getCaseCreationEventId(Map<String, Object> data){
+    private String getCaseCreationEventId(Map<String, Object> data) {
         String hwf = String.valueOf(data.get(HELP_WITH_FEES_FIELD));
         return "YES".equalsIgnoreCase(hwf) ? createHwfEventId  : createEventId;
     }
