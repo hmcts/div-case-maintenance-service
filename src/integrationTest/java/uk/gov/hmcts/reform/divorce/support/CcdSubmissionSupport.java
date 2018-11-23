@@ -83,6 +83,6 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
 
     protected void assertCaseStatus(Response cmsResponse, String caseStatus) {
         assertTrue(String.format("Expected [%s] status not found", caseStatus) ,
-            cmsResponse.toString().contains(caseStatus));
+            cmsResponse.getBody().asString().contains(caseStatus));
     }
 }

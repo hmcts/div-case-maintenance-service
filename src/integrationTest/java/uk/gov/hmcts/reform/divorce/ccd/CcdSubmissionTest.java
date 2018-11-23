@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CcdSubmissionTest extends PetitionSupport {
     private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
@@ -19,9 +20,7 @@ public class CcdSubmissionTest extends PetitionSupport {
         + "CJOQrVU";
     private static final String  UNAUTHORISED_JWT_EXCEPTION = "status 403 reading "
         + "IdamApiClient#retrieveUserDetails(String); content:\n";
-    private static final String REQUEST_BODY_NOT_FOUND = "Required request body is missing: public org.springframework."
-        + "http.ResponseEntity<uk.gov.hmcts.reform.ccd.client.model.CaseDetails> uk.gov.hmcts.reform.divorce.casemainte"
-        + "nanceservice.controller.CcdController.submitCase(java.lang.Object,java.lang.String)";
+    private static final String REQUEST_BODY_NOT_FOUND = "Required request body is missing";
 
 
     @Test
@@ -125,6 +124,6 @@ public class CcdSubmissionTest extends PetitionSupport {
         );
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
-        assertEquals(REQUEST_BODY_NOT_FOUND, cmsResponse.path("message"));
+        assertTrue(cmsResponse.getBody().asString().contains(REQUEST_BODY_NOT_FOUND));
     }
 }

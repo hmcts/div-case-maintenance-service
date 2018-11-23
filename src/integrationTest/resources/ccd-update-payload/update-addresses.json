@@ -56,9 +56,7 @@
         "petitioner",
         "children"
     ],
-    "D8HelpWithFeesNeedHelp":"YES",
-    "D8HelpWithFeesAppliedForFees":"YES",
-    "D8HelpWithFeesReferenceNumber":"HWF-123-456",
+    "D8HelpWithFeesNeedHelp":"NO",
     "D8DivorceCostsClaim":"YES",
     "D8DivorceClaimFrom":[
         "respondent"
