@@ -33,7 +33,7 @@
     "D8RespondentHomeAddress":{
         "PostCode":"SS SSS"
     },
-    "D8DerivedRespondentHomeAddress":"new address 88 Landor Road\nLondon\nSW9 9PE",
+    "D8DerivedRespondentHomeAddress":"88 Landor Road\nLondon\nSW9 9PE",
     "D8RespondentCorrespondenceAddress":{
         "PostCode":"SW9 9PE"
     },
@@ -57,6 +57,7 @@
         "children"
     ],
     "D8HelpWithFeesNeedHelp":"NO",
+    "D8HelpWithFeesAppliedForFees":"NO",
     "D8DivorceCostsClaim":"YES",
     "D8DivorceClaimFrom":[
         "respondent"

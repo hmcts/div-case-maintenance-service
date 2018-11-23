@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,8 @@ import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,6 +28,7 @@ public class CcdSubmissionServiceImplUTest {
     private static final String JURISDICTION_ID = "someJurisdictionId";
     private static final String CASE_TYPE = "someCaseType";
     private static final String CREATE_EVENT_ID = "createEventId";
+    private static final String CREATE_HWF_EVENT_ID = "createHwfEventId";
 
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
@@ -32,6 +36,13 @@ public class CcdSubmissionServiceImplUTest {
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION =
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
         "DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION");
+    private static final String HELP_WITH_FEES_FIELD = "D8HelpWithFeesNeedHelp";
+
+    private static final String USER_ID = "someUserId";
+    private static final String AUTHORISATION = "authorisation";
+    private static final String BEARER_AUTHORISATION = "Bearer authorisation";
+    private static final String SERVICE_TOKEN = "serviceToken";
+    public static final String TOKEN = "token";
 
     @Mock
     private CoreCaseDataApi coreCaseDataApi;
@@ -49,22 +60,17 @@ public class CcdSubmissionServiceImplUTest {
     public void setup() {
         ReflectionTestUtils.setField(classUnderTest, "jurisdictionId", JURISDICTION_ID);
         ReflectionTestUtils.setField(classUnderTest, "caseType", CASE_TYPE);
+        ReflectionTestUtils.setField(classUnderTest, "createHwfEventId", CREATE_HWF_EVENT_ID);
         ReflectionTestUtils.setField(classUnderTest, "createEventId", CREATE_EVENT_ID);
     }
 
     @Test
     public void whenUpdate_thenProceedAsExpected() {
-        final String userId = "someUserId";
-        final String authorisation = "authorisation";
-        final String bearerAuthorisation = "Bearer authorisation";
-        final String serviceToken = "serviceToken";
-        final Object caseData = new Object();
+        final Map<String, Object> caseData = ImmutableMap.of(HELP_WITH_FEES_FIELD, "NO");
 
-        final String eventId = "eventId";
-        final String token = "token";
         final StartEventResponse startEventResponse = StartEventResponse.builder()
-            .eventId(eventId)
-            .token(token)
+            .eventId(CREATE_EVENT_ID)
+            .token(TOKEN)
             .build();
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -78,24 +84,66 @@ public class CcdSubmissionServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final UserDetails userDetails = UserDetails.builder().id(userId).build();
+        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
-        when(authTokenGenerator.generate()).thenReturn(serviceToken);
-        when(coreCaseDataApi.startForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi.startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE, CREATE_EVENT_ID)).thenReturn(startEventResponse);
 
-        when(coreCaseDataApi.submitForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
+        when(coreCaseDataApi.submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE,true, caseDataContent)).thenReturn(expected);
 
-        CaseDetails actual = classUnderTest.submitCase(caseData, authorisation);
+        CaseDetails actual = classUnderTest.submitCase(caseData,  AUTHORISATION);
 
         assertEquals(actual, expected);
 
-        verify(coreCaseDataApi).startForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
+        verify(coreCaseDataApi).startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE, CREATE_EVENT_ID);
-        verify(coreCaseDataApi).submitForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
+        verify(coreCaseDataApi).submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
+            CASE_TYPE,true, caseDataContent);
+    }
+
+    @Test
+    public void givenCaseWithHelpWithFees_whenSubmit_thenCrateWithWHFEventTriggered() {
+
+        final Map<String, Object> caseData = ImmutableMap.of(HELP_WITH_FEES_FIELD, "YES");
+
+        final StartEventResponse startEventResponse = StartEventResponse.builder()
+            .eventId(CREATE_HWF_EVENT_ID)
+            .token(TOKEN)
+            .build();
+
+        final CaseDataContent caseDataContent = CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(
+                Event.builder()
+                    .id(startEventResponse.getEventId())
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseData)
+            .build();
+
+        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+        final CaseDetails expected = CaseDetails.builder().build();
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi.startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
+            CASE_TYPE, CREATE_HWF_EVENT_ID)).thenReturn(startEventResponse);
+
+        when(coreCaseDataApi.submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
+            CASE_TYPE,true, caseDataContent)).thenReturn(expected);
+
+        CaseDetails actual = classUnderTest.submitCase(caseData, AUTHORISATION);
+
+        assertEquals(actual, expected);
+
+        verify(coreCaseDataApi).startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
+            CASE_TYPE, CREATE_HWF_EVENT_ID);
+        verify(coreCaseDataApi).submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE,true, caseDataContent);
     }
 }

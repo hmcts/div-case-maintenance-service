@@ -39,7 +39,7 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
     }
 
     protected Long getCaseIdFromSubmittingANewCase(String userToken) throws Exception {
-        Response cmsResponse = submitCase("addresses.json", userToken);
+        Response cmsResponse = submitCase("addresses-no-hwf.json", userToken);
 
         return cmsResponse.path("id");
     }

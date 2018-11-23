@@ -24,6 +24,9 @@ public class CcdClientSupport {
     @Value("${ccd.eventid.create}")
     private String createEventId;
 
+    @Value("${ccd.eventid.createhwf}")
+    private String createHwfEventId;
+
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
 

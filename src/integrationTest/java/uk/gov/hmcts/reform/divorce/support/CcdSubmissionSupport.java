@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public abstract class CcdSubmissionSupport extends IntegrationTest {
     private static final String PAYLOAD_CONTEXT_PATH = "ccd-submission-payload/";
@@ -78,5 +79,10 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     protected void assertOkResponseAndCaseIdIsNotZero(Response cmsResponse) {
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertNotEquals((Long)0L, cmsResponse.getBody().path("caseId"));
+    }
+
+    protected void assertCaseStatus(Response cmsResponse, String caseStatus) {
+        assertTrue(String.format("Expected [%s] status not found", caseStatus) ,
+            cmsResponse.getBody().asString().contains(caseStatus));
     }
 }

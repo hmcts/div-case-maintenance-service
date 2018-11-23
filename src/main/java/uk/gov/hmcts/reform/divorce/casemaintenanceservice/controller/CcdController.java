@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "casemaintenance/version/1")
@@ -41,7 +44,7 @@ public class CcdController {
         }
     )
     public ResponseEntity<CaseDetails> submitCase(
-        @RequestBody @ApiParam(value = "Case Data", required = true) Object data,
+        @RequestBody @ApiParam(value = "Case Data", required = true) Map<String, Object> data,
         @RequestHeader("Authorization")
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         return ResponseEntity.ok(ccdSubmissionService.submitCase(data, jwt));

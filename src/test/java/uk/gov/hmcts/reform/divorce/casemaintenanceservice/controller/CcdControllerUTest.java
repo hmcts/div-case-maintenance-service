@@ -12,6 +12,9 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessServi
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -20,7 +23,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CcdControllerUTest {
     private static final CaseDetails CASE_DETAILS = CaseDetails.builder().build();
-    private static final Object CASE_DATA_CONTENT = new Object();
+    private static final Map<String, Object> CASE_DATA_CONTENT = new HashMap<>();
     private static final String JWT_TOKEN = "token";
 
     @Mock
