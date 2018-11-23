@@ -23,10 +23,8 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -140,16 +138,6 @@ public class DraftServiceImplUTest {
     }
 
     @Test
-    public void givenDraftDoesNotExist_whenDeleteDraft_thenDoNothing() {
-        mockGetDraftsAndReturn(null, null);
-
-        classUnderTest.deleteDraft(AUTH_TOKEN);
-
-        verify(draftStoreClient, times(0))
-            .deleteSingleDraft(anyString(), anyString(), anyString());
-    }
-
-    @Test
     public void givenDraftExists_whenDeleteDraft_thenDeleteTheFirstDraft() {
         final String draftId = "1";
         final Draft draft = createDraft(draftId);
@@ -161,12 +149,11 @@ public class DraftServiceImplUTest {
 
         mockGetDraftsAndReturn(null, draftList);
 
-        when(modelFactory.isDivorceDraft(draft)).thenReturn(true);
-        doNothing().when(draftStoreClient).deleteSingleDraft(draftId, BEARER_AUTH_TOKEN, SERVICE_TOKEN);
+        doNothing().when(draftStoreClient).deleteAllDrafts(BEARER_AUTH_TOKEN, SERVICE_TOKEN);
 
         classUnderTest.deleteDraft(AUTH_TOKEN);
 
-        verify(draftStoreClient).deleteSingleDraft(draftId, BEARER_AUTH_TOKEN, SERVICE_TOKEN);
+        verify(draftStoreClient).deleteAllDrafts(BEARER_AUTH_TOKEN, SERVICE_TOKEN);
     }
 
     @Test

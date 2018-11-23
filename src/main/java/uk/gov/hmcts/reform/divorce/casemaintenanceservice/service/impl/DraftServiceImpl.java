@@ -80,13 +80,8 @@ public class DraftServiceImpl implements DraftService {
 
     @Override
     public void deleteDraft(String authorisation) {
-        log.debug("Deleting the divorce session draft");
-        Draft draft = getDraft(authorisation);
-
-        if (draft != null) {
-            draftStoreClient.deleteSingleDraft(draft.getId(), getBearerToken(authorisation),
-                serviceTokenGenerator.generate());
-        }
+        log.debug("Deleting all divorce session draft");
+        draftStoreClient.deleteAllDrafts(getBearerToken(authorisation), serviceTokenGenerator.generate());
     }
 
     @Override

@@ -62,10 +62,9 @@ public interface DraftStoreClient {
 
     @RequestMapping(
         method = RequestMethod.DELETE,
-        value = "/drafts/{draftId}",
+        value = "/drafts",
         headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
     )
-    void deleteSingleDraft(@PathVariable("draftId") String draftId,
-                                @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
-                                @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation);
+    void deleteAllDrafts(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
+                         @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation);
 }
