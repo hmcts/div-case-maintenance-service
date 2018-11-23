@@ -31,6 +31,7 @@ ccd:
   casetype: DIVORCE
   eventid:
     create: create
+    createhwf: hwfCreate
   server:
     port: 4452
     health:

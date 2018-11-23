@@ -26,7 +26,19 @@ public class CcdSubmissionTest extends PetitionSupport {
 
     @Test
     public void shouldReturnCaseIdForValidAddressesSessionData() throws Exception {
-        submitAndAssertSuccess("addresses.json");
+        String expectedStatus = "AwaitingHWFDecision";
+        Response caseSubmitted = submitCase("addresses.json", getUserToken());
+        assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
+        assertCaseStatus(caseSubmitted, expectedStatus);
+
+    }
+
+    @Test
+    public void shouldReturnCaseIdForValidAddressesSessionDatas() throws Exception {
+        String expectedStatus = "AwaitingPayment";
+        Response caseSubmitted = submitCase("addresses-no-hwf.json", getUserToken());
+        assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
+        assertCaseStatus(caseSubmitted, expectedStatus);
     }
 
     @Test

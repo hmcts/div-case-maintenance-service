@@ -21,6 +21,9 @@ class BaseCcdCaseService {
     @Value("${ccd.eventid.create}")
     String createEventId;
 
+    @Value("${ccd.eventid.createhwf}")
+    String createHwfEventId;
+
     @Autowired
     CoreCaseDataApi coreCaseDataApi;
 

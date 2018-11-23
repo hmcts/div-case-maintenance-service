@@ -56,6 +56,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CcdSubmissionITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/submit";
     private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/addresses.json";
+    private static final String NO_HELP_WITH_FEES_PATH = "ccd-submission-payload/addresses-no-hwf.json";
+
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
 
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
@@ -77,6 +79,8 @@ public class CcdSubmissionITest extends AuthIdamMockSupport {
     @Value("${ccd.eventid.create}")
     private String createEventId;
 
+    @Value("${ccd.eventid.createhwf}")
+    private String createHwfEventId;
     @Autowired
     private MockMvc webClient;
 
@@ -143,7 +147,7 @@ public class CcdSubmissionITest extends AuthIdamMockSupport {
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
         when(coreCaseDataApi
-            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createEventId))
+            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createHwfEventId))
             .thenThrow(feignException);
 
         webClient.perform(post(API_URL)
@@ -186,7 +190,7 @@ public class CcdSubmissionITest extends AuthIdamMockSupport {
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
         when(coreCaseDataApi
-            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createEventId))
+            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createHwfEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
             .submitForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType,
@@ -204,7 +208,7 @@ public class CcdSubmissionITest extends AuthIdamMockSupport {
 
     @Test
     public void givenAllGoesWell_whenSubmitCase_thenProceedAsExpected() throws Exception {
-        final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
+        final String caseData = ResourceLoader.loadJson(NO_HELP_WITH_FEES_PATH);
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
@@ -234,6 +238,53 @@ public class CcdSubmissionITest extends AuthIdamMockSupport {
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
         when(coreCaseDataApi
             .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createEventId))
+            .thenReturn(startEventResponse);
+        when(coreCaseDataApi
+            .submitForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType,
+                true, caseDataContent))
+            .thenReturn(caseDetails);
+
+        webClient.perform(post(API_URL)
+            .content(caseData)
+            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails))));
+    }
+
+    @Test
+    public void givenHwfCase_whenSubmitCase_thenProceedWithHwfEvent() throws Exception {
+        final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
+        final String message = getUserDetails();
+        final String serviceAuthToken = "serviceAuthToken";
+
+        final String eventId = "eventId";
+        final String token = "token";
+        final StartEventResponse startEventResponse = StartEventResponse.builder()
+            .eventId(eventId)
+            .token(token)
+            .build();
+
+        final CaseDataContent caseDataContent = CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(
+                Event.builder()
+                    .id(startEventResponse.getEventId())
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(ObjectMapperTestUtil.convertStringToObject(caseData, Map.class))
+            .build();
+
+        final CaseDetails caseDetails = CaseDetails.builder().build();
+
+        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceAuthToken));
+        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+
+        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(coreCaseDataApi
+            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createHwfEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
             .submitForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType,

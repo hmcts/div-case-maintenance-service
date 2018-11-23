@@ -9,12 +9,16 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetai
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.NotifyCaseSubmission;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 
+import java.util.Map;
+
 @Service
 public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdSubmissionService {
 
+    private static final String HELP_WITH_FEES_FIELD = "D8HelpWithFeesNeedHelp";
+
     @NotifyCaseSubmission
     @Override
-    public CaseDetails submitCase(Object data, String authorisation) {
+    public CaseDetails submitCase(Map<String, Object> data, String authorisation) {
         UserDetails userDetails = getUserDetails(authorisation);
 
         StartEventResponse startEventResponse = coreCaseDataApi.startForCitizen(
@@ -23,7 +27,7 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
             userDetails.getId(),
             jurisdictionId,
             caseType,
-            createEventId);
+            getCaseCreationEventId(data));
 
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
@@ -44,5 +48,10 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
             caseType,
             true,
             caseDataContent);
+    }
+
+    private String getCaseCreationEventId(Map<String, Object> data){
+        String hwf = String.valueOf(data.get(HELP_WITH_FEES_FIELD));
+        return "YES".equalsIgnoreCase(hwf) ? createHwfEventId  : createEventId;
     }
 }
