@@ -23,21 +23,21 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
     @Test
     public void givenJWTTokenIsNull_whenRetrieveAosCase_thenReturnBadRequest() {
-        Response cmsResponse = getCase(null, null);
+        Response cmsResponse = retrieveCase(null, null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenInvalidUserToken_whenRetrieveAosCase_thenReturnForbiddenError() {
-        Response cmsResponse = getCase(INVALID_USER_TOKEN, true);
+        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN, true);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenNoCaseInCcd_whenRetrieveAosCase_thenReturnNull() {
-        Response cmsResponse = getCase(getUserToken(), true);
+        Response cmsResponse = retrieveCase(getUserToken(), true);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
@@ -49,7 +49,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_COMPLETED_EVENT);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -63,7 +63,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_COMPLETED_EVENT);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -80,7 +80,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_COMPLETED_EVENT);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -92,7 +92,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         final Long caseId = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
@@ -106,7 +106,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
@@ -117,7 +117,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
@@ -130,7 +130,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     }
 
     @Override
-    protected String getRequestUrl() {
+    protected String getRetrieveCaseRequestUrl() {
         return serverUrl + retrieveAosCaseContextPath;
     }
 }

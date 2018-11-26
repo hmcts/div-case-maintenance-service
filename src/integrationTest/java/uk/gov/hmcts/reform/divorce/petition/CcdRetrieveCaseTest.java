@@ -23,21 +23,21 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
     @Test
     public void givenJWTTokenIsNull_whenRetrieveCase_thenReturnBadRequest() {
-        Response cmsResponse = getCase(null, null);
+        Response cmsResponse = retrieveCase(null, null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenInvalidUserToken_whenRetrieveCase_thenReturnForbiddenError() {
-        Response cmsResponse = getCase(INVALID_USER_TOKEN, true);
+        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN, true);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenNoCaseInCcdOrDraftStore_whenRetrieveCase_thenReturnNull() {
-        Response cmsResponse = getCase(getUserToken(), true);
+        Response cmsResponse = retrieveCase(getUserToken(), true);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
@@ -49,7 +49,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
         Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -63,7 +63,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
         createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -80,7 +80,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
         createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -92,7 +92,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
         final Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
@@ -106,7 +106,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         getCaseIdFromSubmittingANewCase(userToken);
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
@@ -115,7 +115,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     public void givenCasesInNotAwaitingPaymentOrNonSubmittedCaseInCcd_whenRetrieveCase_thenReturnNull() {
         final String userToken = getUserToken();
 
-        Response cmsResponse = getCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken, true);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
@@ -130,7 +130,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         createDraft(userToken, caseInDivorceFormatFileName,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
-        Response cmsResponse = getCase(userToken, false);
+        Response cmsResponse = retrieveCase(userToken, false);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
 
@@ -154,7 +154,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         createDraft(userDetails.getAuthToken(), caseInCcdFormatFileName2,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
-        Response cmsResponse = getCase(userDetails.getAuthToken(), false);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken(), false);
 
         Map<String, Object> expected =
             ResourceLoader.loadJsonToObject(caseInDivorceFormatFileName1, Map.class);

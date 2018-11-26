@@ -137,6 +137,46 @@ public class PetitionControllerUTest {
     }
 
     @Test
+    public void givenNoCaseFound_whenRetrieveCaseWithToken_thenReturn404() throws DuplicateCaseException {
+
+        when(petitionService.retrievePetition(AUTHORISATION)).thenReturn(null);
+
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrieveCase(AUTHORISATION);
+
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
+        assertNull(actual.getBody());
+
+        verify(petitionService).retrievePetition(AUTHORISATION);
+    }
+
+    @Test
+    public void givenMultipleCaseCaseFound_whenRetrieveCaseWithToken_thenReturn300() throws DuplicateCaseException {
+
+        when(petitionService.retrievePetition(AUTHORISATION)).thenThrow(new DuplicateCaseException("Some Error"));
+
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrieveCase(AUTHORISATION);
+
+        assertEquals(HttpStatus.MULTIPLE_CHOICES, actual.getStatusCode());
+        assertNull(actual.getBody());
+
+        verify(petitionService).retrievePetition(AUTHORISATION);
+    }
+
+    @Test
+    public void givenSingleCaseCaseFound_whenRetrieveCaseWithToken_thenReturnCase() throws DuplicateCaseException {
+        final CaseDetails caseDetails = CaseDetails.builder().build();
+
+        when(petitionService.retrievePetition(AUTHORISATION)).thenReturn(caseDetails);
+
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrieveCase(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(caseDetails, actual.getBody());
+
+        verify(petitionService).retrievePetition(AUTHORISATION);
+    }
+
+    @Test
     public void givenDivorceFormatIsNull_whenSaveDraft_thenProceedAsExpected() {
         final Map<String, Object> data = Collections.emptyMap();
 
