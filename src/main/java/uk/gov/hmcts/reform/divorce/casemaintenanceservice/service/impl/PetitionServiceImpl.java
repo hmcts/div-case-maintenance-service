@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
-
 @Service
 public class PetitionServiceImpl implements PetitionService, ApplicationListener<CaseSubmittedEvent> {
 
