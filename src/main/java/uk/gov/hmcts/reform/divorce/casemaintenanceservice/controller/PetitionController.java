@@ -78,7 +78,7 @@ public class PetitionController {
     @ApiOperation(value = "Retrieves a divorce case from CCD")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Case exists. The case is in the response body"),
-        @ApiResponse(code = 204, message = "When there are no case exists"),
+        @ApiResponse(code = 404, message = "When there are no case exists"),
         @ApiResponse(code = 300, message = "Multiple Cases found")
         })
     public ResponseEntity<CaseDetails> retrieveCase(
