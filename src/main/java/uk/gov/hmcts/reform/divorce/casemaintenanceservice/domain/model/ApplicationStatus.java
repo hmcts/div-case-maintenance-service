@@ -6,25 +6,38 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ApplicationStatus {
-    AWAITING_PETITIONER("AwaitingPetitioner"),
-    AWAITING_PAYMENT("AwaitingPayment"),
-    PETITION_COMPLETED("PetitionCompleted"),
-    PENDING_REJECTION("PendingRejection"),
+    AMEND_PETITION("AmendPetition"),
+
     AOS_AWAITING("AosAwaiting"),
     AOS_STARTED("AosStarted"),
     AOS_COMPLETED("AosCompleted"),
     AOS_OVERDUE("AosOverdue"),
-    AWAITING_REISSUE("AwaitingReissue"),
-    DN_AWAITING("DNAwaiting"),
-    DN_STARTED("DNStarted"),
-    DN_COMPLETED("DNCompleted"),
-    REJECTED("Rejected"),
-    AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral"),
-    AWAITING_CONSIDERATION_GENERAL_APPLICATION("AwaitingConsiderationGeneralApplication"),
-    AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN"),
-    DEFENDED_DIVORCE("DefendedDivorce"),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer"),
-    UNKNOWN("DNCompleted");
+
+    AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN"),
+    AWAITING_CONSIDERATION_GENERAL_APPLICATION("AwaitingConsiderationGeneralApplication"),
+    AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute"),
+    AWAITING_DECREE_ABSOLUTE_PETITIONER("AwaitingDecreeAbsolutePetitioner"),
+    AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral"),
+    AWAITING_LISTING("AwaitingListing"),
+    AWAITING_PAYMENT("AwaitingPayment"),
+    AWAITING_PETITIONER("AwaitingPetitioner"),
+    AWAITING_PRONOUNCEMENT("AwaitingPronouncement"),
+    AWAITING_REISSUE("AwaitingReissue"),
+
+    DEFENDED_DIVORCE("DefendedDivorce"),
+    DIVORCE_GRANTED("DivorceGranted"),
+
+    DN_AWAITING("DNAwaiting"),
+    DN_COMPLETED("DNCompleted"),
+    DN_STARTED("DNStarted"),
+
+    PENDING_REJECTION("PendingRejection"),
+    PETITION_COMPLETED("PetitionCompleted"),
+
+    REJECTED("Rejected"),
+    UNKNOWN("DNCompleted"),
+    WITHDRAWN("Withdrawn");
 
     private final String value;
 }
