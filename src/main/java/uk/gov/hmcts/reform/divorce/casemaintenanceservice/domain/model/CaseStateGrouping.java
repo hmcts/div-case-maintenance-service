@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum CaseStateGrouping {
-    INCOMPLETE,
     COMPLETE,
+    INCOMPLETE,
     UNKNOWN
 }

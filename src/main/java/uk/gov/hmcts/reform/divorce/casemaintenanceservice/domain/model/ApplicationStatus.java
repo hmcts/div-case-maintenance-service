@@ -14,7 +14,10 @@ public enum ApplicationStatus {
     AOS_OVERDUE("AosOverdue"),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer"),
 
+    AWAITING_DA_APPLICATION_DUE_DATE("AwaitingDAApplicationDueDate"),
+    AWAITING_CLARIFICATION("AwaitingClarification"),
     AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN"),
+    AWAITING_CONSIDERATION_DA("AwaitingConsiderationDA"),
     AWAITING_CONSIDERATION_GENERAL_APPLICATION("AwaitingConsiderationGeneralApplication"),
     AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute"),
     AWAITING_DECREE_ABSOLUTE_PETITIONER("AwaitingDecreeAbsolutePetitioner"),
@@ -25,6 +28,8 @@ public enum ApplicationStatus {
     AWAITING_PRONOUNCEMENT("AwaitingPronouncement"),
     AWAITING_REISSUE("AwaitingReissue"),
 
+    DA_APPLICATION_OVERDUE("DAApplicationReceived"),
+    DA_APPLICATION_RECEIVED("DAApplicationOverdue"),
     DEFENDED_DIVORCE("DefendedDivorce"),
     DIVORCE_GRANTED("DivorceGranted"),
 
