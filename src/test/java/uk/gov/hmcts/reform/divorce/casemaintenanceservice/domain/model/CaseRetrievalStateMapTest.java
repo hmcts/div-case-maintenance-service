@@ -46,16 +46,33 @@ public class CaseRetrievalStateMapTest {
 
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.COMPLETE))
             .contains(
-                CaseState.SUBMITTED,
-                CaseState.ISSUED,
-                CaseState.PENDING_REJECTION,
-                CaseState.AWAITING_CONSIDERATION_GENERAL_APPLICATION,
-                CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_COMPLETED,
+                CaseState.AOS_OVERDUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
+                CaseState.AMEND_PETITION,
+
+                CaseState.AWAITING_CLARIFICATION,
                 CaseState.AWAITING_CONSIDERATION_DN,
-                CaseState.AWAITING_DECREE_NISI
+                CaseState.AWAITING_CONSIDERATION_DA,
+                CaseState.AWAITING_CONSIDERATION_GENERAL_APPLICATION,
+                CaseState.AWAITING_DA_APPLICATION_DUE_DATE,
+                CaseState.AWAITING_DECREE_ABSOLUTE,
+                CaseState.AWAITING_DECREE_ABSOLUTE_PETITIONER,
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
+                CaseState.AWAITING_LISTING,
+                CaseState.AWAITING_PAYMENT,
+                CaseState.AWAITING_PRONOUNCEMENT,
+                CaseState.AWAITING_PETITIONER,
+                CaseState.AWAITING_REISSUE,
+
+                CaseState.DA_APPLICATION_OVERDUE,
+                CaseState.DA_APPLICATION_RECEIVED,
+                CaseState.DEFENDED_DIVORCE,
+                CaseState.ISSUED,
+                CaseState.PENDING_REJECTION,
+                CaseState.SUBMITTED
             );
     }
 

@@ -26,22 +26,25 @@ public class CaseRetrievalStateMap {
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,
                 CaseState.PENDING_REJECTION,
+                CaseState.AWAITING_CONSIDERATION_GENERAL_APPLICATION,
                 CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED,
                 CaseState.AOS_COMPLETED,
+                CaseState.AOS_OVERDUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
+                CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI
             )
         );
 
     public static final Map<CaseStateGrouping, List<CaseState>> RESPONDENT_CASE_STATE_GROUPING =
         ImmutableMap.of(
-            CaseStateGrouping.INCOMPLETE, Arrays.asList(
-                CaseState.AOS_AWAITING,
-                CaseState.AOS_STARTED
-            ),
+            CaseStateGrouping.INCOMPLETE, Collections.singletonList(CaseState.AOS_STARTED),
             CaseStateGrouping.COMPLETE, Arrays.asList(
+                CaseState.AOS_AWAITING,
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
@@ -57,7 +60,6 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_LISTING,
-                CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.AWAITING_PETITIONER,
                 CaseState.AWAITING_REISSUE,
@@ -67,8 +69,7 @@ public class CaseRetrievalStateMap {
                 CaseState.DEFENDED_DIVORCE,
                 CaseState.ISSUED,
                 CaseState.PENDING_REJECTION,
-                CaseState.SUBMITTED,
-                CaseState.UNKNOWN
+                CaseState.SUBMITTED
             )
         );
 
