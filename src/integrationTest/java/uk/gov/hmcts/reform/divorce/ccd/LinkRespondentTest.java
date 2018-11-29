@@ -138,7 +138,7 @@ public class LinkRespondentTest extends PetitionSupport {
         updateCase(ImmutableMap.of(RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
             caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
-        Response response = getCase(upliftedUser.getAuthToken(), true);
+        Response response = retrieveCase(upliftedUser.getAuthToken(), true);
 
         assertEquals(caseId, response.path("id"));
     }
@@ -151,7 +151,7 @@ public class LinkRespondentTest extends PetitionSupport {
     }
 
     @Override
-    protected String getRequestUrl() {
+    protected String getRetrieveCaseRequestUrl() {
         return serverUrl + retrieveAosCaseContextPath;
     }
 }

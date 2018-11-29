@@ -20,9 +20,9 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     @Value("${case.maintenance.petition.context-path}")
     private String petitionContextPath;
 
-    private String draftsRequestUrl() {
-        return serverUrl + draftContextPath;
-    }
+    @Value("${case.maintenance.get-case.context-path}")
+    private String getCaseContextPath;
+
 
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
         return
@@ -52,12 +52,21 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
-    protected Response getCase(String userToken, Boolean checkCcd) {
+    protected Response retrieveCase(String userToken, Boolean checkCcd) {
         return
             RestUtil.getFromRestService(
-                getRequestUrl(),
+                getRetrieveCaseRequestUrl(),
                 getHeaders(userToken),
                 checkCcd == null ? null : Collections.singletonMap(CHECK_CCD, checkCcd)
+            );
+    }
+
+    protected Response getCase(String userToken) {
+        return
+            RestUtil.getFromRestService(
+                getCaseRequestUrl(),
+                getHeaders(userToken),
+                null
             );
     }
 
@@ -70,7 +79,15 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
-    protected String getRequestUrl() {
+    protected String getRetrieveCaseRequestUrl() {
         return serverUrl + petitionContextPath;
+    }
+
+    private String getCaseRequestUrl() {
+        return serverUrl + getCaseContextPath;
+    }
+
+    private String draftsRequestUrl() {
+        return serverUrl + draftContextPath;
     }
 }

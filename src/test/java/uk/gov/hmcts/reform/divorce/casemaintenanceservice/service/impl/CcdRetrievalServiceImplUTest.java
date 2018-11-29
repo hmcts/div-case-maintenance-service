@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -295,6 +296,71 @@ public class CcdRetrievalServiceImplUTest {
         CaseDetails actual = classUnderTest.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
 
         assertNull(actual);
+
+        verify(userService).retrieveUserDetails(BEARER_AUTHORISATION);
+        verify(authTokenGenerator).generate();
+        verify(coreCaseDataApi)
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap());
+    }
+
+    @Test
+    public void givenNoCaseInCcd_whenRetrieveCaseWithToken_thenReturnNull() throws Exception {
+
+        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(null);
+
+        CaseDetails actual = classUnderTest.retrieveCase(AUTHORISATION);
+
+        assertNull(actual);
+
+        verify(userService).retrieveUserDetails(BEARER_AUTHORISATION);
+        verify(authTokenGenerator).generate();
+        verify(coreCaseDataApi)
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap());
+    }
+
+    @Test(expected = DuplicateCaseException.class)
+    public void givenMultipleCaseInCcd_whenRetrieveCaseWithToken_thenReturnThrowDuplicateException() throws Exception {
+        List<CaseDetails> caseDetailsList = Arrays.asList(CaseDetails.builder().build(), CaseDetails.builder().build());
+
+        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(caseDetailsList);
+
+        classUnderTest.retrieveCase(AUTHORISATION);
+
+        verify(userService).retrieveUserDetails(BEARER_AUTHORISATION);
+        verify(authTokenGenerator).generate();
+        verify(coreCaseDataApi)
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap());
+    }
+
+    @Test
+    public void givenSingleCaseInCcd_whenRetrieveCaseWithToken_thenReturnTheCase() throws Exception {
+        CaseDetails caseDetails = CaseDetails.builder().build();
+        List<CaseDetails> caseDetailsList = Collections.singletonList(caseDetails);
+
+        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(caseDetailsList);
+
+        assertEquals(caseDetails, classUnderTest.retrieveCase(AUTHORISATION));
 
         verify(userService).retrieveUserDetails(BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();

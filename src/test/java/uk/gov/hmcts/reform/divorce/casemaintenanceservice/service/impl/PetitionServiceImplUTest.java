@@ -135,6 +135,17 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
+    public void whenRetrievePetition_thenProceedAsExpected() throws DuplicateCaseException {
+        final CaseDetails caseDetails = CaseDetails.builder().build();
+
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
+
+        assertEquals(caseDetails, classUnderTest.retrievePetition(AUTHORISATION));
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
+    }
+
+    @Test
     public void whenSaveDraft_thenProceedAsExpected() {
         final Map<String, Object> data = Collections.emptyMap();
 
@@ -176,5 +187,6 @@ public class PetitionServiceImplUTest {
 
         verify(draftService).deleteDraft(AUTHORISATION);
     }
+
 
 }

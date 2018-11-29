@@ -74,6 +74,25 @@ public class PetitionController {
         return retrieveCase(jwt, CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING, checkCcd);
     }
 
+    @GetMapping(path = "/case", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Retrieves a divorce case from CCD")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "A Case exists. The case is in the response body"),
+        @ApiResponse(code = 404, message = "When there are no case exists"),
+        @ApiResponse(code = 300, message = "Multiple Cases found")
+        })
+    public ResponseEntity<CaseDetails> retrieveCase(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        try {
+            CaseDetails caseDetails = petitionService.retrievePetition(jwt);
+            return caseDetails == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(caseDetails);
+        } catch (DuplicateCaseException e) {
+            log.warn(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
+        }
+    }
+
     private ResponseEntity<CaseDetails> retrieveCase(String jwt,
                                                      Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
                                                      Boolean checkCcd) {
@@ -84,7 +103,7 @@ public class PetitionController {
 
             return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
         } catch (DuplicateCaseException e) {
-            log.warn(e.getMessage());
+            log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
         }
     }

@@ -25,13 +25,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         throws DuplicateCaseException {
         UserDetails userDetails = getUserDetails(authorisation);
 
-        List<CaseDetails> caseDetailsList = coreCaseDataApi.searchForCitizen(
-            getBearerUserToken(authorisation),
-            getServiceAuthToken(),
-            userDetails.getId(),
-            jurisdictionId,
-            caseType,
-            Collections.emptyMap());
+        List<CaseDetails> caseDetailsList = getCaseListForUser(authorisation, userDetails.getId());
 
         if (CollectionUtils.isEmpty(caseDetailsList)) {
             return null;
@@ -72,6 +66,35 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         }
 
         return updateApplicationStatus(incompleteCases.get(0));
+    }
+
+    @Override
+    public CaseDetails retrieveCase(String authorisation) throws DuplicateCaseException {
+        UserDetails userDetails = getUserDetails(authorisation);
+
+        List<CaseDetails> caseDetailsList = getCaseListForUser(authorisation, userDetails.getId());
+
+        if (CollectionUtils.isEmpty(caseDetailsList)) {
+            return null;
+        }
+
+        if (caseDetailsList.size() > 1) {
+            throw new DuplicateCaseException(String.format("There are [%d] case for the user [%s]",
+                caseDetailsList.size(), userDetails.getForename()));
+        }
+
+        return caseDetailsList.get(0);
+    }
+
+    private List<CaseDetails> getCaseListForUser(String authorisation, String userId) {
+
+        return coreCaseDataApi.searchForCitizen(
+            getBearerUserToken(authorisation),
+            getServiceAuthToken(),
+            userId,
+            jurisdictionId,
+            caseType,
+            Collections.emptyMap());
     }
 
     private CaseDetails updateApplicationStatus(CaseDetails caseDetails) {
