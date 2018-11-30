@@ -42,9 +42,11 @@ public class CaseRetrievalStateMap {
 
     public static final Map<CaseStateGrouping, List<CaseState>> RESPONDENT_CASE_STATE_GROUPING =
         ImmutableMap.of(
-            CaseStateGrouping.INCOMPLETE, Collections.singletonList(CaseState.AOS_STARTED),
-            CaseStateGrouping.COMPLETE, Arrays.asList(
+            CaseStateGrouping.INCOMPLETE, Arrays.asList(
                 CaseState.AOS_AWAITING,
+                CaseState.AOS_STARTED
+            ),
+            CaseStateGrouping.COMPLETE, Arrays.asList(
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
@@ -72,5 +74,4 @@ public class CaseRetrievalStateMap {
                 CaseState.SUBMITTED
             )
         );
-
 }

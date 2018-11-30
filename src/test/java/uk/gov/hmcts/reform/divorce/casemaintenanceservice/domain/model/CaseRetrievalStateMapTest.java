@@ -41,12 +41,12 @@ public class CaseRetrievalStateMapTest {
     public void respondantCaseStateGroupingStateTest() {
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.INCOMPLETE))
             .contains(
+                CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED
             );
 
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.COMPLETE))
             .contains(
-                CaseState.AOS_AWAITING,
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
@@ -62,7 +62,6 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_LISTING,
-                CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.AWAITING_PETITIONER,
                 CaseState.AWAITING_REISSUE,
