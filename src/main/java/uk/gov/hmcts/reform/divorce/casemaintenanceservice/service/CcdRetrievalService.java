@@ -11,4 +11,6 @@ import java.util.Map;
 public interface CcdRetrievalService {
     CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping)
         throws DuplicateCaseException;
+
+    CaseDetails retrieveCase(String authorisation) throws DuplicateCaseException;
 }

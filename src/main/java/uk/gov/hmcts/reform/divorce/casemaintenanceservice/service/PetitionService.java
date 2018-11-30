@@ -13,6 +13,8 @@ public interface PetitionService {
     CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
                                  boolean checkCcd) throws DuplicateCaseException;
 
+    CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException;
+
     void saveDraft(String authorisation, Map<String, Object> data, boolean divorceFormat);
 
     void createDraft(String authorisation, Map<String, Object> data, boolean divorceFormat);
