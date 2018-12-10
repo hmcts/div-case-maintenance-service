@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 @Service
 @Slf4j
 public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRetrievalService {
@@ -23,34 +25,34 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     @Override
     public CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping)
             throws DuplicateCaseException {
-        UserDetails userDetails = getUserDetails(authorisation);
 
+        CaseDetails relevantCase = null;
+
+        UserDetails userDetails = getUserDetails(authorisation);
         List<CaseDetails> caseDetailsList = getCaseListForUser(authorisation, userDetails.getId());
 
-        if (CollectionUtils.isEmpty(caseDetailsList)) {
-            return null;
-        }
+        if (CollectionUtils.isNotEmpty(caseDetailsList)) {
+            if (caseDetailsList.size() > 1) {
+                log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getForename());
+            }
 
-        if (caseDetailsList.size() > 1) {
-            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getForename());
-        }
-
-        Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap = caseDetailsList.stream()
-            .collect(Collectors.groupingBy(
-                caseDetails -> caseStateGrouping.entrySet().stream()
-                    .filter(caseStateGroupingEntry -> caseStateGroupingEntry.getValue()
-                        .contains(
-                            CaseState.getState(caseDetails.getState())
+            Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap = caseDetailsList.stream()
+                .collect(Collectors.groupingBy(
+                    caseDetails -> caseStateGrouping.entrySet().stream()
+                        .filter(caseStateGroupingEntry -> caseStateGroupingEntry.getValue()
+                            .contains(
+                                CaseState.getState(caseDetails.getState())
+                            )
                         )
-                    )
-                    .map(Map.Entry::getKey)
-                    .findFirst()
-                    .orElse(CaseStateGrouping.UNKNOWN)
-            ));
+                        .map(Map.Entry::getKey)
+                        .findFirst()
+                        .orElse(CaseStateGrouping.UNKNOWN)
+                ));
 
-        CaseDetails relevantCase = retrieveRelevantCaseDetails(statusCaseDetailsMap, userDetails);
-        if (relevantCase != null) {
-            relevantCase = translateCcdCaseStateToDivorceState(relevantCase);
+            relevantCase = retrieveRelevantCaseDetails(statusCaseDetailsMap, userDetails);
+            if (relevantCase != null) {
+                relevantCase = translateCcdCaseStateToDivorceState(relevantCase);
+            }
         }
 
         return relevantCase;
@@ -74,8 +76,9 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         return caseDetailsList.get(0);
     }
 
+    @Nullable
     private CaseDetails retrieveRelevantCaseDetails(Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap,
-                                                    UserDetails userDetails) throws DuplicateCaseException {
+                                            UserDetails userDetails) throws DuplicateCaseException {
         CaseDetails relevantCase = null;
 
         List<CaseDetails> completedCases = statusCaseDetailsMap.get(CaseStateGrouping.COMPLETE);
