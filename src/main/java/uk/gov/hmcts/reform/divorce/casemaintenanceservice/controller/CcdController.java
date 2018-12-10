@@ -1,10 +1,13 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "casemaintenance/version/1")
+@Slf4j
 @Api(value = "Case Maintenance Services", consumes = "application/json", produces = "application/json")
 public class CcdController {
     @Autowired
@@ -64,6 +68,12 @@ public class CcdController {
         @PathVariable("eventId") @ApiParam(value = "Update Event Type Id", required = true) String eventId,
         @RequestHeader("Authorization")
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            log.info(om.writeValueAsString(data));
+        } catch (JsonProcessingException e) {
+            log.error("Error serialising ",e);
+        }
         return ResponseEntity.ok(ccdUpdateService.update(caseId, data, eventId, jwt));
     }
 
