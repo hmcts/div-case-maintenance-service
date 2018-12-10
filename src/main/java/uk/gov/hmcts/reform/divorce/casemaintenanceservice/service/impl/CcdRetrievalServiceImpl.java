@@ -22,7 +22,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
     @Override
     public CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping)
-        throws DuplicateCaseException {
+            throws DuplicateCaseException {
         UserDetails userDetails = getUserDetails(authorisation);
 
         List<CaseDetails> caseDetailsList = getCaseListForUser(authorisation, userDetails.getId());
@@ -48,24 +48,12 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
                     .orElse(CaseStateGrouping.UNKNOWN)
             ));
 
-        List<CaseDetails> completedCases = statusCaseDetailsMap.get(CaseStateGrouping.COMPLETE);
-
-        if (CollectionUtils.isNotEmpty(completedCases)) {
-            return updateApplicationStatus(completedCases.get(0));
+        CaseDetails relevantCase = retrieveRelevantCaseDetails(statusCaseDetailsMap, userDetails);
+        if (relevantCase != null) {
+            relevantCase = translateCcdCaseStateToDivorceState(relevantCase);
         }
 
-        List<CaseDetails> incompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
-
-        if (CollectionUtils.isEmpty(incompleteCases)) {
-            return null;
-        } else if (incompleteCases.size() > 1) {
-            String message = String.format("[%d] cases in incomplete status found for the user [%s]",
-                incompleteCases.size(), userDetails.getEmail());
-            log.warn(message);
-            throw new DuplicateCaseException(message);
-        }
-
-        return updateApplicationStatus(incompleteCases.get(0));
+        return relevantCase;
     }
 
     @Override
@@ -80,24 +68,49 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         if (caseDetailsList.size() > 1) {
             throw new DuplicateCaseException(String.format("There are [%d] case for the user [%s]",
-                caseDetailsList.size(), userDetails.getForename()));
+                    caseDetailsList.size(), userDetails.getForename()));
         }
 
         return caseDetailsList.get(0);
     }
 
+    private CaseDetails retrieveRelevantCaseDetails(Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap,
+                                                    UserDetails userDetails) throws DuplicateCaseException {
+        CaseDetails relevantCase = null;
+
+        List<CaseDetails> completedCases = statusCaseDetailsMap.get(CaseStateGrouping.COMPLETE);
+        if (CollectionUtils.isNotEmpty(completedCases)) {
+            relevantCase = completedCases.get(0);
+        } else {
+            List<CaseDetails> incompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
+
+            if (CollectionUtils.isNotEmpty(incompleteCases)) {
+                if (incompleteCases.size() > 1) {
+                    String message = String.format("[%d] cases in incomplete status found for the user [%s]",
+                            incompleteCases.size(), userDetails.getEmail());
+                    log.warn(message);
+                    throw new DuplicateCaseException(message);
+                } else {
+                    relevantCase = incompleteCases.get(0);
+                }
+            }
+        }
+
+        return relevantCase;
+    }
+
     private List<CaseDetails> getCaseListForUser(String authorisation, String userId) {
 
         return coreCaseDataApi.searchForCitizen(
-            getBearerUserToken(authorisation),
-            getServiceAuthToken(),
-            userId,
-            jurisdictionId,
-            caseType,
-            Collections.emptyMap());
+                getBearerUserToken(authorisation),
+                getServiceAuthToken(),
+                userId,
+                jurisdictionId,
+                caseType,
+                Collections.emptyMap());
     }
 
-    private CaseDetails updateApplicationStatus(CaseDetails caseDetails) {
+    private CaseDetails translateCcdCaseStateToDivorceState(CaseDetails caseDetails) {
         String ccdStateName = caseDetails.getState();
         ApplicationStatus applicationStatus = CaseState.getState(ccdStateName).getStatus();
 

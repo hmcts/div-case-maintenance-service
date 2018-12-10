@@ -8,6 +8,7 @@ import java.util.Arrays;
 @AllArgsConstructor
 @Getter
 public enum CaseState {
+
     AWAITING_PETITIONER("AwaitingPetitioner", ApplicationStatus.AWAITING_PETITIONER),
     AWAITING_PAYMENT("AwaitingPayment", ApplicationStatus.AWAITING_PAYMENT),
     AWAITING_HWF_DECISION("AwaitingHWFDecision", ApplicationStatus.PETITION_COMPLETED),
@@ -29,6 +30,12 @@ public enum CaseState {
         ApplicationStatus.AWAITING_CONSIDERATION_GENERAL_APPLICATION),
     AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN",
         ApplicationStatus.AWAITING_CONSIDERATION_GENERAL_APPLICATION),
+    AMEND_PETITION("AmendPetition", ApplicationStatus.AMEND_PETITION),
+    AWAITING_CLARIFICATION("AwaitingClarification", ApplicationStatus.AWAITING_CLARIFICATION),
+    AWAITING_CONSIDERATION("AwaitingConsideration", ApplicationStatus.AWAITING_CONSIDERATION),
+    AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute", ApplicationStatus.AWAITING_DECREE_ABSOLUTE),
+    AWAITING_PRONOUNCEMENT("AwaitingPronouncement", ApplicationStatus.AWAITING_PRONOUNCEMENT),
+    DIVORCE_GRANTED("DivorceGranted", ApplicationStatus.DIVORCE_GRANTED),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;

@@ -99,7 +99,7 @@ public class PetitionController {
 
         try {
             CaseDetails caseDetails = petitionService.retrievePetition(jwt, caseStateGrouping,
-                Optional.ofNullable(checkCcd).orElse(false));
+                    Optional.ofNullable(checkCcd).orElse(false));
 
             return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
         } catch (DuplicateCaseException e) {
