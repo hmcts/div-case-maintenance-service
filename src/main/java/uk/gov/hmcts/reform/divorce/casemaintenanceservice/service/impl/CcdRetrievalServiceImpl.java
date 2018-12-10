@@ -48,10 +48,8 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
                         .orElse(CaseStateGrouping.UNKNOWN)
                 ));
 
-            relevantCase = retrieveRelevantCaseDetails(statusCaseDetailsMap, userDetails);
-            if (relevantCase.isPresent()) {
-                relevantCase = Optional.of(translateCcdCaseStateToDivorceState(relevantCase.get()));
-            }
+            relevantCase = retrieveRelevantCaseDetails(statusCaseDetailsMap, userDetails)
+                    .map(this::translateCcdCaseStateToDivorceState);
         }
 
         return relevantCase.orElse(null);
