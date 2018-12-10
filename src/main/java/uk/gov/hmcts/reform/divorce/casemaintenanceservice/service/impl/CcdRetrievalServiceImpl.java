@@ -14,9 +14,8 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalSe
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
 
 @Service
 @Slf4j
@@ -26,7 +25,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     public CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping)
             throws DuplicateCaseException {
 
-        CaseDetails relevantCase = null;
+        Optional<CaseDetails> relevantCase = Optional.empty();
 
         UserDetails userDetails = getUserDetails(authorisation);
         List<CaseDetails> caseDetailsList = getCaseListForUser(authorisation, userDetails.getId());
@@ -50,12 +49,12 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
                 ));
 
             relevantCase = retrieveRelevantCaseDetails(statusCaseDetailsMap, userDetails);
-            if (relevantCase != null) {
-                relevantCase = translateCcdCaseStateToDivorceState(relevantCase);
+            if (relevantCase.isPresent()) {
+                relevantCase = Optional.of(translateCcdCaseStateToDivorceState(relevantCase.get()));
             }
         }
 
-        return relevantCase;
+        return relevantCase.orElse(null);
     }
 
     @Override
@@ -76,14 +75,13 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         return caseDetailsList.get(0);
     }
 
-    @Nullable
-    private CaseDetails retrieveRelevantCaseDetails(Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap,
+    private Optional<CaseDetails> retrieveRelevantCaseDetails(Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap,
                                             UserDetails userDetails) throws DuplicateCaseException {
-        CaseDetails relevantCase = null;
+        Optional<CaseDetails> relevantCase = Optional.empty();
 
         List<CaseDetails> completedCases = statusCaseDetailsMap.get(CaseStateGrouping.COMPLETE);
         if (CollectionUtils.isNotEmpty(completedCases)) {
-            relevantCase = completedCases.get(0);
+            relevantCase = Optional.of(completedCases.get(0));
         } else {
             List<CaseDetails> incompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
 
@@ -94,7 +92,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
                     log.warn(message);
                     throw new DuplicateCaseException(message);
                 } else {
-                    relevantCase = incompleteCases.get(0);
+                    relevantCase = Optional.of(incompleteCases.get(0));
                 }
             }
         }
