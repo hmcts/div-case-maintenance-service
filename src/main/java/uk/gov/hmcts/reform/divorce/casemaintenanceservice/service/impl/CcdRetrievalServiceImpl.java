@@ -75,8 +75,9 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         return caseDetailsList.get(0);
     }
 
-    private Optional<CaseDetails> retrieveRelevantCaseDetails(Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap,
-                                            UserDetails userDetails) throws DuplicateCaseException {
+    private Optional<CaseDetails> retrieveRelevantCaseDetails(
+            Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap,
+            UserDetails userDetails) throws DuplicateCaseException {
         Optional<CaseDetails> relevantCase = Optional.empty();
 
         List<CaseDetails> completedCases = statusCaseDetailsMap.get(CaseStateGrouping.COMPLETE);
