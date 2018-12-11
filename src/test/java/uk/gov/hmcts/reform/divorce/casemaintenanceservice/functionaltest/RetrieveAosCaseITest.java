@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -163,7 +164,7 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final Long caseId = 1L;
-        final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.AOS_COMPLETED.getValue());
+        final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.AWAITING_DECREE_NISI.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -189,8 +190,8 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         final Long caseId1 = 1L;
         final Long caseId2 = 2L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AOS_COMPLETED.getValue());
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AOS_COMPLETED.getValue());
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AWAITING_DECREE_NISI.getValue());
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AWAITING_DECREE_NISI.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -218,8 +219,8 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         final Long caseId2 = 2L;
         final Long caseId3 = 3L;
 
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AOS_COMPLETED.getValue());
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AOS_COMPLETED.getValue());
+        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AWAITING_DECREE_NISI.getValue());
+        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AWAITING_DECREE_NISI.getValue());
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, CaseState.AOS_AWAITING.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);

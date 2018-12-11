@@ -12,7 +12,6 @@ public enum ApplicationStatus {
     PENDING_REJECTION("PendingRejection"),
     AOS_AWAITING("AosAwaiting"),
     AOS_STARTED("AosStarted"),
-    AOS_COMPLETED("AosCompleted"),
     AOS_OVERDUE("AosOverdue"),
     AWAITING_REISSUE("AwaitingReissue"),
     DN_AWAITING("DNAwaiting"),

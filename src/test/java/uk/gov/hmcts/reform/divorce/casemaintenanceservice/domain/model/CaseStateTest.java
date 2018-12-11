@@ -35,7 +35,6 @@ public class CaseStateTest {
                 {"AwaitingDocuments", "PetitionCompleted"},
                 {"AosAwaiting", "AosAwaiting"},
                 {"AosStarted", "AosStarted"},
-                {"AosCompleted", "AosCompleted"},
                 {"AosSubmittedAwaitingAnswer", "AosSubmittedAwaitingAnswer"},
                 {"AwaitingDecreeNisi", "DNAwaiting"},
                 {"Rejected", "Rejected"},
