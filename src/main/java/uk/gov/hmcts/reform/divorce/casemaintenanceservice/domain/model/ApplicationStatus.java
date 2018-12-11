@@ -24,6 +24,12 @@ public enum ApplicationStatus {
     AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN"),
     DEFENDED_DIVORCE("DefendedDivorce"),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer"),
+    AMEND_PETITION("AmendPetition"),
+    AWAITING_CLARIFICATION("AwaitingClarification"),
+    AWAITING_CONSIDERATION("AwaitingConsideration"),
+    AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute"),
+    AWAITING_PRONOUNCEMENT("AwaitingPronouncement"),
+    DIVORCE_GRANTED("DivorceGranted"),
     UNKNOWN("DNCompleted");
 
     private final String value;

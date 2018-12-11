@@ -38,7 +38,7 @@ public class CaseRetrievalStateMapTest {
     }
 
     @Test
-    public void respondantCaseStateGroupingStateTest() {
+    public void respondentCaseStateGroupingStateTest() {
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.INCOMPLETE))
             .contains(
                 CaseState.AOS_STARTED
@@ -56,7 +56,13 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_CONSIDERATION_DN,
-                CaseState.AWAITING_DECREE_NISI
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AMEND_PETITION,
+                CaseState.AWAITING_CLARIFICATION,
+                CaseState.AWAITING_CONSIDERATION,
+                CaseState.AWAITING_DECREE_ABSOLUTE,
+                CaseState.AWAITING_PRONOUNCEMENT,
+                CaseState.DIVORCE_GRANTED
             );
     }
 
