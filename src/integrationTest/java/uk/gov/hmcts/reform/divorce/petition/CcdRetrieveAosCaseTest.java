@@ -16,7 +16,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
         + "CJOQrVU";
 
     private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
-    private static final String TEST_AOS_COMPLETED_EVENT = "testAosCompleted";
+    private static final String TEST_AOS_AWAITING_DN = "testAwaitingDecreeNisi";
 
     @Value("${case.maintenance.aos-case.context-path}")
     private String retrieveAosCaseContextPath;
@@ -47,7 +47,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     public void givenOneAosRespondedCaseInCcd_whenRetrieveAosCase_thenReturnTheCase() throws Exception {
         final String userToken = getUserToken();
 
-        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_COMPLETED_EVENT);
+        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
         Response cmsResponse = retrieveCase(userToken, true);
 
@@ -59,9 +59,9 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     public void givenAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnTheFirstCase() throws Exception {
         final String userToken = getUserToken();
 
-        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_COMPLETED_EVENT);
+        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
-        createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_COMPLETED_EVENT);
+        createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
         Response cmsResponse = retrieveCase(userToken, true);
 
@@ -76,9 +76,9 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_COMPLETED_EVENT);
+        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
-        createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_COMPLETED_EVENT);
+        createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
         Response cmsResponse = retrieveCase(userToken, true);
 
