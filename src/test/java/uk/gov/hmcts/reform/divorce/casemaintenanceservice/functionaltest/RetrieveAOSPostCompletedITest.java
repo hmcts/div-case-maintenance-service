@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
     "eureka.client.enabled=false"
-})
+    })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
@@ -92,7 +92,7 @@ public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
             "DivorceGranted");
     }
 
-    public RetrieveAOSPostCompletedITest(String caseState){
+    public RetrieveAOSPostCompletedITest(String caseState) {
         this.caseState = caseState;
     }
 
