@@ -45,6 +45,7 @@ public class CaseStateTest {
                 {"AwaitingConsideration", "AwaitingConsideration"},
                 {"AwaitingDecreeAbsolute", "AwaitingDecreeAbsolute"},
                 {"AwaitingPronouncement", "AwaitingPronouncement"},
+                {"DefendedDivorce", "DefendedDivorce"},
                 {"DivorceGranted", "DivorceGranted"},
                 {"Unknown", "DNCompleted"}
         });

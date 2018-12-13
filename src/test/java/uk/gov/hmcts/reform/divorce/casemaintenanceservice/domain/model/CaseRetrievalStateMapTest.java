@@ -60,6 +60,7 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_CONSIDERATION,
                 CaseState.AWAITING_DECREE_ABSOLUTE,
                 CaseState.AWAITING_PRONOUNCEMENT,
+                CaseState.DEFENDED_DIVORCE,
                 CaseState.DIVORCE_GRANTED
             );
     }
