@@ -38,15 +38,15 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withPipeline(type , product, component) {
-    if (env.CHANGE_TITLE && !env.CHANGE_TITLE.startsWith('[PREVIEW]')) {
+
+    if (env.CHANGE_TITLE && env.CHANGE_TITLE.startsWith('[HELM]')) {
+        enableDockerBuild()
+        installCharts()
+    } else if (env.CHANGE_TITLE && !env.CHANGE_TITLE.startsWith('[PREVIEW]')) {
         enableDockerBuild()
         enableDeployToAKS()
     }
 
-    if (env.CHANGE_TITLE && !env.CHANGE_TITLE.startsWith('[HELM]')) {
-        enableDockerBuild()
-        installCharts()
-    }
 
     loadVaultSecrets(secrets)
     setVaultName('div')
