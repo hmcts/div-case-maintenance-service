@@ -43,6 +43,11 @@ withPipeline(type , product, component) {
         enableDeployToAKS()
     }
 
+    if (env.CHANGE_TITLE && !env.CHANGE_TITLE.startsWith('[HELM]')) {
+        enableDockerBuild()
+        installCharts()
+    }
+
     loadVaultSecrets(secrets)
     setVaultName('div')
 
