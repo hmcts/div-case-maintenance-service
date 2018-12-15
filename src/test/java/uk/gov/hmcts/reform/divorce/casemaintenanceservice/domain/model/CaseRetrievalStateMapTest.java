@@ -52,6 +52,7 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED,
+                CaseState.AWAITING_REISSUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI,
