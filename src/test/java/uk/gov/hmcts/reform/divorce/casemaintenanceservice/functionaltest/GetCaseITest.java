@@ -91,6 +91,7 @@ public class GetCaseITest extends AuthIdamMockSupport {
     }
 
     @Test
+    @Ignore
     public void givenNoCaseInCcd_whenGetCase_thenReturnNull() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
