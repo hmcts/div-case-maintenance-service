@@ -35,12 +35,18 @@ public class CaseStateTest {
                 {"AwaitingDocuments", "PetitionCompleted"},
                 {"AosAwaiting", "AosAwaiting"},
                 {"AosStarted", "AosStarted"},
-                {"AosCompleted", "AosCompleted"},
                 {"AosSubmittedAwaitingAnswer", "AosSubmittedAwaitingAnswer"},
                 {"AwaitingDecreeNisi", "DNAwaiting"},
                 {"Rejected", "Rejected"},
                 {"AwaitingLegalAdvisorReferral", "AwaitingLegalAdvisorReferral"},
                 {"DefendedDivorce", "DefendedDivorce"},
+                {"AmendPetition", "AmendPetition"},
+                {"AwaitingClarification", "AwaitingClarification"},
+                {"AwaitingConsideration", "AwaitingConsideration"},
+                {"AwaitingDecreeAbsolute", "AwaitingDecreeAbsolute"},
+                {"AwaitingPronouncement", "AwaitingPronouncement"},
+                {"DefendedDivorce", "DefendedDivorce"},
+                {"DivorceGranted", "DivorceGranted"},
                 {"Unknown", "DNCompleted"}
         });
     }
