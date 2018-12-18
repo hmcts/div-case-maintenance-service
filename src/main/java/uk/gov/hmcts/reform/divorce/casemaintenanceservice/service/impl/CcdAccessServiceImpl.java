@@ -59,7 +59,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             return false;
         }
 
-        return caseDetails.getData().get(RECEIVED_AOS_FIELD) == null
+        return !"YES".equalsIgnoreCase(String.valueOf(caseDetails.getData().get(RECEIVED_AOS_FIELD)))
             && letterHolderId.equals(caseDetails.getData().get(LETTER_HOLDER_CASE_FIELD));
     }
 }

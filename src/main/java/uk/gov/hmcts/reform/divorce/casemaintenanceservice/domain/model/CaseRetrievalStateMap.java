@@ -30,13 +30,11 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED,
-                CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
-                CaseState.AWAITING_CONSIDERATION_DN,
-                CaseState.AWAITING_DECREE_NISI
+                CaseState.AWAITING_CONSIDERATION_DN
             )
         );
 
@@ -51,12 +49,19 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED,
-                CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
+                CaseState.AWAITING_REISSUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_CONSIDERATION_DN,
-                CaseState.AWAITING_DECREE_NISI
-            )
+                CaseState.AWAITING_DECREE_NISI,
+                CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
+                CaseState.AMEND_PETITION,
+                CaseState.AWAITING_CLARIFICATION,
+                CaseState.AWAITING_CONSIDERATION,
+                CaseState.AWAITING_DECREE_ABSOLUTE,
+                CaseState.AWAITING_PRONOUNCEMENT,
+                CaseState.DEFENDED_DIVORCE,
+                CaseState.DIVORCE_GRANTED )
         );
 
 }

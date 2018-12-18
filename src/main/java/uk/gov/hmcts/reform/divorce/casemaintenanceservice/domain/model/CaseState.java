@@ -17,7 +17,6 @@ public enum CaseState {
     AWAITING_DOCUMENTS("AwaitingDocuments", ApplicationStatus.PETITION_COMPLETED),
     AOS_AWAITING("AosAwaiting", ApplicationStatus.AOS_AWAITING),
     AOS_STARTED("AosStarted", ApplicationStatus.AOS_STARTED),
-    AOS_COMPLETED("AosCompleted", ApplicationStatus.AOS_COMPLETED),
     AOS_OVERDUE("AosOverdue", ApplicationStatus.AOS_OVERDUE),
     AWAITING_REISSUE("AwaitingReissue", ApplicationStatus.AWAITING_REISSUE),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer", ApplicationStatus.AOS_SUBMITTED_AWAITING_ANSWER),
@@ -29,6 +28,12 @@ public enum CaseState {
         ApplicationStatus.AWAITING_CONSIDERATION_GENERAL_APPLICATION),
     AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN",
         ApplicationStatus.AWAITING_CONSIDERATION_GENERAL_APPLICATION),
+    AMEND_PETITION("AmendPetition", ApplicationStatus.AMEND_PETITION),
+    AWAITING_CLARIFICATION("AwaitingClarification", ApplicationStatus.AWAITING_CLARIFICATION),
+    AWAITING_CONSIDERATION("AwaitingConsideration", ApplicationStatus.AWAITING_CONSIDERATION),
+    AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute", ApplicationStatus.AWAITING_DECREE_ABSOLUTE),
+    AWAITING_PRONOUNCEMENT("AwaitingPronouncement", ApplicationStatus.AWAITING_PRONOUNCEMENT),
+    DIVORCE_GRANTED("DivorceGranted", ApplicationStatus.DIVORCE_GRANTED),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;
