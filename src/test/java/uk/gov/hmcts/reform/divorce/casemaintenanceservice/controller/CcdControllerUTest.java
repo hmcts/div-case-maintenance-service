@@ -80,4 +80,17 @@ public class CcdControllerUTest {
 
         verify(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId);
     }
+
+    @Test
+    public void whenUnlinkRespondent_thenProceedAsExpected() {
+        final String caseId = "caseId";
+
+        doNothing().when(ccdAccessService).unlinkRespondent(JWT_TOKEN, caseId);
+
+        ResponseEntity responseEntity = classUnderTest.unlinkRespondent(JWT_TOKEN, caseId);
+
+        assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
+
+        verify(ccdAccessService).unlinkRespondent(JWT_TOKEN, caseId);
+    }
 }

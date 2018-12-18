@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -83,6 +84,24 @@ public class CcdController {
         @ApiParam(value = "Letter holder id from the pin user", required = true) String letterHolderId) {
 
         ccdAccessService.linkRespondent(authToken, caseId, letterHolderId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(path = "/link-respondent/{caseId}")
+    @ApiOperation(value = "Removes user permission on a case")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Returned when case with id exists and the access is "
+            + "removed to the respondent user"),
+        @ApiResponse(code = 404, message = "Returned when case with id not found"),
+        }
+    )
+    public ResponseEntity<Void> unlinkRespondent(
+        @RequestHeader("Authorization")
+        @ApiParam(value = "JWT authorisation token of the respondent", required = true) final String authToken,
+        @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId) {
+
+        ccdAccessService.unlinkRespondent(authToken, caseId);
 
         return ResponseEntity.ok().build();
     }
