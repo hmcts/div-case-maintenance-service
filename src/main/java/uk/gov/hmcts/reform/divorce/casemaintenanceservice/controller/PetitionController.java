@@ -170,7 +170,7 @@ public class PetitionController {
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Returns case with CaseId"),
         @ApiResponse(code = 404, message = "Returns case not found or not authorised to view")
-    })
+        })
     public ResponseEntity<CaseDetails> retrieveCaseById(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
