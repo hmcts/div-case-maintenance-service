@@ -67,7 +67,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     protected Response retrieveCaseById(String userToken, String caseId) {
         return
             RestUtil.getFromRestService(
-                getRetrieveCaseRequestUrl() + "/" + caseId,
+                getRetrieveCaseByIdRequestUrl() + "/" + caseId,
                 getHeaders(userToken),
                 null
             );
