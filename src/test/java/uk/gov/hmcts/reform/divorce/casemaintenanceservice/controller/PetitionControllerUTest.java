@@ -27,6 +27,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 @RunWith(MockitoJUnitRunner.class)
 public class PetitionControllerUTest {
     private static final String AUTHORISATION = "user";
+    private static final String TEST_CASE_ID = "test.id";
 
     @Mock
     private PetitionService petitionService;
@@ -174,6 +175,31 @@ public class PetitionControllerUTest {
         assertEquals(caseDetails, actual.getBody());
 
         verify(petitionService).retrievePetition(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenRetrieveCaseById_thenReturnCase() throws DuplicateCaseException {
+        final CaseDetails caseDetails = CaseDetails.builder().build();
+
+        when(petitionService.retrievePetitionByCaseId(AUTHORISATION, TEST_CASE_ID)).thenReturn(caseDetails);
+
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrieveCaseById(AUTHORISATION, TEST_CASE_ID);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(caseDetails, actual.getBody());
+
+        verify(petitionService).retrievePetitionByCaseId(AUTHORISATION, TEST_CASE_ID);
+    }
+
+    @Test
+    public void givenCaseNotFound_whenRetrieveCaseById_thenNotFound() throws DuplicateCaseException {
+        when(petitionService.retrievePetitionByCaseId(AUTHORISATION, TEST_CASE_ID)).thenReturn(null);
+
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrieveCaseById(AUTHORISATION, TEST_CASE_ID);
+
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
+
+        verify(petitionService).retrievePetitionByCaseId(AUTHORISATION, TEST_CASE_ID);
     }
 
     @Test

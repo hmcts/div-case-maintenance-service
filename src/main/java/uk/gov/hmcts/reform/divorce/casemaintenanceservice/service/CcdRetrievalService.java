@@ -13,4 +13,6 @@ public interface CcdRetrievalService {
         throws DuplicateCaseException;
 
     CaseDetails retrieveCase(String authorisation) throws DuplicateCaseException;
+
+    CaseDetails retrieveCaseById(String authorisation, String caseId);
 }

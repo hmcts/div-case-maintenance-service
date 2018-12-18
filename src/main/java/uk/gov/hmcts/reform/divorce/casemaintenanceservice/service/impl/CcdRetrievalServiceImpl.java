@@ -86,6 +86,20 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         return caseDetailsList.get(0);
     }
 
+    @Override
+    public CaseDetails retrieveCaseById(String authorisation, String caseId) {
+        UserDetails userDetails = getUserDetails(authorisation);
+
+        return coreCaseDataApi.readForCitizen(
+            getBearerUserToken(authorisation),
+            getServiceAuthToken(),
+            userDetails.getId(),
+            jurisdictionId,
+            caseType,
+            caseId
+        );
+    }
+
     private List<CaseDetails> getCaseListForUser(String authorisation, String userId) {
 
         return coreCaseDataApi.searchForCitizen(
