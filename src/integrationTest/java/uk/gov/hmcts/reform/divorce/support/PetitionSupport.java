@@ -23,6 +23,9 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     @Value("${case.maintenance.get-case.context-path}")
     private String getCaseContextPath;
 
+    @Value("${case.maintenance.retrieve-by-id.context-path}")
+    private String retrieveCaseByIdContextPath;
+
 
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
         return
@@ -61,6 +64,15 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
+    protected Response retrieveCaseById(String userToken, String caseId) {
+        return
+            RestUtil.getFromRestService(
+                getRetrieveCaseRequestUrl() + "/" + caseId,
+                getHeaders(userToken),
+                null
+            );
+    }
+
     protected Response getCase(String userToken) {
         return
             RestUtil.getFromRestService(
@@ -90,4 +102,6 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     private String draftsRequestUrl() {
         return serverUrl + draftContextPath;
     }
+
+    private String getRetrieveCaseByIdRequestUrl() { return serverUrl + retrieveCaseByIdContextPath; }
 }

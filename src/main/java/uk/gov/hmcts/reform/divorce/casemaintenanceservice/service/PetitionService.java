@@ -15,6 +15,8 @@ public interface PetitionService {
 
     CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException;
 
+    CaseDetails retrievePetitionByCaseId(String authorisation, String caseId);
+
     void saveDraft(String authorisation, Map<String, Object> data, boolean divorceFormat);
 
     void createDraft(String authorisation, Map<String, Object> data, boolean divorceFormat);
