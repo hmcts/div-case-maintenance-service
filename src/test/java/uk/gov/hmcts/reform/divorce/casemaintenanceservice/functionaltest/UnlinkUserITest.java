@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
     "eureka.client.enabled=false"
-})
+    })
 @AutoConfigureMockMvc
 public class UnlinkUserITest  extends AuthIdamMockSupport {
 
@@ -94,15 +94,16 @@ public class UnlinkUserITest  extends AuthIdamMockSupport {
     public void givenCaseNotFound_whenUnlinkRespondent_thenReturnNotFoundResponse() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
-        Response mockResponse = Response.builder()
-            .status(NOT_FOUND)
-            .headers(Collections.emptyMap())
-            .build();
+
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
 
+        Response mockResponse = Response.builder()
+            .status(NOT_FOUND)
+            .headers(Collections.emptyMap())
+            .build();
         doThrow(FeignException.errorStatus("CCD exception", mockResponse))
             .when(caseAccessApi)
             .revokeAccessToCase(

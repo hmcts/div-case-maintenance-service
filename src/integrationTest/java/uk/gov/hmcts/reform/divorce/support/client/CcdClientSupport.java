@@ -63,7 +63,7 @@ public class CcdClientSupport {
             caseDataContent);
     }
 
-    public CaseDetails read(UserDetails userDetails, String caseId){
+    public CaseDetails read(UserDetails userDetails, String caseId) {
         final String serviceToken = authTokenGenerator.generate();
         return coreCaseDataApi.readForCaseWorker(
             userDetails.getAuthToken(),
