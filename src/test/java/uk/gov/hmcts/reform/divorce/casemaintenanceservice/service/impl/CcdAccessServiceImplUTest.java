@@ -251,4 +251,30 @@ public class CcdAccessServiceImplUTest {
             any(UserId.class)
         );
     }
+
+    @Test
+    public void givenUserWithCase_whenUnlinkUser_thenCallRemovePermissionAPI() {
+
+        doNothing().when(caseAccessApi).revokeAccessToCase(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(SERVICE_TOKEN),
+            eq(CASEWORKER_USER_ID),
+            eq(JURISDICTION_ID),
+            eq(CASE_TYPE),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER.getId())
+        );
+
+        classUnderTest.unlinkRespondent(RESPONDENT_AUTHORISATION, CASE_ID);
+
+        verify(caseAccessApi).revokeAccessToCase(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(SERVICE_TOKEN),
+            eq(CASEWORKER_USER_ID),
+            eq(JURISDICTION_ID),
+            eq(CASE_TYPE),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER.getId())
+        );
+    }
 }

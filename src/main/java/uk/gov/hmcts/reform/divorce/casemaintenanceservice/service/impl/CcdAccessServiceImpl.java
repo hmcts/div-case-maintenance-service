@@ -42,6 +42,23 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         grantAccessToCase(caseworkerUser, caseId, respondentUser.getId());
     }
 
+    @Override
+    public void unlinkRespondent(String authorisation, String caseId) {
+        UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
+
+        UserDetails respondentUser = getUserDetails(authorisation);
+
+        caseAccessApi.revokeAccessToCase(
+            caseworkerUser.getAuthToken(),
+            getServiceAuthToken(),
+            caseworkerUser.getId(),
+            jurisdictionId,
+            caseType,
+            caseId,
+            respondentUser.getId()
+        );
+    }
+
     private void grantAccessToCase(UserDetails anonymousCaseWorker, String caseId, String respondentId) {
         caseAccessApi.grantAccessToCase(
             anonymousCaseWorker.getAuthToken(),
