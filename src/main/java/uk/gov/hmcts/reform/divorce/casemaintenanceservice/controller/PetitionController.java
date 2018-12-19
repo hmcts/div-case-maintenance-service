@@ -165,7 +165,7 @@ public class PetitionController {
         return ResponseEntity.ok(petitionService.getAllDrafts(jwt));
     }
 
-    @GetMapping(path = "/retrieveCaseById/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/case/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Retrieve CCD case by CaseId")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Returns case with CaseId"),

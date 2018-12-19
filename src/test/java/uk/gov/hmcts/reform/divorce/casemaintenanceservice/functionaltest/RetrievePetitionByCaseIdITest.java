@@ -57,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RetrievePetitionByCaseIdITest extends AuthIdamMockSupport {
-    private static final String API_URL = "/casemaintenance/version/1/retrieveCaseById";
+    private static final String API_URL = "/casemaintenance/version/1/case";
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
