@@ -179,7 +179,7 @@ public class PetitionControllerUTest {
 
     @Test
     public void givenCaseFound_whenRetrieveCaseById_thenReturnCase() throws DuplicateCaseException {
-        final CaseDetails caseDetails = CaseDetails.builder().build();
+        final CaseDetails caseDetails = CaseDetails.builder().id(123456789L).build();
 
         when(petitionService.retrievePetitionByCaseId(AUTHORISATION, TEST_CASE_ID)).thenReturn(caseDetails);
 

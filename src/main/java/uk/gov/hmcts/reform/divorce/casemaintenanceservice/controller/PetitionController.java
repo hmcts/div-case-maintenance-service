@@ -177,8 +177,10 @@ public class PetitionController {
         @PathVariable("caseId")
         @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId
     ) {
-        CaseDetails retrievedCase = petitionService.retrievePetitionByCaseId(jwt, caseId);
+        CaseDetails retrievedCase = Optional.ofNullable(
+            petitionService.retrievePetitionByCaseId(jwt, caseId)
+        ).orElse(CaseDetails.builder().build());
 
-        return retrievedCase == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(retrievedCase);
+        return retrievedCase.getId() == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(retrievedCase);
     }
 }
