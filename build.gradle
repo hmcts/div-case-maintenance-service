@@ -257,14 +257,15 @@ pmd {
 }
 
 pitest {
-    targetClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.*']
-    excludedClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.config.*',
-    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*',
-    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.*',
-    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.*',
-    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.*',
-    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.config.*',
-    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent']
+    targetClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller.support.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.config',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.monitoring.health.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.*',
+    'uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.*']
+    excludedClasses = [ ]
     threads = 10
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
