@@ -28,6 +28,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 public class PetitionServiceImplUTest {
     private static final String AUTHORISATION = "userToken";
     private static final boolean DIVORCE_FORMAT = false;
+    private static final String TEST_CASE_ID = "test.id";
 
     @Mock
     private CcdRetrievalService ccdRetrievalService;
@@ -143,6 +144,17 @@ public class PetitionServiceImplUTest {
         assertEquals(caseDetails, classUnderTest.retrievePetition(AUTHORISATION));
 
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
+    }
+
+    @Test
+    public void whenRetrievePetitionById_thenProceedAsExpected() throws DuplicateCaseException {
+        final CaseDetails caseDetails = CaseDetails.builder().build();
+
+        when(ccdRetrievalService.retrieveCaseById(AUTHORISATION, TEST_CASE_ID)).thenReturn(caseDetails);
+
+        assertEquals(caseDetails, classUnderTest.retrievePetitionByCaseId(AUTHORISATION, TEST_CASE_ID));
+
+        verify(ccdRetrievalService).retrieveCaseById(AUTHORISATION, TEST_CASE_ID);
     }
 
     @Test
