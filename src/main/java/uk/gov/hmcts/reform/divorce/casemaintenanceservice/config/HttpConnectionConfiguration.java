@@ -31,6 +31,11 @@ import static java.util.Arrays.asList;
 public class HttpConnectionConfiguration {
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MappingJackson2HttpMessageConverter jackson2HttpConverter;
+
     @Value("${http.connect.timeout}")
     private int httpConnectTimeout;
 
@@ -44,23 +49,14 @@ public class HttpConnectionConfiguration {
     private int healthHttpConnectRequestTimeout;
 
     @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public RestTemplate restTemplate() {
+
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);;
-        return objectMapper;
-    }
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
-    @Bean
-    public MappingJackson2HttpMessageConverter jackson2HttpCoverter(@Autowired ObjectMapper objectMapper) {
-        MappingJackson2HttpMessageConverter jackson2HttpConverter
-            = new MappingJackson2HttpMessageConverter(objectMapper);
+        jackson2HttpConverter.setObjectMapper(objectMapper);
         jackson2HttpConverter.setSupportedMediaTypes(ImmutableList.of(MediaType.APPLICATION_JSON));
-        return jackson2HttpConverter;
-    }
 
-    @Bean
-    public RestTemplate restTemplate(@Autowired MappingJackson2HttpMessageConverter jackson2HttpConverter) {
 
         RestTemplate restTemplate = new RestTemplate(asList(jackson2HttpConverter,
             new FormHttpMessageConverter(),
@@ -74,7 +70,13 @@ public class HttpConnectionConfiguration {
     }
 
     @Bean(name = "healthCheckRestTemplate")
-    public RestTemplate healthCheckRestTemplate(@Autowired MappingJackson2HttpMessageConverter jackson2HttpConverter) {
+    public RestTemplate healthCheckRestTemplate() {
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+
+        jackson2HttpConverter.setObjectMapper(objectMapper);
+        jackson2HttpConverter.setSupportedMediaTypes(ImmutableList.of(MediaType.APPLICATION_JSON));
+
         RestTemplate restTemplate = new RestTemplate(asList(jackson2HttpConverter,
             new FormHttpMessageConverter(),
             new ResourceHttpMessageConverter(),
