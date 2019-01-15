@@ -7,6 +7,11 @@ spring:
     name: div-cms
   resources:
     static-locations:
+  jackson:
+    deserialization:
+      ACCEPT_SINGLE_VALUE_AS_ARRAY: true
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
 
 server:
   port: 4010
