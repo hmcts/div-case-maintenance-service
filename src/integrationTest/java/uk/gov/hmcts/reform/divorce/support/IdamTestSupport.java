@@ -89,7 +89,7 @@ public class IdamTestSupport {
                 .email(emailAddress)
                 .forename(username)
                 .password(password)
-                .roles(new String[]{"caseworker-divorce", "caseworker-divorce-courtadmin", "caseworker", "citizen"})
+                .roles(new String[]{"caseworker-divorce", "caseworker-divorce-courtadmin", "caseworker"})
                 .userGroup(UserGroup.builder().code("caseworker").build())
                 .build();
 
