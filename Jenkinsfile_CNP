@@ -50,5 +50,13 @@ withPipeline(type , product, component) {
         echo '${product}-${component} checked out'
     }
 
+    after('functionalTest:aat') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    }
+
+    after('functionalTest:preview') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    }
+
     enableSlackNotifications(channel)
 }
