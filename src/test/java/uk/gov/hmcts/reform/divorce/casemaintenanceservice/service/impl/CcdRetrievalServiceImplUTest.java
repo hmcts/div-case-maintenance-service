@@ -38,6 +38,7 @@ public class CcdRetrievalServiceImplUTest {
     private static final String USER_ID = "someUserId";
     private static final UserDetails USER_DETAILS = UserDetails.builder().id(USER_ID).build();
     private static final Long CASE_ID_1 = 1L;
+    private static final String CASEWORKER_ROLE = "caseworker";
 
     @Mock
     private CoreCaseDataApi coreCaseDataApi;
@@ -388,6 +389,29 @@ public class CcdRetrievalServiceImplUTest {
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
             .readForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                testCaseId);
+    }
+
+    @Test
+    public void givenCaseId_whenRetrieveCaseByIdWithCaseworker_thenReturnTheCase() throws Exception {
+        String testCaseId = String.valueOf(CASE_ID_1);
+        CaseDetails caseDetails = CaseDetails.builder().build();
+
+        final UserDetails userDetails = UserDetails.builder()
+            .id(USER_ID).roles(Collections.singletonList(CASEWORKER_ROLE)).build();
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .readForCaseWorker(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                testCaseId)).thenReturn(caseDetails);
+
+        assertEquals(caseDetails, classUnderTest.retrieveCaseById(AUTHORISATION, testCaseId));
+
+        verify(userService).retrieveUserDetails(BEARER_AUTHORISATION);
+        verify(authTokenGenerator).generate();
+        verify(coreCaseDataApi)
+            .readForCaseWorker(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
                 testCaseId);
     }
 

@@ -8,23 +8,65 @@ import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Service
 public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {
+
+    private static final String CASEWORKER_ROLE = "caseworker";
 
     @Override
     public CaseDetails update(String caseId, Object data, String eventId, String authorisation) {
         UserDetails userDetails = getUserDetails(authorisation);
 
-        StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(
-            getBearerUserToken(authorisation),
-            getServiceAuthToken(),
-            userDetails.getId(),
-            jurisdictionId,
-            caseType,
-            caseId,
-            eventId);
+        if (Optional.ofNullable(userDetails.getRoles()).orElse(Collections.emptyList()).contains(CASEWORKER_ROLE)) {
+            StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(
+                getBearerUserToken(authorisation),
+                getServiceAuthToken(),
+                userDetails.getId(),
+                jurisdictionId,
+                caseType,
+                caseId,
+                eventId);
 
-        CaseDataContent caseDataContent = CaseDataContent.builder()
+            CaseDataContent caseDataContent = buildCaseDataContent(startEventResponse, data);
+
+            return coreCaseDataApi.submitEventForCaseWorker(
+                getBearerUserToken(authorisation),
+                getServiceAuthToken(),
+                userDetails.getId(),
+                jurisdictionId,
+                caseType,
+                caseId,
+                true,
+                caseDataContent);
+        } else {
+            StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(
+                getBearerUserToken(authorisation),
+                getServiceAuthToken(),
+                userDetails.getId(),
+                jurisdictionId,
+                caseType,
+                caseId,
+                eventId);
+
+            CaseDataContent caseDataContent = buildCaseDataContent(startEventResponse, data);
+
+            return coreCaseDataApi.submitEventForCitizen(
+                getBearerUserToken(authorisation),
+                getServiceAuthToken(),
+                userDetails.getId(),
+                jurisdictionId,
+                caseType,
+                caseId,
+                true,
+                caseDataContent);
+        }
+    }
+
+    private CaseDataContent buildCaseDataContent(StartEventResponse startEventResponse, Object data) {
+        return CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(
                 Event.builder()
@@ -34,15 +76,5 @@ public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdat
                     .build()
             ).data(data)
             .build();
-
-        return coreCaseDataApi.submitEventForCitizen(
-            getBearerUserToken(authorisation),
-            getServiceAuthToken(),
-            userDetails.getId(),
-            jurisdictionId,
-            caseType,
-            caseId,
-            true,
-            caseDataContent);
     }
 }

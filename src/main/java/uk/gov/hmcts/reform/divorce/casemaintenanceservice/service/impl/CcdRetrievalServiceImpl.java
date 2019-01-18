@@ -14,11 +14,14 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalSe
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRetrievalService {
+
+    private static final String CASEWORKER_ROLE = "caseworker";
 
     @Override
     public CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping)
@@ -90,14 +93,25 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     public CaseDetails retrieveCaseById(String authorisation, String caseId) {
         UserDetails userDetails = getUserDetails(authorisation);
 
-        return coreCaseDataApi.readForCitizen(
-            getBearerUserToken(authorisation),
-            getServiceAuthToken(),
-            userDetails.getId(),
-            jurisdictionId,
-            caseType,
-            caseId
-        );
+        if (Optional.ofNullable(userDetails.getRoles()).orElse(Collections.emptyList()).contains(CASEWORKER_ROLE)) {
+            return coreCaseDataApi.readForCaseWorker(
+                getBearerUserToken(authorisation),
+                getServiceAuthToken(),
+                userDetails.getId(),
+                jurisdictionId,
+                caseType,
+                caseId
+            );
+        } else {
+            return coreCaseDataApi.readForCitizen(
+                getBearerUserToken(authorisation),
+                getServiceAuthToken(),
+                userDetails.getId(),
+                jurisdictionId,
+                caseType,
+                caseId
+            );
+        }
     }
 
     private List<CaseDetails> getCaseListForUser(String authorisation, String userId) {
