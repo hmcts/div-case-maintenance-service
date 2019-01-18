@@ -32,6 +32,19 @@ public class CcdUpdateTest extends CcdUpdateSupport {
     }
 
     @Test
+    public void shouldReturnCaseIdWhenUpdatingDataAfterInitialSubmitWithCaseWorker() throws Exception {
+        String userToken = getUserToken();
+        String caseWorkerToken = getCaseWorkerToken();
+
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+
+        Response cmsResponse = updateCase("update-addresses.json", caseId, EVENT_ID, caseWorkerToken);
+
+        assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
+        assertEquals(caseId, cmsResponse.getBody().path("id"));
+    }
+
+    @Test
     public void shouldReturnCaseIdWhenUpdatingPaymentAfterUpdatingWithPaymentReference() throws Exception {
         String userToken = getUserToken();
 

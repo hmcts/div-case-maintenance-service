@@ -25,4 +25,17 @@ public class CcdRetrieveCaseByIdTest extends PetitionSupport {
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
     }
+
+    @Test
+    public void givenOneSubmittedCaseInCcd_whenRetrieveCaseByCaseWorker_thenReturnTheCase() throws Exception {
+        final String userToken = getUserToken();
+        final String caseWorkerToken = getCaseWorkerToken();
+
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+
+        Response cmsResponse = retrieveCaseById(caseWorkerToken, String.valueOf(caseId));
+
+        assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
+        assertEquals(caseId, cmsResponse.path("id"));
+    }
 }
