@@ -44,21 +44,30 @@ public class IdamTestSupport {
     }
 
     public PinResponse createPinUser(String firstName) {
-        final UserDetails caseWorkerUser = createAnonymousCaseWorkerUser(true);
+        final UserDetails caseWorkerUser = createAnonymousCaseWorkerUser();
         return idamUtils.generatePin(firstName, "",  caseWorkerUser.getAuthToken());
     }
 
-    public UserDetails createAnonymousCaseWorkerUser(Boolean hasCitizenRole) {
+    public UserDetails createAnonymousCaseWorkerUser() {
         synchronized (this) {
             if (defaultCaseWorkerUser == null) {
                 defaultCaseWorkerUser = createNewUser(
                     CASE_WORKER_USERNAME,
                     CASE_WORKER_PASSWORD,
-                    hasCitizenRole ? CASEWORKER_CITIZEN_ROLE : CASEWORKER_ROLE
+                    CASEWORKER_CITIZEN_ROLE
                 );
             }
 
             return defaultCaseWorkerUser;
+        }
+    }
+
+    public UserDetails createPureCaseWorkerUser() {
+        synchronized (this) {
+            final String username = "simulate-delivered" + UUID.randomUUID();
+            final String password = UUID.randomUUID().toString().toUpperCase(Locale.ENGLISH);
+
+            return createNewUser(username, password, CASEWORKER_ROLE);
         }
     }
 
