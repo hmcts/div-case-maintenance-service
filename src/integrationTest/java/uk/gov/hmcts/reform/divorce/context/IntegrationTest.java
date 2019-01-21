@@ -35,7 +35,11 @@ public abstract class IntegrationTest {
     }
 
     protected UserDetails getCaseWorkerUser() {
-        return idamTestSupport.createAnonymousCaseWorkerUser();
+        return idamTestSupport.createAnonymousCaseWorkerUser(true);
+    }
+
+    protected String getPureCaseWorkerToken() {
+        return idamTestSupport.createAnonymousCaseWorkerUser(false).getAuthToken();
     }
 
     protected String getCaseWorkerToken() {
