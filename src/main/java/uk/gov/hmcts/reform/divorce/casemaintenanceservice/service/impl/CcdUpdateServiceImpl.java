@@ -9,18 +9,21 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetai
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {
 
     private static final String CASEWORKER_ROLE = "caseworker";
+    private static final String CITIZEN_ROLE = "citizen";
 
     @Override
     public CaseDetails update(String caseId, Object data, String eventId, String authorisation) {
         UserDetails userDetails = getUserDetails(authorisation);
+        List<String> userRoles = Optional.ofNullable(userDetails.getRoles()).orElse(Collections.emptyList());
 
-        if (Optional.ofNullable(userDetails.getRoles()).orElse(Collections.emptyList()).contains(CASEWORKER_ROLE)) {
+        if (userRoles.contains(CASEWORKER_ROLE) && !userRoles.contains(CITIZEN_ROLE)) {
             StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(
                 getBearerUserToken(authorisation),
                 getServiceAuthToken(),
