@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.support;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.divorce.idam.utils.IdamUtils;
 import uk.gov.hmcts.reform.divorce.model.PinResponse;
 import uk.gov.hmcts.reform.divorce.model.RegisterUserRequest;
@@ -21,6 +22,9 @@ public class IdamTestSupport {
     private static final String CITIZEN_ROLE = "citizen";
 
     private UserDetails defaultCaseWorkerUser;
+
+    @Value("${idam.caseworker.password}")
+    private String caseWorkerPassword;
 
     @Autowired
     private IdamUtils idamUtils;
@@ -65,7 +69,7 @@ public class IdamTestSupport {
     public UserDetails createPureCaseWorkerUser() {
         synchronized (this) {
             final String username = "simulate-delivered" + UUID.randomUUID();
-            final String password = UUID.randomUUID().toString().toUpperCase(Locale.ENGLISH);
+            final String password = caseWorkerPassword;
 
             return createNewUser(username, password, CASEWORKER_ROLE);
         }
