@@ -9,6 +9,7 @@ import feign.FeignException;
 import org.junit.ClassRule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.contract.wiremock.WireMockSpring;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -83,7 +84,7 @@ public class AuthIdamMockSupport {
     private String authClientSecret;
 
     @ClassRule
-    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(4503);
+    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(WireMockSpring.options().port(4503));
 
     @MockBean
     AuthTokenGenerator serviceTokenGenerator;
