@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRetrievalService {
 
     private static final String CASEWORKER_ROLE = "caseworker";
+    private static final String CITIZEN_ROLE = "citizen";
 
     @Override
     public CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping)
@@ -92,8 +93,9 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     @Override
     public CaseDetails retrieveCaseById(String authorisation, String caseId) {
         UserDetails userDetails = getUserDetails(authorisation);
+        List<String> userRoles = Optional.ofNullable(userDetails.getRoles()).orElse(Collections.emptyList());
 
-        if (Optional.ofNullable(userDetails.getRoles()).orElse(Collections.emptyList()).contains(CASEWORKER_ROLE)) {
+        if (userRoles.contains(CASEWORKER_ROLE) && !userRoles.contains(CITIZEN_ROLE)) {
             return coreCaseDataApi.readForCaseWorker(
                 getBearerUserToken(authorisation),
                 getServiceAuthToken(),
