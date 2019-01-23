@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,8 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.DraftModelFactory;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
@@ -14,11 +17,13 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
 @Service
+@Slf4j
 public class PetitionServiceImpl implements PetitionService, ApplicationListener<CaseSubmittedEvent> {
 
     @Autowired
@@ -29,6 +34,9 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
 
     @Autowired
     private FormatterServiceClient formatterServiceClient;
+
+    @Autowired
+    private DraftModelFactory modelFactory;
 
     @Override
     public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
@@ -86,6 +94,26 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     @Override
     public void onApplicationEvent(@Nonnull CaseSubmittedEvent event) {
         deleteDraft(event.getAuthToken());
+    }
+
+    @Override
+    @SuppressWarnings (value="unchecked")
+    public Map<String, Object> createAmendPetitionDraft(String authorisation) throws DuplicateCaseException {
+        CaseDetails oldCase = this.retrievePetition(authorisation);
+        if (oldCase == null) {
+            return null;
+        }
+        CreateDraft newCaseDraft = modelFactory.createDraft(oldCase.getData(), true);
+        newCaseDraft.getDocument().put("previousCaseId", oldCase.getData().get("D8caseReference"));
+        newCaseDraft.getDocument().put("D8caseReference", null);
+        newCaseDraft.getDocument().put("D8ReasonForDivorce", null);
+        List<String> previousReasons = (List<String>) oldCase.getData().get("previousReasonsForDivorce");
+        if (previousReasons == null) {
+            previousReasons = new ArrayList<>();
+        }
+        previousReasons.add((String) oldCase.getData().get("D8ReasonForDivorce"));
+        newCaseDraft.getDocument().put("previousReasonsForDivorce", previousReasons);
+        return newCaseDraft.getDocument();
     }
 
     private Map<String, Object> getFormattedPetition(Draft draft, String authorisation) {

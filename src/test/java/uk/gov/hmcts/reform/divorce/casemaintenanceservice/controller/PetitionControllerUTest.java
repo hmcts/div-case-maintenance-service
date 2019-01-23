@@ -13,7 +13,9 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 import util.ReflectionTestUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -283,6 +285,51 @@ public class PetitionControllerUTest {
         assertEquals(draftList, response.getBody());
 
         verify(petitionService).getAllDrafts(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenAmendToDraftPetition_thenReturnDraftData() throws DuplicateCaseException {
+
+        final HashMap<String, Object> draftData = new HashMap<>();
+
+        when(petitionService.createAmendPetitionDraft(AUTHORISATION))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendPetitionDraft(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendPetitionDraft(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenAmendToDraftPetition_thenSetDraftDataFromCase() throws DuplicateCaseException {
+
+        final HashMap<String, Object> caseData = new HashMap<>();
+        caseData.put("D8caseReference", "caseRefVal");
+        caseData.put("D8ReasonForDivorce", "unreasonable-behaviour");
+        caseData.put("previousReasonsForDivorce", new ArrayList<>());
+
+        final HashMap<String, Object> draftData = new HashMap<>();
+        draftData.put("D8caseReference", null);
+        draftData.put("D8ReasonForDivorce", null);
+        draftData.put("previousCaseId", "caseRefVal");
+        draftData.put("previousReasonsForDivorce", new ArrayList<String>().add("unreasonable-behaviour"));
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
+
+        when(petitionService.createAmendPetitionDraft(AUTHORISATION))
+            .thenReturn(draftData);
+        when(petitionService.retrievePetition(AUTHORISATION))
+            .thenReturn(caseDetails);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendPetitionDraft(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendPetitionDraft(AUTHORISATION);
     }
 
     private ResponseEntity<CaseDetails> retrieveCase(Boolean checkCcd) {

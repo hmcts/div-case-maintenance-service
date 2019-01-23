@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
@@ -79,7 +80,7 @@ public class PetitionController {
     @ApiOperation(value = "Retrieves a divorce case from CCD")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Case exists. The case is in the response body"),
-        @ApiResponse(code = 404, message = "When there are no case exists"),
+        @ApiResponse(code = 404, message = "When no case exists"),
         @ApiResponse(code = 300, message = "Multiple Cases found")
         })
     public ResponseEntity<CaseDetails> retrieveCase(
@@ -103,6 +104,31 @@ public class PetitionController {
                 Optional.ofNullable(checkCcd).orElse(false));
 
             return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
+        } catch (DuplicateCaseException e) {
+            log.warn(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
+        }
+    }
+
+    @PostMapping(path = "/amended-case-to-draft", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Retrieves case, sets up draft case copy for amendment")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "A draft case was created based on previous petition"),
+        @ApiResponse(code = 404, message = "When no case exists"),
+        @ApiResponse(code = 300, message = "Multiple cases found")
+    })
+    public ResponseEntity<Map<String, Object>> createAmendPetitionDraft(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        try {
+            Map<String, Object> newCaseDraftData = petitionService.createAmendPetitionDraft(jwt);
+
+            if (newCaseDraftData == null) {
+                return ResponseEntity.notFound().build();
+            } else {
+                petitionService.saveDraft(jwt, newCaseDraftData, true);
+                return ResponseEntity.ok(newCaseDraftData);
+            }
         } catch (DuplicateCaseException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
