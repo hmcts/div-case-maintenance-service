@@ -23,6 +23,9 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     @Value("${case.maintenance.get-case.context-path}")
     private String getCaseContextPath;
 
+    @Value("${case.maintenance.amend-petition-draft.context-path}")
+    private String amendPetitionContextPath;
+
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
         return
             RestUtil.putToRestService(
@@ -85,6 +88,19 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
                 getHeaders(userToken),
                 Collections.emptyMap()
             );
+    }
+
+    protected Response getAmendedPetitionDraft(String userToken) {
+        return
+            RestUtil.getFromRestService(
+                getGetAmendPetitionContextPath(),
+                getHeaders(userToken),
+                Collections.emptyMap()
+            );
+    }
+
+    private String getGetAmendPetitionContextPath() {
+        return serverUrl + amendPetitionContextPath;
     }
 
     protected String getRetrieveCaseRequestUrl() {

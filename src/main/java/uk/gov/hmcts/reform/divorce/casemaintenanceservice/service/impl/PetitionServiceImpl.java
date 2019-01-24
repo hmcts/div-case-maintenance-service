@@ -95,18 +95,18 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
 
     @Override
     @SuppressWarnings (value="unchecked")
-    public Map<String, Object> createAmendPetitionDraft(String authorisation) throws DuplicateCaseException {
+    public Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException {
         CaseDetails oldCase = this.retrievePetition(authorisation);
-        if (oldCase == null) {
+        if (oldCase == null || oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE.getValue()) == null) {
             return null;
         }
-        final String oldCaseId = oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE.getValue()).toString();
+        final String oldCaseRef = oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE.getValue()).toString();
 
         HashMap<String, Object> draftDocument = (HashMap) formatterServiceClient
             .transformToDivorceFormat(oldCase.getData(), authorisation);
 
         List<String> previousReasons = (List<String>) oldCase.getData()
-            .get(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE.getValue());
+            .get(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE.getValue());
 
         if (previousReasons == null) {
             previousReasons = new ArrayList<>();
@@ -114,7 +114,7 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
         previousReasons.add((String) oldCase.getData().get(DivorceCaseProperties.D8_REASON_FOR_DIVORCE.getValue()));
 
         draftDocument.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE.getValue(), previousReasons);
-        draftDocument.put(DivorceCaseProperties.PREVIOUS_CASE_ID.getValue(), oldCaseId);
+        draftDocument.put(DivorceCaseProperties.PREVIOUS_CASE_ID.getValue(), oldCaseRef);
         draftDocument.put(DivorceCaseProperties.CASE_REFERENCE.getValue(), null);
         draftDocument.put(DivorceCaseProperties.REASON_FOR_DIVORCE.getValue(), null);
 
