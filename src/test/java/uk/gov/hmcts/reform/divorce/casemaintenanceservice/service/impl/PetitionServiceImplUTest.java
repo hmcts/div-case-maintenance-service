@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
@@ -12,6 +13,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.C
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,9 @@ public class PetitionServiceImplUTest {
 
     @InjectMocks
     private PetitionServiceImpl classUnderTest;
+
+    @Value("${draft.store.api.document.type.divorceFormat}")
+    private String documentTypeDivorceFormat;
 
     @Test
     public void givenCcdRetrievalServiceReturnsCase_whenRetrievePetition_thenProceedAsExpected() throws DuplicateCaseException {
@@ -200,5 +205,67 @@ public class PetitionServiceImplUTest {
         verify(draftService).deleteDraft(AUTHORISATION);
     }
 
+    @Test
+    public void whenCreateAmendPetitionDraft_thenProceedAsExpected() throws DuplicateCaseException {
+        final HashMap<String, Object> caseData = new HashMap<>();
+        caseData.put("D8caseReference", "caseRefVal");
+        caseData.put("D8ReasonForDivorce", "unreasonable-behaviour");
+        caseData.put("previousReasonsForDivorce", new ArrayList<>());
 
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
+        final HashMap<String, Object> draftData = new HashMap<>();
+        final ArrayList<String> previousReasons = new ArrayList<>();
+
+        previousReasons.add("unreasonable-behaviour");
+        draftData.put("caseReference", null);
+        draftData.put("reasonForDivorce", null);
+        draftData.put("previousCaseId", "caseRefVal");
+        draftData.put("previousReasonsForDivorce", previousReasons);
+
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
+        when(formatterServiceClient.transformToDivorceFormat(draftData, AUTHORISATION)).thenReturn(draftData);
+
+        assertEquals(draftData, classUnderTest.createAmendPetitionDraft(AUTHORISATION));
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
+        verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void whenCreateAmendPetitionDraft_whenCaseHasNoPreviousReasonsProperty_thenProceedAsExpected()
+        throws DuplicateCaseException {
+
+        final HashMap<String, Object> caseData = new HashMap<>();
+        caseData.put("D8caseReference", "caseRefVal");
+        caseData.put("D8ReasonForDivorce", "unreasonable-behaviour");
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
+        final HashMap<String, Object> draftData = new HashMap<>();
+        final ArrayList<String> previousReasons = new ArrayList<>();
+
+        previousReasons.add("unreasonable-behaviour");
+        draftData.put("caseReference", null);
+        draftData.put("reasonForDivorce", null);
+        draftData.put("previousCaseId", "caseRefVal");
+        draftData.put("previousReasonsForDivorce", previousReasons);
+
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
+        when(formatterServiceClient.transformToDivorceFormat(draftData, AUTHORISATION)).thenReturn(draftData);
+
+        assertEquals(draftData, classUnderTest.createAmendPetitionDraft(AUTHORISATION));
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
+        verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void whenCreateAmendPetitionDraft_whenPetitionNotFound_thenProceedAsExpected()
+        throws DuplicateCaseException {
+
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(null);
+
+        assertNull(classUnderTest.createAmendPetitionDraft(AUTHORISATION));
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
+    }
 }

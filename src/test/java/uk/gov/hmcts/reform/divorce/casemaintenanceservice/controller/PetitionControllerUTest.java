@@ -312,8 +312,8 @@ public class PetitionControllerUTest {
         caseData.put("previousReasonsForDivorce", new ArrayList<>());
 
         final HashMap<String, Object> draftData = new HashMap<>();
-        draftData.put("D8caseReference", null);
-        draftData.put("D8ReasonForDivorce", null);
+        draftData.put("caseReference", null);
+        draftData.put("reasonForDivorce", null);
         draftData.put("previousCaseId", "caseRefVal");
         draftData.put("previousReasonsForDivorce", new ArrayList<String>().add("unreasonable-behaviour"));
 
