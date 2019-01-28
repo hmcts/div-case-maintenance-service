@@ -102,7 +102,7 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
         }
         final String oldCaseRef = oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE.getValue()).toString();
 
-        HashMap<String, Object> draftDocument = (HashMap) formatterServiceClient
+        HashMap<String, Object> draftDocument = (HashMap<String, Object>) formatterServiceClient
             .transformToDivorceFormat(oldCase.getData(), authorisation);
 
         List<String> previousReasons = (List<String>) oldCase.getData()
@@ -117,6 +117,9 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
         draftDocument.put(DivorceCaseProperties.PREVIOUS_CASE_ID.getValue(), oldCaseRef);
         draftDocument.put(DivorceCaseProperties.CASE_REFERENCE.getValue(), null);
         draftDocument.put(DivorceCaseProperties.REASON_FOR_DIVORCE.getValue(), null);
+        draftDocument.put(DivorceCaseProperties.HWF_NEED_HELP.getValue(), null);
+        draftDocument.put(DivorceCaseProperties.HWF_APPLIED_FOR_FEES.getValue(), null);
+        draftDocument.put(DivorceCaseProperties.HWF_REFERENCE.getValue(), null);
 
         this.createDraft(authorisation, draftDocument, true);
         return draftDocument;

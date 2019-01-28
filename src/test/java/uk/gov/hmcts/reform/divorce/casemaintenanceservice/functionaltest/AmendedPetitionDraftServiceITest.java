@@ -133,6 +133,9 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         draftData.put("reasonForDivorce", null);
         draftData.put("previousCaseId", "caseRefVal");
         draftData.put("previousReasonsForDivorce", previousReasons);
+        draftData.put("helpWithFeesNeedHelp", null);
+        draftData.put("helpWithFeesAppliedForFees", null);
+        draftData.put("helpWithFeesReferenceNumber", null);
 
         final CreateDraft createDraft = new CreateDraft(draftData,
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);

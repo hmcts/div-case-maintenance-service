@@ -221,9 +221,11 @@ public class PetitionServiceImplUTest {
         draftData.put("reasonForDivorce", null);
         draftData.put("previousCaseId", "caseRefVal");
         draftData.put("previousReasonsForDivorce", previousReasons);
+        draftData.put("helpWithFeesNeedHelp", null);
+        draftData.put("helpWithFeesAppliedForFees", null);
+        draftData.put("helpWithFeesReferenceNumber", null);
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
-        when(formatterServiceClient.transformToDivorceFormat(draftData, AUTHORISATION)).thenReturn(draftData);
 
         assertEquals(draftData, classUnderTest.createAmendedPetitionDraft(AUTHORISATION));
 
@@ -248,9 +250,11 @@ public class PetitionServiceImplUTest {
         draftData.put("reasonForDivorce", null);
         draftData.put("previousCaseId", "caseRefVal");
         draftData.put("previousReasonsForDivorce", previousReasons);
+        draftData.put("helpWithFeesNeedHelp", null);
+        draftData.put("helpWithFeesAppliedForFees", null);
+        draftData.put("helpWithFeesReferenceNumber", null);
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
-        when(formatterServiceClient.transformToDivorceFormat(draftData, AUTHORISATION)).thenReturn(draftData);
 
         assertEquals(draftData, classUnderTest.createAmendedPetitionDraft(AUTHORISATION));
 

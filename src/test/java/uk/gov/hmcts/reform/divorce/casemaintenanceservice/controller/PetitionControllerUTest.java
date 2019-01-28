@@ -320,12 +320,8 @@ public class PetitionControllerUTest {
         draftData.put("previousCaseId", "caseRefVal");
         draftData.put("previousReasonsForDivorce", previousReasons);
 
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
-
         when(petitionService.createAmendedPetitionDraft(AUTHORISATION))
             .thenReturn(draftData);
-        when(petitionService.retrievePetition(AUTHORISATION))
-            .thenReturn(caseDetails);
 
         ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
 
