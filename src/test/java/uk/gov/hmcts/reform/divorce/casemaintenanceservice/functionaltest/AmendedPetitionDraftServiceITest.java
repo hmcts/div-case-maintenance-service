@@ -27,11 +27,10 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
@@ -58,6 +57,9 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
     private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
+    private static final String TEST_CASE_ID = "test.id";
+    private static final String UNREASONABLE_BEHAVIOUR = "unreasonable-behaviour";
+    private static final String SERVICE_TOKEN = "serviceToken";
 
     @Value("${draft.store.api.max.age}")
     private int maxAge;
@@ -119,18 +121,18 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     @Test
     public void givenValidRequestToAmend_whenAmendedPetitionDraft_thenCreateAmendedPetitionDraft() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
-        final HashMap<String, Object> caseData = new HashMap<>();
-        caseData.put("D8caseReference", "caseRefVal");
-        caseData.put("D8ReasonForDivorce", "unreasonable-behaviour");
-        caseData.put("PreviousReasonsForDivorce", new ArrayList<>());
 
-        final HashMap<String, Object> draftData = new HashMap<>();
-        final ArrayList<String> previousReasons = new ArrayList<>();
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(DivorceCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(DivorceCaseProperties.D8_REASON_FOR_DIVORCE, UNREASONABLE_BEHAVIOUR);
+        caseData.put(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE, new ArrayList<>());
 
-        previousReasons.add("unreasonable-behaviour");
-        draftData.put("previousCaseId", "caseRefVal");
-        draftData.put("previousReasonsForDivorce", previousReasons);
+        final Map<String, Object> draftData = new HashMap<>();
+        final List<String> previousReasons = new ArrayList<>();
+
+        previousReasons.add(UNREASONABLE_BEHAVIOUR);
+        draftData.put(DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
 
         final CreateDraft createDraft = new CreateDraft(draftData,
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
@@ -139,14 +141,14 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         final CaseDetails caseDetails = CaseDetails.builder()
             .data(caseData).id(caseId).state(CaseState.REJECTED.getValue()).build();
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
+            .searchForCitizen(USER_TOKEN, SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Collections.singletonList(caseDetails));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubToDivorceFormatEndpoint(caseData, draftData);
-        stubCreateDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
+        stubCreateDraftEndpoint(new EqualToPattern(SERVICE_TOKEN), createDraft);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -161,17 +163,16 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     @Test
     public void givenInvalidRequestToAmend_whenAmendedPetitionDraft_thenReturn404() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
-        final HashMap<String, Object> caseData = new HashMap<>();
-        caseData.put("D8ReasonForDivorce", "unreasonable-behaviour");
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(DivorceCaseProperties.D8_REASON_FOR_DIVORCE, UNREASONABLE_BEHAVIOUR);
 
         final Long caseId = 1L;
         final CaseDetails caseDetails = CaseDetails.builder()
             .data(caseData).id(caseId).state(CaseState.SUBMITTED.getValue()).build();
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
+            .searchForCitizen(USER_TOKEN, SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Collections.singletonList(caseDetails));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -186,11 +187,10 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     @Test
     public void givenNoCaseToAmend_whenAmendedPetitionDraft_thenReturn404() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
+            .searchForCitizen(USER_TOKEN, SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);

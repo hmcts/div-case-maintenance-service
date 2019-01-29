@@ -5,9 +5,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
@@ -15,10 +15,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -33,6 +30,8 @@ public class PetitionServiceImplUTest {
     private static final String AUTHORISATION = "userToken";
     private static final boolean DIVORCE_FORMAT = false;
     private static final String TEST_CASE_ID = "test.id";
+    private static final String USER_FIRST_NAME = "John";
+    private static final String UNREASONABLE_BEHAVIOUR = "unreasonable-behaviour";
 
     @Mock
     private CcdRetrievalService ccdRetrievalService;
@@ -209,18 +208,18 @@ public class PetitionServiceImplUTest {
 
     @Test
     public void whenCreateAmendedPetitionDraft_thenProceedAsExpected() throws DuplicateCaseException {
-        final HashMap<String, Object> caseData = new HashMap<>();
-        caseData.put("D8caseReference", "caseRefVal");
-        caseData.put("D8ReasonForDivorce", "unreasonable-behaviour");
-        caseData.put("PreviousReasonsForDivorce", new ArrayList<>());
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(DivorceCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(DivorceCaseProperties.D8_REASON_FOR_DIVORCE, UNREASONABLE_BEHAVIOUR);
+        caseData.put(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE, new ArrayList<>());
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
-        final HashMap<String, Object> draftData = new HashMap<>();
-        final ArrayList<String> previousReasons = new ArrayList<>();
+        final Map<String, Object> draftData = new HashMap<>();
+        final List<String> previousReasons = new ArrayList<>();
 
-        previousReasons.add("unreasonable-behaviour");
-        draftData.put("previousCaseId", "caseRefVal");
-        draftData.put("previousReasonsForDivorce", previousReasons);
+        previousReasons.add(UNREASONABLE_BEHAVIOUR);
+        draftData.put(DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
 
@@ -234,17 +233,17 @@ public class PetitionServiceImplUTest {
     public void whenCreateAmendedPetitionDraft_whenCaseHasNoPreviousReasonsProperty_thenProceedAsExpected()
         throws DuplicateCaseException {
 
-        final HashMap<String, Object> caseData = new HashMap<>();
-        caseData.put("D8caseReference", "caseRefVal");
-        caseData.put("D8ReasonForDivorce", "unreasonable-behaviour");
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(DivorceCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(DivorceCaseProperties.D8_REASON_FOR_DIVORCE, UNREASONABLE_BEHAVIOUR);
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
-        final HashMap<String, Object> draftData = new HashMap<>();
-        final ArrayList<String> previousReasons = new ArrayList<>();
+        final Map<String, Object> draftData = new HashMap<>();
+        final List<String> previousReasons = new ArrayList<>();
 
-        previousReasons.add("unreasonable-behaviour");
-        draftData.put("previousCaseId", "caseRefVal");
-        draftData.put("previousReasonsForDivorce", previousReasons);
+        previousReasons.add(UNREASONABLE_BEHAVIOUR);
+        draftData.put(DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
 
@@ -257,7 +256,7 @@ public class PetitionServiceImplUTest {
     @Test
     public void whenCreateAmendedPetitionDraft_whenPetitionNotFound_thenProceedAsExpected()
         throws DuplicateCaseException {
-        final UserDetails user = UserDetails.builder().forename("Test").build();
+        final UserDetails user = UserDetails.builder().forename(USER_FIRST_NAME).build();
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(null);
         when(userService.retrieveUserDetails(AUTHORISATION)).thenReturn(user);
