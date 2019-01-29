@@ -6,9 +6,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
@@ -106,8 +106,7 @@ public class PetitionServiceImpl implements PetitionService,
         if (oldCase == null) {
             log.warn("No case found for the user [{}]", userDetails.getForename());
             return null;
-        }
-        else if (oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE) == null) {
+        } else if (oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE) == null) {
             log.warn("No case which has progressed to have a Family Man reference found for the user [{}]",
                 userDetails.getForename());
             return null;
@@ -119,7 +118,7 @@ public class PetitionServiceImpl implements PetitionService,
         return draftDocument;
     }
 
-    @SuppressWarnings (value="unchecked")
+    @SuppressWarnings(value = "unchecked")
     private Map<String, Object> getDraftDocument(CaseDetails oldCase, String authorisation) {
         ArrayList<String> previousReasons = (ArrayList<String>) oldCase.getData()
             .get(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE);

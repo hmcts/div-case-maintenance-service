@@ -113,10 +113,10 @@ public class PetitionController {
     @PutMapping(path = "/amended-petition-draft", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Creates a new draft petition for an amend petition workflow")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "A draft amendment case was created based on the users previously rejected petition"),
+        @ApiResponse(code = 200, message =
+            "A draft amendment case was created based on the users previously rejected petition"),
         @ApiResponse(code = 404, message = "When no case exists"),
-        @ApiResponse(code = 300, message = "Multiple cases found")
-    })
+        @ApiResponse(code = 300, message = "Multiple cases found")})
     public ResponseEntity<Map<String, Object>> createAmendedPetitionDraft(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
