@@ -100,8 +100,8 @@ public class PetitionServiceImpl implements PetitionService,
 
     @Override
     public Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException {
-        UserDetails userDetails = userService.retrieveUserDetails(authorisation);
-        CaseDetails oldCase = this.retrievePetition(authorisation);
+        final UserDetails userDetails = userService.retrieveUserDetails(authorisation);
+        final CaseDetails oldCase = this.retrievePetition(authorisation);
 
         if (oldCase == null) {
             log.warn("No case found for the user [{}]", userDetails.getForename());
@@ -112,14 +112,15 @@ public class PetitionServiceImpl implements PetitionService,
             return null;
         }
 
-        Map<String, Object> draftDocument = this.getDraftDocument(oldCase, authorisation);
-        this.createDraft(authorisation, draftDocument, true);
+        final Map<String, Object> amendmentCaseDraft = this.getDraftAmendmentCase(oldCase, authorisation);
+        this.deleteDraft(authorisation);
+        this.createDraft(authorisation, amendmentCaseDraft, true);
 
-        return draftDocument;
+        return amendmentCaseDraft;
     }
 
     @SuppressWarnings(value = "unchecked")
-    private Map<String, Object> getDraftDocument(CaseDetails oldCase, String authorisation) {
+    private Map<String, Object> getDraftAmendmentCase(CaseDetails oldCase, String authorisation) {
         ArrayList<String> previousReasons = (ArrayList<String>) oldCase.getData()
             .get(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE);
 
@@ -132,18 +133,18 @@ public class PetitionServiceImpl implements PetitionService,
         previousReasons.add((String) oldCase.getData().get(DivorceCaseProperties.D8_REASON_FOR_DIVORCE));
 
         final String oldCaseRef = oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE).toString();
-        Map<String, Object> draftDocument = formatterServiceClient
+        final Map<String, Object> amendmentCaseDraft = formatterServiceClient
             .transformToDivorceFormat(oldCase.getData(), authorisation);
 
-        draftDocument.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
-        draftDocument.put(DivorceCaseProperties.PREVIOUS_CASE_ID, oldCaseRef);
-        draftDocument.remove(DivorceCaseProperties.CASE_REFERENCE);
-        draftDocument.remove(DivorceCaseProperties.REASON_FOR_DIVORCE);
-        draftDocument.remove(DivorceCaseProperties.HWF_NEED_HELP);
-        draftDocument.remove(DivorceCaseProperties.HWF_APPLIED_FOR_FEES);
-        draftDocument.remove(DivorceCaseProperties.HWF_REFERENCE);
+        amendmentCaseDraft.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        amendmentCaseDraft.put(DivorceCaseProperties.PREVIOUS_CASE_ID, oldCaseRef);
+        amendmentCaseDraft.remove(DivorceCaseProperties.CASE_REFERENCE);
+        amendmentCaseDraft.remove(DivorceCaseProperties.REASON_FOR_DIVORCE);
+        amendmentCaseDraft.remove(DivorceCaseProperties.HWF_NEED_HELP);
+        amendmentCaseDraft.remove(DivorceCaseProperties.HWF_APPLIED_FOR_FEES);
+        amendmentCaseDraft.remove(DivorceCaseProperties.HWF_REFERENCE);
 
-        return draftDocument;
+        return amendmentCaseDraft;
     }
 
     private Map<String, Object> getFormattedPetition(Draft draft, String authorisation) {

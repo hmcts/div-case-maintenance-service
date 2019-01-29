@@ -25,7 +25,6 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;

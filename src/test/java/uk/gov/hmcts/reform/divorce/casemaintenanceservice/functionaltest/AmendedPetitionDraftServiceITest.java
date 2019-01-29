@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -152,6 +153,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubToDivorceFormatEndpoint(caseData, draftData);
+        stubDeleteDraftsEndpoint(new EqualToPattern(SERVICE_TOKEN));
         stubCreateDraftEndpoint(new EqualToPattern(SERVICE_TOKEN), createDraft);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
@@ -226,5 +228,15 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
                 .withStatus(HttpStatus.OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                 .withBody("{}")));
+    }
+
+    private void stubDeleteDraftsEndpoint(StringValuePattern serviceToken) {
+        draftStoreServer.stubFor(delete(DRAFTS_CONTEXT_PATH)
+            .withHeader(HttpHeaders.AUTHORIZATION, new EqualToPattern(USER_TOKEN))
+            .withHeader(DraftStoreClient.SERVICE_AUTHORIZATION_HEADER_NAME, serviceToken)
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .withBody("")));
     }
 }
