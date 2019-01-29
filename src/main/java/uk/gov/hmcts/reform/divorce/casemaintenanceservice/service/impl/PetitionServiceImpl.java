@@ -104,11 +104,11 @@ public class PetitionServiceImpl implements PetitionService,
         final CaseDetails oldCase = this.retrievePetition(authorisation);
 
         if (oldCase == null) {
-            log.warn("No case found for the user [{}]", userDetails.getForename());
+            log.warn("No case found for the user [{}]", userDetails.getId());
             return null;
         } else if (oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE) == null) {
             log.warn("No case which has progressed to have a Family Man reference found for the user [{}]",
-                userDetails.getForename());
+                userDetails.getId());
             return null;
         }
 
