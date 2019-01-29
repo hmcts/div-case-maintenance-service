@@ -9,22 +9,24 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServic
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
 @Service
 @Slf4j
-public class PetitionServiceImpl implements PetitionService, ApplicationListener<CaseSubmittedEvent> {
+public class PetitionServiceImpl implements PetitionService,
+    ApplicationListener<CaseSubmittedEvent> {
 
     @Autowired
     private CcdRetrievalService ccdRetrievalService;
@@ -34,6 +36,9 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
 
     @Autowired
     private FormatterServiceClient formatterServiceClient;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
@@ -94,34 +99,51 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     }
 
     @Override
-    @SuppressWarnings (value="unchecked")
     public Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException {
+        UserDetails userDetails = userService.retrieveUserDetails(authorisation);
         CaseDetails oldCase = this.retrievePetition(authorisation);
-        if (oldCase == null || oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE.getValue()) == null) {
+
+        if (oldCase == null) {
+            log.warn("No case found for the user [{}]", userDetails.getForename());
             return null;
         }
-        final String oldCaseRef = oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE.getValue()).toString();
+        else if (oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE) == null) {
+            log.warn("No case which has progressed to have a Family Man reference found for the user [{}]",
+                userDetails.getForename());
+            return null;
+        }
 
-        HashMap<String, Object> draftDocument = (HashMap<String, Object>) formatterServiceClient
-            .transformToDivorceFormat(oldCase.getData(), authorisation);
+        Map<String, Object> draftDocument = this.getDraftDocument(oldCase, authorisation);
+        this.createDraft(authorisation, draftDocument, true);
 
-        List<String> previousReasons = (List<String>) oldCase.getData()
-            .get(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE.getValue());
+        return draftDocument;
+    }
+
+    @SuppressWarnings (value="unchecked")
+    private Map<String, Object> getDraftDocument(CaseDetails oldCase, String authorisation) {
+        ArrayList<String> previousReasons = (ArrayList<String>) oldCase.getData()
+            .get(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE);
 
         if (previousReasons == null) {
             previousReasons = new ArrayList<>();
+        } else {
+            // clone to avoid updating old case
+            previousReasons = (ArrayList<String>) previousReasons.clone();
         }
-        previousReasons.add((String) oldCase.getData().get(DivorceCaseProperties.D8_REASON_FOR_DIVORCE.getValue()));
+        previousReasons.add((String) oldCase.getData().get(DivorceCaseProperties.D8_REASON_FOR_DIVORCE));
 
-        draftDocument.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE.getValue(), previousReasons);
-        draftDocument.put(DivorceCaseProperties.PREVIOUS_CASE_ID.getValue(), oldCaseRef);
-        draftDocument.put(DivorceCaseProperties.CASE_REFERENCE.getValue(), null);
-        draftDocument.put(DivorceCaseProperties.REASON_FOR_DIVORCE.getValue(), null);
-        draftDocument.put(DivorceCaseProperties.HWF_NEED_HELP.getValue(), null);
-        draftDocument.put(DivorceCaseProperties.HWF_APPLIED_FOR_FEES.getValue(), null);
-        draftDocument.put(DivorceCaseProperties.HWF_REFERENCE.getValue(), null);
+        final String oldCaseRef = oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE).toString();
+        Map<String, Object> draftDocument = formatterServiceClient
+            .transformToDivorceFormat(oldCase.getData(), authorisation);
 
-        this.createDraft(authorisation, draftDocument, true);
+        draftDocument.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        draftDocument.put(DivorceCaseProperties.PREVIOUS_CASE_ID, oldCaseRef);
+        draftDocument.remove(DivorceCaseProperties.CASE_REFERENCE);
+        draftDocument.remove(DivorceCaseProperties.REASON_FOR_DIVORCE);
+        draftDocument.remove(DivorceCaseProperties.HWF_NEED_HELP);
+        draftDocument.remove(DivorceCaseProperties.HWF_APPLIED_FOR_FEES);
+        draftDocument.remove(DivorceCaseProperties.HWF_REFERENCE);
+
         return draftDocument;
     }
 

@@ -16,21 +16,21 @@ public class AmendPetitionDraftTest extends PetitionSupport {
 
     @Test
     public void givenJWTTokenIsNull_whenAmendPetitionDraft_thenReturnBadRequest() {
-        Response cmsResponse = getAmendedPetitionDraft(null);
+        Response cmsResponse = putAmendedPetitionDraft(null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenInvalidUserToken_whenAmendPetitionDraft_thenReturnForbiddenError() {
-        Response cmsResponse = getAmendedPetitionDraft(INVALID_USER_TOKEN);
+        Response cmsResponse = putAmendedPetitionDraft(INVALID_USER_TOKEN);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenNoCaseInCcd_whenAmendPetitionDraft_thenReturn404() {
-        Response cmsResponse = getAmendedPetitionDraft(getUserToken());
+        Response cmsResponse = putAmendedPetitionDraft(getUserToken());
 
         assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
     }
@@ -41,7 +41,7 @@ public class AmendPetitionDraftTest extends PetitionSupport {
 
         String caseRef = getCaseRefFromCompletedCase(userToken);
 
-        Response cmsResponse = getAmendedPetitionDraft(userToken);
+        Response cmsResponse = putAmendedPetitionDraft(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseRef, cmsResponse.path("previousCaseId"));
@@ -53,7 +53,7 @@ public class AmendPetitionDraftTest extends PetitionSupport {
 
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = getAmendedPetitionDraft(userToken);
+        Response cmsResponse = putAmendedPetitionDraft(userToken);
 
         assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
     }
@@ -65,7 +65,7 @@ public class AmendPetitionDraftTest extends PetitionSupport {
         getCaseIdFromSubmittingANewCase(userToken);
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = getAmendedPetitionDraft(userToken);
+        Response cmsResponse = putAmendedPetitionDraft(userToken);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }

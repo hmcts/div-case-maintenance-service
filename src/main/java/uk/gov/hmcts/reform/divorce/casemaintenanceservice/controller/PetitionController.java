@@ -110,7 +110,7 @@ public class PetitionController {
         }
     }
 
-    @GetMapping(path = "/amended-petition-draft", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/amended-petition-draft", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Creates a new draft petition for an amend petition workflow")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A draft amendment case was created based on the users previously rejected petition"),

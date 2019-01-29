@@ -82,7 +82,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
 
     @Test
     public void givenJWTTokenIsNull_whenAmendedPetitionDraft_thenReturnBadRequest() throws Exception {
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
+        webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
@@ -93,7 +93,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         final String message = "some message";
         stubUserDetailsEndpoint(HttpStatus.FORBIDDEN, new EqualToPattern(USER_TOKEN), message);
 
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
+        webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -109,7 +109,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
+        webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -129,13 +129,8 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         final ArrayList<String> previousReasons = new ArrayList<>();
 
         previousReasons.add("unreasonable-behaviour");
-        draftData.put("caseReference", null);
-        draftData.put("reasonForDivorce", null);
         draftData.put("previousCaseId", "caseRefVal");
         draftData.put("previousReasonsForDivorce", previousReasons);
-        draftData.put("helpWithFeesNeedHelp", null);
-        draftData.put("helpWithFeesAppliedForFees", null);
-        draftData.put("helpWithFeesReferenceNumber", null);
 
         final CreateDraft createDraft = new CreateDraft(draftData,
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
@@ -153,7 +148,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         stubToDivorceFormatEndpoint(caseData, draftData);
         stubCreateDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
 
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
+        webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -181,7 +176,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
+        webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -200,7 +195,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
+        webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))

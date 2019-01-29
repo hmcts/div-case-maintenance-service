@@ -8,10 +8,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,11 +43,11 @@ public class PetitionServiceImplUTest {
     @Mock
     private FormatterServiceClient formatterServiceClient;
 
+    @Mock
+    private UserService userService;
+
     @InjectMocks
     private PetitionServiceImpl classUnderTest;
-
-    @Value("${draft.store.api.document.type.divorceFormat}")
-    private String documentTypeDivorceFormat;
 
     @Test
     public void givenCcdRetrievalServiceReturnsCase_whenRetrievePetition_thenProceedAsExpected() throws DuplicateCaseException {
@@ -217,17 +219,12 @@ public class PetitionServiceImplUTest {
         final ArrayList<String> previousReasons = new ArrayList<>();
 
         previousReasons.add("unreasonable-behaviour");
-        draftData.put("caseReference", null);
-        draftData.put("reasonForDivorce", null);
         draftData.put("previousCaseId", "caseRefVal");
         draftData.put("previousReasonsForDivorce", previousReasons);
-        draftData.put("helpWithFeesNeedHelp", null);
-        draftData.put("helpWithFeesAppliedForFees", null);
-        draftData.put("helpWithFeesReferenceNumber", null);
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
 
-        assertEquals(draftData, classUnderTest.createAmendedPetitionDraft(AUTHORISATION));
+        classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
 
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
         verify(draftService).createDraft(AUTHORISATION, draftData, true);
@@ -246,17 +243,12 @@ public class PetitionServiceImplUTest {
         final ArrayList<String> previousReasons = new ArrayList<>();
 
         previousReasons.add("unreasonable-behaviour");
-        draftData.put("caseReference", null);
-        draftData.put("reasonForDivorce", null);
         draftData.put("previousCaseId", "caseRefVal");
         draftData.put("previousReasonsForDivorce", previousReasons);
-        draftData.put("helpWithFeesNeedHelp", null);
-        draftData.put("helpWithFeesAppliedForFees", null);
-        draftData.put("helpWithFeesReferenceNumber", null);
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
 
-        assertEquals(draftData, classUnderTest.createAmendedPetitionDraft(AUTHORISATION));
+        classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
 
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
         verify(draftService).createDraft(AUTHORISATION, draftData, true);
@@ -265,10 +257,12 @@ public class PetitionServiceImplUTest {
     @Test
     public void whenCreateAmendedPetitionDraft_whenPetitionNotFound_thenProceedAsExpected()
         throws DuplicateCaseException {
+        final UserDetails user = UserDetails.builder().forename("Test").build();
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(null);
+        when(userService.retrieveUserDetails(AUTHORISATION)).thenReturn(user);
 
-        assertNull(classUnderTest.createAmendedPetitionDraft(AUTHORISATION));
+        classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
 
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
     }

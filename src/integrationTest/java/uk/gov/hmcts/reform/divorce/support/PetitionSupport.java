@@ -90,11 +90,12 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
-    protected Response getAmendedPetitionDraft(String userToken) {
+    protected Response putAmendedPetitionDraft(String userToken) {
         return
-            RestUtil.getFromRestService(
+            RestUtil.putToRestService(
                 getGetAmendPetitionContextPath(),
                 getHeaders(userToken),
+                "",
                 Collections.emptyMap()
             );
     }
