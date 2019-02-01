@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import com.google.common.collect.ImmutableMap;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,12 +28,14 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -165,6 +168,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final String serviceToken = "serviceToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
 
         final Long caseId = 1L;
         final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.SUBMITTED.getValue());
@@ -379,7 +383,10 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
             .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails.builder().build())));
+            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
+                .builder()
+                .data(new HashMap<>())
+                .build())));
     }
 
     @Test
@@ -440,7 +447,38 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
             .param(CHECK_CCD_PARAM, "false")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails.builder().build())));
+            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
+                .builder()
+                .data(new HashMap<>())
+                .build())));
+    }
+
+    @Test
+    public void givenAmendPetitionDraft_whenRetrievePetition_thenReturnFormattedDraft() throws Exception {
+        final String message = getUserDetails();
+        final String serviceToken = "serviceToken";
+
+        final DraftList draftList = new DraftList(Arrays.asList(
+            createDraft("1", ImmutableMap.of(DivorceSessionProperties.PREVIOUS_CASE_ID, "1"),
+                DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
+            null);
+
+        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken),
+            ObjectMapperTestUtil.convertObjectToJsonString(draftList));
+
+        webClient.perform(MockMvcRequestBuilders.get(API_URL)
+            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+            .param(CHECK_CCD_PARAM, "false")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
+                .builder()
+                .data(ImmutableMap.of(DivorceSessionProperties.PREVIOUS_CASE_ID, "1"))
+                .build())));
     }
 
     private void stubGetDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken, String message) {
@@ -469,6 +507,10 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     private Draft createDraft(String id, String documentType) {
-        return new Draft(id, null, documentType);
+        return createDraft(id, new HashMap<>(), documentType);
+    }
+
+    private Draft createDraft(String id, Map<String, Object> document ,String documentType) {
+        return new Draft(id, document, documentType);
     }
 }
