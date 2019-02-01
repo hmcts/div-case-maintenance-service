@@ -26,15 +26,11 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -63,8 +59,10 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
     private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
     private static final String TEST_CASE_ID = "test.id";
-    private static final String UNREASONABLE_BEHAVIOUR = "unreasonable-behaviour";
+    private static final String ADULTERY = "adultery";
     private static final String SERVICE_TOKEN = "serviceToken";
+    private static final String YES = "Yes";
+    private static final String WIFE = "wife";
 
     @Value("${draft.store.api.max.age}")
     private int maxAge;
@@ -126,18 +124,34 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     @Test
     public void givenValidRequestToAmend_whenAmendedPetitionDraft_thenCreateAmendedPetitionDraft() throws Exception {
         final String message = getUserDetails();
+        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
 
         final Map<String, Object> caseData = new HashMap<>();
-        caseData.put(DivorceCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
-        caseData.put(DivorceCaseProperties.D8_REASON_FOR_DIVORCE, UNREASONABLE_BEHAVIOUR);
-        caseData.put(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE, new ArrayList<>());
+        caseData.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
+        caseData.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
+        caseData.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
+        caseData.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES);
+
+
+        final Map<String, Object> caseDataFormatRequest = new HashMap<>();
+        caseDataFormatRequest.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
+        caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
+        caseDataFormatRequest.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES);
+        caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
 
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
 
-        previousReasons.add(UNREASONABLE_BEHAVIOUR);
-        draftData.put(DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
-        draftData.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        previousReasons.add(ADULTERY);
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        draftData.put(DivorceSessionProperties.LEGAL_PROCEEDINGS, YES);
+        draftData.put(DivorceSessionProperties.DIVORCE_WHO, WIFE);
+        draftData.put(DivorceSessionProperties.SCREEN_HAS_MARRIAGE_BROKEN, YES);
+        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.format(new Date()));
+        draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
 
         final CreateDraft createDraft = new CreateDraft(draftData,
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
@@ -152,7 +166,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
             .thenReturn(Collections.singletonList(caseDetails));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubToDivorceFormatEndpoint(caseData, draftData);
+        stubToDivorceFormatEndpoint(caseDataFormatRequest, draftData);
         stubDeleteDraftsEndpoint(new EqualToPattern(SERVICE_TOKEN));
         stubCreateDraftEndpoint(new EqualToPattern(SERVICE_TOKEN), createDraft);
 
@@ -170,7 +184,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     public void givenInvalidRequestToAmend_whenAmendedPetitionDraft_thenReturn404() throws Exception {
         final String message = getUserDetails();
         final Map<String, Object> caseData = new HashMap<>();
-        caseData.put(DivorceCaseProperties.D8_REASON_FOR_DIVORCE, UNREASONABLE_BEHAVIOUR);
+        caseData.put(AmendCaseRemovedProps.D8ReasonForDivorce.getValue(), ADULTERY);
 
         final Long caseId = 1L;
         final CaseDetails caseDetails = CaseDetails.builder()

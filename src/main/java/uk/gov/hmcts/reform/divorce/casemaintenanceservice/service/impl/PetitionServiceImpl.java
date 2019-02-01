@@ -6,10 +6,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
@@ -18,9 +15,8 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalSe
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import javax.annotation.Nonnull;
 
 @Service
@@ -106,13 +102,13 @@ public class PetitionServiceImpl implements PetitionService,
         if (oldCase == null) {
             log.warn("No case found for the user [{}]", userDetails.getId());
             return null;
-        } else if (oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE) == null) {
-            log.warn("No case which has progressed to have a Family Man reference found for the user [{}]",
-                userDetails.getId());
+        } else if (oldCase.getData().get(CcdCaseProperties.D8_CASE_REFERENCE) == null) {
+            log.warn("Case [{}] has not progressed to have a Family Man reference found for the user [{}]",
+                oldCase.getId(), userDetails.getId());
             return null;
         }
 
-        final Map<String, Object> amendmentCaseDraft = this.getDraftAmendmentCase(oldCase, authorisation);
+        final Map<String, Object> amendmentCaseDraft = this.getDraftAmendmentCase(oldCase.getData(), authorisation);
         this.deleteDraft(authorisation);
         this.createDraft(authorisation, amendmentCaseDraft, true);
 
@@ -120,9 +116,10 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @SuppressWarnings(value = "unchecked")
-    private Map<String, Object> getDraftAmendmentCase(CaseDetails oldCase, String authorisation) {
-        ArrayList<String> previousReasons = (ArrayList<String>) oldCase.getData()
-            .get(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE);
+    private Map<String, Object> getDraftAmendmentCase(Map<String, Object> caseData, String authorisation) {
+        ArrayList<String> previousReasons = (ArrayList<String>) caseData
+            .get(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE);
+        final String oldCaseRef = caseData.get(CcdCaseProperties.D8_CASE_REFERENCE).toString();
 
         if (previousReasons == null) {
             previousReasons = new ArrayList<>();
@@ -130,19 +127,20 @@ public class PetitionServiceImpl implements PetitionService,
             // clone to avoid updating old case
             previousReasons = (ArrayList<String>) previousReasons.clone();
         }
-        previousReasons.add((String) oldCase.getData().get(DivorceCaseProperties.D8_REASON_FOR_DIVORCE));
+        previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
 
-        final String oldCaseRef = oldCase.getData().get(DivorceCaseProperties.D8_CASE_REFERENCE).toString();
+        // remove all props from old case we do not want in new draft case
+        AmendCaseRemovedProps.getProps().forEach(caseData::remove);
+
+        caseData.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
+
         final Map<String, Object> amendmentCaseDraft = formatterServiceClient
-            .transformToDivorceFormat(oldCase.getData(), authorisation);
+            .transformToDivorceFormat(caseData, authorisation);
+        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT, Locale.ENGLISH);
 
-        amendmentCaseDraft.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
-        amendmentCaseDraft.put(DivorceCaseProperties.PREVIOUS_CASE_ID, oldCaseRef);
-        amendmentCaseDraft.remove(DivorceCaseProperties.CASE_REFERENCE);
-        amendmentCaseDraft.remove(DivorceCaseProperties.REASON_FOR_DIVORCE);
-        amendmentCaseDraft.remove(DivorceCaseProperties.HWF_NEED_HELP);
-        amendmentCaseDraft.remove(DivorceCaseProperties.HWF_APPLIED_FOR_FEES);
-        amendmentCaseDraft.remove(DivorceCaseProperties.HWF_REFERENCE);
+        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, oldCaseRef);
+        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        amendmentCaseDraft.put(DivorceSessionProperties.CREATED_DATE, createdDate.format(new Date()));
 
         return amendmentCaseDraft;
     }

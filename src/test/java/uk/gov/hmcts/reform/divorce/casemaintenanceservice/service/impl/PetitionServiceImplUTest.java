@@ -7,19 +7,15 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -35,7 +31,8 @@ public class PetitionServiceImplUTest {
     private static final boolean DIVORCE_FORMAT = false;
     private static final String TEST_CASE_ID = "test.id";
     private static final String USER_FIRST_NAME = "John";
-    private static final String UNREASONABLE_BEHAVIOUR = "unreasonable-behaviour";
+    private static final String ADULTERY = "adultery";
+    private static final String TWO_YEAR_SEPARATION = "2yr-separation";
 
     @Mock
     private CcdRetrievalService ccdRetrievalService;
@@ -213,17 +210,19 @@ public class PetitionServiceImplUTest {
     @Test
     public void whenCreateAmendedPetitionDraft_thenProceedAsExpected() throws DuplicateCaseException {
         final Map<String, Object> caseData = new HashMap<>();
-        caseData.put(DivorceCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
-        caseData.put(DivorceCaseProperties.D8_REASON_FOR_DIVORCE, UNREASONABLE_BEHAVIOUR);
-        caseData.put(DivorceCaseProperties.CCD_PREVIOUS_REASONS_FOR_DIVORCE, new ArrayList<>());
+        caseData.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
+        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT, Locale.ENGLISH);
 
-        previousReasons.add(UNREASONABLE_BEHAVIOUR);
-        draftData.put(DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
-        draftData.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        previousReasons.add(ADULTERY);
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.format(new Date()));
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
 
@@ -234,20 +233,26 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraft_whenCaseHasNoPreviousReasonsProperty_thenProceedAsExpected()
+    public void whenCreateAmendedPetitionDraft_whenCaseHasPreviousReasons_thenProceedAsExpected()
         throws DuplicateCaseException {
 
         final Map<String, Object> caseData = new HashMap<>();
-        caseData.put(DivorceCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
-        caseData.put(DivorceCaseProperties.D8_REASON_FOR_DIVORCE, UNREASONABLE_BEHAVIOUR);
+        final List<String> previousReasonsOld = new ArrayList<>();
+        previousReasonsOld.add(TWO_YEAR_SEPARATION);
+        caseData.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, previousReasonsOld);
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
+        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT, Locale.ENGLISH);
 
-        previousReasons.add(UNREASONABLE_BEHAVIOUR);
-        draftData.put(DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
-        draftData.put(DivorceCaseProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        previousReasons.add(TWO_YEAR_SEPARATION);
+        previousReasons.add(ADULTERY);
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.format(new Date()));
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
 
