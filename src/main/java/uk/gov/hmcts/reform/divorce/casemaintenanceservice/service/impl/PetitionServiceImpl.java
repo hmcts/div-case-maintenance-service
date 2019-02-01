@@ -150,7 +150,7 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     private boolean isAmendPetitionDraft(Draft draft) {
-        return draft.getDocument().containsKey(DivorceCaseProperties.PREVIOUS_CASE_ID);
+        return draft.getDocument() != null && draft.getDocument().containsKey(DivorceCaseProperties.PREVIOUS_CASE_ID);
     }
 
     private Map<String, Object> getFormattedPetition(Draft draft, String authorisation) {
