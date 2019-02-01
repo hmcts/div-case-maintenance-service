@@ -447,7 +447,10 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
             .param(CHECK_CCD_PARAM, "false")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails.builder().build())));
+            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
+                .builder()
+                .data(new HashMap<>())
+                .build())));
     }
 
     @Test
