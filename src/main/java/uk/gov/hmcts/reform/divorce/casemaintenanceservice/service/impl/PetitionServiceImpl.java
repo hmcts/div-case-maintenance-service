@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionServic
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -27,6 +28,8 @@ import javax.annotation.Nonnull;
 @Slf4j
 public class PetitionServiceImpl implements PetitionService,
     ApplicationListener<CaseSubmittedEvent> {
+
+    public static final String IS_DRAFT_KEY =   "fetchedDraft";
 
     @Autowired
     private CcdRetrievalService ccdRetrievalService;
@@ -45,19 +48,18 @@ public class PetitionServiceImpl implements PetitionService,
                                         boolean checkCcd) throws DuplicateCaseException {
         CaseDetails caseDetails = null;
 
-        if (checkCcd) {
+        Draft draft = draftService.getDraft(authorisation);
+
+        if ((draft == null || !isAmendPetitionDraft(draft)) && checkCcd) {
             caseDetails = ccdRetrievalService.retrieveCase(authorisation, caseStateGrouping);
         }
 
-        if (caseDetails == null) {
-            Draft draft = draftService.getDraft(authorisation);
-
-            if (draft != null) {
-                caseDetails = CaseDetails.builder()
-                    .data(
-                        getFormattedPetition(draft, authorisation))
-                    .build();
-            }
+        if (caseDetails == null && draft != null) {
+            Map<String, Object> formattedDraft = new HashMap<>(getFormattedPetition(draft, authorisation));
+            formattedDraft.put(IS_DRAFT_KEY, true);
+            caseDetails = CaseDetails.builder()
+                .data(formattedDraft)
+                .build();
         }
 
         return caseDetails;
@@ -145,6 +147,10 @@ public class PetitionServiceImpl implements PetitionService,
         amendmentCaseDraft.remove(DivorceCaseProperties.HWF_REFERENCE);
 
         return amendmentCaseDraft;
+    }
+
+    private boolean isAmendPetitionDraft(Draft draft) {
+        return draft.getDocument().containsKey(DivorceCaseProperties.PREVIOUS_CASE_ID);
     }
 
     private Map<String, Object> getFormattedPetition(Draft draft, String authorisation) {

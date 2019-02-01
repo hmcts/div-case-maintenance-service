@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -7,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
@@ -21,8 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -36,7 +40,8 @@ public class PetitionServiceImplUTest {
     private static final String TEST_CASE_ID = "test.id";
     private static final String USER_FIRST_NAME = "John";
     private static final String UNREASONABLE_BEHAVIOUR = "unreasonable-behaviour";
-
+    private static final String DRAFT_ID = "1";
+    private static final String DIVORCE_DRAFT_FORMAT  = "divorcedraft";
     @Mock
     private CcdRetrievalService ccdRetrievalService;
 
@@ -107,7 +112,7 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> document = Collections.emptyMap();
         final Draft draft = new Draft("1", document, null);
 
-        final Map<String, Object> caseData = new HashMap<>();
+        final Map<String, Object> caseData = ImmutableMap.of(PetitionServiceImpl.IS_DRAFT_KEY, true);
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
 
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
@@ -129,7 +134,7 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> document = Collections.emptyMap();
         final Draft draft = new Draft("1", document, null);
 
-        final Map<String, Object> draftDocument = new HashMap<>();
+        final Map<String, Object> draftDocument = ImmutableMap.of(PetitionServiceImpl.IS_DRAFT_KEY, true);
         final CaseDetails caseDetails = CaseDetails.builder().data(draftDocument).build();
 
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
@@ -268,5 +273,27 @@ public class PetitionServiceImplUTest {
         classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
 
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
+    }
+
+    @Test
+    public void givenAmendPetitionDraft_whenRetrieveCase_thenReturnDraft() throws Exception {
+        Map<String, Object> documentMap = new HashMap<>();
+        documentMap.put(DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        Draft draft = buildDraft(ImmutableMap.of(DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID));
+        when(draftService.getDraft(AUTHORISATION))
+            .thenReturn(draft);
+
+        CaseDetails petition = classUnderTest.retrievePetition(AUTHORISATION,
+            CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING, true);
+        Draft expectedDraft = buildDraft(ImmutableMap.of(
+            DivorceCaseProperties.PREVIOUS_CASE_ID, TEST_CASE_ID,
+            PetitionServiceImpl.IS_DRAFT_KEY, true
+            ));
+
+        assertThat(petition.getData(), equalTo(expectedDraft.getDocument()));
+    }
+
+    private Draft buildDraft(Map<String, Object> properties) {
+        return  new Draft(DRAFT_ID, properties, DIVORCE_DRAFT_FORMAT);
     }
 }
