@@ -260,5 +260,6 @@
             "postcode": "A AAA"
         }
     },
+    "fetchedDraft": true,
     "sessionKey": "4d3750ad58d94896a0042b4ad4ac8e3ec3aca0723826a81c7adc6dcd1ddee5a1:9cc8a76688bde61315e40e5e13866078:85bc7a64fe2f7ee61e3a086d70b910cb03d60c308dfecf42bae1d63bb0850eca7060fd7c0b4c14dfaacb45679d8bc8287b1ae85718e75b137a2d0386f784e952"
 }
