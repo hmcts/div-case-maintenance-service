@@ -66,7 +66,8 @@ public enum AmendCaseRemovedProps {
     D8PhysicalSeparationDate("D8PhysicalSeparationDate"),
     D8SeparationTimeTogetherPermitted("D8SeparationTimeTogetherPermitted"),
     D8LivedTogetherMoreTimeThanPermitted("D8LivedTogetherMoreTimeThanPermitted"),
-    SolSOCAdulteryHaveTheyLivedTogetherfor6MonthsSinceAdulteryWhenDetails("SolSOCAdulteryHaveTheyLivedTogetherfor6MonthsSinceAdulteryWhenDetails"),
+    SolSOCAdulteryHaveTheyLivedTogetherfor6MonthsSinceAdulteryWhenDetails(
+        "SolSOCAdulteryHaveTheyLivedTogetherfor6MonthsSinceAdulteryWhenDetails"),
     SolSOCDesertionLivedSeperateSinceDate("SolSOCDesertionLivedSeperateSinceDate"),
     SeparationLivedTogetherAsCoupleAgain("SeparationLivedTogetherAsCoupleAgain"),
     SeparationLivedTogetherAsCoupleAgainDetails("SeparationLivedTogetherAsCoupleAgainDetails"),

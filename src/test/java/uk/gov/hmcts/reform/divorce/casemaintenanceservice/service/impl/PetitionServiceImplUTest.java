@@ -19,14 +19,14 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.text.SimpleDateFormat;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;

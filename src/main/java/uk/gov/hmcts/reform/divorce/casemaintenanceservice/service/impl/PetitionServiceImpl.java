@@ -6,7 +6,13 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.*;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.AmendCaseRemovedProps;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
@@ -16,8 +22,12 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionServic
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import javax.annotation.Nonnull;
 
 @Service
