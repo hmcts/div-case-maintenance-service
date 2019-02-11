@@ -129,7 +129,7 @@ public class PetitionServiceImpl implements PetitionService,
 
     @SuppressWarnings(value = "unchecked")
     private Map<String, Object> getDraftAmendmentCase(Map<String, Object> caseData, String authorisation) {
-        ArrayList<String> previousReasons = (ArrayList<String>) caseData
+        List<String> previousReasons = (ArrayList<String>) caseData
             .get(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE);
         final String oldCaseRef = caseData.get(CcdCaseProperties.D8_CASE_REFERENCE).toString();
 
@@ -137,7 +137,7 @@ public class PetitionServiceImpl implements PetitionService,
             previousReasons = new ArrayList<>();
         } else {
             // clone to avoid updating old case
-            previousReasons = (ArrayList<String>) previousReasons.clone();
+            previousReasons = new ArrayList<>(previousReasons);
         }
         previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
 
