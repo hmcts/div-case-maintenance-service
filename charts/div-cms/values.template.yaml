@@ -39,12 +39,12 @@ ccd:
 
     importer:
         definitions:
-        - https://github.com/hmcts/div-case-maintenance-service/raw/Helm_CCD/src/test/resources/CCD_Divorce_Test.xlsx
+            - https://github.com/hmcts/div-case-maintenance-service/raw/Helm_CCD/src/test/resources/CCD_Divorce_Test.xlsx
         userRoles:
-        - caseworker-bulkscan
-        - citizen
-        - caseworker-divorce-courtadmin_beta
-        - caseworker-divorce-courtadmin
-        - caseworker-divorce-solicitor
+            - caseworker-bulkscan
+            - citizen
+            - caseworker-divorce-courtadmin_beta
+            - caseworker-divorce-courtadmin
+            - caseworker-divorce-solicitor
 tags:
     ccd: true
