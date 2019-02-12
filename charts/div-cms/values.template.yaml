@@ -39,6 +39,3 @@ ccd:
 
 tags:
     ccd: true
-
-complete-stack:
-    enabled: true
