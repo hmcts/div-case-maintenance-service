@@ -22,7 +22,7 @@ public class AmendPetitionDraftTest extends PetitionSupport {
     public void givenInvalidUserToken_whenAmendPetitionDraft_thenReturnForbiddenError() {
         Response cmsResponse = putAmendedPetitionDraft(INVALID_USER_TOKEN);
 
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
