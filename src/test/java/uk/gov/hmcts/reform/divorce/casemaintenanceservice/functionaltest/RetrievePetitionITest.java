@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.contract.wiremock.WireMockSpring;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -71,10 +72,10 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.SUBMITTED.getValue();
 
     @ClassRule
-    public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
+    public static WireMockClassRule draftStoreServer = new WireMockClassRule(WireMockSpring.options().port(4601));
 
     @ClassRule
-    public static WireMockClassRule caseFormatterServer = new WireMockClassRule(4011);
+    public static WireMockClassRule caseFormatterServer = new WireMockClassRule(WireMockSpring.options().port(4011));
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;

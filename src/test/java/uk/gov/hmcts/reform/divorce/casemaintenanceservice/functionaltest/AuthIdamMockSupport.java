@@ -9,6 +9,7 @@ import feign.FeignException;
 import org.junit.ClassRule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.contract.wiremock.WireMockSpring;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -21,6 +22,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.UserServi
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -64,6 +66,8 @@ public class AuthIdamMockSupport {
     static final String BEARER_CASE_WORKER_TOKEN = BEARER + CASE_WORKER_TOKEN;
 
     private static final String CASE_WORKER_AUTH_CODE = "AuthCode";
+    private static final String CITIZEN_ROLE = "citizen";
+    private static final String CASEWORKER_ROLE = "caseworker";
 
     private final AuthenticateUserResponse authenticateUserResponse =
         getAuthenticateUserResponse();
@@ -80,7 +84,7 @@ public class AuthIdamMockSupport {
     private String authClientSecret;
 
     @ClassRule
-    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(4503);
+    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(WireMockSpring.options().port(4503));
 
     @MockBean
     AuthTokenGenerator serviceTokenGenerator;
@@ -126,15 +130,15 @@ public class AuthIdamMockSupport {
             getCaseWorkerUserDetails());
     }
 
-    private String getCaseWorkerUserDetails() {
-        return getUserDetails(CASE_WORKER_USER_ID, CASE_WORKER_TOKEN);
+    String getCaseWorkerUserDetails() {
+        return getUserDetails(CASE_WORKER_USER_ID, CASE_WORKER_TOKEN, CASEWORKER_ROLE);
     }
 
     String getUserDetails() {
-        return getUserDetails(USER_ID, USER_TOKEN);
+        return getUserDetails(USER_ID, USER_TOKEN, CITIZEN_ROLE);
     }
 
-    private String getUserDetails(String userId, String authToken) {
+    private String getUserDetails(String userId, String authToken, String role) {
         try {
             return new ObjectMapper().writeValueAsString(
                 UserDetails.builder()
@@ -143,6 +147,7 @@ public class AuthIdamMockSupport {
                     .email("test@test.com")
                     .forename("forename")
                     .surname("surname")
+                    .roles(Collections.singletonList(role))
                     .build());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

@@ -37,4 +37,8 @@ public abstract class IntegrationTest {
     protected UserDetails getCaseWorkerUser() {
         return idamTestSupport.createAnonymousCaseWorkerUser();
     }
+
+    protected String getPureCaseWorkerToken() {
+        return idamTestSupport.createPureCaseWorkerUser().getAuthToken();
+    }
 }
