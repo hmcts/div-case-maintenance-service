@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "eureka.client.enabled=false"
     })
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class RetrieveAllDraftsServiceITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/drafts";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
