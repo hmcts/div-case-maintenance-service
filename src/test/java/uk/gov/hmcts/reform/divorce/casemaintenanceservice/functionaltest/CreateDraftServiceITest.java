@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.WireMockSpring;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -62,7 +63,7 @@ public class CreateDraftServiceITest extends AuthIdamMockSupport {
     private MockMvc webClient;
 
     @ClassRule
-    public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
+    public static WireMockClassRule draftStoreServer = new WireMockClassRule(WireMockSpring.options().port(4601));
 
     @Test
     public void givenJWTTokenIsNull_whenCreateDraft_thenReturnBadRequest() throws Exception {

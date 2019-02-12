@@ -237,6 +237,53 @@ public class CcdUpdateITest extends AuthIdamMockSupport {
             .andExpect(content().string(containsString(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails))));
     }
 
+    @Test
+    public void givenAllGoesWell_whenUpdateCaseWithCaseworker_thenProceedAsExpected() throws Exception {
+        final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
+        final String message = getCaseWorkerUserDetails();
+        final String serviceAuthToken = "serviceAuthToken";
+
+        final String eventId = "eventId";
+        final String token = "token";
+        final StartEventResponse startEventResponse = StartEventResponse.builder()
+            .eventId(eventId)
+            .token(token)
+            .build();
+
+        final CaseDataContent caseDataContent = CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(
+                Event.builder()
+                    .id(startEventResponse.getEventId())
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(ObjectMapperTestUtil.convertStringToObject(caseData, Map.class))
+            .build();
+
+        final CaseDetails caseDetails = CaseDetails.builder().build();
+
+        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(BEARER_CASE_WORKER_TOKEN), message);
+
+        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(coreCaseDataApi
+            .startEventForCaseWorker(BEARER_CASE_WORKER_TOKEN, serviceAuthToken, CASE_WORKER_USER_ID,
+                jurisdictionId, caseType, CASE_ID, EVENT_ID))
+            .thenReturn(startEventResponse);
+        when(coreCaseDataApi
+            .submitEventForCaseWorker(BEARER_CASE_WORKER_TOKEN, serviceAuthToken, CASE_WORKER_USER_ID,
+                jurisdictionId, caseType, CASE_ID, true, caseDataContent))
+            .thenReturn(caseDetails);
+
+        webClient.perform(post(getApiUrl())
+            .content(caseData)
+            .header(HttpHeaders.AUTHORIZATION, BEARER_CASE_WORKER_TOKEN)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails))));
+    }
+
     private String getApiUrl() {
         return API_URL + "/" + CASE_ID + "/" + EVENT_ID;
     }

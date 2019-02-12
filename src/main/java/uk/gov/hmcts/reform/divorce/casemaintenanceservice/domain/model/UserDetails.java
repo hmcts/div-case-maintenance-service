@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Builder
 @Setter
@@ -15,4 +17,5 @@ public class UserDetails {
     private String forename;
     private String surname;
     private String authToken;
+    private List<String> roles;
 }
