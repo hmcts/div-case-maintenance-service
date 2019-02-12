@@ -57,7 +57,7 @@ withPipeline(type , product, component) {
     }
 
     loadVaultSecrets(secrets)
-    setVaultName('div')
+//    setVaultName('div')
 
     after('checkout') {
         echo '${product}-${component} checked out'
