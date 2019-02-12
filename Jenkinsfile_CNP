@@ -20,13 +20,26 @@ def component = "cms"
 def channel = '#div-dev'
 
 List<LinkedHashMap<String, Object>> secrets = [
-    secret("ccd-submission-s2s-auth-secret", "AUTH_PROVIDER_CCDSUBMISSION_CLIENT_KEY"),
-    secret("idam-secret", "AUTH_IDAM_CLIENT_SECRET"),
-    secret("ccd-submission-s2s-auth-secret", "AUTH_PROVIDER_SERVICE_CLIENT_KEY"),
-    secret("idam-secret", "AUTH2_CLIENT_SECRET"),
-    secret("draft-store-api-encryption-key", "DRAFT_STORE_API_ENCRYPTION_KEY_VALUE"),
-    secret("idam-caseworker-password", "IDAM_CASEWORKER_PASSWORD")
+    'div-${env}': [
+
+        secret("ccd-submission-s2s-auth-secret", "AUTH_PROVIDER_CCDSUBMISSION_CLIENT_KEY"),
+        secret("idam-secret", "AUTH_IDAM_CLIENT_SECRET"),
+        secret("ccd-submission-s2s-auth-secret", "AUTH_PROVIDER_SERVICE_CLIENT_KEY"),
+        secret("idam-secret", "AUTH2_CLIENT_SECRET"),
+        secret("draft-store-api-encryption-key", "DRAFT_STORE_API_ENCRYPTION_KEY_VALUE"),
+        secret("idam-caseworker-password", "IDAM_CASEWORKER_PASSWORD")
+    ],
+    's2s-${env}'      : [
+        secret('microservicekey-ccd-data', 'DATA_STORE_S2S_KEY'),
+        secret('microservicekey-ccd-definition', 'DEFINITION_STORE_S2S_KEY'),
+        secret('microservicekey-ccd-gw', 'API_GATEWAY_S2S_KEY'),
+        secret('microservicekey-ccd-ps', 'PRINT_S2S_KEY')
+    ],
+    'ccd-${env}'      : [
+        secret('ccd-api-gateway-oauth2-client-secret', 'API_GATEWAY_IDAM_SECRET')
+    ]
 ]
+
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',

@@ -12,3 +12,27 @@ java:
         REFORM_SERVICE_NAME: "cms"
         REFORM_TEAM: "div"
         AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS: "900"
+        LOG_LEVEL: DEBUG
+
+ccd:
+    ingressHost: ${SERVICE_FQDN}
+    ingressIP: ${INGRESS_IP}
+    consulIP: ${CONSUL_LB_IP}
+
+    apiGateway:
+        s2sKey: ${API_GATEWAY_S2S_KEY}
+        idamClientSecret: ${API_GATEWAY_IDAM_SECRET}
+
+    dataStoreApi:
+        s2sKey: ${DATA_STORE_S2S_KEY}
+
+    definitionStoreApi:
+        s2sKey: ${DEFINITION_STORE_S2S_KEY}
+
+    caseManagementWeb:
+        enabled: true # if you need access to the web ui then enable this, otherwise it won't be deployed
+
+        printApi:
+            # enabled: true # if you need access to the case print service then enable this
+            s2sKey: ${PRINT_S2S_KEY}
+            probateTemplateUrl: http://${SERVICE_NAME}-probate-app
