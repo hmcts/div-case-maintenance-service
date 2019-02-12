@@ -369,6 +369,28 @@ public class CcdRetrievalServiceImplUTest {
                 Collections.emptyMap());
     }
 
+    @Test
+    public void givenCaseId_whenRetrieveCaseById_thenReturnTheCase() throws Exception {
+        String testCaseId = String.valueOf(CASE_ID_1);
+        CaseDetails caseDetails = CaseDetails.builder().build();
+
+        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .readForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                testCaseId)).thenReturn(caseDetails);
+
+        assertEquals(caseDetails, classUnderTest.retrieveCaseById(AUTHORISATION, testCaseId));
+
+        verify(userService).retrieveUserDetails(BEARER_AUTHORISATION);
+        verify(authTokenGenerator).generate();
+        verify(coreCaseDataApi)
+            .readForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                testCaseId);
+    }
+
     private CaseDetails createCaseDetails(Long id, String state) {
         return CaseDetails.builder().id(id).state(state).build();
     }

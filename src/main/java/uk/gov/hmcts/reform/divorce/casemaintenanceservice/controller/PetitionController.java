@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -162,5 +163,24 @@ public class PetitionController {
                                                         @ApiParam(value = "JWT authorisation token issued by IDAM",
                                                             required = true)final String jwt) {
         return ResponseEntity.ok(petitionService.getAllDrafts(jwt));
+    }
+
+    @GetMapping(path = "/case/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Retrieve CCD case by CaseId")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Returns case with CaseId"),
+        @ApiResponse(code = 404, message = "Returns case not found or not authorised to view")
+        })
+    public ResponseEntity<CaseDetails> retrieveCaseById(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @PathVariable("caseId")
+        @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId
+    ) {
+        CaseDetails retrievedCase = Optional.ofNullable(
+            petitionService.retrievePetitionByCaseId(jwt, caseId)
+        ).orElse(CaseDetails.builder().build());
+
+        return retrievedCase.getId() == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(retrievedCase);
     }
 }

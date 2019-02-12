@@ -59,6 +59,11 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     }
 
     @Override
+    public CaseDetails retrievePetitionByCaseId(String authorisation, String caseId) {
+        return ccdRetrievalService.retrieveCaseById(authorisation, caseId);
+    }
+
+    @Override
     public void saveDraft(String authorisation, Map<String, Object> data, boolean divorceFormat) {
         draftService.saveDraft(authorisation, data, divorceFormat);
     }

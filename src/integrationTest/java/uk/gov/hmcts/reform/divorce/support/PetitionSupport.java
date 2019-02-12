@@ -23,7 +23,6 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     @Value("${case.maintenance.get-case.context-path}")
     private String getCaseContextPath;
 
-
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
         return
             RestUtil.putToRestService(
@@ -58,6 +57,15 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
                 getRetrieveCaseRequestUrl(),
                 getHeaders(userToken),
                 checkCcd == null ? null : Collections.singletonMap(CHECK_CCD, checkCcd)
+            );
+    }
+
+    protected Response retrieveCaseById(String userToken, String caseId) {
+        return
+            RestUtil.getFromRestService(
+                getCaseRequestUrl() + "/" + caseId,
+                getHeaders(userToken),
+                null
             );
     }
 
