@@ -37,5 +37,14 @@ ccd:
             s2sKey: ${PRINT_S2S_KEY}
             probateTemplateUrl: http://${SERVICE_NAME}-probate-app
 
+    importer:
+        definitions:
+        - https://github.com/hmcts/div-case-maintenance-service/raw/Helm_CCD/src/test/resources/CCD_Divorce_Test.xlsx
+        userRoles:
+        - caseworker-bulkscan
+        - citizen
+        - caseworker-divorce-courtadmin_beta
+        - caseworker-divorce-courtadmin
+        - caseworker-divorce-solicitor
 tags:
     ccd: true
