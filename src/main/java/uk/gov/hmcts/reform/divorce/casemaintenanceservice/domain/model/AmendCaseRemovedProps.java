@@ -126,6 +126,7 @@ public enum AmendCaseRemovedProps {
     PermittedDecreeNisiReason("PermittedDecreeNisiReason"),
     DNApplyForDecreeNisi("DNApplyForDecreeNisi"),
     PreviousReasonsForDivorce("PreviousReasonsForDivorce"),
+    D8DocumentsGenerated("D8DocumentsGenerated"),
     D8SeparationReferenceDate("D8SeparationReferenceDate");
 
     private final String value;
