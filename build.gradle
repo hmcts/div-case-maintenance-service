@@ -130,6 +130,7 @@ def versions = [
     guava: '27.0.1-jre',
     bcpkixJdk15on: '1.60',
     springSecurityRsa: '1.0.8.RELEASE'
+    springCloudDependencies: '2.0.2.RELEASE'
 ]
 
 dependencies {
@@ -197,6 +198,7 @@ dependencies {
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testCompile group: 'com.github.tomakehurst', name:'wiremock', version: versions.wiremockVersion
+    testCompile group: 'org.springframework.cloud', name: 'spring-cloud-contract-wiremock', version: versions.springCloudDependencies
     testCompile('org.springframework.boot:spring-boot-starter-test')
     runtime('org.springframework.boot:spring-boot-devtools')
 
