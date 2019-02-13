@@ -25,7 +25,7 @@ public class AmendPetitionDraftTest extends PetitionSupport {
     public void givenInvalidUserToken_whenAmendPetitionDraft_thenReturnForbiddenError() {
         Response cmsResponse = putAmendedPetitionDraft(INVALID_USER_TOKEN);
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class AmendPetitionDraftTest extends PetitionSupport {
     public void givenSingleCaseInCcd_whenAmendPetitionDraft_thenReturnTheDraft() throws Exception {
         final String userToken = getUserToken();
 
-        String caseRef = getCaseRefFromCompletedCase(userToken);
+        Long caseRef = getCaseIdFromCompletedCase(userToken);
 
         Response cmsResponse = putAmendedPetitionDraft(userToken);
 
@@ -62,8 +62,8 @@ public class AmendPetitionDraftTest extends PetitionSupport {
     public void givenMultipleSubmittedCaseInCcd_whenAmendPetitionDraft_thenReturn300() throws Exception {
         final String userToken = getUserToken();
 
-        getCaseIdFromSubmittingANewCase(userToken);
-        getCaseIdFromSubmittingANewCase(userToken);
+        getCaseIdFromCompletedCase(userToken);
+        getCaseIdFromCompletedCase(userToken);
 
         Response cmsResponse = putAmendedPetitionDraft(userToken);
 

@@ -44,9 +44,9 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
         return cmsResponse.path("id");
     }
 
-    protected String getCaseRefFromCompletedCase(String userToken) throws Exception {
+    protected Long getCaseIdFromCompletedCase(String userToken) throws Exception {
         Response cmsResponse = submitCase("completed-case-submitted.json", userToken);
 
-        return cmsResponse.path("case_data.D8caseReference");
+        return cmsResponse.path("id");
     }
 }

@@ -21,12 +21,9 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalSe
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
@@ -109,18 +106,22 @@ public class PetitionServiceImpl implements PetitionService,
     @Override
     public Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException {
         final UserDetails userDetails = userService.retrieveUserDetails(authorisation);
+        if (userDetails == null) {
+            log.warn("No user found for token");
+            return null;
+        }
         final CaseDetails oldCase = this.retrievePetition(authorisation);
 
         if (oldCase == null) {
             log.warn("No case found for the user [{}]", userDetails.getId());
             return null;
-        } else if (oldCase.getData().get(CcdCaseProperties.D8_CASE_REFERENCE) == null) {
+        } else if (!oldCase.getData().containsKey(CcdCaseProperties.D8_CASE_REFERENCE)) {
             log.warn("Case [{}] has not progressed to have a Family Man reference found for the user [{}]",
                 oldCase.getId(), userDetails.getId());
             return null;
         }
 
-        final Map<String, Object> amendmentCaseDraft = this.getDraftAmendmentCase(oldCase.getData(), authorisation);
+        final Map<String, Object> amendmentCaseDraft = this.getDraftAmendmentCase(oldCase, authorisation);
         this.deleteDraft(authorisation);
         this.createDraft(authorisation, amendmentCaseDraft, true);
 
@@ -128,10 +129,10 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @SuppressWarnings(value = "unchecked")
-    private Map<String, Object> getDraftAmendmentCase(Map<String, Object> caseData, String authorisation) {
+    private Map<String, Object> getDraftAmendmentCase(CaseDetails oldCase, String authorisation) {
+        Map<String, Object> caseData = oldCase.getData();
         List<String> previousReasons = (ArrayList<String>) caseData
             .get(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE);
-        final String oldCaseRef = caseData.get(CcdCaseProperties.D8_CASE_REFERENCE).toString();
 
         if (previousReasons == null) {
             previousReasons = new ArrayList<>();
@@ -148,11 +149,9 @@ public class PetitionServiceImpl implements PetitionService,
 
         final Map<String, Object> amendmentCaseDraft = formatterServiceClient
             .transformToDivorceFormat(caseData, authorisation);
-        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT, Locale.ENGLISH);
 
-        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, oldCaseRef);
+        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, oldCase.getId());
         amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
-        amendmentCaseDraft.put(DivorceSessionProperties.CREATED_DATE, createdDate.format(new Date()));
 
         return amendmentCaseDraft;
     }

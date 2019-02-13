@@ -33,10 +33,8 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConsta
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +65,8 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
     private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
-    private static final String TEST_CASE_ID = "test.id";
+    private static final Long TEST_CASE_ID = 1234567891234567L;
+    private static final String TEST_CASE_REF = "LDV12345D";
     private static final String ADULTERY = "adultery";
     private static final String SERVICE_TOKEN = "serviceToken";
     private static final String YES = "Yes";
@@ -133,15 +132,15 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     @Test
     public void givenValidRequestToAmend_whenAmendedPetitionDraft_thenCreateAmendedPetitionDraft() throws Exception {
         final String message = getUserDetails();
-        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
 
         final Map<String, Object> caseData = new HashMap<>();
-        caseData.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_REF);
         caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
         caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
         caseData.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
         caseData.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
         caseData.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES);
+        final CaseDetails oldCase = CaseDetails.builder().data(caseData).id(TEST_CASE_ID).build();
 
 
         final Map<String, Object> caseDataFormatRequest = new HashMap<>();
@@ -159,20 +158,15 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         draftData.put(DivorceSessionProperties.LEGAL_PROCEEDINGS, YES);
         draftData.put(DivorceSessionProperties.DIVORCE_WHO, WIFE);
         draftData.put(DivorceSessionProperties.SCREEN_HAS_MARRIAGE_BROKEN, YES);
-        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.format(new Date()));
         draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
 
         final CreateDraft createDraft = new CreateDraft(draftData,
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
 
-        final Long caseId = 1L;
-        final CaseDetails caseDetails = CaseDetails.builder()
-            .data(caseData).id(caseId).state(CaseState.REJECTED.getValue()).build();
-
         when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Collections.singletonList(caseDetails));
+            .thenReturn(Collections.singletonList(oldCase));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubToDivorceFormatEndpoint(caseDataFormatRequest, draftData);

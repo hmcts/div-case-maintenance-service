@@ -42,7 +42,8 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 public class PetitionServiceImplUTest {
     private static final String AUTHORISATION = "userToken";
     private static final boolean DIVORCE_FORMAT = false;
-    private static final String TEST_CASE_ID = "test.id";
+    private static final Long TEST_CASE_ID = 1234567891234567L;
+    private static final String TEST_CASE_REF = "LDV12345D";
     private static final String USER_FIRST_NAME = "John";
     private static final String ADULTERY = "adultery";
     private static final String TWO_YEAR_SEPARATION = "2yr-separation";
@@ -171,11 +172,11 @@ public class PetitionServiceImplUTest {
     public void whenRetrievePetitionById_thenProceedAsExpected() throws DuplicateCaseException {
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
-        when(ccdRetrievalService.retrieveCaseById(AUTHORISATION, TEST_CASE_ID)).thenReturn(caseDetails);
+        when(ccdRetrievalService.retrieveCaseById(AUTHORISATION, TEST_CASE_ID.toString())).thenReturn(caseDetails);
 
-        assertEquals(caseDetails, classUnderTest.retrievePetitionByCaseId(AUTHORISATION, TEST_CASE_ID));
+        assertEquals(caseDetails, classUnderTest.retrievePetitionByCaseId(AUTHORISATION, TEST_CASE_ID.toString()));
 
-        verify(ccdRetrievalService).retrieveCaseById(AUTHORISATION, TEST_CASE_ID);
+        verify(ccdRetrievalService).retrieveCaseById(AUTHORISATION, TEST_CASE_ID.toString());
     }
 
     @Test
@@ -228,22 +229,48 @@ public class PetitionServiceImplUTest {
         caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
         caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
 
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(TEST_CASE_ID).build();
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
-        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT, Locale.ENGLISH);
 
         previousReasons.add(ADULTERY);
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
         draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
-        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.format(new Date()));
 
+        final UserDetails user = UserDetails.builder().forename(USER_FIRST_NAME).build();
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
+        when(userService.retrieveUserDetails(AUTHORISATION)).thenReturn(user);
 
         classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
 
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
         verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void givenCaseNotProgressed_whenCreateAmendedPetitionDraft_thenReturnNull() throws DuplicateCaseException {
+        final UserDetails user = UserDetails.builder().forename(USER_FIRST_NAME).build();
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(TEST_CASE_ID).build();
+
+        when(userService.retrieveUserDetails(AUTHORISATION)).thenReturn(user);
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
+
+        assertNull(classUnderTest.createAmendedPetitionDraft(AUTHORISATION));
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION);
+    }
+
+    @Test
+    public void givenNoUserExists_whenCreateAmendedPetitionDraft_thenReturnNull() throws DuplicateCaseException {
+        when(userService.retrieveUserDetails(AUTHORISATION)).thenReturn(null);
+
+        assertNull(classUnderTest.createAmendedPetitionDraft(AUTHORISATION));
+
+        verify(userService).retrieveUserDetails(AUTHORISATION);
     }
 
     @Test
@@ -253,21 +280,22 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> caseData = new HashMap<>();
         final List<String> previousReasonsOld = new ArrayList<>();
         previousReasonsOld.add(TWO_YEAR_SEPARATION);
-        caseData.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_REF);
         caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
         caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, previousReasonsOld);
 
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(TEST_CASE_ID).build();
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
-        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT, Locale.ENGLISH);
 
         previousReasons.add(TWO_YEAR_SEPARATION);
         previousReasons.add(ADULTERY);
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
         draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
-        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.format(new Date()));
 
+        final UserDetails user = UserDetails.builder().forename(USER_FIRST_NAME).build();
+
+        when(userService.retrieveUserDetails(AUTHORISATION)).thenReturn(user);
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
 
         classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
