@@ -22,17 +22,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import javax.validation.constraints.NotNull;
+
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
 
 @RestController
 @RequestMapping(path = "casemaintenance/version/1")
@@ -56,7 +55,15 @@ public class PetitionController {
         @RequestParam(value = "checkCcd", required = false)
         @ApiParam(value = "Boolean flag enabling CCD check for petition") final Boolean checkCcd) {
 
-        return retrieveCase(jwt, CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING, checkCcd);
+        try {
+            CaseDetails caseDetails = petitionService.retrievePetition(jwt, PETITIONER_CASE_STATE_GROUPING,
+                Optional.ofNullable(checkCcd).orElse(false));
+
+            return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
+        } catch (DuplicateCaseException e) {
+            log.warn(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
+        }
     }
 
     @GetMapping(path = "/retrieveAosCase", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,11 +75,16 @@ public class PetitionController {
         })
     public ResponseEntity<CaseDetails> retrieveCaseForRespondent(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
-        @RequestParam(value = "checkCcd", required = false)
-        @ApiParam(value = "Boolean flag enabling CCD check for petition") final Boolean checkCcd) {
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
 
-        return retrieveCase(jwt, CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING, checkCcd);
+        try {
+            CaseDetails caseDetails = petitionService.retrievePetitionForAos(jwt);
+
+            return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
+        } catch (DuplicateCaseException e) {
+            log.warn(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
+        }
     }
 
     @GetMapping(path = "/case", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,21 +100,6 @@ public class PetitionController {
         try {
             CaseDetails caseDetails = petitionService.retrievePetition(jwt);
             return caseDetails == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(caseDetails);
-        } catch (DuplicateCaseException e) {
-            log.warn(e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
-        }
-    }
-
-    private ResponseEntity<CaseDetails> retrieveCase(String jwt,
-                                                     Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
-                                                     Boolean checkCcd) {
-
-        try {
-            CaseDetails caseDetails = petitionService.retrievePetition(jwt, caseStateGrouping,
-                Optional.ofNullable(checkCcd).orElse(false));
-
-            return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
         } catch (DuplicateCaseException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
