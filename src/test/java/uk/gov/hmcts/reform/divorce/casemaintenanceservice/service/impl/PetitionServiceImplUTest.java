@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
@@ -19,13 +18,10 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -42,7 +38,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 public class PetitionServiceImplUTest {
     private static final String AUTHORISATION = "userToken";
     private static final boolean DIVORCE_FORMAT = false;
-    private static final Long TEST_CASE_ID = 1234567891234567L;
+    private static final String TEST_CASE_ID = "1234567891234567";
     private static final String TEST_CASE_REF = "LDV12345D";
     private static final String USER_FIRST_NAME = "John";
     private static final String ADULTERY = "adultery";
@@ -229,7 +225,8 @@ public class PetitionServiceImplUTest {
         caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
         caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
 
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(TEST_CASE_ID).build();
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
+            .id(Long.decode(TEST_CASE_ID)).build();
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
 
@@ -254,7 +251,8 @@ public class PetitionServiceImplUTest {
         caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
         caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
 
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(TEST_CASE_ID).build();
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
+            .id(Long.decode(TEST_CASE_ID)).build();
 
         when(userService.retrieveUserDetails(AUTHORISATION)).thenReturn(user);
         when(ccdRetrievalService.retrieveCase(AUTHORISATION)).thenReturn(caseDetails);
@@ -284,7 +282,7 @@ public class PetitionServiceImplUTest {
         caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
         caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, previousReasonsOld);
 
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(TEST_CASE_ID).build();
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(Long.decode(TEST_CASE_ID)).build();
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
 

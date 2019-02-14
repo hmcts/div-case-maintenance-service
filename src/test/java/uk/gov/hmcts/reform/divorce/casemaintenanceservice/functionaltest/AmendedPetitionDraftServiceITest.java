@@ -65,7 +65,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
     private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
-    private static final Long TEST_CASE_ID = 1234567891234567L;
+    private static final String TEST_CASE_ID = "1234567891234567";
     private static final String TEST_CASE_REF = "LDV12345D";
     private static final String ADULTERY = "adultery";
     private static final String SERVICE_TOKEN = "serviceToken";
@@ -140,7 +140,8 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         caseData.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
         caseData.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
         caseData.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES);
-        final CaseDetails oldCase = CaseDetails.builder().data(caseData).id(TEST_CASE_ID).build();
+        final CaseDetails oldCase = CaseDetails.builder().data(caseData)
+            .id(Long.decode(TEST_CASE_ID)).build();
 
 
         final Map<String, Object> caseDataFormatRequest = new HashMap<>();

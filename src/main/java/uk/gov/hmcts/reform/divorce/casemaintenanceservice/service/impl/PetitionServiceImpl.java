@@ -150,7 +150,7 @@ public class PetitionServiceImpl implements PetitionService,
         final Map<String, Object> amendmentCaseDraft = formatterServiceClient
             .transformToDivorceFormat(caseData, authorisation);
 
-        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, oldCase.getId());
+        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, String.valueOf(oldCase.getId()));
         amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
 
         return amendmentCaseDraft;

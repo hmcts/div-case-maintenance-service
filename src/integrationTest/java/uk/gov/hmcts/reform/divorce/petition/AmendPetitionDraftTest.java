@@ -39,12 +39,12 @@ public class AmendPetitionDraftTest extends PetitionSupport {
     public void givenSingleCaseInCcd_whenAmendPetitionDraft_thenReturnTheDraft() throws Exception {
         final String userToken = getUserToken();
 
-        Long caseRef = getCaseIdFromCompletedCase(userToken);
+        Long caseId = getCaseIdFromCompletedCase(userToken);
 
         Response cmsResponse = putAmendedPetitionDraft(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
-        assertEquals(caseRef, cmsResponse.path("previousCaseId"));
+        assertEquals(String.valueOf(caseId), cmsResponse.path("previousCaseId"));
     }
 
     @Test
