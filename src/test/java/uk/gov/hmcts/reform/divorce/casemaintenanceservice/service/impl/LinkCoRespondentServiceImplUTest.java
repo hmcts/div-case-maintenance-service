@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
@@ -23,19 +24,17 @@ import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CcdAccessServiceImplUTest {
+public class LinkCoRespondentServiceImplUTest {
     private static final String JURISDICTION_ID = "someJurisdictionId";
     private static final String CASE_TYPE = "someCaseType";
 
     private static final String LETTER_HOLDER_CASE_FIELD =
-        (String)ReflectionTestUtils.getField(CcdAccessServiceImpl.class, "LETTER_HOLDER_CASE_FIELD");
+        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_LETTER_HOLDER_ID_FIELD");
     private static final String RECEIVED_AOS_FIELD =
-        (String)ReflectionTestUtils.getField(CcdAccessServiceImpl.class, "RECEIVED_AOS_FIELD");
+        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_RECEIVED_AOS_FIELD");
 
     private static final String RESPONDENT_AUTHORISATION = "Bearer RespondentAuthToken";
     private static final String CASEWORKER_AUTHORISATION = "CaseWorkerAuthToken";
@@ -45,6 +44,7 @@ public class CcdAccessServiceImplUTest {
     private static final String RESPONDENT_USER_ID = "2";
     private static final String SERVICE_TOKEN = "ServiceToken";
     private static final String RECEIVED_AOS_FIELD_VALUE = "Yes";
+    private static final boolean IS_CO_RESPONDENT = true;
 
     private static final UserDetails CASE_WORKER_USER = UserDetails.builder()
         .authToken(CASEWORKER_AUTHORISATION)
@@ -94,7 +94,7 @@ public class CcdAccessServiceImplUTest {
             CASE_ID
         )).thenReturn(null);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, IS_CO_RESPONDENT);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -110,7 +110,7 @@ public class CcdAccessServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, IS_CO_RESPONDENT);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -130,7 +130,7 @@ public class CcdAccessServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, null);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, null, IS_CO_RESPONDENT);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -150,7 +150,7 @@ public class CcdAccessServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, " ");
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, " ", IS_CO_RESPONDENT);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -168,7 +168,7 @@ public class CcdAccessServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, IS_CO_RESPONDENT);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -188,7 +188,8 @@ public class CcdAccessServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, "Letter holder id no match");
+        classUnderTest.linkRespondent(
+            RESPONDENT_AUTHORISATION, CASE_ID, "Letter holder id no match", IS_CO_RESPONDENT);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -209,7 +210,7 @@ public class CcdAccessServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, IS_CO_RESPONDENT);
     }
 
     @Test
@@ -239,7 +240,7 @@ public class CcdAccessServiceImplUTest {
             any(UserId.class)
         );
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, IS_CO_RESPONDENT);
 
         verify(caseAccessApi).grantAccessToCase(
             eq(CASEWORKER_AUTHORISATION),
