@@ -29,7 +29,6 @@ import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdAccessServiceImpl;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -37,9 +36,7 @@ import java.util.Objects;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,17 +50,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class LinkRespondentITest extends AuthIdamMockSupport {
+public class LinkCoRespondentITest extends AuthIdamMockSupport {
     private static final String CASE_ID = "caseId";
     private static final String LETTER_HOLDER_ID = "letterHolderId";
     private static final String RECEIVED_AOS_FIELD_VALUE = "Yes";
-    private static final String RESP_LETTER_HOLDER_ID_FIELD =
-        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "RESP_LETTER_HOLDER_ID_FIELD");
-    private static final String RESP_RECEIVED_AOS_FIELD =
-        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "RESP_RECEIVED_AOS_FIELD");
+    private static final String CO_RESP_LETTER_HOLDER_ID_FIELD =
+        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_LETTER_HOLDER_ID_FIELD");
+    private static final String CO_RESP_RECEIVED_AOS_FIELD =
+        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_RECEIVED_AOS_FIELD");
 
     private static final String API_URL =
-        String.format("/casemaintenance/version/1/link-respondent/%s/%s", CASE_ID, LETTER_HOLDER_ID);
+        String.format("/casemaintenance/version/1/link-co-respondent/%s/%s", CASE_ID, LETTER_HOLDER_ID);
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
@@ -82,13 +79,13 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     private CaseAccessApi caseAccessApi;
 
     @Test
-    public void givenAuthTokenIsNull_whenLinkRespondent_thenReturnBadRequest() throws Exception {
+    public void givenAuthTokenIsNull_whenLinkCoRespondent_thenReturnBadRequest() throws Exception {
         webClient.perform(MockMvcRequestBuilders.post(API_URL))
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void givenCouldNotAuthenticateCaseWorker_whenLinkRespondent_thenReturnHttp502() throws Exception {
+    public void givenCouldNotAuthenticateCaseWorker_whenLinkCoRespondent_thenReturnHttp502() throws Exception {
         final String message = getUserDetails();
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.BAD_GATEWAY);
@@ -99,7 +96,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenCouldNotConnectToAuthService_whenLinkRespondent_thenReturnHttp503() throws Exception {
+    public void givenCouldNotConnectToAuthService_whenLinkCoRespondent_thenReturnHttp503() throws Exception {
         final String message = getUserDetails();
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
@@ -112,7 +109,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenCouldNotConnectToCcd_whenLinkRespondent_thenReturnHttp503() throws Exception {
+    public void givenCouldNotConnectToCcd_whenLinkCoRespondent_thenReturnHttp503() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
@@ -138,7 +135,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
 
     @Test
-    public void givenNoCaseWithId_whenLinkRespondent_thenReturnNotFound() throws Exception {
+    public void givenNoCaseWithId_whenLinkCoRespondent_thenReturnNotFound() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
@@ -161,7 +158,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenLetterHolderIdIsNull_whenLinkRespondent_thenReturnNotFound() throws Exception {
+    public void givenLetterHolderIdIsNull_whenLinkCoRespondent_thenReturnNotFound() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
@@ -186,13 +183,13 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenLetterHolderIdDoNotMatch_whenLinkRespondent_thenReturnNotFound() throws Exception {
+    public void givenLetterHolderIdDoNotMatch_whenLinkCoRespondent_thenReturnNotFound() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
-            .data(Collections.singletonMap(RESP_LETTER_HOLDER_ID_FIELD, "nonmatchingletterholderid"))
+            .data(Collections.singletonMap(CO_RESP_LETTER_HOLDER_ID_FIELD, "nonmatchingletterholderid"))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -221,8 +218,8 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
             .data(ImmutableMap.of(
-                Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(RESP_RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
+                Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
+                Objects.requireNonNull(CO_RESP_RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
             ))
             .build();
 
@@ -245,13 +242,13 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbiddenError() throws Exception {
+    public void givenInvalidUserToken_whenLinkCoRespondent_thenReturnForbiddenError() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
-            .data(Collections.singletonMap(RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
+            .data(Collections.singletonMap(CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -276,7 +273,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenGrantAccessFails_whenLinkRespondent_thenReturnBadRequest() throws Exception {
+    public void givenGrantAccessFails_whenLinkCoRespondent_thenReturnBadRequest() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
@@ -284,7 +281,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
-            .data(Collections.singletonMap(RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
+            .data(Collections.singletonMap(CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -318,13 +315,13 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenAllGoesWell_whenLinkRespondent_thenProceedAsExpected() throws Exception {
+    public void givenAllGoesWell_whenLinkCoRespondent_thenProceedAsExpected() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
-            .data(Collections.singletonMap(RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
+            .data(Collections.singletonMap(CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);

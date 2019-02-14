@@ -83,7 +83,27 @@ public class CcdController {
         @PathVariable("letterHolderId")
         @ApiParam(value = "Letter holder id from the pin user", required = true) String letterHolderId) {
 
-        ccdAccessService.linkRespondent(authToken, caseId, letterHolderId);
+        ccdAccessService.linkRespondent(authToken, caseId, letterHolderId, false);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/link-co-respondent/{caseId}/{letterHolderId}")
+    @ApiOperation(value = "Updates case details")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Returned when case with id and letter holder id exists and the access is "
+            + "granted to the respondent user"),
+        @ApiResponse(code = 404, message = "Returned when case with id not found or letter holder id doesn't match"),
+        }
+    )
+    public ResponseEntity<Void> linkCoRespondent(
+        @RequestHeader("Authorization")
+        @ApiParam(value = "JWT authorisation token of the respondent", required = true) final String authToken,
+        @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId,
+        @PathVariable("letterHolderId")
+        @ApiParam(value = "Letter holder id from the pin user", required = true) String letterHolderId) {
+
+        ccdAccessService.linkRespondent(authToken, caseId, letterHolderId, true);
 
         return ResponseEntity.ok().build();
     }
