@@ -24,4 +24,6 @@ public interface PetitionService {
     DraftList getAllDrafts(String authorisation);
 
     void deleteDraft(String authorisation);
+
+    Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException;
 }

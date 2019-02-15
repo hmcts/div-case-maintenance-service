@@ -79,7 +79,7 @@ public class PetitionController {
     @ApiOperation(value = "Retrieves a divorce case from CCD")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Case exists. The case is in the response body"),
-        @ApiResponse(code = 404, message = "When there are no case exists"),
+        @ApiResponse(code = 404, message = "When no case exists"),
         @ApiResponse(code = 300, message = "Multiple Cases found")
         })
     public ResponseEntity<CaseDetails> retrieveCase(
@@ -103,6 +103,29 @@ public class PetitionController {
                 Optional.ofNullable(checkCcd).orElse(false));
 
             return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
+        } catch (DuplicateCaseException e) {
+            log.warn(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
+        }
+    }
+
+    @PutMapping(path = "/amended-petition-draft", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Creates a new draft petition for an amend petition workflow")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message =
+            "A draft amendment case was created based on the users previously rejected petition"),
+        @ApiResponse(code = 404, message = "When no case exists"),
+        @ApiResponse(code = 300, message = "Multiple cases found")})
+    public ResponseEntity<Map<String, Object>> createAmendedPetitionDraft(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        try {
+            Map<String, Object> newCaseDraftData = petitionService.createAmendedPetitionDraft(jwt);
+
+            if (newCaseDraftData == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(newCaseDraftData);
         } catch (DuplicateCaseException e) {
             log.warn(e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();

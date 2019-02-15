@@ -36,7 +36,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         }
 
         if (caseDetailsList.size() > 1) {
-            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getForename());
+            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getId());
         }
 
         Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap = caseDetailsList.stream()
@@ -84,7 +84,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         if (caseDetailsList.size() > 1) {
             throw new DuplicateCaseException(String.format("There are [%d] case for the user [%s]",
-                caseDetailsList.size(), userDetails.getForename()));
+                caseDetailsList.size(), userDetails.getId()));
         }
 
         return caseDetailsList.get(0);

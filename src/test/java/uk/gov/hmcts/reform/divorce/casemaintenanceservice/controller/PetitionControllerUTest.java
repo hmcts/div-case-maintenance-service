@@ -8,12 +8,18 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 import util.ReflectionTestUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -28,6 +34,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 public class PetitionControllerUTest {
     private static final String AUTHORISATION = "user";
     private static final String TEST_CASE_ID = "test.id";
+    private static final String UNREASONABLE_BEHAVIOUR = "unreasonable-behaviour";
 
     @Mock
     private PetitionService petitionService;
@@ -283,6 +290,59 @@ public class PetitionControllerUTest {
         assertEquals(draftList, response.getBody());
 
         verify(petitionService).getAllDrafts(AUTHORISATION);
+    }
+
+    @Test
+    public void givenNoCaseFound_whenAmendToDraftPetition_thenReturn404() throws DuplicateCaseException {
+
+        when(petitionService.createAmendedPetitionDraft(AUTHORISATION))
+            .thenReturn(null);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
+
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
+        assertNull(actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraft(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenAmendToDraftPetition_thenReturnDraftData() throws DuplicateCaseException {
+
+        final Map<String, Object> draftData = new HashMap<>();
+
+        when(petitionService.createAmendedPetitionDraft(AUTHORISATION))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraft(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenAmendToDraftPetition_thenSetDraftDataFromCase() throws DuplicateCaseException {
+        final Map<String, Object> draftData = new HashMap<>();
+        final List<String> previousReasons = new ArrayList<>();
+        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
+
+        previousReasons.add(UNREASONABLE_BEHAVIOUR);
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.toPattern());
+        draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
+
+        when(petitionService.createAmendedPetitionDraft(AUTHORISATION))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraft(AUTHORISATION);
     }
 
     private ResponseEntity<CaseDetails> retrieveCase(Boolean checkCcd) {
