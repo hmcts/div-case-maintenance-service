@@ -43,7 +43,7 @@ public class LinkCoRespondentServiceImplUTest {
     private static final String CASEWORKER_USER_ID = "1";
     private static final String RESPONDENT_USER_ID = "2";
     private static final String SERVICE_TOKEN = "ServiceToken";
-    private static final String RECEIVED_AOS_FIELD_VALUE = "Yes";
+    private static final String RECEIVED_AOS_FIELD_VALUE = "YES";
     private static final boolean IS_CO_RESPONDENT = true;
 
     private static final UserDetails CASE_WORKER_USER = UserDetails.builder()

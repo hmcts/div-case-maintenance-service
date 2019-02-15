@@ -43,46 +43,46 @@ public class LinkCoRespondentTest extends PetitionSupport {
     private CcdClientSupport ccdClientSupport;
 
     @Test
-    public void givenJWTTokenIsNull_whenLinkRespondent_thenReturnBadRequest() {
-        Response cmsResponse = linkRespondent(null, "someCaseId", "someLetterHolderId");
+    public void givenJWTTokenIsNull_whenLinkCoRespondent_thenReturnBadRequest() {
+        Response cmsResponse = linkCoRespondent(null, "someCaseId", "someLetterHolderId");
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
-    public void givenNoCase_whenLinkRespondent_thenReturnBadRequest() {
-        Response cmsResponse = linkRespondent(getUserToken(), "someCaseId", "someLetterHolderId");
+    public void givenNoCase_whenLinkCoRespondent_thenReturnBadRequest() {
+        Response cmsResponse = linkCoRespondent(getUserToken(), "someCaseId", "someLetterHolderId");
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
-    public void givenNoLetterHolderId_whenLinkRespondent_thenReturnNotFound() {
+    public void givenNoLetterHolderId_whenLinkCoRespondent_thenReturnNotFound() {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
-        Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
+        Response cmsResponse = linkCoRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
         assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenLetterHolderDoNotMatch_whenLinkRespondent_thenReturnNotFound() {
+    public void givenLetterHolderDoNotMatch_whenLinkCoRespondent_thenReturnNotFound() {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, "nonMatchingLetterHolderId");
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
-        Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
+        Response cmsResponse = linkCoRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
         assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenCaseAlreadyLinked_whenLinkRespondent_thenReturnNotFound() {
+    public void givenCaseAlreadyLinked_whenLinkCoRespondent_thenReturnNotFound() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -92,14 +92,14 @@ public class LinkCoRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
-        Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
+        Response cmsResponse = linkCoRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
 
         assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() throws Exception {
+    public void givenInvalidUserToken_whenLinkCoRespondent_thenReturnForbidden() throws Exception {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -111,14 +111,14 @@ public class LinkCoRespondentTest extends PetitionSupport {
 
         updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
-        Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
+        Response cmsResponse = linkCoRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenLetterHolderIdAndCaseStateMatches_whenLinkRespondent_thenShouldBeAbleToAccessTheCase()
+    public void givenLetterHolderIdAndCaseStateMatches_whenLinkCoRespondent_thenShouldBeAbleToAccessTheCase()
         throws Exception {
 
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
@@ -134,7 +134,7 @@ public class LinkCoRespondentTest extends PetitionSupport {
 
         updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
-        linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
+        linkCoRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
         updateCase(ImmutableMap.of(CO_RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
             caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
@@ -144,7 +144,7 @@ public class LinkCoRespondentTest extends PetitionSupport {
         assertEquals(caseId, response.path("id"));
     }
 
-    private Response linkRespondent(String authToken, String caseId, String letterHolderId) {
+    private Response linkCoRespondent(String authToken, String caseId, String letterHolderId) {
         return RestUtil.postToRestService(
             serverUrl + linkCoRespondentContextPath + "/" + caseId + "/" + letterHolderId,
             Collections.singletonMap(HttpHeaders.AUTHORIZATION, authToken),

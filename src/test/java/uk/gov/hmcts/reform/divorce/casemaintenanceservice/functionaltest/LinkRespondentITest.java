@@ -56,7 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LinkRespondentITest extends AuthIdamMockSupport {
     private static final String CASE_ID = "caseId";
     private static final String LETTER_HOLDER_ID = "letterHolderId";
-    private static final String RECEIVED_AOS_FIELD_VALUE = "Yes";
+    private static final String RECEIVED_AOS_FIELD_VALUE = "YES";
     private static final String RESP_LETTER_HOLDER_ID_FIELD =
         (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "RESP_LETTER_HOLDER_ID_FIELD");
     private static final String RESP_RECEIVED_AOS_FIELD =

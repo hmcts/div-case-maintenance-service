@@ -17,7 +17,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 
 @Service
 public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAccessService {
-    private static final String YES_ANSWER = "Yes";
+    private static final String YES_ANSWER = "YES";
 
     @Autowired
     private CaseAccessApi caseAccessApi;
