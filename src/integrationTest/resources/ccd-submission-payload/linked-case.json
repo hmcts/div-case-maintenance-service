@@ -94,5 +94,6 @@
     "D8Cohort":"onlineSubmissionPrivateBeta",
     "D8InferredPetitionerGender":"female",
     "D8InferredRespondentGender":"male",
-    "ReceivedAOSfromResp": "YES"
+    "ReceivedAOSfromResp": "YES",
+    "ReceivedAosFromCoResp": "YES"
 }
