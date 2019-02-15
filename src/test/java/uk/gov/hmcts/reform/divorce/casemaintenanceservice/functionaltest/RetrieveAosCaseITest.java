@@ -42,6 +42,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.text.IsEmptyString.isEmptyOrNullString;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -355,7 +356,7 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenNoCaseInCcdAndOneDraftInStore_whenRetrieveAosCase_thenReturnFormattedDraft() throws Exception {
+    public void givenNoCaseInCcdAndOneDraftInStore_whenRetrieveAosCase_thenReturnNoContentResponse() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
@@ -374,17 +375,13 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
-                .builder()
-                .data(new HashMap<>())
-                .build())));
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(isEmptyOrNullString()));
     }
 
     @Test
-    public void givenNoCaseInCcdAndOneDraftInStoreInDivorceFormat_whenRetrieveAosCase_thenReturnFormattedDraft()
+    public void givenNoCaseInCcdAndOneDraftInStoreInDivorceFormat_whenRetrieveAosCase_thenReturnNoContentResponse()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
@@ -395,8 +392,6 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         final DraftList draftList = new DraftList(Collections.singletonList(
             new Draft("1", divorceSessionData, DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
             null);
-
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -413,14 +408,13 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails)));
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(isEmptyOrNullString()));
     }
 
     @Test
-    public void givenDoNotCheckCcdAndMultipleDraftInStore_whenRetrieveAosCase_thenReturnFormattedDraft() throws Exception {
+    public void givenDoNotCheckCcdAndMultipleDraftInStore_whenRetrieveAosCase_thenReturnNoContentResponse() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
@@ -438,13 +432,9 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "false")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
-                .builder()
-                .data(new HashMap<>())
-                .build())));
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(isEmptyOrNullString()));
     }
 
     private void stubGetDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken, String message) {
