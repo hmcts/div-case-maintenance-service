@@ -1,9 +1,9 @@
 dependencies:
     - name: java
-      version: ~0.0.12
+      version: 1.0.1
       repository: "@hmcts"
     - name: ccd
-      version: ~0.5.0
+      version: ~0.5.2
       repository: '@hmcts'
       tags:
           - ccd
