@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.mode
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

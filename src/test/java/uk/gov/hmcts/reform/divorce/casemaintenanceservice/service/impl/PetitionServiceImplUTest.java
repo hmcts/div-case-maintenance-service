@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
@@ -24,15 +23,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PetitionServiceImplUTest {
@@ -66,7 +68,7 @@ public class PetitionServiceImplUTest {
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING)).thenReturn(caseDetails);
 
-        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,true);
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
 
         assertEquals(caseDetails, actual);
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
@@ -74,25 +76,25 @@ public class PetitionServiceImplUTest {
 
     @Test(expected = DuplicateCaseException.class)
     public void givenCcdRetrievalServiceThrowException_whenRetrievePetition_thenThrowException()
-        throws DuplicateCaseException {
+            throws DuplicateCaseException {
         final DuplicateCaseException duplicateCaseException = new DuplicateCaseException("Duplicate");
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING))
-            .thenThrow(duplicateCaseException);
+                .thenThrow(duplicateCaseException);
 
-        classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,true);
+        classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
 
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
     }
 
     @Test
     public void givenCheckCcdTrueNoDataInCcdOrDraft_whenRetrievePetition_thenReturnNull()
-        throws DuplicateCaseException {
+            throws DuplicateCaseException {
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING)).thenReturn(null);
         when(draftService.getDraft(AUTHORISATION)).thenReturn(null);
 
-        assertNull(classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,true));
+        assertNull(classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true));
 
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
         verify(draftService).getDraft(AUTHORISATION);
@@ -102,7 +104,7 @@ public class PetitionServiceImplUTest {
     public void givenCheckCcdFalseAndNoDraft_whenRetrievePetition_thenReturnNull() throws DuplicateCaseException {
         when(draftService.getDraft(AUTHORISATION)).thenReturn(null);
 
-        assertNull(classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,false));
+        assertNull(classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, false));
 
         verifyZeroInteractions(ccdRetrievalService);
         verify(draftService).getDraft(AUTHORISATION);
@@ -110,7 +112,7 @@ public class PetitionServiceImplUTest {
 
     @Test
     public void givenCheckCcdFalseAndDraftExistsInCcdFormat_whenRetrievePetition_thenReturnDataFromDraftStore()
-        throws DuplicateCaseException {
+            throws DuplicateCaseException {
 
         final Map<String, Object> document = Collections.emptyMap();
         final Draft draft = new Draft("1", document, null);
@@ -121,7 +123,7 @@ public class PetitionServiceImplUTest {
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
         when(draftService.isInCcdFormat(draft)).thenReturn(false);
 
-        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,false);
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, false);
 
         assertEquals(caseDetails, actual);
 
@@ -132,7 +134,7 @@ public class PetitionServiceImplUTest {
 
     @Test
     public void givenCheckCcdFalseAndDraftExists_whenRetrievePetition_thenReturnDataFromDraftStore()
-        throws DuplicateCaseException {
+            throws DuplicateCaseException {
 
         final Map<String, Object> document = Collections.emptyMap();
         final Draft draft = new Draft("1", document, null);
@@ -144,13 +146,22 @@ public class PetitionServiceImplUTest {
         when(draftService.isInCcdFormat(draft)).thenReturn(true);
         when(formatterServiceClient.transformToDivorceFormat(document, AUTHORISATION)).thenReturn(draftDocument);
 
-        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,false);
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, false);
 
         assertEquals(caseDetails, actual);
 
         verifyZeroInteractions(ccdRetrievalService);
         verify(draftService).getDraft(AUTHORISATION);
         verify(formatterServiceClient).transformToDivorceFormat(document, AUTHORISATION);
+    }
+
+    @Test
+    public void givenCcdCaseIsNotFound_whenRetrievingPetitionForRespondent_thenReturnNull()
+            throws DuplicateCaseException {
+        CaseDetails actualCaseDetails = classUnderTest.retrievePetitionForAos(AUTHORISATION);
+
+        assertThat(actualCaseDetails, is(nullValue()));
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, RESPONDENT_CASE_STATE_GROUPING);
     }
 
     @Test
@@ -323,8 +334,7 @@ public class PetitionServiceImplUTest {
         when(draftService.getDraft(AUTHORISATION))
             .thenReturn(draft);
 
-        CaseDetails petition = classUnderTest.retrievePetition(AUTHORISATION,
-            CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING, true);
+        CaseDetails petition = classUnderTest.retrievePetition(AUTHORISATION, RESPONDENT_CASE_STATE_GROUPING, true);
         Draft expectedDraft = buildDraft(ImmutableMap.of(
             DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID,
             PetitionServiceImpl.IS_DRAFT_KEY, true
@@ -336,4 +346,5 @@ public class PetitionServiceImplUTest {
     private Draft buildDraft(Map<String, Object> properties) {
         return  new Draft(DRAFT_ID, properties, DIVORCE_DRAFT_FORMAT);
     }
+
 }
