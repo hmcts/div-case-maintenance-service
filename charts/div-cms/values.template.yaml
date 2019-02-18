@@ -46,5 +46,8 @@ ccd:
             - caseworker-divorce-courtadmin_beta
             - caseworker-divorce-courtadmin
             - caseworker-divorce-solicitor
+
+    memoryRequests: 1024Mi
+    memoryLimits: 2048Mi
 tags:
     ccd: true
