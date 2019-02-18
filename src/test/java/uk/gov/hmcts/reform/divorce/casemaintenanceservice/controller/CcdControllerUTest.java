@@ -25,8 +25,6 @@ public class CcdControllerUTest {
     private static final CaseDetails CASE_DETAILS = CaseDetails.builder().build();
     private static final Map<String, Object> CASE_DATA_CONTENT = new HashMap<>();
     private static final String JWT_TOKEN = "token";
-    private static final boolean NOT_CO_RESPONDENT = false;
-    private static final boolean IS_CO_RESPONDENT = true;
 
     @Mock
     private CcdSubmissionService ccdSubmissionService;
@@ -73,29 +71,14 @@ public class CcdControllerUTest {
         final String caseId = "caseId";
         final String letterHolderId = "letterHolderId";
 
-        doNothing().when(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId, NOT_CO_RESPONDENT);
+        doNothing().when(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId);
 
         ResponseEntity responseEntity =
             classUnderTest.linkRespondent(JWT_TOKEN, caseId, letterHolderId);
 
         assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
 
-        verify(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId, NOT_CO_RESPONDENT);
-    }
-
-    @Test
-    public void whenLinkCoRespondent_thenProceedAsExpected() {
-        final String caseId = "caseId";
-        final String letterHolderId = "letterHolderId";
-
-        doNothing().when(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId, IS_CO_RESPONDENT);
-
-        ResponseEntity responseEntity =
-            classUnderTest.linkCoRespondent(JWT_TOKEN, caseId, letterHolderId);
-
-        assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
-
-        verify(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId, IS_CO_RESPONDENT);
+        verify(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId);
     }
 
     @Test
