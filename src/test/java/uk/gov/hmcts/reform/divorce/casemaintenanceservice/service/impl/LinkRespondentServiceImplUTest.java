@@ -37,6 +37,10 @@ public class LinkRespondentServiceImplUTest {
         (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "RESP_LETTER_HOLDER_ID_FIELD");
     private static final String RECEIVED_AOS_FIELD =
         (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "RESP_RECEIVED_AOS_FIELD");
+    private static final String CO_RESP_LETTER_HOLDER_ID_FIELD =
+        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_LETTER_HOLDER_ID_FIELD");
+    private static final String CO_RESP_RECEIVED_AOS_FIELD =
+        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_RECEIVED_AOS_FIELD");
 
     private static final String RESPONDENT_AUTHORISATION = "Bearer RespondentAuthToken";
     private static final String CASEWORKER_AUTHORISATION = "CaseWorkerAuthToken";
@@ -46,7 +50,6 @@ public class LinkRespondentServiceImplUTest {
     private static final String RESPONDENT_USER_ID = "2";
     private static final String SERVICE_TOKEN = "ServiceToken";
     private static final String RECEIVED_AOS_FIELD_VALUE = "YES";
-    private static final boolean NOT_CO_RESPONDENT = false;
 
     private static final UserDetails CASE_WORKER_USER = UserDetails.builder()
         .authToken(CASEWORKER_AUTHORISATION)
@@ -96,7 +99,7 @@ public class LinkRespondentServiceImplUTest {
             CASE_ID
         )).thenReturn(null);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, NOT_CO_RESPONDENT);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -112,7 +115,7 @@ public class LinkRespondentServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, NOT_CO_RESPONDENT);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -132,7 +135,7 @@ public class LinkRespondentServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, null, NOT_CO_RESPONDENT);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, null);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -152,7 +155,7 @@ public class LinkRespondentServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, " ", NOT_CO_RESPONDENT);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, " ");
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -170,7 +173,7 @@ public class LinkRespondentServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, NOT_CO_RESPONDENT);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -191,7 +194,28 @@ public class LinkRespondentServiceImplUTest {
         )).thenReturn(caseDetails);
 
         classUnderTest.linkRespondent(
-            RESPONDENT_AUTHORISATION, CASE_ID, "Letter holder id no match", NOT_CO_RESPONDENT);
+            RESPONDENT_AUTHORISATION, CASE_ID, "Letter holder id no match");
+    }
+
+    @Test(expected = CaseNotFoundException.class)
+    public void givenLetterHolderIdsDoNotMatch_whenLinkCoRespondent_thenThrowCaseNotFoundException() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AOS_AWAITING.getValue())
+            .data(Collections.singletonMap(
+                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+            )).build();
+
+        when(coreCaseDataApi.readForCaseWorker(
+            CASEWORKER_AUTHORISATION,
+            SERVICE_TOKEN,
+            CASEWORKER_USER_ID,
+            JURISDICTION_ID,
+            CASE_TYPE,
+            CASE_ID
+        )).thenReturn(caseDetails);
+
+        classUnderTest.linkRespondent(
+            RESPONDENT_AUTHORISATION, CASE_ID, "Letter holder id no match");
     }
 
     @Test(expected = CaseNotFoundException.class)
@@ -212,7 +236,28 @@ public class LinkRespondentServiceImplUTest {
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, NOT_CO_RESPONDENT);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+    }
+
+    @Test(expected = CaseNotFoundException.class)
+    public void givenCaseAlreadyLinked_whenLinkCoRespondent_thenThrowCaseNotFoundException() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.ISSUED.getValue())
+            .data(ImmutableMap.of(
+                Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
+                Objects.requireNonNull(CO_RESP_RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
+            )).build();
+
+        when(coreCaseDataApi.readForCaseWorker(
+            CASEWORKER_AUTHORISATION,
+            SERVICE_TOKEN,
+            CASEWORKER_USER_ID,
+            JURISDICTION_ID,
+            CASE_TYPE,
+            CASE_ID
+        )).thenReturn(caseDetails);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
 
     @Test
@@ -242,7 +287,47 @@ public class LinkRespondentServiceImplUTest {
             any(UserId.class)
         );
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID, NOT_CO_RESPONDENT);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+
+        verify(caseAccessApi).grantAccessToCase(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(SERVICE_TOKEN),
+            eq(CASEWORKER_USER_ID),
+            eq(JURISDICTION_ID),
+            eq(CASE_TYPE),
+            eq(CASE_ID),
+            any(UserId.class)
+        );
+    }
+
+    @Test
+    public void givenLetterHolderIdAndCaseStateMatches_whenLinkCoRespondent_thenProceedAsExpected() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AOS_AWAITING.getValue())
+            .data(Collections.singletonMap(
+                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+            )).build();
+
+        when(coreCaseDataApi.readForCaseWorker(
+            CASEWORKER_AUTHORISATION,
+            SERVICE_TOKEN,
+            CASEWORKER_USER_ID,
+            JURISDICTION_ID,
+            CASE_TYPE,
+            CASE_ID
+        )).thenReturn(caseDetails);
+
+        doNothing().when(caseAccessApi).grantAccessToCase(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(SERVICE_TOKEN),
+            eq(CASEWORKER_USER_ID),
+            eq(JURISDICTION_ID),
+            eq(CASE_TYPE),
+            eq(CASE_ID),
+            any(UserId.class)
+        );
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
         verify(caseAccessApi).grantAccessToCase(
             eq(CASEWORKER_AUTHORISATION),

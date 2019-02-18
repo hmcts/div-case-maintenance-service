@@ -23,7 +23,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     private CaseAccessApi caseAccessApi;
 
     @Override
-    public void linkRespondent(String authorisation, String caseId, String letterHolderId, boolean isCoRespondent) {
+    public void linkRespondent(String authorisation, String caseId, String letterHolderId) {
         UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
 
         CaseDetails caseDetails = coreCaseDataApi.readForCaseWorker(
@@ -35,7 +35,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             caseId
         );
 
-        if (!linkingIsValid(caseDetails, letterHolderId, isCoRespondent) ) {
+        if (!linkingIsValid(caseDetails, letterHolderId) ) {
             throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found "
                     + "or case already has linked respondent",
                 caseId, letterHolderId));
@@ -75,13 +75,13 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
     }
 
-    private boolean linkingIsValid(CaseDetails caseDetails, String letterHolderId, boolean isCoRespondent) {
+    private boolean linkingIsValid(CaseDetails caseDetails, String letterHolderId) {
         if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
             return false;
         }
 
-        return isCoRespondent ? coRespondentIsValid(caseDetails, letterHolderId) :
-            respondentIsValid(caseDetails, letterHolderId);
+        return respondentIsValid(caseDetails, letterHolderId)
+        || coRespondentIsValid(caseDetails, letterHolderId);
     }
 
     private boolean respondentIsValid(CaseDetails caseDetails, String letterHolderId) {
