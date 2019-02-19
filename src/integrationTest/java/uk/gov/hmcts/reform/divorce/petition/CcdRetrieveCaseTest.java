@@ -21,6 +21,10 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrVU";
 
+    private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
+    private static final String AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT = "aosReceivedNoAdConStarted";
+    private static final String AMEND_PETITION_EVENT = "amendPetition";
+
     @Test
     public void givenJWTTokenIsNull_whenRetrieveCase_thenReturnBadRequest() {
         Response cmsResponse = retrieveCase(null, null);
@@ -168,9 +172,63 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         deleteDraft(userDetails.getAuthToken());
     }
 
+    @Test
+    public void givenAmendPetitionCaseAndNoDraft_whenRetrieveCase_thenReturnAmendDraft() throws Exception {
+        final UserDetails userDetails = getUserDetails();
+
+        createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken(), true);
+
+        assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
+        assertEquals(null, cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
+    }
+
+    @Test
+    public void givenAmendPetitionCaseAndOldDraft_whenRetrieveCase_thenReturnAmendDraft() throws Exception {
+        final UserDetails userDetails = getUserDetails();
+        final String draftFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "existing-draft.json";
+
+        createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+
+        createDraft(userDetails.getAuthToken(), draftFileName,
+            Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
+
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken(), true);
+
+        assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
+        assertEquals(null, cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
+        // existing draft defines divorceWho as wife, whilst AmendPetition case has husband.
+        assertEquals("husband", cmsResponse.getBody().jsonPath().getString("case_data.divorceWho"));
+    }
+
+    @Test
+    public void givenAmendPetitionCaseAndAmendedDraft_whenRetrieveCase_thenReturnExisitingDraft() throws Exception {
+        final UserDetails userDetails = getUserDetails();
+        final String amendDraftFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "amend-draft.json";
+
+        createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+
+        createDraft(userDetails.getAuthToken(), amendDraftFileName,
+            Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
+
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken(), true);
+
+        assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
+        assertEquals("01234567890", cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
+    }
+
     private Response createACaseMakePaymentAndReturnTheCase(String userToken) throws Exception {
         Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
         return updateCase("payment-made.json", caseId, EVENT_ID, userToken);
+    }
+
+    private Response createACaseMakePaymentAndAmendTheCase(String userToken) throws Exception {
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+
+        updateCase("basic-update.json", caseId, TEST_AOS_RESPONDED_EVENT, userToken);
+        updateCase("basic-update.json", caseId, AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT, userToken);
+        return updateCase("basic-update.json", caseId, AMEND_PETITION_EVENT, userToken);
     }
 }
