@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
 
 @Service
@@ -56,16 +57,22 @@ public class PetitionServiceImpl implements PetitionService,
 
         Draft draft = draftService.getDraft(authorisation);
 
-        if ((draft == null || !isAmendPetitionDraft(draft)) && checkCcd) {
+        if (checkCcd) {
             caseDetails = ccdRetrievalService.retrieveCase(authorisation, caseStateGrouping);
         }
 
+        if (caseDetails != null && CaseState.AMEND_PETITION.getValue().equalsIgnoreCase(caseDetails.getState())) {
+            // If draft does not exist or is not an AmendPetition draft, return case as draft
+            // Else assume AmendPetition draft already exists and ignore any retrieved case in AmendPetition state
+            if (draft == null || !isAmendPetitionDraft(draft)) {
+                caseDetails = formatDraftCase(transformToDivorceFormat(caseDetails.getData(), authorisation));
+            } else {
+                caseDetails = null;
+            }
+        }
+
         if (caseDetails == null && draft != null) {
-            Map<String, Object> formattedDraft = new HashMap<>(getFormattedPetition(draft, authorisation));
-            formattedDraft.put(IS_DRAFT_KEY, true);
-            caseDetails = CaseDetails.builder()
-                .data(formattedDraft)
-                .build();
+            caseDetails = formatDraftCase(getFormattedPetition(draft, authorisation));
         }
 
         return caseDetails;
@@ -171,9 +178,21 @@ public class PetitionServiceImpl implements PetitionService,
 
     private Map<String, Object> getFormattedPetition(Draft draft, String authorisation) {
         if (draftService.isInCcdFormat(draft)) {
-            return formatterServiceClient.transformToDivorceFormat(draft.getDocument(), authorisation);
+            return transformToDivorceFormat(draft.getDocument(), authorisation);
         } else {
             return draft.getDocument();
         }
+    }
+
+    private Map<String, Object> transformToDivorceFormat(Map<String, Object> caseData, String authorisation) {
+        return formatterServiceClient.transformToDivorceFormat(caseData, authorisation);
+    }
+
+    private CaseDetails formatDraftCase(Map<String, Object> draft) {
+        Map<String, Object> formattedDraft = new HashMap<>(draft);
+        formattedDraft.put(IS_DRAFT_KEY, true);
+        return CaseDetails.builder()
+            .data(formattedDraft)
+            .build();
     }
 }

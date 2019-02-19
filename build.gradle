@@ -127,7 +127,7 @@ def versions = [
     gradlePitest: '1.3.0',
     sonarPitest: '0.5',
     jacksonDatabind: '2.9.8',
-    springCloudDependencies: '2.0.2.RELEASE'
+    springCloudDependencies: '2.1.0.RELEASE'
 ]
 
 dependencies {

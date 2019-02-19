@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.ApplicationStatus;
@@ -12,6 +13,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,6 +63,15 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         List<CaseDetails> incompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
 
         if (CollectionUtils.isEmpty(incompleteCases)) {
+            List<CaseDetails> amendCases = statusCaseDetailsMap.get(CaseStateGrouping.AMEND);
+
+            if (CollectionUtils.isNotEmpty(amendCases)) {
+                // Sort by Created Date in descending order
+                // so the first case is the latest created case in AmendPetition state
+                Collections.sort(amendCases, Comparator.comparing(CaseDetails::getCreatedDate).reversed());
+                return updateApplicationStatus(amendCases.get(0));
+            }
+
             return null;
         } else if (incompleteCases.size() > 1) {
             String message = String.format("[%d] cases in incomplete status found for the user [%s]",
@@ -135,5 +146,4 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         return caseDetails;
     }
-
 }
