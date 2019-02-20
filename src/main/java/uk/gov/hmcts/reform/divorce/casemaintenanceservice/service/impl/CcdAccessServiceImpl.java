@@ -81,7 +81,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
 
         return respondentIsValid(caseDetails, letterHolderId)
-        || coRespondentIsValid(caseDetails, letterHolderId);
+            || coRespondentIsValid(caseDetails, letterHolderId);
     }
 
     private boolean respondentIsValid(CaseDetails caseDetails, String letterHolderId) {
