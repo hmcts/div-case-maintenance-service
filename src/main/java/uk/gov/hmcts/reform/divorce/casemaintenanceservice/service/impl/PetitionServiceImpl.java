@@ -64,7 +64,7 @@ public class PetitionServiceImpl implements PetitionService,
             // If draft does not exist or is not an AmendPetition draft, return case as draft
             // Else assume AmendPetition draft already exists and ignore any retrieved case in AmendPetition state
             if (draft == null || !isAmendPetitionDraft(draft)) {
-                caseDetails = formatDraftCase(transformToDivorceFormat(caseDetails.getData(), authorisation));
+                caseDetails = formatDraftCase(getDraftAmendmentCase(caseDetails, authorisation));
             } else {
                 caseDetails = null;
             }

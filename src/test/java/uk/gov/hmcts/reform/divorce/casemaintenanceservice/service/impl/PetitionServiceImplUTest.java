@@ -77,22 +77,42 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCcdRetrievalServiceReturnsAmendCase_whenRetrievePetition_thenReturnNull() throws DuplicateCaseException {
-        final Map<String, Object> fetchedDraftData = Collections.singletonMap(PetitionServiceImpl.IS_DRAFT_KEY, true);
-        final CaseDetails caseDetails = CaseDetails.builder().state(CaseState.AMEND_PETITION.getValue()).build();
+    public void givenCcdRetrievalServiceReturnsAmendCase_whenRetrievePetition_thenReturnCaseAsDraft() throws DuplicateCaseException {
+        Map<String, Object> caseData = new HashMap<>();
+        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
+        final CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.parseLong(TEST_CASE_ID))
+            .state(CaseState.AMEND_PETITION.getValue())
+            .data(caseData)
+            .build();
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING)).thenReturn(caseDetails);
 
         CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
 
-        CaseDetails expected = CaseDetails.builder().data(fetchedDraftData).build();
+        Map<String, Object> expectedCaseData = new HashMap<>();
+        expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, Collections.singletonList(ADULTERY));
+        CaseDetails expected = CaseDetails.builder()
+            .data(expectedCaseData)
+            .build();
         assertEquals(expected, actual);
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
     }
 
     @Test
     public void givenCcdRetrievalServiceReturnsAmendCaseWithStandardDraft_whenRetrievePetition_thenReturnCaseAsDraft() throws DuplicateCaseException {
-        final CaseDetails caseDetails = CaseDetails.builder().state(CaseState.AMEND_PETITION.getValue()).build();
+        Map<String, Object> caseData = new HashMap<>();
+        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
+        final CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.parseLong(TEST_CASE_ID))
+            .state(CaseState.AMEND_PETITION.getValue())
+            .data(caseData)
+            .build();
+
         final Draft draft = new Draft("1", Collections.singletonMap("test", "value"), null);
 
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
@@ -100,8 +120,12 @@ public class PetitionServiceImplUTest {
 
         CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
 
-        final CaseDetails expected = CaseDetails.builder()
-            .data(Collections.singletonMap(PetitionServiceImpl.IS_DRAFT_KEY, true))
+        Map<String, Object> expectedCaseData = new HashMap<>();
+        expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, Collections.singletonList(ADULTERY));
+        CaseDetails expected = CaseDetails.builder()
+            .data(expectedCaseData)
             .build();
         assertEquals(expected, actual);
         verify(draftService).getDraft(AUTHORISATION);
