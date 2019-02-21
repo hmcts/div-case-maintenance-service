@@ -10,13 +10,13 @@ import uk.gov.hmcts.reform.divorce.model.UserGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 public class IdamTestSupport {
     private static final String CASE_WORKER_USERNAME = "CASE_WORKER_USER_NAME";
-    private static final String CASE_WORKER_PASSWORD = "CASE_WORKER_PASSWORD";
+    private static final String CASE_WORKER_PASSWORD = "caseWorkerPassword123";
     private static final String CASEWORKER_ROLE = "caseworker";
     private static final String CASEWORKER_CITIZEN_ROLE = "caseworker-citizen";
     private static final String CITIZEN_ROLE = "citizen";
@@ -31,7 +31,7 @@ public class IdamTestSupport {
 
     public UserDetails createRespondentUser(String username, String pin) {
         final UserDetails respondentUser = createNewUser(username,
-            UUID.randomUUID().toString().toUpperCase(Locale.ENGLISH), CITIZEN_ROLE);
+            "genericPassword123", CITIZEN_ROLE);
 
         final String pinAuthToken = idamUtils.authenticatePinUser(pin);
 
@@ -78,7 +78,7 @@ public class IdamTestSupport {
     public UserDetails createAnonymousCitizenUser() {
         synchronized (this) {
             final String username = "simulate-delivered" + UUID.randomUUID();
-            final String password = UUID.randomUUID().toString().toUpperCase(Locale.ENGLISH);
+            final String password = "genericPassword123";
 
             return createNewUser(username, password, CITIZEN_ROLE);
         }
@@ -110,12 +110,14 @@ public class IdamTestSupport {
 
     private void createCaseWorkerCourtAdminUserInIdam(String username, String emailAddress, String password,
                                                       Boolean citizenRole) {
-        List<String> roles = new ArrayList<>(Arrays.asList(
-            "caseworker-divorce-courtadmin", "caseworker-divorce", "caseworker"
+        List<UserGroup> roles = new ArrayList<>(Arrays.asList(
+            UserGroup.builder().code("caseworker-divorce-courtadmin").build(),
+            UserGroup.builder().code("caseworker-divorce").build(),
+            UserGroup.builder().code("caseworker").build()
         ));
 
         if (citizenRole) {
-            roles.add("citizen");
+            roles.add(UserGroup.builder().code("citizen").build());
         }
 
         final RegisterUserRequest registerUserRequest =
@@ -123,7 +125,7 @@ public class IdamTestSupport {
                 .email(emailAddress)
                 .forename(username)
                 .password(password)
-                .roles(roles.toArray(new String[roles.size()]))
+                .roles(roles.toArray(new UserGroup[roles.size()]))
                 .userGroup(UserGroup.builder().code("caseworker").build())
                 .build();
 
@@ -136,6 +138,8 @@ public class IdamTestSupport {
                 .email(emailAddress)
                 .forename(username)
                 .password(password)
+                .roles(new UserGroup[]{ UserGroup.builder().code("citizen").build() })
+                .userGroup(UserGroup.builder().code("divorce-private-beta").build())
                 .build();
 
         idamUtils.createUserInIdam(registerUserRequest);

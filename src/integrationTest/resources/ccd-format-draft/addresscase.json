@@ -101,7 +101,7 @@
                 "DocumentDateAdded":"2017-12-11",
                 "DocumentType":"other",
                 "DocumentLink":{
-                    "document_url":"http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                    "document_url":"http://dm-store-saat.service.core-compute-saat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
                 }
             }
         },
@@ -114,7 +114,7 @@
                 "DocumentDateAdded":"2017-12-11",
                 "DocumentType":"other",
                 "DocumentLink":{
-                    "document_url":"http://dm-store-aat.service.core-compute-aat.internal/documents/560f4bd1-fcf2-4dc5-80d1-d7e00d861683"
+                    "document_url":"http://dm-store-saat.service.core-compute-saat.internal/documents/560f4bd1-fcf2-4dc5-80d1-d7e00d861683"
                 }
             }
         }
