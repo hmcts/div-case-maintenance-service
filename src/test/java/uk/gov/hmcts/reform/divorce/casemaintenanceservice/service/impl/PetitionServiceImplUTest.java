@@ -89,15 +89,16 @@ public class PetitionServiceImplUTest {
 
         when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING)).thenReturn(caseDetails);
 
-        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
-
         Map<String, Object> expectedCaseData = new HashMap<>();
         expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
         expectedCaseData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
-        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, Collections.singletonList(ADULTERY));
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE,
+            Collections.singletonList(ADULTERY));
         CaseDetails expected = CaseDetails.builder()
             .data(expectedCaseData)
             .build();
+
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
         assertEquals(expected, actual);
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
     }
@@ -118,15 +119,16 @@ public class PetitionServiceImplUTest {
         when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
         when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING)).thenReturn(caseDetails);
 
-        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
-
         Map<String, Object> expectedCaseData = new HashMap<>();
         expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
         expectedCaseData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
-        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, Collections.singletonList(ADULTERY));
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE,
+            Collections.singletonList(ADULTERY));
         CaseDetails expected = CaseDetails.builder()
             .data(expectedCaseData)
             .build();
+
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
         assertEquals(expected, actual);
         verify(draftService).getDraft(AUTHORISATION);
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
