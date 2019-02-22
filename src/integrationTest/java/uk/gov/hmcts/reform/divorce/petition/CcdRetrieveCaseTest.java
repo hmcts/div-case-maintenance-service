@@ -176,12 +176,13 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     public void givenAmendPetitionCaseAndNoDraft_whenRetrieveCase_thenReturnAmendDraft() throws Exception {
         final UserDetails userDetails = getUserDetails();
 
-        createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
 
         Response cmsResponse = retrieveCase(userDetails.getAuthToken(), true);
 
         assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
-        assertEquals(null, cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
+        assertEquals(submittedCaseResponse.getBody().jsonPath().getString("id"),
+            cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
     }
 
     @Test
@@ -189,7 +190,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         final UserDetails userDetails = getUserDetails();
         final String draftFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "existing-draft.json";
 
-        createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
 
         createDraft(userDetails.getAuthToken(), draftFileName,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
@@ -197,7 +198,8 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         Response cmsResponse = retrieveCase(userDetails.getAuthToken(), true);
 
         assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
-        assertEquals(null, cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
+        assertEquals(submittedCaseResponse.getBody().jsonPath().getString("id"),
+            cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
         // existing draft defines divorceWho as wife, whilst AmendPetition case has husband.
         assertEquals("husband", cmsResponse.getBody().jsonPath().getString("case_data.divorceWho"));
     }
