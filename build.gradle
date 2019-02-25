@@ -255,7 +255,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
 }
 
 pmd {
-    toolVersion = "5.8.1"
+    toolVersion = "6.11.0"
     ignoreFailures = true
     sourceSets = [sourceSets.main, sourceSets.test]
     reportsDir = file("$project.buildDir/reports/pmd")
