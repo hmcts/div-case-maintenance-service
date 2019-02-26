@@ -35,6 +35,9 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_CONSIDERATION_DN
+            ),
+            CaseStateGrouping.AMEND, Arrays.asList(
+                CaseState.AMEND_PETITION
             )
         );
 
@@ -55,7 +58,6 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
-                CaseState.AMEND_PETITION,
                 CaseState.AWAITING_CLARIFICATION,
                 CaseState.AWAITING_CONSIDERATION,
                 CaseState.AWAITING_DECREE_ABSOLUTE,

@@ -87,7 +87,6 @@ public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
             "AosSubmittedAwaitingAnswer",
             "AwaitingDecreeNisi",
             "AwaitingConsiderationDN",
-            "AmendPetition",
             "AwaitingDocuments",
             "AwaitingClarification",
             "AwaitingConsideration",

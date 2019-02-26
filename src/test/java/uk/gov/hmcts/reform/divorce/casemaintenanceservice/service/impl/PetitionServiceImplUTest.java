@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
@@ -47,6 +48,7 @@ public class PetitionServiceImplUTest {
     private static final String TWO_YEAR_SEPARATION = "2yr-separation";
     private static final String DRAFT_ID = "1";
     private static final String DIVORCE_DRAFT_FORMAT  = "divorcedraft";
+
     @Mock
     private CcdRetrievalService ccdRetrievalService;
 
@@ -71,6 +73,86 @@ public class PetitionServiceImplUTest {
         CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
 
         assertEquals(caseDetails, actual);
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
+    }
+
+    @Test
+    public void givenCcdRetrievalServiceReturnsAmendCase_whenRetrievePetition_thenReturnCaseAsDraft() throws DuplicateCaseException {
+        Map<String, Object> caseData = new HashMap<>();
+        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
+        final CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.parseLong(TEST_CASE_ID))
+            .state(CaseState.AMEND_PETITION.getValue())
+            .data(caseData)
+            .build();
+
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING)).thenReturn(caseDetails);
+
+        Map<String, Object> expectedCaseData = new HashMap<>();
+        expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE,
+            Collections.singletonList(ADULTERY));
+        CaseDetails expected = CaseDetails.builder()
+            .data(expectedCaseData)
+            .build();
+
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
+        assertEquals(expected, actual);
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
+    }
+
+    @Test
+    public void givenCcdRetrievalServiceReturnsAmendCaseWithStandardDraft_whenRetrievePetition_thenReturnCaseAsDraft() throws DuplicateCaseException {
+        Map<String, Object> caseData = new HashMap<>();
+        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
+        final CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.parseLong(TEST_CASE_ID))
+            .state(CaseState.AMEND_PETITION.getValue())
+            .data(caseData)
+            .build();
+
+        final Draft draft = new Draft("1", Collections.singletonMap("test", "value"), null);
+
+        when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING)).thenReturn(caseDetails);
+
+        Map<String, Object> expectedCaseData = new HashMap<>();
+        expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE,
+            Collections.singletonList(ADULTERY));
+        CaseDetails expected = CaseDetails.builder()
+            .data(expectedCaseData)
+            .build();
+
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
+        assertEquals(expected, actual);
+        verify(draftService).getDraft(AUTHORISATION);
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
+    }
+
+    @Test
+    public void givenCcdRetrievalServiceReturnsAmendCaseWithAmendDraft_whenRetrievePetition_thenReturnAmendDraft() throws DuplicateCaseException {
+        final CaseDetails caseDetails = CaseDetails.builder().state(CaseState.AMEND_PETITION.getValue()).build();
+        Map<String, Object> amendedDraft = new HashMap<>();
+        amendedDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        amendedDraft.put("test", "value");
+        final Draft draft = new Draft("1", amendedDraft, null);
+
+        when(draftService.getDraft(AUTHORISATION)).thenReturn(draft);
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING)).thenReturn(caseDetails);
+
+        CaseDetails actual = classUnderTest.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, true);
+
+        amendedDraft.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
+        final CaseDetails expected = CaseDetails.builder()
+            .data(amendedDraft)
+            .build();
+        assertEquals(expected, actual);
+        verify(draftService).getDraft(AUTHORISATION);
         verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
     }
 
