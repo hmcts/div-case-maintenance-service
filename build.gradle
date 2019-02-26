@@ -129,7 +129,7 @@ def versions = [
     jacksonDatabind: '2.9.8',
     guava: '27.0.1-jre',
     bcpkixJdk15on: '1.60',
-    springSecurityRsa: '1.0.8.RELEASE'
+    springSecurityRsa: '1.0.8.RELEASE',
     springCloudDependencies: '2.0.2.RELEASE'
 ]
 
