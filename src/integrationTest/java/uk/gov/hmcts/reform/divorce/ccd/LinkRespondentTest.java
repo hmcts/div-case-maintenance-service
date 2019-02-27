@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
 public class LinkRespondentTest extends PetitionSupport {
     private static final String PAYLOAD_CONTEXT_PATH = "ccd-submission-payload/";
@@ -70,7 +72,7 @@ public class LinkRespondentTest extends PetitionSupport {
     @Test
     public void givenLetterHolderDoNotMatch_whenLinkRespondent_thenReturnNotFound() {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
-        caseData.put("AosLetterHolderId", "nonMatchingLetterHolderId");
+        caseData.put(RESP_LETTER_HOLDER_ID_FIELD, "nonMatchingLetterHolderId");
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
@@ -87,7 +89,7 @@ public class LinkRespondentTest extends PetitionSupport {
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "linked-case.json", Map.class);
-        caseData.put("AosLetterHolderId", pinResponse.getUserId());
+        caseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
@@ -104,7 +106,7 @@ public class LinkRespondentTest extends PetitionSupport {
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
-        caseData.put("AosLetterHolderId", pinResponse.getUserId());
+        caseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
@@ -127,7 +129,35 @@ public class LinkRespondentTest extends PetitionSupport {
         UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
 
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
-        caseData.put("AosLetterHolderId", pinResponse.getUserId());
+        caseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
+
+        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+
+        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+
+        linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
+
+        updateCase(ImmutableMap.of(RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
+            caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
+
+        Response response = retrieveCase(upliftedUser.getAuthToken(), true);
+
+        assertEquals(caseId, response.path("id"));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void givenLetterHolderIdAndCaseStateMatches_whenLinkCoRespondent_thenShouldBeAbleToAccessTheCase()
+        throws Exception {
+
+        final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
+
+        final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
+
+        UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
+
+        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
 
