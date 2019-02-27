@@ -234,5 +234,6 @@
     "jurisdictionLastSixMonths": "Yes",
     "jurisdictionLastHabitualResident": "Yes",
     "connectionSummary": "Yes",
+    "fetchedDraft": true,
     "sessionKey": "60c3072df9691b43910bb28faeb3405628e4ef7cf1da3c251ccd4e3526224d58:f74dc875e360230f37b6e7445cefec21:30a72f91826a94a26103bc3e4e99da3297dfdb33e086978bc4fc32dbcc86e2bfdb0fe797b6db316ca0bc7bbc9ae5766b1e7a36c1d9695633ce32075a89c4b45c"
 }

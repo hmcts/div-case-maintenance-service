@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         }
 
         if (caseDetailsList.size() > 1) {
-            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getForename());
+            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getId());
         }
 
         Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap = caseDetailsList.stream()
@@ -61,6 +62,15 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         List<CaseDetails> incompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
 
         if (CollectionUtils.isEmpty(incompleteCases)) {
+            List<CaseDetails> amendCases = statusCaseDetailsMap.get(CaseStateGrouping.AMEND);
+
+            if (CollectionUtils.isNotEmpty(amendCases)) {
+                // Sort by Created Date in descending order
+                // so the first case is the latest created case in AmendPetition state
+                Collections.sort(amendCases, Comparator.comparing(CaseDetails::getCreatedDate).reversed());
+                return updateApplicationStatus(amendCases.get(0));
+            }
+
             return null;
         } else if (incompleteCases.size() > 1) {
             String message = String.format("[%d] cases in incomplete status found for the user [%s]",
@@ -84,7 +94,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         if (caseDetailsList.size() > 1) {
             throw new DuplicateCaseException(String.format("There are [%d] case for the user [%s]",
-                caseDetailsList.size(), userDetails.getForename()));
+                caseDetailsList.size(), userDetails.getId()));
         }
 
         return caseDetailsList.get(0);
@@ -135,5 +145,4 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         return caseDetails;
     }
-
 }

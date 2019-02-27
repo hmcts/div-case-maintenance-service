@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import joptsimple.internal.Strings;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -40,6 +42,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.text.IsEmptyString.isEmptyOrNullString;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -198,6 +201,9 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
             .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Arrays.asList(caseDetails1, caseDetails2));
 
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken),
+            Strings.EMPTY);
+
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .param(CHECK_CCD_PARAM, "true")
@@ -350,7 +356,7 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenNoCaseInCcdAndOneDraftInStore_whenRetrieveAosCase_thenReturnFormattedDraft() throws Exception {
+    public void givenNoCaseInCcdAndOneDraftInStore_whenRetrieveAosCase_thenReturnNoContentResponse() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
@@ -369,14 +375,13 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails.builder().build())));
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(isEmptyOrNullString()));
     }
 
     @Test
-    public void givenNoCaseInCcdAndOneDraftInStoreInDivorceFormat_whenRetrieveAosCase_thenReturnFormattedDraft()
+    public void givenNoCaseInCcdAndOneDraftInStoreInDivorceFormat_whenRetrieveAosCase_thenReturnNoContentResponse()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
@@ -387,8 +392,6 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
         final DraftList draftList = new DraftList(Collections.singletonList(
             new Draft("1", divorceSessionData, DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
             null);
-
-        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -405,14 +408,13 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails)));
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(isEmptyOrNullString()));
     }
 
     @Test
-    public void givenDoNotCheckCcdAndMultipleDraftInStore_whenRetrieveAosCase_thenReturnFormattedDraft() throws Exception {
+    public void givenDoNotCheckCcdAndMultipleDraftInStore_whenRetrieveAosCase_thenReturnNoContentResponse() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
@@ -430,10 +432,9 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "false")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails.builder().build())));
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(isEmptyOrNullString()));
     }
 
     private void stubGetDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken, String message) {
@@ -462,6 +463,6 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
     }
 
     private Draft createDraft(String id, String documentType) {
-        return new Draft(id, null, documentType);
+        return new Draft(id, new HashMap<>(), documentType);
     }
 }

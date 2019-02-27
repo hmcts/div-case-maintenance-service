@@ -34,6 +34,11 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI
             );
+
+        assertThat(PETITIONER_CASE_STATE_GROUPING.get(CaseStateGrouping.AMEND))
+            .contains(
+                CaseState.AMEND_PETITION
+            );
     }
 
     @Test
@@ -56,7 +61,6 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI,
-                CaseState.AMEND_PETITION,
                 CaseState.AWAITING_CLARIFICATION,
                 CaseState.AWAITING_CONSIDERATION,
                 CaseState.AWAITING_DECREE_ABSOLUTE,
