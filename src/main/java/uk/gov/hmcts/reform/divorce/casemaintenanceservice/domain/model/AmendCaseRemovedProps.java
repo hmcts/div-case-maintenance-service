@@ -131,6 +131,8 @@ public enum AmendCaseRemovedProps {
     DNApplyForDecreeNisi("DNApplyForDecreeNisi"),
     PreviousReasonsForDivorce("PreviousReasonsForDivorce"),
     D8DocumentsGenerated("D8DocumentsGenerated"),
+    D8DivorceCostsClaim("D8DivorceCostsClaim"),
+    D8DivorceClaimFrom("D8DivorceClaimFrom"),
     D8SeparationReferenceDate("D8SeparationReferenceDate");
 
     private final String value;
