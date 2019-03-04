@@ -28,7 +28,11 @@ public class LinkRespondentTest extends PetitionSupport {
     private static final String START_AOS_EVENT_ID = "startAos";
     private static final String TEST_AOS_AWAITING_EVENT_ID = "testAosAwaiting";
 
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiO";
+    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
+        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
+        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
+        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
+        + "CJOQrVU";
 
     @Value("${case.maintenance.link-respondent.context-path}")
     private String linkRespondentContextPath;
@@ -170,7 +174,7 @@ public class LinkRespondentTest extends PetitionSupport {
     }
 
     @Test
-    public void givenLinkedCoRespondent_whenLinkCoRespondent_thenProcessAsNormal()
+    public void givenLinkedCoRespondent_whenReLinkingCoRespondent_thenProcessAsNormal()
         throws Exception {
 
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
@@ -181,7 +185,6 @@ public class LinkRespondentTest extends PetitionSupport {
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
-        System.out.println(caseId);
         updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
         UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
