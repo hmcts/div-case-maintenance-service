@@ -411,7 +411,7 @@ public class LinkRespondentServiceImplUTest {
         );
     }
 
-    private void mockCaseDetails(CaseDetails caseDetails){
+    private void mockCaseDetails(CaseDetails caseDetails) {
         when(coreCaseDataApi.readForCaseWorker(
             CASEWORKER_AUTHORISATION,
             SERVICE_TOKEN,

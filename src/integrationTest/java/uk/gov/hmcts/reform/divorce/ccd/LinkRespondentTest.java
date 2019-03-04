@@ -177,14 +177,14 @@ public class LinkRespondentTest extends PetitionSupport {
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
-        UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
-
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
         System.out.println(caseId);
         updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+
+        UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
 
         Response linkResponse = linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
