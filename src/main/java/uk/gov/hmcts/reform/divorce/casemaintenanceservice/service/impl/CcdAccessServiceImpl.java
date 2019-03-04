@@ -37,14 +37,14 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             caseId
         );
 
-        if (!linkingIsValidHolderId(caseDetails, letterHolderId) ) {
+        if (!isValidCaseAndLetterHolder(caseDetails, letterHolderId) ) {
             throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found",
                 caseId, letterHolderId));
         }
 
         UserDetails respondentUser = getUserDetails(authorisation);
 
-        if (!isValidUserHolder(caseDetails, respondentUser.getEmail(), letterHolderId)) {
+        if (!isValidUser(caseDetails, respondentUser.getEmail(), letterHolderId)) {
             throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] "
                     + "already assigned",
                 caseId, letterHolderId));
@@ -82,7 +82,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
     }
 
-    private boolean linkingIsValidHolderId(CaseDetails caseDetails, String letterHolderId) {
+    private boolean isValidCaseAndLetterHolder(CaseDetails caseDetails, String letterHolderId) {
         if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
             return false;
         }
@@ -99,7 +99,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         return letterHolderId.equals(caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD));
     }
 
-    private boolean isValidUserHolder(CaseDetails caseDetails, String respondentEmail, String letterHolderId) {
+    private boolean isValidUser(CaseDetails caseDetails, String respondentEmail, String letterHolderId) {
         return isValidRespondentUser(caseDetails, respondentEmail, letterHolderId)
             || isValidCoRespondentUser(caseDetails, respondentEmail, letterHolderId);
     }
