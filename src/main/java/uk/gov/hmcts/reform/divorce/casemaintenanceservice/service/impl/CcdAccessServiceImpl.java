@@ -44,9 +44,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
         UserDetails respondentUser = getUserDetails(authorisation);
 
-        if(!isValidUserHolder(caseDetails, respondentUser.getEmail(), letterHolderId)) {
-            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] " +
-                    "already assigned",
+        if (!isValidUserHolder(caseDetails, respondentUser.getEmail(), letterHolderId)) {
+            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] "
+                    + "already assigned",
                 caseId, letterHolderId));
         }
 
@@ -104,17 +104,17 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             || isValidCoRespondentUser(caseDetails, respondentEmail, letterHolderId);
     }
 
-    private boolean isValidRespondentUser(CaseDetails caseDetails, String respondentEmail, String letterHolderId){
-        return this.respondentIsValid(caseDetails, letterHolderId) &&
-            (!YES_ANSWER.equalsIgnoreCase((String) caseDetails.getData().get(RESP_RECEIVED_AOS_FIELD)) ||
-                respondentEmail.equalsIgnoreCase((String) caseDetails.getData().get(RESP_EMAIL_ADDRESS))
+    private boolean isValidRespondentUser(CaseDetails caseDetails, String respondentEmail, String letterHolderId) {
+        return this.respondentIsValid(caseDetails, letterHolderId)
+            && (!YES_ANSWER.equalsIgnoreCase((String) caseDetails.getData().get(RESP_RECEIVED_AOS_FIELD))
+            || respondentEmail.equalsIgnoreCase((String) caseDetails.getData().get(RESP_EMAIL_ADDRESS))
             );
     }
 
-    private boolean isValidCoRespondentUser(CaseDetails caseDetails, String respondentEmail, String letterHolderId){
-        return this.coRespondentIsValid(caseDetails, letterHolderId) &&
-            (!YES_ANSWER.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_RECEIVED_AOS_FIELD)) ||
-                respondentEmail.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_EMAIL_ADDRESS))
+    private boolean isValidCoRespondentUser(CaseDetails caseDetails, String respondentEmail, String letterHolderId) {
+        return this.coRespondentIsValid(caseDetails, letterHolderId)
+            && (!YES_ANSWER.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_RECEIVED_AOS_FIELD))
+            || respondentEmail.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_EMAIL_ADDRESS))
             );
     }
 }
