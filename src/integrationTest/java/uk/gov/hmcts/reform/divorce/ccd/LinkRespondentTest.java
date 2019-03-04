@@ -28,11 +28,7 @@ public class LinkRespondentTest extends PetitionSupport {
     private static final String START_AOS_EVENT_ID = "startAos";
     private static final String TEST_AOS_AWAITING_EVENT_ID = "testAosAwaiting";
 
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
+    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiO";
 
     @Value("${case.maintenance.link-respondent.context-path}")
     private String linkRespondentContextPath;
@@ -172,6 +168,40 @@ public class LinkRespondentTest extends PetitionSupport {
 
         assertEquals(caseId, response.path("id"));
     }
+
+    @Test
+    public void givenLinkedCoRespondent_whenLinkCoRespondent_thenProcessAsNormal()
+        throws Exception {
+
+        final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
+
+        final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
+
+        UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
+
+        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
+
+        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+        System.out.println(caseId);
+        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+
+        Response linkResponse = linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
+
+        assertEquals(HttpStatus.OK.value(),linkResponse.getStatusCode());
+
+        updateCase(ImmutableMap.of(RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
+            caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
+
+        Response response = retrieveCase(upliftedUser.getAuthToken(), true);
+
+        assertEquals(caseId, response.path("id"));
+
+        linkResponse = linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
+
+        assertEquals(HttpStatus.OK.value(),linkResponse.getStatusCode());
+    }
+
 
     private Response linkRespondent(String authToken, String caseId, String letterHolderId) {
         return RestUtil.postToRestService(

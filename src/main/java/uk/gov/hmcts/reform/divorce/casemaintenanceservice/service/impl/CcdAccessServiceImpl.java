@@ -10,8 +10,10 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetai
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
 
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_RECEIVED_AOS_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_RECEIVED_AOS_FIELD;
 
@@ -35,13 +37,18 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             caseId
         );
 
-        if (!linkingIsValid(caseDetails, letterHolderId) ) {
-            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found "
-                    + "or case already has linked respondent",
+        if (!linkingIsValidHolderId(caseDetails, letterHolderId) ) {
+            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] not found",
                 caseId, letterHolderId));
         }
 
         UserDetails respondentUser = getUserDetails(authorisation);
+
+        if(!isValidUserHolder(caseDetails, respondentUser.getEmail(), letterHolderId)) {
+            throw new CaseNotFoundException(String.format("Case with caseId [%s] and letter holder id [%s] " +
+                    "already assigned",
+                caseId, letterHolderId));
+        }
 
         grantAccessToCase(caseworkerUser, caseId, respondentUser.getId());
     }
@@ -75,7 +82,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
     }
 
-    private boolean linkingIsValid(CaseDetails caseDetails, String letterHolderId) {
+    private boolean linkingIsValidHolderId(CaseDetails caseDetails, String letterHolderId) {
         if (caseDetails == null || caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
             return false;
         }
@@ -85,12 +92,29 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     }
 
     private boolean respondentIsValid(CaseDetails caseDetails, String letterHolderId) {
-        return !(String.valueOf(caseDetails.getData().get(RESP_RECEIVED_AOS_FIELD)).equals(YES_ANSWER))
-            && letterHolderId.equals(caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD));
+        return letterHolderId.equals(caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD));
     }
 
     private boolean coRespondentIsValid(CaseDetails caseDetails, String letterHolderId) {
-        return !(String.valueOf(caseDetails.getData().get(CO_RESP_RECEIVED_AOS_FIELD)).equals(YES_ANSWER))
-            && letterHolderId.equals(caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD));
+        return letterHolderId.equals(caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD));
+    }
+
+    private boolean isValidUserHolder(CaseDetails caseDetails, String respondentEmail, String letterHolderId) {
+        return isValidRespondentUser(caseDetails, respondentEmail, letterHolderId)
+            || isValidCoRespondentUser(caseDetails, respondentEmail, letterHolderId);
+    }
+
+    private boolean isValidRespondentUser(CaseDetails caseDetails, String respondentEmail, String letterHolderId){
+        return this.respondentIsValid(caseDetails, letterHolderId) &&
+            (!YES_ANSWER.equalsIgnoreCase((String) caseDetails.getData().get(RESP_RECEIVED_AOS_FIELD)) ||
+                respondentEmail.equalsIgnoreCase((String) caseDetails.getData().get(RESP_EMAIL_ADDRESS))
+            );
+    }
+
+    private boolean isValidCoRespondentUser(CaseDetails caseDetails, String respondentEmail, String letterHolderId){
+        return this.coRespondentIsValid(caseDetails, letterHolderId) &&
+            (!YES_ANSWER.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_RECEIVED_AOS_FIELD)) ||
+                respondentEmail.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_EMAIL_ADDRESS))
+            );
     }
 }
