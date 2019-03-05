@@ -38,6 +38,7 @@ import uk.gov.hmcts.reform.divorce.support.client.CcdClientSupport;
 @Configuration
 @ContextConfiguration(classes = {ServiceContextConfiguration.class})
 @PropertySource({"classpath:application.properties"})
+@PropertySource({"classpath:application-${env}.properties"})
 public class ServiceContextConfiguration {
 
     @Value("${idam.strategic.enabled}")

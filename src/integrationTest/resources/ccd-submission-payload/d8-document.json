@@ -91,8 +91,8 @@
             "value": {
                 "DocumentType": "petition",
                 "DocumentLink": {
-                    "document_url": "http://dm-store-saat.service.core-compute-saat.internal/documents/5dacf825-8bc2-44de-8b56-1e5f37fee132",
-                    "document_binary_url": "http://dm-store-saat.service.core-compute-saat.internal/documents/5dacf825-8bc2-44de-8b56-1e5f37fee132/binary",
+                    "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/5dacf825-8bc2-44de-8b56-1e5f37fee132",
+                    "document_binary_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/5dacf825-8bc2-44de-8b56-1e5f37fee132/binary",
                     "document_filename": "d8petition1517833758870511.pdf"
                 },
                 "DocumentDateAdded": null,

@@ -34,7 +34,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
     @Test
     public void shouldReturnCaseIdWhenUpdatingDataAfterInitialSubmitWithCaseWorker() throws Exception {
         String userToken = getUserToken();
-        String caseWorkerToken = getPureCaseWorkerToken();
+        String caseWorkerToken = getCaseWorkerToken();
 
         Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 

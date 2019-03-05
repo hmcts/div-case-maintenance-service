@@ -24,7 +24,7 @@ public class CcdRetrieveCaseByIdTest extends PetitionSupport {
     @Test
     public void givenOneSubmittedCaseInCcd_whenRetrieveCaseByCaseWorker_thenReturnTheCase() throws Exception {
         final String userToken = getUserToken();
-        final String caseWorkerToken = getPureCaseWorkerToken();
+        final String caseWorkerToken = getCaseWorkerToken();
 
         Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
