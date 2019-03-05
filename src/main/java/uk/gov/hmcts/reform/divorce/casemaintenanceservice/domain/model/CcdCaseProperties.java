@@ -19,4 +19,8 @@ public class CcdCaseProperties {
     public static final String RESP_LETTER_HOLDER_ID_FIELD = "AosLetterHolderId";
     public static final String RESP_RECEIVED_AOS_FIELD = "ReceivedAOSfromResp";
     public static final String RESP_EMAIL_ADDRESS = "RespEmailAddress";
+
+    public static final String D8_DOCUMENTS_UPLOADED = "D8DocumentsUploaded";
+    public static final String D8_REJECT_DOCUMENTS_UPLOADED = "D8RejectDocumentsUploaded";
+    public static final String D8_DOCUMENTS_GENERATED = "D8DocumentsGenerated";
 }
