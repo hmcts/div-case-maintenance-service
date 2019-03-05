@@ -1,8 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 /*
  * These values are specifically for Amend Petition workflow, NOT for general usage
  */
@@ -137,7 +134,8 @@ public class AmendCaseRemovedProps {
         "D8SeparationReferenceDate"
     };
 
-    public static Stream<String> getPropertiesToRemoveAsStream() {
-        return Arrays.stream(propertiesToRemove);
+    public static String[] getPropertiesToRemove() {
+        return propertiesToRemove.clone();
     }
+
 }
