@@ -40,8 +40,7 @@ public class IdamTestSupport {
     }
 
     public PinResponse createPinUser(String firstName) {
-        final UserDetails caseWorkerUser = createAnonymousCaseWorkerUser();
-        return idamUtils.generatePin(firstName, "",  caseWorkerUser.getAuthToken());
+        return idamUtils.generatePin(firstName, "",  createAnonymousCitizenUser().getAuthToken());
     }
 
     public UserDetails createAnonymousCaseWorkerUser() {

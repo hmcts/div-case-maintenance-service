@@ -61,7 +61,7 @@ public class LinkRespondentTest extends PetitionSupport {
     public void givenNoLetterHolderId_whenLinkRespondent_thenReturnNotFound() {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
 
-        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+        Long caseId = ccdClientSupport.submitCase(caseData, getUserDetails()).getId();
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
@@ -74,7 +74,7 @@ public class LinkRespondentTest extends PetitionSupport {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(RESP_LETTER_HOLDER_ID_FIELD, "nonMatchingLetterHolderId");
 
-        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+        Long caseId = ccdClientSupport.submitCase(caseData, getUserDetails()).getId();
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
@@ -91,7 +91,7 @@ public class LinkRespondentTest extends PetitionSupport {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "linked-case.json", Map.class);
         caseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
-        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+        Long caseId = ccdClientSupport.submitCase(caseData, getUserDetails()).getId();
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
 
@@ -108,9 +108,11 @@ public class LinkRespondentTest extends PetitionSupport {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
-        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+        UserDetails petitionerUser = getUserDetails();
 
-        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+        Long caseId = ccdClientSupport.submitCase(caseData, petitionerUser).getId();
+
+        updateCase((String) null, caseId, TEST_AOS_AWAITING_EVENT_ID, petitionerUser.getAuthToken());
 
         Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
 
@@ -131,9 +133,11 @@ public class LinkRespondentTest extends PetitionSupport {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
-        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+        UserDetails petitionerUser = getUserDetails();
 
-        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+        Long caseId = ccdClientSupport.submitCase(caseData, petitionerUser).getId();
+
+        updateCase((String) null, caseId, TEST_AOS_AWAITING_EVENT_ID, petitionerUser.getAuthToken());
 
         linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
@@ -159,9 +163,11 @@ public class LinkRespondentTest extends PetitionSupport {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
-        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
+        UserDetails petitionerUser = getUserDetails();
 
-        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+        Long caseId = ccdClientSupport.submitCase(caseData, petitionerUser).getId();
+
+        updateCase((String) null, caseId, TEST_AOS_AWAITING_EVENT_ID, petitionerUser.getAuthToken());
 
         linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
@@ -184,8 +190,10 @@ public class LinkRespondentTest extends PetitionSupport {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
-        Long caseId = ccdClientSupport.submitCase(caseData, getCaseWorkerUser()).getId();
-        updateCase((String)null, caseId, TEST_AOS_AWAITING_EVENT_ID, getCaseWorkerUser().getAuthToken());
+        UserDetails petitionerUser = getUserDetails();
+
+        Long caseId = ccdClientSupport.submitCase(caseData, petitionerUser).getId();
+        updateCase((String) null, caseId, TEST_AOS_AWAITING_EVENT_ID, petitionerUser.getAuthToken());
 
         UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
 
