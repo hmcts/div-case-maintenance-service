@@ -131,7 +131,9 @@ public class AmendCaseRemovedProps {
         "D8DocumentsGenerated",
         "D8DocumentsUploaded",
         "D8RejectDocumentsUploaded",
-        "D8SeparationReferenceDate"
+        "D8SeparationReferenceDate",
+        "D8DivorceCostsClaim",
+        "D8DivorceClaimFrom"
     };
 
     public static String[] getPropertiesToRemove() {
