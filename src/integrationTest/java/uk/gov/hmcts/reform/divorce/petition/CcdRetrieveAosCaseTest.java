@@ -24,21 +24,21 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
     @Test
     public void givenJWTTokenIsNull_whenRetrieveAosCase_thenReturnBadRequest() {
-        Response cmsResponse = retrieveCase(null, null);
+        Response cmsResponse = retrieveCase(null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenInvalidUserToken_whenRetrieveAosCase_thenReturnForbiddenError() {
-        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN, true);
+        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenNoCaseInCcd_whenRetrieveAosCase_thenReturnNull() {
-        Response cmsResponse = retrieveCase(getUserToken(), true);
+        Response cmsResponse = retrieveCase(getUserToken());
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
@@ -53,7 +53,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
         assertEquals(HttpStatus.OK.value(), draftCreationResponse.getStatusCode());
 
         //Query AOS case
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         //Response should be not found
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
@@ -66,7 +66,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -80,7 +80,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -97,7 +97,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -109,7 +109,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         final Long caseId = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
@@ -123,7 +123,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
@@ -134,7 +134,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");

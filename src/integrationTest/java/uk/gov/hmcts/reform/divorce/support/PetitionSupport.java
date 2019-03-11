@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Map;
 
 public abstract class PetitionSupport extends CcdUpdateSupport {
-    private static final String CHECK_CCD = "checkCcd";
     protected static final String CCD_FORMAT_DRAFT_CONTEXT_PATH = "ccd-format-draft/";
     protected static final String DIVORCE_FORMAT_DRAFT_CONTEXT_PATH = "divorce-format-draft/";
     protected static final String DIVORCE_FORMAT_KEY = "divorceFormat";
@@ -54,12 +53,12 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
-    protected Response retrieveCase(String userToken, Boolean checkCcd) {
+    protected Response retrieveCase(String userToken) {
         return
             RestUtil.getFromRestService(
                 getRetrieveCaseRequestUrl(),
                 getHeaders(userToken),
-                checkCcd == null ? null : Collections.singletonMap(CHECK_CCD, checkCcd)
+                null
             );
     }
 
