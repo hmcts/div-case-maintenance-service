@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.InvalidRequestException;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.UnauthorizedException;
 
 @ControllerAdvice
 @Slf4j
@@ -25,6 +27,20 @@ public class GlobalExceptionHandler {
         log.warn(exception.getMessage(), exception);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    ResponseEntity<Object> handleInvalidRequestException(InvalidRequestException exception) {
+        log.warn(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    ResponseEntity<Object> handleUnauthorizedException(InvalidRequestException exception) {
+        log.warn(exception.getMessage(), exception);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
     }
 
     @ExceptionHandler(HttpClientErrorException.class)
