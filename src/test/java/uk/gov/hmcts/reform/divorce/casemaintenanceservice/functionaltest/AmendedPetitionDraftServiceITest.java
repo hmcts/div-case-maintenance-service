@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.AmendCaseRemovedProps;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
@@ -49,6 +48,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_REASON_FOR_DIVORCE;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -135,7 +135,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_REF);
-        caseData.put(CcdCaseProperties.D8_REASON_FOR_DIVORCE, ADULTERY);
+        caseData.put(D8_REASON_FOR_DIVORCE, ADULTERY);
         caseData.put(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE, new ArrayList<>());
         caseData.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
         caseData.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
@@ -188,7 +188,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
     public void givenInvalidRequestToAmend_whenAmendedPetitionDraft_thenReturn404() throws Exception {
         final String message = getUserDetails();
         final Map<String, Object> caseData = new HashMap<>();
-        caseData.put(AmendCaseRemovedProps.D8ReasonForDivorce.getValue(), ADULTERY);
+        caseData.put(D8_REASON_FOR_DIVORCE, ADULTERY);
 
         final Long caseId = 1L;
         final CaseDetails caseDetails = CaseDetails.builder()

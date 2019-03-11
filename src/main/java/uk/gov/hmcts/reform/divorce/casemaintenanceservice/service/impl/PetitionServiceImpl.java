@@ -22,6 +22,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionServic
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 public class PetitionServiceImpl implements PetitionService,
     ApplicationListener<CaseSubmittedEvent> {
 
-    public static final String IS_DRAFT_KEY =   "fetchedDraft";
+    public static final String IS_DRAFT_KEY = "fetchedDraft";
 
     @Autowired
     private CcdRetrievalService ccdRetrievalService;
@@ -157,7 +158,7 @@ public class PetitionServiceImpl implements PetitionService,
         previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
 
         // remove all props from old case we do not want in new draft case
-        AmendCaseRemovedProps.getProps().forEach(caseData::remove);
+        Arrays.stream(AmendCaseRemovedProps.getPropertiesToRemove()).forEach(caseData::remove);
 
         caseData.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
 
