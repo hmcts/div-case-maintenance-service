@@ -114,7 +114,7 @@ public class IdamTestSupport {
                 .forename(username)
                 .password(password)
                 .roles(new UserGroup[]{ UserGroup.builder().code("citizen").build() })
-                .userGroup(UserGroup.builder().code("divorce-private-beta").build())
+                .userGroup(UserGroup.builder().code("citizens").build())
                 .build();
 
         idamUtils.createUserInIdam(registerUserRequest);
