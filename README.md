@@ -17,19 +17,13 @@ Divorce system.
 The project uses [Gradle](https://gradle.org) as a build tool but you don't have to install it locally since there is a
 `./gradlew` wrapper script.
 
-To build project please execute the following command:
+To build the project execute the following command:
 
 ```bash
     ./gradlew build
 ```
 
 ### Running
-
-First you need to create distribution by executing following command:
-
-```bash
-    ./gradlew build
-```
 
 When the distribution has been created in `build/install/div-case-maintenance-service` directory,
 you can run the application by executing following command:
@@ -67,9 +61,8 @@ To run all checks (including unit tests) please execute following command:
 
 To run all mutation tests execute the following command:
 
-```
-/gradlew pitest
-
+```bash
+    ./gradlew pitest
 ```
 
 ## Versioning
