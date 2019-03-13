@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public class CaseNotFoundException extends BaseException {
     public CaseNotFoundException(String message) {
-        super(message);
-        this.setStatus(HttpStatus.NOT_FOUND);
+        super(message, HttpStatus.NOT_FOUND);
     }
 }

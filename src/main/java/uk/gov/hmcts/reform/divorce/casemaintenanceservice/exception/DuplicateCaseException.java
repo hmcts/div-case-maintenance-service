@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public class DuplicateCaseException extends BaseException {
     public DuplicateCaseException(String message) {
-        super(message);
-        this.setStatus(HttpStatus.MULTIPLE_CHOICES);
+        super(message, HttpStatus.MULTIPLE_CHOICES);
     }
 }
