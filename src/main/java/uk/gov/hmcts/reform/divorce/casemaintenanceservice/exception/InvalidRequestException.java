@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 public class InvalidRequestException extends BaseException {
     public InvalidRequestException(String message) {
         super(message);
-        this.status = HttpStatus.BAD_REQUEST;
+        this.setStatus(HttpStatus.BAD_REQUEST);
     }
 }
