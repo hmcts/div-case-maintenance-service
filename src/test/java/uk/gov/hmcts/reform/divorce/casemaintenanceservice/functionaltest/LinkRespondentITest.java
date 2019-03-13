@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 
 import java.util.Collections;
@@ -162,8 +161,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
-        final CaseDetails caseDetails = CaseDetails.builder()
-            .state(CaseState.AOS_AWAITING.getValue()).data(new HashMap<>()).build();
+        final CaseDetails caseDetails = CaseDetails.builder().data(new HashMap<>()).build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
@@ -184,12 +182,12 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenLetterHolderIdDoNotMatch_whenLinkRespondent_thenReturnNotFound() throws Exception {
+    public void givenLetterHolderIdDoNotMatch_whenLinkRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
-            .state(CaseState.AOS_AWAITING.getValue())
+            .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(RESP_LETTER_HOLDER_ID_FIELD, "nonmatchingletterholderid"))
             .build();
 
@@ -212,12 +210,11 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenLetterHolderIdDoNotMatch_whenLinkCoRespondent_thenReturnNotFound() throws Exception {
+    public void givenLetterHolderIdDoNotMatch_whenLinkCoRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
-            .state(CaseState.AOS_AWAITING.getValue())
             .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(CO_RESP_LETTER_HOLDER_ID_FIELD, "nonmatchingletterholderid"))
             .build();
@@ -246,7 +243,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
         final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
-            .state(CaseState.AOS_AWAITING.getValue())
+            .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
             .build();
 
@@ -279,7 +276,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
         final FeignException feignException = getMockedFeignException(feignStatusCode);
 
         final CaseDetails caseDetails = CaseDetails.builder()
-            .state(CaseState.AOS_AWAITING.getValue())
+            .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
             .build();
 
@@ -319,7 +316,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
         final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
-            .state(CaseState.AOS_AWAITING.getValue())
+            .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
             .build();
 
@@ -359,7 +356,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
         final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
-            .state(CaseState.AOS_AWAITING.getValue())
+            .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID))
             .build();
 

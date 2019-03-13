@@ -120,7 +120,7 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdIsNull_whenLinkRespondent_thenThrowCaseNotFoundException() {
+    public void givenLetterHolderIdIsNull_whenLinkRespondent_thenThrowInvalidRequestException() {
         expectedException.expect(InvalidRequestException.class);
         expectedException
             .expectMessage(INVALID_MESSAGE);
@@ -136,7 +136,7 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdIsBlank_whenLinkRespondent_thenThrowCaseNotFoundException() {
+    public void givenLetterHolderIdIsBlank_whenLinkRespondent_thenThrowInvalidRequestException() {
         expectedException.expect(InvalidRequestException.class);
         expectedException
             .expectMessage(INVALID_MESSAGE);
@@ -151,7 +151,7 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdInCaseIsNull_whenLinkRespondent_thenThrowCaseNotFoundException() {
+    public void givenLetterHolderIdInCaseIsNull_whenLinkRespondent_thenThrowUnauthorizedException() {
         expectedException.expect(UnauthorizedException.class);
         expectedException
             .expectMessage(UNAUTHORIZED_MESSAGE);
@@ -278,8 +278,11 @@ public class LinkRespondentServiceImplUTest {
         );
     }
 
-    @Test(expected = UnauthorizedException.class)
+    @Test
     public void givenRespondentEmailNotMatch_whenLinkCoRespondent_thenThrowUnauthorizedException() {
+        expectedException.expect(UnauthorizedException.class);
+        expectedException
+            .expectMessage(UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
             .data(ImmutableMap.of(
@@ -303,7 +306,7 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdMatches_whenLinkRespondent_thenProceedAsExpected() {
+    public void givenLetterHolderIdMatchesAndEmailNull_whenLinkRespondent_thenGrantUserPermission() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(
@@ -326,7 +329,7 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdAndEmailMatches_whenLinkRespondent_thenGrantUserPermission() {
+    public void givenLetterHolderIdMatchesAndEmailMatched_whenLinkRespondent_thenGrantUserPermission() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
@@ -350,11 +353,10 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdAndEmailMatches_whenLinkCoRespondent_thenGrantUserPermission() {
+    public void givenLetterHolderIdMatchedAndEmailNull_whenLinkCoRespondent_thenGrantUserPermission() {
         CaseDetails caseDetails = CaseDetails.builder()
             .data(ImmutableMap.of(
-                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                CO_RESP_EMAIL_ADDRESS, USER_EMAIL
+                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
             )).build();
 
         mockCaseDetails(caseDetails);
@@ -373,10 +375,11 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIMatches_whenLinkCoRespondent_thenProceedAsExpected() {
+    public void givenLetterHolderIdAndEmailMatches_whenLinkCoRespondent_thenGrantUserPermission() {
         CaseDetails caseDetails = CaseDetails.builder()
-            .data(Collections.singletonMap(
-                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+            .data(ImmutableMap.of(
+                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
+                CO_RESP_EMAIL_ADDRESS, USER_EMAIL
             )).build();
 
         mockCaseDetails(caseDetails);
