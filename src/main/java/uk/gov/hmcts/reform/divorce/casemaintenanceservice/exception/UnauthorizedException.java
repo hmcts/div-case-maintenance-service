@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception;
 
-public class UnauthorizedException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class UnauthorizedException extends BaseException {
     public UnauthorizedException(String message) {
         super(message);
+        this.status = HttpStatus.UNAUTHORIZED;
     }
 }

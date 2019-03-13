@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
-import com.google.common.collect.ImmutableMap;
 import feign.FeignException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,10 +28,9 @@ import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdAccessServiceImpl;
 
 import java.util.Collections;
-import java.util.Objects;
+import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -54,17 +52,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class LinkRespondentITest extends AuthIdamMockSupport {
-    private static final String CASE_ID = "caseId";
+    private static final String CASE_ID = "12345678";
     private static final String LETTER_HOLDER_ID = "letterHolderId";
-    private static final String RECEIVED_AOS_FIELD_VALUE = "YES";
     private static final String RESP_LETTER_HOLDER_ID_FIELD =
         (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "RESP_LETTER_HOLDER_ID_FIELD");
-    private static final String RESP_RECEIVED_AOS_FIELD =
-        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "RESP_RECEIVED_AOS_FIELD");
     private static final String CO_RESP_LETTER_HOLDER_ID_FIELD =
         (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_LETTER_HOLDER_ID_FIELD");
-    private static final String CO_RESP_RECEIVED_AOS_FIELD =
-        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_RECEIVED_AOS_FIELD");
 
     private static final String API_URL =
         String.format("/casemaintenance/version/1/link-respondent/%s/%s", CASE_ID, LETTER_HOLDER_ID);
@@ -165,11 +158,12 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenLetterHolderIdIsNull_whenLinkRespondent_thenReturnNotFound() throws Exception {
+    public void givenLetterHolderIdIsNull_whenLinkRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
 
-        final CaseDetails caseDetails = CaseDetails.builder().state(CaseState.AOS_AWAITING.getValue()).build();
+        final CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AOS_AWAITING.getValue()).data(new HashMap<>()).build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
@@ -186,7 +180,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -214,7 +208,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -224,6 +218,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
+            .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(CO_RESP_LETTER_HOLDER_ID_FIELD, "nonmatchingletterholderid"))
             .build();
 
@@ -242,38 +237,7 @@ public class LinkRespondentITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void givenNotAosAwaitingState_whenLinkRespondent_thenReturnNotFound() throws Exception {
-        final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
-
-        final CaseDetails caseDetails = CaseDetails.builder()
-            .state(CaseState.ISSUED.getValue())
-            .data(ImmutableMap.of(
-                Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(RESP_RECEIVED_AOS_FIELD), RECEIVED_AOS_FIELD_VALUE
-            ))
-            .build();
-
-        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubCaseWorkerAuthentication(HttpStatus.OK);
-
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
-        when(coreCaseDataApi.readForCaseWorker(
-            BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
-            CASE_WORKER_USER_ID,
-            jurisdictionId,
-            caseType,
-            CASE_ID)
-        ).thenReturn(caseDetails);
-
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isUnauthorized());
     }
 
     @Test
