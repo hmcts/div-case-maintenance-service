@@ -57,8 +57,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return
             RestUtil.getFromRestService(
                 getRetrieveCaseRequestUrl(),
-                getHeaders(userToken),
-                null
+                getHeaders(userToken)
             );
     }
 
@@ -66,8 +65,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return
             RestUtil.getFromRestService(
                 getCaseRequestUrl() + "/" + caseId,
-                getHeaders(userToken),
-                null
+                getHeaders(userToken)
             );
     }
 
@@ -75,8 +73,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return
             RestUtil.getFromRestService(
                 getCaseRequestUrl(),
-                getHeaders(userToken),
-                null
+                getHeaders(userToken)
             );
     }
 
@@ -84,8 +81,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return
             RestUtil.getFromRestService(
                 draftsRequestUrl(),
-                getHeaders(userToken),
-                Collections.emptyMap()
+                getHeaders(userToken)
             );
     }
 
