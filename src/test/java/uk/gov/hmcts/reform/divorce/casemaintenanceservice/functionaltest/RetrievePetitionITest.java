@@ -64,7 +64,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrieveCase";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String TRANSFORM_TO_CCD_CONTEXT_PATH = "/caseformatter/version/1/to-ccd-format";
-    private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
 
     private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.AWAITING_PAYMENT.getValue();
@@ -282,6 +281,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
 
         final Long caseId1 = 1L;
         final Long caseId2 = 2L;
