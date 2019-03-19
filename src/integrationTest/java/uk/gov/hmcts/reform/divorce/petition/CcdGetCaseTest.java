@@ -54,7 +54,7 @@ public class CcdGetCaseTest extends PetitionSupport {
         getCaseIdFromSubmittingANewCase(userToken);
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
