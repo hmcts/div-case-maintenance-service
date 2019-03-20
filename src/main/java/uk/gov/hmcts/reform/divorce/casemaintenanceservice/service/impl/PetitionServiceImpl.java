@@ -51,15 +51,12 @@ public class PetitionServiceImpl implements PetitionService,
     private UserService userService;
 
     @Override
-    public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
-                                        boolean checkCcd) throws DuplicateCaseException {
-        CaseDetails caseDetails = null;
+    public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping
+    ) throws DuplicateCaseException {
 
         Draft draft = draftService.getDraft(authorisation);
 
-        if (checkCcd) {
-            caseDetails = ccdRetrievalService.retrieveCase(authorisation, caseStateGrouping);
-        }
+        CaseDetails caseDetails = ccdRetrievalService.retrieveCase(authorisation, caseStateGrouping);
 
         if (caseDetails != null && CaseState.AMEND_PETITION.getValue().equalsIgnoreCase(caseDetails.getState())) {
             // If draft does not exist or is not an AmendPetition draft, return case as draft

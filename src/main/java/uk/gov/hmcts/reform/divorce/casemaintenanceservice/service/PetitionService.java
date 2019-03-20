@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PetitionService {
-    CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
-                                 boolean checkCcd) throws DuplicateCaseException;
+    CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping) throws DuplicateCaseException;
 
     CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException;
 

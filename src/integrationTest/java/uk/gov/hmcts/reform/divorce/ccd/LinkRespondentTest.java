@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
 public class LinkRespondentTest extends PetitionSupport {
@@ -29,6 +30,7 @@ public class LinkRespondentTest extends PetitionSupport {
     private static final String START_AOS_EVENT_ID = "startAos";
     private static final String TEST_AOS_AWAITING_EVENT_ID = "testAosAwaiting";
     private static final String AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID = "paymentReferenceGenerated";
+    private static final String RESPONDENT_EMAIL = "aos@respondent.div";
 
     private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
         + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
@@ -60,24 +62,24 @@ public class LinkRespondentTest extends PetitionSupport {
     }
 
     @Test
-    public void givenNoLetterHolderId_whenLinkRespondent_thenReturnNotFound() {
+    public void givenNoLetterHolderId_whenLinkRespondent_thenReturnUnauthorized() {
         Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
-        assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenLetterHolderDoNotMatch_whenLinkRespondent_thenReturnNotFound() {
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+    public void givenLetterHolderDoNotMatch_whenLinkRespondent_thenReturnUnauthorized() {
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
-        Map updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, "nonMatchingLetterHolderId");
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -85,29 +87,30 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
-        assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenCaseAlreadyLinked_whenLinkRespondent_thenReturnNotFound() {
+    public void givenCaseAlreadyLinked_whenLinkRespondent_thenReturnUnauthorized() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "linked-case.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "linked-case.json", Map.class);
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
-        Map updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
+        updateCaseData.put(RESP_EMAIL_ADDRESS, RESPONDENT_EMAIL);
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
             getCaseWorkerUser().getAuthToken());
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
     }
 
     @SuppressWarnings("unchecked")
@@ -117,13 +120,13 @@ public class LinkRespondentTest extends PetitionSupport {
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
 
         UserDetails petitionerUser = getUserDetails();
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitionerUser).getId();
 
-        Map updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -138,7 +141,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenLetterHolderIdAndCaseStateMatches_whenLinkRespondent_thenShouldBeAbleToAccessTheCase()
+    public void givenLetterHolderIdMatches_whenLinkRespondent_thenGrantAccessToCase()
         throws Exception {
 
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
@@ -147,13 +150,13 @@ public class LinkRespondentTest extends PetitionSupport {
 
         UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
 
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
 
         UserDetails petitionerUser = getUserDetails();
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitionerUser).getId();
 
-        Map updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -166,14 +169,14 @@ public class LinkRespondentTest extends PetitionSupport {
         updateCase(ImmutableMap.of(RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
             caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
-        Response response = retrieveCase(upliftedUser.getAuthToken(), true);
+        Response response = retrieveCase(upliftedUser.getAuthToken());
 
         assertEquals(caseId, response.path("id"));
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void givenLetterHolderIdAndCaseStateMatches_whenLinkCoRespondent_thenShouldBeAbleToAccessTheCase()
+    public void givenLetterHolderIdMatches_whenLinkCoRespondent_thenGrantAccessToCase()
         throws Exception {
 
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
@@ -182,7 +185,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
 
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         UserDetails petitionerUser = getUserDetails();
@@ -196,7 +199,7 @@ public class LinkRespondentTest extends PetitionSupport {
         updateCase(ImmutableMap.of(RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
             caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
-        Response response = retrieveCase(upliftedUser.getAuthToken(), true);
+        Response response = retrieveCase(upliftedUser.getAuthToken());
 
         assertEquals(caseId, response.path("id"));
     }
@@ -209,7 +212,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         UserDetails petitionerUser = getUserDetails();
@@ -226,7 +229,7 @@ public class LinkRespondentTest extends PetitionSupport {
         updateCase(ImmutableMap.of(RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
             caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
 
-        Response response = retrieveCase(upliftedUser.getAuthToken(), true);
+        Response response = retrieveCase(upliftedUser.getAuthToken());
 
         assertEquals(caseId, response.path("id"));
 

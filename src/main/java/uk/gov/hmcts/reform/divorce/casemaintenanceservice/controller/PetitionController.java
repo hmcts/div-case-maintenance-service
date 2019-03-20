@@ -51,13 +51,10 @@ public class PetitionController {
         })
     public ResponseEntity<CaseDetails> retrievePetition(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
-        @RequestParam(value = "checkCcd", required = false)
-        @ApiParam(value = "Boolean flag enabling CCD check for petition") final Boolean checkCcd) {
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
 
         try {
-            CaseDetails caseDetails = petitionService.retrievePetition(jwt, PETITIONER_CASE_STATE_GROUPING,
-                Optional.ofNullable(checkCcd).orElse(false));
+            CaseDetails caseDetails = petitionService.retrievePetition(jwt, PETITIONER_CASE_STATE_GROUPING);
 
             return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
         } catch (DuplicateCaseException e) {
