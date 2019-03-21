@@ -11,9 +11,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Authentic
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.TokenExchangeResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 @FeignClient(name = "idam-api", url = "${idam.api.url}")
 public interface IdamApiClient {
 
@@ -23,8 +20,7 @@ public interface IdamApiClient {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/oauth2/authorize",
-        consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
+        consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
     )
     AuthenticateUserResponse authenticateUser(
         @RequestHeader(HttpHeaders.AUTHORIZATION) final String authorisation,

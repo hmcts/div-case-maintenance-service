@@ -6,6 +6,22 @@ output "vaultName" {
     value = "${local.vaultName}"
 }
 
-output "auth_idam_client_baseUrl" {
+output "test_environment" {
+    value = "${local.local_env}"
+}
+
+output "idam_api_baseurl" {
     value = "${var.idam_api_baseurl}"
+}
+
+output "idam_s2s_url" {
+    value = "${local.idam_s2s_url}"
+}
+
+output "auth_idam_client_redirect-url" {
+    value = "${local.petitioner_fe_baseurl}/authenticated"
+}
+
+output "ccd_casedatastore_baseurl" {
+    value = "${local.ccd_casedatastore_baseurl}"
 }

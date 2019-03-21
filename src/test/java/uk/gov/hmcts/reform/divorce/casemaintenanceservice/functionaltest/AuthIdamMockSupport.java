@@ -105,7 +105,6 @@ public class AuthIdamMockSupport {
                 + "&client_id=" + authClientId
                 + "&redirect_uri=" + URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name()))
                 .withHeader(AUTHORIZATION, new EqualToPattern(CASEWORKER_BASIC_AUTH_HEADER))
-                .withHeader(CONTENT_TYPE, new EqualToPattern(MediaType.APPLICATION_JSON_VALUE))
                 .willReturn(aResponse()
                     .withStatus(status.value())
                     .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)

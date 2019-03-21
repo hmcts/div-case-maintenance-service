@@ -123,7 +123,7 @@ def versions = [
     serviceTokenGenerator: '2.0.0',
     ccdStoreClient: '4.2.1',
     feignHttpClient: '9.5.1',
-    reformSpringBootAutoConfigure: '1.1.0',
+    reformSpringBootAutoConfigure: '2.0.0',
     springfoxSwagger: '2.9.0',
     unirest: '1.4.9',
     wiremockVersion: '2.8.0',

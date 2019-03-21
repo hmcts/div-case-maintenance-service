@@ -22,6 +22,9 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     @Value("${case.maintenance.submission.context-path}")
     private String contextPath;
 
+    @Value("${env}")
+    private String testEnvironment;
+
     protected void submitAndAssertSuccess(String fileName) throws Exception {
         Response cmsResponse = submitCase(fileName);
         assertOkResponseAndCaseIdIsNotZero(cmsResponse);
@@ -50,7 +53,8 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     }
 
     private String loadJson(String fileName) throws Exception {
-        return loadJson(fileName, PAYLOAD_CONTEXT_PATH);
+        // Update document links in the Json String to be current environment
+        return loadJson(fileName, PAYLOAD_CONTEXT_PATH).replaceAll("-aat", "-".concat(testEnvironment));
     }
 
     String loadJson(String fileName, String contextPath) throws Exception {
