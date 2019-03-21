@@ -8,5 +8,6 @@ import lombok.Getter;
 public enum CaseStateGrouping {
     INCOMPLETE,
     COMPLETE,
+    AMEND,
     UNKNOWN
 }

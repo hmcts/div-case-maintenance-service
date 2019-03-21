@@ -71,9 +71,10 @@ public class CcdController {
     @PostMapping(path = "/link-respondent/{caseId}/{letterHolderId}")
     @ApiOperation(value = "Updates case details")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Returned when case with id and letter holder id exists and the access is "
-            + "granted to the respondent user"),
-        @ApiResponse(code = 404, message = "Returned when case with id not found or letter holder id doesn't match"),
+        @ApiResponse(code = 200, message = "Returned when case with id and letter holder id exists and the access is granted to the respondent user"),
+        @ApiResponse(code = 404, message = "Returned when case with id not found"),
+        @ApiResponse(code = 400, message = "Returned when data is missing from request or case"),
+        @ApiResponse(code = 401, message = "Returned when case letter holder ID does not match corresponding case data or case is already linked"),
         }
     )
     public ResponseEntity<Void> linkRespondent(

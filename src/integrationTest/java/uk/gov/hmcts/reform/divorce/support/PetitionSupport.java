@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Map;
 
 public abstract class PetitionSupport extends CcdUpdateSupport {
-    private static final String CHECK_CCD = "checkCcd";
     protected static final String CCD_FORMAT_DRAFT_CONTEXT_PATH = "ccd-format-draft/";
     protected static final String DIVORCE_FORMAT_DRAFT_CONTEXT_PATH = "divorce-format-draft/";
     protected static final String DIVORCE_FORMAT_KEY = "divorceFormat";
@@ -22,6 +21,9 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
 
     @Value("${case.maintenance.get-case.context-path}")
     private String getCaseContextPath;
+
+    @Value("${case.maintenance.amend-petition-draft.context-path}")
+    private String amendPetitionContextPath;
 
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
         return
@@ -51,12 +53,11 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
-    protected Response retrieveCase(String userToken, Boolean checkCcd) {
+    protected Response retrieveCase(String userToken) {
         return
             RestUtil.getFromRestService(
                 getRetrieveCaseRequestUrl(),
-                getHeaders(userToken),
-                checkCcd == null ? null : Collections.singletonMap(CHECK_CCD, checkCcd)
+                getHeaders(userToken)
             );
     }
 
@@ -64,8 +65,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return
             RestUtil.getFromRestService(
                 getCaseRequestUrl() + "/" + caseId,
-                getHeaders(userToken),
-                null
+                getHeaders(userToken)
             );
     }
 
@@ -73,8 +73,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return
             RestUtil.getFromRestService(
                 getCaseRequestUrl(),
-                getHeaders(userToken),
-                null
+                getHeaders(userToken)
             );
     }
 
@@ -82,9 +81,22 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return
             RestUtil.getFromRestService(
                 draftsRequestUrl(),
+                getHeaders(userToken)
+            );
+    }
+
+    protected Response putAmendedPetitionDraft(String userToken) {
+        return
+            RestUtil.putToRestService(
+                getGetAmendPetitionContextPath(),
                 getHeaders(userToken),
+                "",
                 Collections.emptyMap()
             );
+    }
+
+    private String getGetAmendPetitionContextPath() {
+        return serverUrl + amendPetitionContextPath;
     }
 
     protected String getRetrieveCaseRequestUrl() {

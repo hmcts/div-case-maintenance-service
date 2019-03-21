@@ -30,9 +30,15 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED,
+                CaseState.AOS_COMPLETED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI
+            );
+
+        assertThat(PETITIONER_CASE_STATE_GROUPING.get(CaseStateGrouping.AMEND))
+            .contains(
+                CaseState.AMEND_PETITION
             );
     }
 
@@ -52,11 +58,11 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_DOCUMENTS,
                 CaseState.AOS_AWAITING,
                 CaseState.AOS_STARTED,
+                CaseState.AOS_COMPLETED,
                 CaseState.AWAITING_REISSUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AWAITING_DECREE_NISI,
-                CaseState.AMEND_PETITION,
                 CaseState.AWAITING_CLARIFICATION,
                 CaseState.AWAITING_CONSIDERATION,
                 CaseState.AWAITING_DECREE_ABSOLUTE,

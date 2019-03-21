@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.divorce.idam.utils;
 
-import io.restassured.RestAssured;
+import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.entity.ContentType;
 import org.springframework.http.HttpHeaders;
 
@@ -19,7 +19,7 @@ public class TacticalIdamUtils extends IdamUtils {
     public void upliftUser(String emailAddress, String password, String authToken) {
         final String authHeader = getBasicAuthHeader(emailAddress, password);
 
-        RestAssured.given()
+        SerenityRest.given()
             .header(HttpHeaders.AUTHORIZATION, authHeader)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .queryParam("upliftToken", authToken)

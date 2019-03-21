@@ -6,14 +6,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 
 public class CcdRetrieveAosCaseTest extends PetitionSupport {
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
+    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwO"
+            + "Tg3NjU0MyIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR"
+            + "5cGUiOiJBQ0NFU1MiLCJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY"
+            + "2UiOiJEaXZvcmNlIiwibG9hIjoxLCJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ"
+            + "9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMXCJOQrVU";
 
     private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
     private static final String TEST_AOS_AWAITING_DN = "testAwaitingDecreeNisi";
@@ -23,22 +24,38 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
     @Test
     public void givenJWTTokenIsNull_whenRetrieveAosCase_thenReturnBadRequest() {
-        Response cmsResponse = retrieveCase(null, null);
+        Response cmsResponse = retrieveCase(null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenInvalidUserToken_whenRetrieveAosCase_thenReturnForbiddenError() {
-        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN, true);
+        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenNoCaseInCcd_whenRetrieveAosCase_thenReturnNull() {
-        Response cmsResponse = retrieveCase(getUserToken(), true);
+        Response cmsResponse = retrieveCase(getUserToken());
 
+        assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
+        assertEquals(cmsResponse.asString(), "");
+    }
+
+    @Test
+    public void whenUserAlreadyHasDraftSaved_AndTriesToLogInAsRespondent_ThenCaseIsNotFound() throws Exception {
+        //Create a draft
+        final String userToken = getUserToken();
+        final String filePath = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        Response draftCreationResponse = createDraft(userToken, filePath, singletonMap(DIVORCE_FORMAT_KEY, "true"));
+        assertEquals(HttpStatus.OK.value(), draftCreationResponse.getStatusCode());
+
+        //Query AOS case
+        Response cmsResponse = retrieveCase(userToken);
+
+        //Response should be not found
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
     }
@@ -49,10 +66,10 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
-        assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
+        assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
     }
 
     @Test
@@ -63,15 +80,15 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
-        assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
+        assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
     }
 
     @Test
     public void givenMultipleCompletedAndOtherCaseInCcd_whenRetrieveAosCase_thenReturnFirstCompletedCase()
-        throws Exception {
+            throws Exception {
         final String userToken = getUserToken();
 
         getCaseIdFromSubmittingANewCase(userToken);
@@ -80,10 +97,10 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
-        assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
+        assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
     }
 
     @Test
@@ -92,7 +109,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         final Long caseId = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
@@ -100,13 +117,13 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
     @Test
     public void givenMultipleAosStartedAndNoAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnMultipleChoice()
-        throws Exception {
+            throws Exception {
         final String userToken = getUserToken();
 
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
         createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
@@ -117,7 +134,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
@@ -126,7 +143,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     private Response createACaseUpdateStateAndReturnTheCase(String userToken, String eventName) throws Exception {
         Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
-        return updateCase((String)null, caseId, eventName, userToken);
+        return updateCase((String) null, caseId, eventName, userToken);
     }
 
     @Override

@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.InvalidRequestException;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.UnauthorizedException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -40,7 +43,46 @@ public class GlobalExceptionHandlerUTest {
 
         final CaseNotFoundException exception = new CaseNotFoundException(errorMessage);
 
-        ResponseEntity<Object> response = classUnderTest.handleCaseNotFoundException(exception);
+        ResponseEntity<Object> response = classUnderTest.handleApplicationException(exception);
+
+        assertEquals(statusCode, response.getStatusCode());
+        assertEquals(errorMessage, response.getBody());
+    }
+
+    @Test
+    public void whenDuplicateCaseException_thenReturnUnderLyingError() {
+        final HttpStatus statusCode = HttpStatus.MULTIPLE_CHOICES;
+        final String errorMessage = "Error Message";
+
+        final DuplicateCaseException exception = new DuplicateCaseException(errorMessage);
+
+        ResponseEntity<Object> response = classUnderTest.handleApplicationException(exception);
+
+        assertEquals(statusCode, response.getStatusCode());
+        assertEquals(errorMessage, response.getBody());
+    }
+
+    @Test
+    public void whenInvalidRequestException_thenReturnUnderLyingError() {
+        final HttpStatus statusCode = HttpStatus.BAD_REQUEST;
+        final String errorMessage = "Error Message";
+
+        final InvalidRequestException exception = new InvalidRequestException(errorMessage);
+
+        ResponseEntity<Object> response = classUnderTest.handleApplicationException(exception);
+
+        assertEquals(statusCode, response.getStatusCode());
+        assertEquals(errorMessage, response.getBody());
+    }
+
+    @Test
+    public void whenUnauthorizedException_thenReturnUnderLyingError() {
+        final HttpStatus statusCode = HttpStatus.UNAUTHORIZED;
+        final String errorMessage = "Error Message";
+
+        final UnauthorizedException exception = new UnauthorizedException(errorMessage);
+
+        ResponseEntity<Object> response = classUnderTest.handleApplicationException(exception);
 
         assertEquals(statusCode, response.getStatusCode());
         assertEquals(errorMessage, response.getBody());

@@ -21,23 +21,27 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrVU";
 
+    private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
+    private static final String AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT = "aosReceivedNoAdConStarted";
+    private static final String AMEND_PETITION_EVENT = "amendPetition";
+
     @Test
     public void givenJWTTokenIsNull_whenRetrieveCase_thenReturnBadRequest() {
-        Response cmsResponse = retrieveCase(null, null);
+        Response cmsResponse = retrieveCase(null);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenInvalidUserToken_whenRetrieveCase_thenReturnForbiddenError() {
-        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN, true);
+        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenNoCaseInCcdOrDraftStore_whenRetrieveCase_thenReturnNull() {
-        Response cmsResponse = retrieveCase(getUserToken(), true);
+        Response cmsResponse = retrieveCase(getUserToken());
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
@@ -49,7 +53,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
         Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -63,7 +67,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
         createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -80,7 +84,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
         createACaseMakePaymentAndReturnTheCase(userToken);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -92,7 +96,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
         final Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
@@ -106,7 +110,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         getCaseIdFromSubmittingANewCase(userToken);
         getCaseIdFromSubmittingANewCase(userToken);
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
@@ -115,62 +119,71 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     public void givenCasesInNotAwaitingPaymentOrNonSubmittedCaseInCcd_whenRetrieveCase_thenReturnNull() {
         final String userToken = getUserToken();
 
-        Response cmsResponse = retrieveCase(userToken, true);
+        Response cmsResponse = retrieveCase(userToken);
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
     }
 
     @Test
-    public void givenDoNotCheckCcdAndOnePetitionInDivorceFormat_whenRetrieveCase_thenReturnPetition() throws Exception {
-        final String userToken = getUserToken();
-
-        final String caseInDivorceFormatFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
-
-        createDraft(userToken, caseInDivorceFormatFileName,
-            Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
-
-        Response cmsResponse = retrieveCase(userToken, false);
-
-        assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
-
-        assertEquals( ResourceLoader.loadJsonToObject(caseInDivorceFormatFileName, Map.class),
-            cmsResponse.getBody().path(CASE_DATA_JSON_PATH));
-
-        deleteDraft(userToken);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void givenDoNotCheckCcdAndMultiplePetitionsInDivorceFormat_whenRetrieveCase_thenReturnLatestPetition()
-        throws Exception {
+    public void givenAmendPetitionCaseAndNoDraft_whenRetrieveCase_thenReturnAmendDraft() throws Exception {
         final UserDetails userDetails = getUserDetails();
 
-        final String caseInDivorceFormatFileName1 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
-        final String caseInCcdFormatFileName2 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "jurisdiction-6-12.json";
+        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
 
-        createDraft(userDetails.getAuthToken(), caseInDivorceFormatFileName1,
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
+
+        assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
+        assertEquals(submittedCaseResponse.getBody().jsonPath().getString("id"),
+            cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
+    }
+
+    @Test
+    public void givenAmendPetitionCaseAndOldDraft_whenRetrieveCase_thenReturnAmendDraft() throws Exception {
+        final UserDetails userDetails = getUserDetails();
+        final String draftFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "existing-draft.json";
+
+        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+
+        createDraft(userDetails.getAuthToken(), draftFileName,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
-        createDraft(userDetails.getAuthToken(), caseInCcdFormatFileName2,
+
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
+
+        assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
+        assertEquals(submittedCaseResponse.getBody().jsonPath().getString("id"),
+            cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
+        // existing draft defines divorceWho as wife, whilst AmendPetition case has husband.
+        assertEquals("husband", cmsResponse.getBody().jsonPath().getString("case_data.divorceWho"));
+    }
+
+    @Test
+    public void givenAmendPetitionCaseAndAmendedDraft_whenRetrieveCase_thenReturnExisitingDraft() throws Exception {
+        final UserDetails userDetails = getUserDetails();
+        final String amendDraftFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "amend-draft.json";
+
+        createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+
+        createDraft(userDetails.getAuthToken(), amendDraftFileName,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
-        Response cmsResponse = retrieveCase(userDetails.getAuthToken(), false);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
-        Map<String, Object> expected =
-            ResourceLoader.loadJsonToObject(caseInDivorceFormatFileName1, Map.class);
-
-        assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
-
-        assertEquals(cmsResponse.getBody().path(CASE_DATA_JSON_PATH), expected);
-
-        //delete removes only the first draft. So delete needs to be called twice here
-        deleteDraft(userDetails.getAuthToken());
-        deleteDraft(userDetails.getAuthToken());
+        assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
+        assertEquals("01234567890", cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
     }
 
     private Response createACaseMakePaymentAndReturnTheCase(String userToken) throws Exception {
         Long caseId = getCaseIdFromSubmittingANewCase(userToken);
 
         return updateCase("payment-made.json", caseId, EVENT_ID, userToken);
+    }
+
+    private Response createACaseMakePaymentAndAmendTheCase(String userToken) throws Exception {
+        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+
+        updateCase("basic-update.json", caseId, TEST_AOS_RESPONDED_EVENT, userToken);
+        updateCase("basic-update.json", caseId, AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT, userToken);
+        return updateCase("basic-update.json", caseId, AMEND_PETITION_EVENT, userToken);
     }
 }

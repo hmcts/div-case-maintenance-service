@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrieveAosCase";
-    private static final String CHECK_CCD_PARAM = "checkCcd";
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
@@ -54,6 +54,9 @@ public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
+
+    @MockBean
+    private DraftStoreClient draftStoreClient;
 
     @Autowired
     private MockMvc webClient;
@@ -83,7 +86,6 @@ public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
             "AosSubmittedAwaitingAnswer",
             "AwaitingDecreeNisi",
             "AwaitingConsiderationDN",
-            "AmendPetition",
             "AwaitingDocuments",
             "AwaitingClarification",
             "AwaitingConsideration",
@@ -113,7 +115,6 @@ public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()

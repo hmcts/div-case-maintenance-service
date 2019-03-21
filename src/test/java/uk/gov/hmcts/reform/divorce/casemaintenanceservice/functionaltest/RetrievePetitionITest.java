@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import com.google.common.collect.ImmutableMap;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.contract.wiremock.WireMockSpring;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,12 +29,14 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -58,20 +62,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class RetrievePetitionITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrieveCase";
-    private static final String CHECK_CCD_PARAM = "checkCcd";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String TRANSFORM_TO_CCD_CONTEXT_PATH = "/caseformatter/version/1/to-ccd-format";
-    private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
 
     private static final String AWAITING_PAYMENT_STATE = CitizenCaseState.AWAITING_PAYMENT.getValue();
     private static final String SUBMITTED_PAYMENT_STATE = CitizenCaseState.SUBMITTED.getValue();
 
     @ClassRule
-    public static WireMockClassRule draftStoreServer = new WireMockClassRule(4601);
+    public static WireMockClassRule draftStoreServer = new WireMockClassRule(WireMockSpring.options().port(4601));
 
     @ClassRule
-    public static WireMockClassRule caseFormatterServer = new WireMockClassRule(4011);
+    public static WireMockClassRule caseFormatterServer = new WireMockClassRule(WireMockSpring.options().port(4011));
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
@@ -99,7 +101,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isForbidden())
             .andExpect(content().string(containsString(message)));
@@ -114,7 +115,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isServiceUnavailable());
     }
@@ -135,36 +135,17 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())
             .andExpect(content().string(""));
     }
 
-    @Test
-    public void givenDoNotCheckCcdNoCaseInDraftStore_whenRetrievePetition_thenReturnNull() throws Exception {
-        final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
-
-        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
-
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
-
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "false")
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent())
-            .andExpect(content().string(""));
-    }
-
-    @Test
     public void givenCompletedCaseInCcd_whenRetrievePetition_thenReturnTheCase() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
 
         final Long caseId = 1L;
         final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.SUBMITTED.getValue());
@@ -176,7 +157,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
@@ -207,7 +187,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
@@ -237,7 +216,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
@@ -261,7 +239,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
@@ -291,7 +268,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
@@ -305,6 +281,7 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
 
         final Long caseId1 = 1L;
         final Long caseId2 = 2L;
@@ -321,7 +298,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isMultipleChoices());
     }
@@ -350,7 +326,6 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())
             .andExpect(content().string(""));
@@ -376,10 +351,12 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails.builder().build())));
+            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
+                .builder()
+                .data(new HashMap<>())
+                .build())));
     }
 
     @Test
@@ -412,20 +389,19 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "true")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails)));
     }
 
     @Test
-    public void givenDoNotCheckCcdAndMultipleDraftInStore_whenRetrievePetition_thenReturnFormattedDraft() throws Exception {
+    public void givenAmendPetitionDraft_whenRetrievePetition_thenReturnFormattedDraft() throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";
 
         final DraftList draftList = new DraftList(Arrays.asList(
-            createDraft("1", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT),
-            createDraft("2", DRAFT_DOCUMENT_TYPE_CCD_FORMAT)),
+            createDraft("1", ImmutableMap.of(DivorceSessionProperties.PREVIOUS_CASE_ID, "1"),
+                DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
             null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
@@ -437,10 +413,12 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .param(CHECK_CCD_PARAM, "false")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails.builder().build())));
+            .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
+                .builder()
+                .data(ImmutableMap.of(DivorceSessionProperties.PREVIOUS_CASE_ID, "1"))
+                .build())));
     }
 
     private void stubGetDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken, String message) {
@@ -469,6 +447,10 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     private Draft createDraft(String id, String documentType) {
-        return new Draft(id, null, documentType);
+        return createDraft(id, new HashMap<>(), documentType);
+    }
+
+    private Draft createDraft(String id, Map<String, Object> document ,String documentType) {
+        return new Draft(id, document, documentType);
     }
 }

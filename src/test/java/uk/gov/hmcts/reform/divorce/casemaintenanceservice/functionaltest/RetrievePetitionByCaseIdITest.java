@@ -79,7 +79,34 @@ public class RetrievePetitionByCaseIdITest extends AuthIdamMockSupport {
     }
 
     @Test
-    public void givenCaseDoesNotExistWithId_whenRetrievePetitionById_thenReturnCaseDetails()
+    public void givenCaseExistsWithId_whenRetrievePetitionByIdWithCaseworker_thenReturnCaseDetails()
+        throws Exception {
+        final String message = getCaseWorkerUserDetails();
+        final String serviceToken = "serviceToken";
+        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(BEARER_CASE_WORKER_TOKEN), message);
+
+        final Long caseId = 1L;
+        final String testCaseId = String.valueOf(caseId);
+
+        final CaseDetails caseDetails = createCaseDetails(caseId, "state");
+
+        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(coreCaseDataApi
+            .readForCaseWorker(BEARER_CASE_WORKER_TOKEN, serviceToken, CASE_WORKER_USER_ID,
+                jurisdictionId, caseType, testCaseId))
+            .thenReturn(caseDetails);
+
+        webClient.perform(MockMvcRequestBuilders.get(API_URL + "/" + testCaseId)
+            .header(HttpHeaders.AUTHORIZATION, BEARER_CASE_WORKER_TOKEN)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content()
+                .json(ObjectMapperTestUtil
+                    .convertObjectToJsonString(caseDetails)));
+    }
+
+    @Test
+    public void givenCaseDoesNotExistWithId_whenRetrievePetitionById_thenReturnNotFound()
         throws Exception {
         final String message = getUserDetails();
         final String serviceToken = "serviceToken";

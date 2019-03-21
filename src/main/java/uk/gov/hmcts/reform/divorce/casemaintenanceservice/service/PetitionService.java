@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface PetitionService {
-    CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
-                                 boolean checkCcd) throws DuplicateCaseException;
+    CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping) throws DuplicateCaseException;
 
     CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException;
+
+    CaseDetails retrievePetitionForAos(String authorisation) throws DuplicateCaseException;
 
     CaseDetails retrievePetitionByCaseId(String authorisation, String caseId);
 
@@ -24,4 +25,6 @@ public interface PetitionService {
     DraftList getAllDrafts(String authorisation);
 
     void deleteDraft(String authorisation);
+
+    Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException;
 }

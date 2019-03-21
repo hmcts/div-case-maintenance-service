@@ -8,12 +8,17 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
-import util.ReflectionTestUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -22,12 +27,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PetitionControllerUTest {
     private static final String AUTHORISATION = "user";
     private static final String TEST_CASE_ID = "test.id";
+    private static final String UNREASONABLE_BEHAVIOUR = "unreasonable-behaviour";
 
     @Mock
     private PetitionService petitionService;
@@ -38,103 +43,74 @@ public class PetitionControllerUTest {
     @Test
     public void givenCaseFound_whenRetrievePetition_thenReturnCaseDetails() throws DuplicateCaseException {
 
-        final boolean checkCcd = true;
-
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
-        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, checkCcd))
-            .thenReturn(caseDetails);
+        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING))
+                .thenReturn(caseDetails);
 
-        ResponseEntity<CaseDetails> actual = classUnderTest.retrievePetition(AUTHORISATION, checkCcd);
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrievePetition(AUTHORISATION);
 
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertEquals(caseDetails, actual.getBody());
 
-        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, checkCcd);
+        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
     }
 
     @Test
     public void givenCaseFound_whenRetrieveCaseForRespondent_thenReturnCaseDetails() throws DuplicateCaseException {
 
-        final boolean checkCcd = true;
-
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
-        when(petitionService.retrievePetition(AUTHORISATION, RESPONDENT_CASE_STATE_GROUPING, checkCcd))
-            .thenReturn(caseDetails);
+        when(petitionService.retrievePetitionForAos(AUTHORISATION)).thenReturn(caseDetails);
 
-        ResponseEntity<CaseDetails> actual = classUnderTest.retrieveCaseForRespondent(AUTHORISATION, checkCcd);
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrieveCaseForRespondent(AUTHORISATION);
 
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertEquals(caseDetails, actual.getBody());
 
-        verify(petitionService).retrievePetition(AUTHORISATION, RESPONDENT_CASE_STATE_GROUPING, checkCcd);
+        verify(petitionService).retrievePetitionForAos(AUTHORISATION);
     }
 
     @Test
     public void givenCaseFound_whenRetrieveCase_thenReturnCaseDetails() throws DuplicateCaseException {
 
-        final boolean checkCcd = true;
-
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
-        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, checkCcd))
-            .thenReturn(caseDetails);
+        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING))
+                .thenReturn(caseDetails);
 
-        ResponseEntity<CaseDetails> actual = retrieveCase(checkCcd);
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrievePetition(AUTHORISATION);
 
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertEquals(caseDetails, actual.getBody());
 
-        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, checkCcd);
-    }
-
-    @Test
-    public void givenCheckCcdIsNullAndCaseFound_whenRetrieveCase_thenReturnCaseDetails() throws DuplicateCaseException {
-
-        final Boolean checkCcd = null;
-
-        final CaseDetails caseDetails = CaseDetails.builder().build();
-
-        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, false))
-            .thenReturn(caseDetails);
-
-        ResponseEntity<CaseDetails> actual = retrieveCase(checkCcd);
-
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertEquals(caseDetails, actual.getBody());
-
-        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,false);
+        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
     }
 
     @Test
     public void givenNoCaseFound_whenRetrieveCase_thenReturn204() throws DuplicateCaseException {
 
-        final boolean checkCcd = true;
+        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING))
+                .thenReturn(null);
 
-        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, checkCcd))
-            .thenReturn(null);
-
-        ResponseEntity<CaseDetails> actual = retrieveCase(checkCcd);
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrievePetition(AUTHORISATION);
 
         assertEquals(HttpStatus.NO_CONTENT, actual.getStatusCode());
         assertNull(actual.getBody());
 
-        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, checkCcd);
+        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
     }
 
     @Test
     public void givenDuplicateCase_whenRetrieveCase_thenReturnHttpStatus300() throws DuplicateCaseException {
-        final boolean checkCcd = true;
+        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING))
+                .thenThrow(new DuplicateCaseException("Duplicate"));
 
-        when(petitionService.retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, checkCcd))
-            .thenThrow(new DuplicateCaseException("Duplicate"));
-
-        ResponseEntity<CaseDetails> actual = retrieveCase(checkCcd);
+        ResponseEntity<CaseDetails> actual = classUnderTest.retrievePetition(AUTHORISATION);
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES, actual.getStatusCode());
 
-        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, checkCcd);
+        verify(petitionService).retrievePetition(AUTHORISATION, PETITIONER_CASE_STATE_GROUPING);
     }
 
     @Test
@@ -285,12 +261,56 @@ public class PetitionControllerUTest {
         verify(petitionService).getAllDrafts(AUTHORISATION);
     }
 
-    private ResponseEntity<CaseDetails> retrieveCase(Boolean checkCcd) {
-        try {
-            return ReflectionTestUtil.invokeMethod(classUnderTest, "retrieveCase", AUTHORISATION,
-                PETITIONER_CASE_STATE_GROUPING, checkCcd);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    public void givenNoCaseFound_whenAmendToDraftPetition_thenReturn404() throws DuplicateCaseException {
+
+        when(petitionService.createAmendedPetitionDraft(AUTHORISATION))
+            .thenReturn(null);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
+
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
+        assertNull(actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraft(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenAmendToDraftPetition_thenReturnDraftData() throws DuplicateCaseException {
+
+        final Map<String, Object> draftData = new HashMap<>();
+
+        when(petitionService.createAmendedPetitionDraft(AUTHORISATION))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraft(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenAmendToDraftPetition_thenSetDraftDataFromCase() throws DuplicateCaseException {
+        final Map<String, Object> draftData = new HashMap<>();
+        final List<String> previousReasons = new ArrayList<>();
+        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
+
+        previousReasons.add(UNREASONABLE_BEHAVIOUR);
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
+        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.toPattern());
+        draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
+
+        when(petitionService.createAmendedPetitionDraft(AUTHORISATION))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraft(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraft(AUTHORISATION);
     }
 }
