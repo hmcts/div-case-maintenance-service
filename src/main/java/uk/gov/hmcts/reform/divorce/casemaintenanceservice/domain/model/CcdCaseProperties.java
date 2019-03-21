@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CcdCaseProperties {
+    public static final String ISSUE_DATE = "IssueDate";
+
     public static final String D8_CASE_REFERENCE = "D8caseReference";
     public static final String PREVIOUS_REASONS_DIVORCE = "PreviousReasonsForDivorce";
     public static final String D8_REASON_FOR_DIVORCE = "D8ReasonForDivorce";
