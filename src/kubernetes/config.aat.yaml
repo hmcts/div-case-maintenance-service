@@ -15,7 +15,7 @@ data:
   REFORM_ENVIRONMENT : "aat"
   IDAM_CASEWORKER_PASSWORD : ${IDAM_CASEWORKER_PASSWORD}
   AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE : "divorce_ccd_submission"
-  IDAM_API_BASEURL : "https://preprod-idamapi.reform.hmcts.net:3511"
+  IDAM_API_BASEURL : "https://idam-api.aat.platform.hmcts.net"
   REFORM_SERVICE_NAME : "cms"
   IDAM_API_REDIRECT_URL : "https://div-pfe-aat.service.core-compute-aat.internal/authenticated"
   CASE_DATA_STORE_BASEURL : "http://ccd-data-store-api-aat.service.core-compute-aat.internal"

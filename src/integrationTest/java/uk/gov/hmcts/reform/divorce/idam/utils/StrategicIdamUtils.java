@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.divorce.idam.utils;
 import io.restassured.RestAssured;
 import io.restassured.config.RedirectConfig;
 import io.restassured.response.Response;
+import net.serenitybdd.rest.SerenityRest;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -10,7 +11,7 @@ public class StrategicIdamUtils extends IdamUtils {
 
     @Override
     public void upliftUser(String emailAddress, String password, String authToken) {
-        Response response = RestAssured.given()
+        Response response = SerenityRest.given()
             .config(RestAssured.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
             .queryParam("userName", emailAddress)
             .queryParam("password", password)
@@ -25,7 +26,7 @@ public class StrategicIdamUtils extends IdamUtils {
 
     @Override
     public String authenticatePinUser(String pin) {
-        Response response = RestAssured.given()
+        Response response = SerenityRest.given()
             .config(RestAssured.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)))
             .header("pin", pin)
             .queryParam("client_id", CLIENT_ID)

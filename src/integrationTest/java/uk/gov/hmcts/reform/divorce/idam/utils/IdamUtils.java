@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.divorce.idam.utils;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import net.serenitybdd.rest.SerenityRest;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -29,14 +29,14 @@ public abstract class IdamUtils {
     private String idamClientSecret;
 
     public final void createUserInIdam(RegisterUserRequest registerUserRequest) {
-        RestAssured.given()
+        SerenityRest.given()
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(ResourceLoader.objectToJson(registerUserRequest))
             .post(idamCreateUrl());
     }
 
     private Response retrieveUserDetails(String authToken) {
-        return RestAssured.given()
+        return SerenityRest.given()
             .header(HttpHeaders.AUTHORIZATION, authToken)
             .get(idamUserBaseUrl +  "/details")
             .andReturn();
@@ -56,7 +56,7 @@ public abstract class IdamUtils {
     }
 
     private String getAuthCode(String authHeader) {
-        return RestAssured.given()
+        return SerenityRest.given()
             .header(HttpHeaders.AUTHORIZATION, authHeader)
             .queryParam("response_type", CODE)
             .queryParam("client_id", CLIENT_ID)
@@ -67,7 +67,7 @@ public abstract class IdamUtils {
     }
 
     final String getAuthTokenByCode(String code) {
-        return RestAssured.given()
+        return SerenityRest.given()
             .queryParam("code", code)
             .queryParam("grant_type", AUTHORIZATION_CODE)
             .queryParam("redirect_uri", idamRedirectUrl)
@@ -85,7 +85,7 @@ public abstract class IdamUtils {
                 .lastName(lastName)
                 .build();
 
-        Response pinResponse =  RestAssured.given()
+        Response pinResponse =  SerenityRest.given()
             .header(HttpHeaders.AUTHORIZATION, authToken)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(ResourceLoader.objectToJson(generatePinRequest))
