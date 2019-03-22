@@ -31,11 +31,16 @@ ccd:
 
     caseManagementWeb:
         enabled: true # if you need access to the web ui then enable this, otherwise it won't be deployed
+        environment:
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+            logging.level.uk.gov.hmcts.ccd: DEBUG
 
     adminWeb:
         enabled: true
         s2sKey: ${CCD_ADMIN_S2S_KEY}
         idamClientSecret: ${ADMIN_WEB_IDAM_SECRET}
+        environment:
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
 
     printApi:
         # enabled: true # if you need access to the case print service then enable this
