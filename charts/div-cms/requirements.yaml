@@ -3,7 +3,7 @@ dependencies:
       version: ~0.0.12
       repository: "@hmcts"
     - name: ccd
-      version: ~0.5.0
+      version: ~0.6.0
       repository: '@hmcts'
       tags:
           - ccd
