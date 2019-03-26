@@ -29,6 +29,8 @@ ccd:
     definitionStoreApi:
         s2sKey: ${DEFINITION_STORE_S2S_KEY}
 
+    idamApiUrl: ${IDAM_API_BASEURL}
+
     caseManagementWeb:
         enabled: true # if you need access to the web ui then enable this, otherwise it won't be deployed
         environment:
