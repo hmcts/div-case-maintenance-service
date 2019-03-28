@@ -5,10 +5,10 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CcdCaseProperties {
+
     public static final String ISSUE_DATE = "IssueDate";
 
     public static final String D8_CASE_REFERENCE = "D8caseReference";
-    public static final String PREVIOUS_REASONS_DIVORCE = "PreviousReasonsForDivorce";
     public static final String D8_REASON_FOR_DIVORCE = "D8ReasonForDivorce";
     public static final String D8_DIVORCE_WHO = "D8DivorceWho";
     public static final String D8_LEGAL_PROCEEDINGS = "D8LegalProceedings";
@@ -25,4 +25,8 @@ public class CcdCaseProperties {
     public static final String D8_DOCUMENTS_UPLOADED = "D8DocumentsUploaded";
     public static final String D8_REJECT_DOCUMENTS_UPLOADED = "D8RejectDocumentsUploaded";
     public static final String D8_DOCUMENTS_GENERATED = "D8DocumentsGenerated";
+
+    public static final String PREVIOUS_REASONS_DIVORCE = "PreviousReasonsForDivorce";
+    public static final String PREVIOUS_ISSUE_DATE = "PreviousIssueDate";
+
 }

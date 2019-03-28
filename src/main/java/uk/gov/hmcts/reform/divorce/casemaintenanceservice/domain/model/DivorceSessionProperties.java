@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DivorceSessionProperties {
     public static final String PREVIOUS_CASE_ID = "previousCaseId";
-    public static final String PREVIOUS_ISSUE_DATE = "previousIssueDate";
     public static final String PREVIOUS_REASONS_FOR_DIVORCE = "previousReasonsForDivorce";
 
     public static final String LEGAL_PROCEEDINGS = "legalProceedings";
