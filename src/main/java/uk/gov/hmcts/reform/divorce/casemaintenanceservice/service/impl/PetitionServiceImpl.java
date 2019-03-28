@@ -154,6 +154,11 @@ public class PetitionServiceImpl implements PetitionService,
         }
         previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
 
+        Object issueDateFromOriginalCase = caseData.get(CcdCaseProperties.ISSUE_DATE);
+        if (issueDateFromOriginalCase != null) {
+            caseData.put(DivorceSessionProperties.PREVIOUS_ISSUE_DATE, issueDateFromOriginalCase);
+        }
+
         // remove all props from old case we do not want in new draft case
         Arrays.stream(AmendCaseRemovedProps.getPropertiesToRemove()).forEach(caseData::remove);
 
