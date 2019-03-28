@@ -11,6 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.FormatterServiceClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
@@ -288,7 +289,7 @@ public class PetitionServiceImplUTest {
         verify(draftService).createDraft(AUTHORISATION, draftData, true);
         Map<String, Object> ccdCaseDataToBeTransformed = verifyCcdCaseDataToBeTransformed();
         assertThat(ccdCaseDataToBeTransformed, allOf(
-            hasEntry(DivorceSessionProperties.PREVIOUS_ISSUE_DATE, originalCaseIssueDate)
+            hasEntry(CcdCaseProperties.PREVIOUS_ISSUE_DATE, originalCaseIssueDate)
         ));
     }
 
@@ -316,7 +317,7 @@ public class PetitionServiceImplUTest {
         verify(draftService).createDraft(AUTHORISATION, draftData, true);
         Map<String, Object> ccdCaseDataToBeTransformed = verifyCcdCaseDataToBeTransformed();
         assertThat(ccdCaseDataToBeTransformed, allOf(
-            not(hasKey(DivorceSessionProperties.PREVIOUS_ISSUE_DATE))
+            not(hasKey(CcdCaseProperties.PREVIOUS_ISSUE_DATE))
         ));
     }
 

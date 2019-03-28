@@ -156,7 +156,7 @@ public class PetitionServiceImpl implements PetitionService,
 
         Object issueDateFromOriginalCase = caseData.get(CcdCaseProperties.ISSUE_DATE);
         if (issueDateFromOriginalCase != null) {
-            caseData.put(DivorceSessionProperties.PREVIOUS_ISSUE_DATE, issueDateFromOriginalCase);
+            caseData.put(CcdCaseProperties.PREVIOUS_ISSUE_DATE, issueDateFromOriginalCase);
         }
 
         // remove all props from old case we do not want in new draft case
