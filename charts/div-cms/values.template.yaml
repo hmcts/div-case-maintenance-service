@@ -4,16 +4,19 @@ java:
     image: ${IMAGE_NAME}
     ingressHost: ${SERVICE_FQDN}
     environment:
-        AUTH_PROVIDER_SERVICE_CLIENT_KEY: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY}
-        AUTH2_CLIENT_SECRET: ${AUTH2_CLIENT_SECRET}
-        DRAFT_STORE_API_ENCRYPTION_KEY_VALUE: ${DRAFT_STORE_API_ENCRYPTION_KEY_VALUE}
-        IDAM_CASEWORKER_PASSWORD: ${IDAM_CASEWORKER_PASSWORD}
         AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE: "divorce_ccd_submission"
         REFORM_SERVICE_NAME: "cms"
         REFORM_TEAM: "div"
         AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS: "900"
         LOG_LEVEL: DEBUG
-
+    keyVaults:
+        "div":
+            resourceGroup: div
+            secrets:
+                - ccd-submission-s2s-auth-secret
+                - idam-secret
+                - draft-store-api-encryption-key
+                - idam-caseworker-password
 ccd:
     ingressHost: ${SERVICE_FQDN}
     ingressIP: ${INGRESS_IP}
@@ -62,4 +65,4 @@ ccd:
     memoryRequests: 1024Mi
     memoryLimits: 2048Mi
 tags:
-    ccd: true
+    ccd: false

@@ -24,16 +24,18 @@ public class GlobalExceptionHandlerUTest {
     public void whenHandleBadRequestException_thenReturnUnderLyingError() {
         final int statusCode = HttpStatus.BAD_REQUEST.value();
         final String errorMessage = "some error message";
+        final String errorContent = "some error content";
 
         final FeignException feignException = mock(FeignException.class);
 
         when(feignException.status()).thenReturn(statusCode);
         when(feignException.getMessage()).thenReturn(errorMessage);
+        when(feignException.contentUTF8()).thenReturn(errorContent);
 
         ResponseEntity<Object> response = classUnderTest.handleBadRequestException(feignException);
 
         assertEquals(statusCode, response.getStatusCodeValue());
-        assertEquals(errorMessage, response.getBody());
+        assertEquals(errorMessage + " - " + errorContent, response.getBody());
     }
 
     @Test

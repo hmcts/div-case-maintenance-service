@@ -5,7 +5,6 @@ import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import feign.FeignException;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Ignore
 public class CcdSubmissionITest extends AuthIdamMockSupport {
     private static final String API_URL = "/casemaintenance/version/1/submit";
     private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/addresses.json";

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import feign.FeignException;
+import feign.Request;
 import feign.Response;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,6 +104,7 @@ public class UnlinkUserITest  extends AuthIdamMockSupport {
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
 
         Response mockResponse = Response.builder()
+            .request(Request.create(Request.HttpMethod.GET, "http//example.com", Collections.emptyMap(), null))
             .status(NOT_FOUND)
             .headers(Collections.emptyMap())
             .build();
