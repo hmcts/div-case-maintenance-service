@@ -21,7 +21,7 @@ idam:
     url: ${IDAM_API_BASEURL:http://localhost:4503}
     redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
   caseworker:
-    username: dummycaseworker@test.com
+    username: ${IDAM_CASEWORKER_USERNAME:dummy}
     password: ${IDAM_CASEWORKER_PASSWORD:dummy}
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
