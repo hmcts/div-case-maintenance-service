@@ -4,6 +4,7 @@ import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
 import static java.util.Collections.singletonMap;
@@ -62,11 +63,11 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
     @Test
     public void givenOneAosRespondedCaseInCcd_whenRetrieveAosCase_thenReturnTheCase() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
+        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userDetails, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -74,13 +75,13 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
     @Test
     public void givenAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnTheFirstCase() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
+        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userDetails, TEST_AOS_AWAITING_DN);
 
-        createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
+        createACaseUpdateStateAndReturnTheCase(userDetails, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -89,15 +90,15 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     @Test
     public void givenMultipleCompletedAndOtherCaseInCcd_whenRetrieveAosCase_thenReturnFirstCompletedCase()
             throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        getCaseIdFromSubmittingANewCase(userToken);
+        getCaseIdFromSubmittingANewCase(userDetails);
 
-        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
+        Response createCaseResponse = createACaseUpdateStateAndReturnTheCase(userDetails, TEST_AOS_AWAITING_DN);
 
-        createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_AWAITING_DN);
+        createACaseUpdateStateAndReturnTheCase(userDetails, TEST_AOS_AWAITING_DN);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long) createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -105,11 +106,11 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
     @Test
     public void givenAosStartedCaseInCcd_whenRetrieveAosCase_thenReturnTheCase() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        final Long caseId = createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
+        final Long caseId = createACaseUpdateStateAndReturnTheCase(userDetails, TEST_AOS_RESPONDED_EVENT).path("id");
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
@@ -118,32 +119,32 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     @Test
     public void givenMultipleAosStartedAndNoAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnMultipleChoice()
             throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
-        createACaseUpdateStateAndReturnTheCase(userToken, TEST_AOS_RESPONDED_EVENT).path("id");
+        createACaseUpdateStateAndReturnTheCase(userDetails, TEST_AOS_RESPONDED_EVENT).prettyPrint();
+        createACaseUpdateStateAndReturnTheCase(userDetails, TEST_AOS_RESPONDED_EVENT).prettyPrint();
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenCasesInNotAwaitingPaymentOrAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnNull() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        getCaseIdFromSubmittingANewCase(userToken);
+        getCaseIdFromSubmittingANewCase(userDetails);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.NO_CONTENT.value(), cmsResponse.getStatusCode());
         assertEquals(cmsResponse.asString(), "");
     }
 
-    private Response createACaseUpdateStateAndReturnTheCase(String userToken, String eventName) throws Exception {
-        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+    private Response createACaseUpdateStateAndReturnTheCase(UserDetails userDetails, String eventName) throws Exception {
+        Long caseId = getCaseIdFromSubmittingANewCase(userDetails);
 
-        return updateCase((String) null, caseId, eventName, userToken);
+        return updateCase((String) null, caseId, eventName, userDetails.getAuthToken());
     }
 
     @Override

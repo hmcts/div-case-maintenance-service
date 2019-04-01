@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.petition;
 
 import io.restassured.response.Response;
+import org.apache.catalina.User;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
@@ -49,11 +50,11 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
     @Test
     public void givenOneSubmittedCaseInCcd_whenRetrieveCase_thenReturnTheCase() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userToken);
+        Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userDetails);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -61,13 +62,13 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
     @Test
     public void givenMultipleSubmittedCaseInCcd_whenRetrieveCase_thenReturnTheFirstCase() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userToken);
+        Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userDetails);
 
-        createACaseMakePaymentAndReturnTheCase(userToken);
+        createACaseMakePaymentAndReturnTheCase(userDetails);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -76,15 +77,15 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     @Test
     public void givenMultipleSubmittedAndOtherCaseInCcd_whenRetrieveCase_thenReturnFirstSubmittedCase()
         throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        getCaseIdFromSubmittingANewCase(userToken);
+        getCaseIdFromSubmittingANewCase(userDetails);
 
-        Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userToken);
+        Response createCaseResponse = createACaseMakePaymentAndReturnTheCase(userDetails);
 
-        createACaseMakePaymentAndReturnTheCase(userToken);
+        createACaseMakePaymentAndReturnTheCase(userDetails);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
@@ -92,11 +93,11 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
 
     @Test
     public void givenOneAwaitingPaymentCaseInCcd_whenRetrieveCase_thenReturnTheCase() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        final Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+        final Long caseId = getCaseIdFromSubmittingANewCase(userDetails);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
@@ -105,12 +106,12 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     @Test
     public void givenMultipleAwaitingPaymentAndNoSubmittedCaseInCcd_whenRetrieveCase_thenReturnMultipleChoice()
         throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        getCaseIdFromSubmittingANewCase(userToken);
-        getCaseIdFromSubmittingANewCase(userToken);
+        getCaseIdFromSubmittingANewCase(userDetails);
+        getCaseIdFromSubmittingANewCase(userDetails);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
@@ -129,7 +130,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     public void givenAmendPetitionCaseAndNoDraft_whenRetrieveCase_thenReturnAmendDraft() throws Exception {
         final UserDetails userDetails = getUserDetails();
 
-        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails);
 
         Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
@@ -143,7 +144,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         final UserDetails userDetails = getUserDetails();
         final String draftFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "existing-draft.json";
 
-        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails);
 
         createDraft(userDetails.getAuthToken(), draftFileName,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
@@ -162,7 +163,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         final UserDetails userDetails = getUserDetails();
         final String amendDraftFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "amend-draft.json";
 
-        createACaseMakePaymentAndAmendTheCase(userDetails.getAuthToken());
+        createACaseMakePaymentAndAmendTheCase(userDetails);
 
         createDraft(userDetails.getAuthToken(), amendDraftFileName,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
@@ -173,17 +174,17 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         assertEquals("01234567890", cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
     }
 
-    private Response createACaseMakePaymentAndReturnTheCase(String userToken) throws Exception {
-        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+    private Response createACaseMakePaymentAndReturnTheCase(UserDetails userDetails) throws Exception {
+        Long caseId = getCaseIdFromSubmittingANewCase(userDetails);
 
-        return updateCase("payment-made.json", caseId, EVENT_ID, userToken);
+        return updateCase("payment-made.json", caseId, EVENT_ID, userDetails.getAuthToken());
     }
 
-    private Response createACaseMakePaymentAndAmendTheCase(String userToken) throws Exception {
-        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+    private Response createACaseMakePaymentAndAmendTheCase(UserDetails userDetails) throws Exception {
+        Long caseId = getCaseIdFromSubmittingANewCase(userDetails);
 
-        updateCase("basic-update.json", caseId, TEST_AOS_RESPONDED_EVENT, userToken);
-        updateCase("basic-update.json", caseId, AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT, userToken);
-        return updateCase("basic-update.json", caseId, AMEND_PETITION_EVENT, userToken);
+        updateCase("basic-update.json", caseId, TEST_AOS_RESPONDED_EVENT, userDetails.getAuthToken());
+        updateCase("basic-update.json", caseId, AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT, userDetails.getAuthToken());
+        return updateCase("basic-update.json", caseId, AMEND_PETITION_EVENT, userDetails.getAuthToken());
     }
 }

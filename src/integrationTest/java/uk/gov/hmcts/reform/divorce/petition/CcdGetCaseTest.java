@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.divorce.petition;
 import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
 import static org.junit.Assert.assertEquals;
@@ -37,11 +38,11 @@ public class CcdGetCaseTest extends PetitionSupport {
 
     @Test
     public void givenSingleCaseInCcd_whenGetCase_thenReturnTheCase() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        Long caseId = getCaseIdFromSubmittingANewCase(userToken);
+        Long caseId = getCaseIdFromSubmittingANewCase(userDetails);
 
-        Response cmsResponse = getCase(userToken);
+        Response cmsResponse = getCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(caseId, cmsResponse.path("id"));
@@ -49,12 +50,12 @@ public class CcdGetCaseTest extends PetitionSupport {
 
     @Test
     public void givenMultipleSubmittedCaseInCcd_whenGetCase_thenReturn300() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
 
-        getCaseIdFromSubmittingANewCase(userToken);
-        getCaseIdFromSubmittingANewCase(userToken);
+        getCaseIdFromSubmittingANewCase(userDetails);
+        getCaseIdFromSubmittingANewCase(userDetails);
 
-        Response cmsResponse = retrieveCase(userToken);
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
