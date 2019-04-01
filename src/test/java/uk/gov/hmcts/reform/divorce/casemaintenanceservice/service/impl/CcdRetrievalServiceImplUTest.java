@@ -21,14 +21,20 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CcdRetrievalServiceImplUTest {
@@ -435,6 +441,42 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
+    public void givenMultipleCaseInCcd_whenRespondentRetrieveCase_thenReturnCaseWithValidRole() {
+
+        CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
+            ImmutableMap.of(RESP_EMAIL_ADDRESS, USER_EMAIL));
+        List<CaseDetails> caseDetailsList = Arrays.asList(
+            createCaseDetails(1L, CaseState.SUBMITTED.getValue()),
+            expectedCase);
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(USER_DETAILS);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(caseDetailsList);
+
+        assertThat(expectedCase, equalTo(classUnderTest.retrieveCase(AUTHORISATION, RESPONDENT)));
+    }
+
+    @Test
+    public void givenMultipleCaseInCcd_whenCoRespondentRetrieveCase_thenReturnCaseWithValidRole() {
+
+        CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
+            ImmutableMap.of(CO_RESP_EMAIL_ADDRESS, USER_EMAIL));
+        List<CaseDetails> caseDetailsList = Arrays.asList(
+            createCaseDetails(1L, CaseState.SUBMITTED.getValue()),
+            expectedCase);
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(USER_DETAILS);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(caseDetailsList);
+
+        assertThat(expectedCase, equalTo(classUnderTest.retrieveCase(AUTHORISATION, RESPONDENT)));
+    }
+
+    @Test
     public void givenSingleCaseInCcd_whenRetrieveCaseWithToken_thenReturnTheCase() {
         CaseDetails caseDetails = createCaseDetails(1L, CaseState.SUBMITTED.getValue());
         List<CaseDetails> caseDetailsList = Collections.singletonList(caseDetails);
@@ -531,6 +573,15 @@ public class CcdRetrievalServiceImplUTest {
             .state(state)
             .createdDate(createdTime)
             .data(ImmutableMap.of(D8_PETITIONER_EMAIL, USER_EMAIL))
+            .build();
+    }
+
+    private CaseDetails createCaseDetails(Long id, String state, Map<String, Object> caseData) {
+        return CaseDetails.builder()
+            .id(id)
+            .state(state)
+            .createdDate(LocalDateTime.now())
+            .data(caseData)
             .build();
     }
 

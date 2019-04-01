@@ -32,7 +32,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
     @Override
     public CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
-                                    DivCaseRole role) throws DuplicateCaseException {
+                                    DivCaseRole role) {
         UserDetails userDetails = getUserDetails(authorisation);
 
         List<CaseDetails> caseDetailsList = getCaseListForUser(userDetails, role);
@@ -88,7 +88,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     }
 
     @Override
-    public CaseDetails retrieveCase(String authorisation, DivCaseRole role) throws DuplicateCaseException {
+    public CaseDetails retrieveCase(String authorisation, DivCaseRole role) {
         UserDetails userDetails = getUserDetails(authorisation);
 
         List<CaseDetails> caseDetailsList = getCaseListForUser(userDetails, role);
@@ -99,7 +99,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         //Filter out amended cases
         caseDetailsList = caseDetailsList.stream()
-            .filter(caseDetails -> caseDetails.getState() != CaseState.AMEND_PETITION.getValue())
+            .filter(caseDetails -> !caseDetails.getState().equals(CaseState.AMEND_PETITION.getValue()))
             .collect(Collectors.toList());
 
         if (caseDetailsList.size() > 1) {
