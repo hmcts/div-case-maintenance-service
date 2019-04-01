@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -115,7 +117,7 @@ public class GetCaseITest extends AuthIdamMockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        final CaseDetails caseDetails = CaseDetails.builder().build();
+        final CaseDetails caseDetails = createCaseDetails();
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -137,8 +139,8 @@ public class GetCaseITest extends AuthIdamMockSupport {
         final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        final CaseDetails caseDetails1 = CaseDetails.builder().build();
-        final CaseDetails caseDetails2 = CaseDetails.builder().build();
+        final CaseDetails caseDetails1 = createCaseDetails();
+        final CaseDetails caseDetails2 = createCaseDetails();
 
         when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi
@@ -150,4 +152,12 @@ public class GetCaseITest extends AuthIdamMockSupport {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isMultipleChoices());
     }
+
+    private CaseDetails createCaseDetails() {
+        return CaseDetails
+            .builder()
+            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, USER_EMAIL))
+            .build();
+    }
+
 }
