@@ -99,7 +99,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         //Filter out amended cases
         caseDetailsList = caseDetailsList.stream()
-            .filter(caseDetails -> !caseDetails.getState().equals(CaseState.AMEND_PETITION.getValue()))
+            .filter(caseDetails -> !CaseState.AMEND_PETITION.getValue().equals(caseDetails.getState()))
             .collect(Collectors.toList());
 
         if (caseDetailsList.size() > 1) {
