@@ -411,6 +411,16 @@ public class PetitionServiceImplUTest {
         assertThat(petition.getData(), equalTo(expectedDraft.getDocument()));
     }
 
+    @Test
+    public void givenOnlyAmendCase_whenRetrieveCase_thenReturnNull() {
+        final CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.AMEND_PETITION.getValue())
+            .build();
+
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(caseDetails);
+        assertNull(classUnderTest.retrievePetition(AUTHORISATION));
+    }
+
     private Draft buildDraft(Map<String, Object> properties) {
         return new Draft(DRAFT_ID, properties, DIVORCE_DRAFT_FORMAT);
     }

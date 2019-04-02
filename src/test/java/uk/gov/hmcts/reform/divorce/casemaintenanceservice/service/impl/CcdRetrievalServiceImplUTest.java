@@ -477,6 +477,36 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
+    public void givenOnlyAmendCase_whenRetrieveCase_thenReturnNull() {
+
+        List<CaseDetails> caseDetailsList = Arrays.asList(
+            createCaseDetails(1L, CaseState.AMEND_PETITION.getValue()));
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(USER_DETAILS);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(caseDetailsList);
+
+        assertNull(classUnderTest.retrieveCase(AUTHORISATION, PETITIONER));
+    }
+
+    @Test
+    public void givenNoDivRole_whenRetrieveCase_thenReturnNull() {
+
+        List<CaseDetails> caseDetailsList = Arrays.asList(
+            createCaseDetails(1L, CaseState.SUBMITTED.getValue()));
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(USER_DETAILS);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi
+            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
+                Collections.emptyMap())).thenReturn(caseDetailsList);
+
+        assertNull(classUnderTest.retrieveCase(AUTHORISATION, null));
+    }
+
+    @Test
     public void givenSingleCaseInCcd_whenRetrieveCaseWithToken_thenReturnTheCase() {
         CaseDetails caseDetails = createCaseDetails(1L, CaseState.SUBMITTED.getValue());
         List<CaseDetails> caseDetailsList = Collections.singletonList(caseDetails);

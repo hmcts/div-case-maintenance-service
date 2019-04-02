@@ -93,14 +93,16 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         List<CaseDetails> caseDetailsList = getCaseListForUser(userDetails, role);
 
+        //Filter out amended cases
+        caseDetailsList = Optional.ofNullable(caseDetailsList)
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(caseDetails -> !CaseState.AMEND_PETITION.getValue().equals(caseDetails.getState()))
+            .collect(Collectors.toList());
+
         if (CollectionUtils.isEmpty(caseDetailsList)) {
             return null;
         }
-
-        //Filter out amended cases
-        caseDetailsList = caseDetailsList.stream()
-            .filter(caseDetails -> !CaseState.AMEND_PETITION.getValue().equals(caseDetails.getState()))
-            .collect(Collectors.toList());
 
         if (caseDetailsList.size() > 1) {
             throw new DuplicateCaseException(String.format("There are [%d] case for the user [%s]",
@@ -153,6 +155,11 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     }
 
     private boolean userHasSpecifiedRole(CaseDetails caseDetails, String userEmail, DivCaseRole role) {
+
+        if (role == null) {
+            return false;
+        }
+
         switch (role) {
             case PETITIONER:
                 return  userEmail.equalsIgnoreCase((String) caseDetails.getData().get(D8_PETITIONER_EMAIL));
