@@ -49,6 +49,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -443,7 +444,11 @@ public class RetrievePetitionITest extends AuthIdamMockSupport {
     }
 
     private CaseDetails createCaseDetails(Long id, String state) {
-        return CaseDetails.builder().id(id).state(state).build();
+        return CaseDetails.builder()
+            .id(id)
+            .state(state)
+            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, USER_EMAIL))
+            .build();
     }
 
     private Draft createDraft(String id, String documentType) {

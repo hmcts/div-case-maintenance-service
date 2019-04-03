@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.divorce.ccd;
 import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
@@ -22,11 +23,12 @@ public class CcdSubmissionTest extends PetitionSupport {
         + "IdamApiClient#retrieveUserDetails(String); content:\n";
     private static final String REQUEST_BODY_NOT_FOUND = "Required request body is missing";
 
+    private static final String USER_EMAIL = "test@test.com";
 
     @Test
     public void shouldReturnCaseIdForValidAddressesSessionData() throws Exception {
         String expectedStatus = "AwaitingHWFDecision";
-        Response caseSubmitted = submitCase("addresses.json", getUserToken());
+        Response caseSubmitted = submitCase("addresses.json", getUserDetails());
         assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
         assertCaseStatus(caseSubmitted, expectedStatus);
 
@@ -35,7 +37,7 @@ public class CcdSubmissionTest extends PetitionSupport {
     @Test
     public void shouldReturnCaseIdForValidAddressesSessionDatas() throws Exception {
         String expectedStatus = "AwaitingPayment";
-        Response caseSubmitted = submitCase("addresses-no-hwf.json", getUserToken());
+        Response caseSubmitted = submitCase("addresses-no-hwf.json", getUserDetails());
         assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
         assertCaseStatus(caseSubmitted, expectedStatus);
     }
@@ -87,7 +89,9 @@ public class CcdSubmissionTest extends PetitionSupport {
 
     @Test
     public void shouldReturnCaseIdForValidAddressesSessionDataAndDeleteDraft() throws Exception {
-        final String userToken = getUserToken();
+        final UserDetails userDetails = getUserDetails();
+
+        final String userToken = userDetails.getAuthToken();
 
         saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json", Collections.emptyMap());
 
@@ -95,7 +99,7 @@ public class CcdSubmissionTest extends PetitionSupport {
 
         assertEquals(1, ((List)draftsResponseBefore.getBody().path("data")).size());
 
-        Response cmsResponse = submitCase("addresses.json", userToken);
+        Response cmsResponse = submitCase("addresses.json", userDetails);
 
         assertOkResponseAndCaseIdIsNotZero(cmsResponse);
 
@@ -109,7 +113,10 @@ public class CcdSubmissionTest extends PetitionSupport {
 
     @Test
     public void shouldReturnErrorForInvalidUserJwtToken() throws Exception {
-        Response cmsResponse = submitCase("addresses.json", INVALID_USER_TOKEN);
+        Response cmsResponse = submitCase("addresses.json", UserDetails.builder()
+            .authToken(INVALID_USER_TOKEN)
+            .emailAddress(USER_EMAIL)
+            .build());
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
         assertEquals(UNAUTHORISED_JWT_EXCEPTION, cmsResponse.asString());

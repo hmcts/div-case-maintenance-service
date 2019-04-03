@@ -30,6 +30,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
 
 @Service
 @Slf4j
@@ -56,7 +58,7 @@ public class PetitionServiceImpl implements PetitionService,
 
         Draft draft = draftService.getDraft(authorisation);
 
-        CaseDetails caseDetails = ccdRetrievalService.retrieveCase(authorisation, caseStateGrouping);
+        CaseDetails caseDetails = ccdRetrievalService.retrieveCase(authorisation, caseStateGrouping, PETITIONER);
 
         if (caseDetails != null && CaseState.AMEND_PETITION.getValue().equalsIgnoreCase(caseDetails.getState())) {
             // If draft does not exist or is not an AmendPetition draft, return case as draft
@@ -77,12 +79,12 @@ public class PetitionServiceImpl implements PetitionService,
 
     @Override
     public CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException {
-        return ccdRetrievalService.retrieveCase(authorisation);
+        return ccdRetrievalService.retrieveCase(authorisation, PETITIONER);
     }
 
     @Override
     public CaseDetails retrievePetitionForAos(String authorisation) throws DuplicateCaseException {
-        return ccdRetrievalService.retrieveCase(authorisation, RESPONDENT_CASE_STATE_GROUPING);
+        return ccdRetrievalService.retrieveCase(authorisation, RESPONDENT_CASE_STATE_GROUPING, RESPONDENT);
     }
 
     @Override
