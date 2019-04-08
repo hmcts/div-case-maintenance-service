@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.divorce.context.IntegrationTest;
+import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.util.ResourceLoader;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class CcdSubmissionSupport extends IntegrationTest {
     private static final String PAYLOAD_CONTEXT_PATH = "ccd-submission-payload/";
-
+    private static final String PETITIONER_DEFAULT_EMAIL = "simulate-delivered@notifications.service.gov.uk";
     @Value("${case.maintenance.submission.context-path}")
     private String contextPath;
 
@@ -31,16 +32,11 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     }
 
     private Response submitCase(String fileName) throws Exception {
-        return
-            RestUtil.postToRestService(
-                getSubmissionRequestUrl(),
-                getHeaders(),
-                loadJson(fileName)
-            );
+        return submitCase(fileName, getUserDetails());
     }
 
-    protected Response submitCase(String fileName, String userToken) throws Exception {
-        return submitCaseJson(loadJson(fileName), userToken);
+    protected Response submitCase(String fileName, UserDetails userDetails) throws Exception {
+        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken());
     }
 
     protected Response submitCaseJson(String jsonCase, String userToken) {
@@ -52,9 +48,11 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
             );
     }
 
-    private String loadJson(String fileName) throws Exception {
+    String loadJson(String fileName, UserDetails userDetails) throws Exception {
         // Update document links in the Json String to be current environment
-        return loadJson(fileName, PAYLOAD_CONTEXT_PATH).replaceAll("-aat", "-".concat(testEnvironment));
+        return loadJson(fileName, PAYLOAD_CONTEXT_PATH)
+            .replaceAll("-aat", "-".concat(testEnvironment))
+            .replaceAll(PETITIONER_DEFAULT_EMAIL, userDetails.getEmailAddress());
     }
 
     String loadJson(String fileName, String contextPath) throws Exception {

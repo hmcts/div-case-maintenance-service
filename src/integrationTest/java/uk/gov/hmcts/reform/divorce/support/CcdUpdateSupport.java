@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.divorce.support;
 
 import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
 import java.util.Map;
@@ -38,14 +39,14 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
         return serverUrl + contextPath + "/" + caseId + "/" + eventId;
     }
 
-    protected Long getCaseIdFromSubmittingANewCase(String userToken) throws Exception {
-        Response cmsResponse = submitCase("addresses-no-hwf.json", userToken);
+    protected Long getCaseIdFromSubmittingANewCase(UserDetails userDetails) throws Exception {
+        Response cmsResponse = submitCase("addresses-no-hwf.json", userDetails);
 
         return cmsResponse.path("id");
     }
 
-    protected Long getCaseIdFromCompletedCase(String userToken) throws Exception {
-        Response cmsResponse = submitCase("completed-case-submitted.json", userToken);
+    protected Long getCaseIdFromCompletedCase(UserDetails userDetails) throws Exception {
+        Response cmsResponse = submitCase("completed-case-submitted.json", userDetails);
 
         return cmsResponse.path("id");
     }

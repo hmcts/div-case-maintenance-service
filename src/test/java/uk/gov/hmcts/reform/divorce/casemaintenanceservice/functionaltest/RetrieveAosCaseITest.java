@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import com.google.common.collect.ImmutableMap;
 import joptsimple.internal.Strings;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -48,6 +49,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -405,7 +407,11 @@ public class RetrieveAosCaseITest extends AuthIdamMockSupport {
     }
 
     private CaseDetails createCaseDetails(Long id, String state) {
-        return CaseDetails.builder().id(id).state(state).build();
+        return CaseDetails.builder()
+            .id(id)
+            .data(ImmutableMap.of(RESP_EMAIL_ADDRESS, USER_EMAIL))
+            .state(state)
+            .build();
     }
 
     private Draft createDraft(String id, String documentType) {

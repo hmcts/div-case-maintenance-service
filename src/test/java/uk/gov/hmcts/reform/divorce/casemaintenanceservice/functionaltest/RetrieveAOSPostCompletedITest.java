@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,7 @@ import java.util.Collections;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 
 @RunWith(Parameterized.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -123,7 +125,11 @@ public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
     }
 
     private CaseDetails createCaseDetails(Long id, String state) {
-        return CaseDetails.builder().id(id).state(state).build();
+        return CaseDetails.builder()
+            .id(id)
+            .state(state)
+            .data(ImmutableMap.of(RESP_EMAIL_ADDRESS, USER_EMAIL))
+            .build();
     }
 
 }

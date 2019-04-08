@@ -140,6 +140,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         caseData.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
         caseData.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
         caseData.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES);
+        caseData.put(CcdCaseProperties.D8_PETITIONER_EMAIL, USER_EMAIL);
         final CaseDetails oldCase = CaseDetails.builder().data(caseData)
             .id(Long.decode(TEST_CASE_ID)).build();
 
@@ -148,6 +149,7 @@ public class AmendedPetitionDraftServiceITest extends AuthIdamMockSupport {
         caseDataFormatRequest.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
         caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
         caseDataFormatRequest.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES);
+        caseDataFormatRequest.put(CcdCaseProperties.D8_PETITIONER_EMAIL, USER_EMAIL);
         caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
 
         final Map<String, Object> draftData = new HashMap<>();
