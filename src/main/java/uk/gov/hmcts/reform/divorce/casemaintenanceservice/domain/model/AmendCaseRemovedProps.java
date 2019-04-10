@@ -9,7 +9,6 @@ public class AmendCaseRemovedProps {
     }
 
     private static String[] propertiesToRemove = new String[]{
-        "D8caseReference",
         "createdDate",
         "D8ReasonForDivorce",
         "D8DerivedStatementOfCase",
