@@ -137,6 +137,7 @@ def versions = [
     guava: '27.0.1-jre',
     bcpkixJdk15on: '1.60',
     springSecurityRsa: '1.0.8.RELEASE',
+    springSecurityCrypto: '5.1.5.RELEASE'
 ]
 
 dependencies {
@@ -199,6 +200,9 @@ dependencies {
             force = true
     }
 
+    compile (group: 'org.springframework.security', name:'spring-security-crypto', version: versions.springSecurityCrypto) {
+        force = true
+    }
 
     compile group: 'org.pitest', name: 'pitest', version: versions.pitest
     compile group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
