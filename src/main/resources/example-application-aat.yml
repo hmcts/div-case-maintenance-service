@@ -1,0 +1,31 @@
+
+idam:
+    api:
+        url: ${IDAM_API_BASEURL:https://idam-api.aat.platform.hmcts.net}
+        redirect-url: ${IDAM_API_REDIRECT_URL:https://div-pfe-aat.service.core-compute-aat.internal/authenticated}
+    caseworker:
+        username: ${IDAM_CASEWORKER_USERNAME:replace_me}
+        password: ${IDAM_CASEWORKER_PASSWORD:replace_me}
+    s2s-auth:
+        totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:replace_me}
+        url: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://rpe-service-auth-provider-aat.service.core-compute-aat.internal}
+
+core_case_data:
+    api:
+        url: ${CASE_DATA_STORE_BASEURL:http://ccd-data-store-api-aat.service.core-compute-aat.internal}
+
+draft:
+    store:
+        api:
+            baseurl: ${DRAFT_STORE_API_BASEURL:http://draft-store-service-aat.service.core-compute-aat.internal}
+
+case:
+    formatter:
+        service:
+            api:
+                baseurl: ${CASE_FORMATTER_SERVICE_API_BASEURL:http://div-cfs-aat.service.core-compute-aat.internal}
+
+auth2:
+    client:
+        id: divorce
+        secret: ${AUTH2_CLIENT_SECRET:replace_me}
