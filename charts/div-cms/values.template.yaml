@@ -1,0 +1,68 @@
+java:
+    applicationPort: 4010
+    # Don't modify below here
+    image: ${IMAGE_NAME}
+    ingressHost: ${SERVICE_FQDN}
+    environment:
+        AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE: "divorce_ccd_submission"
+        REFORM_SERVICE_NAME: "cms"
+        REFORM_TEAM: "div"
+        AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS: "900"
+        LOG_LEVEL: DEBUG
+    keyVaults:
+        "div":
+            resourceGroup: div
+            secrets:
+                - ccd-submission-s2s-auth-secret
+                - idam-secret
+                - draft-store-api-encryption-key
+                - idam-caseworker-password
+ccd:
+    ingressHost: ${SERVICE_FQDN}
+    ingressIP: ${INGRESS_IP}
+    consulIP: ${CONSUL_LB_IP}
+
+    apiGateway:
+        s2sKey: ${API_GATEWAY_S2S_KEY}
+        idamClientSecret: ${API_GATEWAY_IDAM_SECRET}
+
+    dataStoreApi:
+        s2sKey: ${DATA_STORE_S2S_KEY}
+
+    definitionStoreApi:
+        s2sKey: ${DEFINITION_STORE_S2S_KEY}
+
+    idamApiUrl: ${IDAM_API_BASEURL}
+
+    caseManagementWeb:
+        enabled: true # if you need access to the web ui then enable this, otherwise it won't be deployed
+        environment:
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+            logging.level.uk.gov.hmcts.ccd: DEBUG
+
+    adminWeb:
+        enabled: true
+        s2sKey: ${CCD_ADMIN_S2S_KEY}
+        idamClientSecret: ${ADMIN_WEB_IDAM_SECRET}
+        environment:
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+
+    printApi:
+        # enabled: true # if you need access to the case print service then enable this
+        s2sKey: ${PRINT_S2S_KEY}
+        probateTemplateUrl: http://${SERVICE_NAME}-probate-app
+
+    importer:
+        definitions:
+            - https://github.com/hmcts/div-case-maintenance-service/raw/Helm_CCD/src/test/resources/CCD_Divorce_Test.xlsx
+        userRoles:
+            - caseworker-bulkscan
+            - citizen
+            - caseworker-divorce-courtadmin_beta
+            - caseworker-divorce-courtadmin
+            - caseworker-divorce-solicitor
+
+    memoryRequests: 1024Mi
+    memoryLimits: 2048Mi
+tags:
+    ccd: false

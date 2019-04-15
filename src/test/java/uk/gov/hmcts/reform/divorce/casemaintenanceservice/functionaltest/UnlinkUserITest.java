@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import feign.FeignException;
+import feign.Request;
 import feign.Response;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "eureka.client.enabled=false"
     })
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UnlinkUserITest  extends AuthIdamMockSupport {
 
     private static final String CASE_ID = "caseId";
@@ -103,6 +104,7 @@ public class UnlinkUserITest  extends AuthIdamMockSupport {
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
 
         Response mockResponse = Response.builder()
+            .request(Request.create(Request.HttpMethod.GET, "http//example.com", Collections.emptyMap(), null))
             .status(NOT_FOUND)
             .headers(Collections.emptyMap())
             .build();

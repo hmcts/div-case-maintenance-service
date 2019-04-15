@@ -1,0 +1,14 @@
+java:
+    environment:
+        AUTH_PROVIDER_SERVICE_CLIENT_BASEURL : "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+        DRAFT_STORE_API_BASEURL : "http://draft-store-service-aat.service.core-compute-aat.internal"
+        IDAM_CASEWORKER_USERNAME : "DivCaseWorker@AAT.com"
+        APPLICATION_INSIGHTS_IKEY : "63c30ef9-a27b-4d38-8afc-4c180fb6ac33"
+        CASE_FORMATTER_SERVICE_API_BASEURL : "http://div-cfs-aat.service.core-compute-aat.internal"
+        REFORM_ENVIRONMENT : "aat"
+        IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
+        IDAM_API_REDIRECT_URL : "https://div-pfe-aat.service.core-compute-aat.internal/authenticated"
+        CASE_DATA_STORE_BASEURL : "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
+#        CASE_DATA_STORE_BASEURL : http://${SERVICE_NAME}-data-store-api
+        APPINSIGHTS_INSTRUMENTATIONKEY : "63c30ef9-a27b-4d38-8afc-4c180fb6ac33"
+#        CCD_GATEWAY_HOST: http://${SERVICE_NAME}-api-gateway
