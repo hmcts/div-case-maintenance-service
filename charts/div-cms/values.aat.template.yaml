@@ -4,7 +4,7 @@ java:
         DRAFT_STORE_API_BASEURL : "http://draft-store-service-aat.service.core-compute-aat.internal"
         IDAM_CASEWORKER_USERNAME : "DivCaseWorker@AAT.com"
         APPLICATION_INSIGHTS_IKEY : "63c30ef9-a27b-4d38-8afc-4c180fb6ac33"
-        CASE_FORMATTER_SERVICE_API_BASEURL : "https://div-cfs-pr-123.service.core-compute-preview.internal"
+        CASE_FORMATTER_SERVICE_API_BASEURL : "http://div-cfs-pr-123.service.core-compute-preview.internal"
         REFORM_ENVIRONMENT : "aat"
         IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
         IDAM_API_REDIRECT_URL : "https://div-pfe-aat.service.core-compute-aat.internal/authenticated"
