@@ -45,7 +45,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @ContextConfiguration(
         classes = {CaseMaintenanceServiceApplication.class})
 @PropertySource(value = "classpath:application.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class HealthCheckITest {
 
     private static final String HEALTH_UP_RESPONSE = "{ \"status\": \"UP\"}";

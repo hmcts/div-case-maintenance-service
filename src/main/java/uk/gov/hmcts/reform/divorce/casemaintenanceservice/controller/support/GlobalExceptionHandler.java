@@ -16,7 +16,9 @@ public class GlobalExceptionHandler {
     ResponseEntity<Object> handleBadRequestException(FeignException exception) {
         log.warn(exception.getMessage(), exception);
 
-        return ResponseEntity.status(exception.status()).body(exception.getMessage());
+        return ResponseEntity.status(exception.status()).body(
+            String.format("%s - %s", exception.getMessage(), exception.contentUTF8())
+        );
     }
 
     @ExceptionHandler(BaseException.class)
