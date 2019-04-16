@@ -18,7 +18,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
         + "CJOQrVU";
 
     private static final String UNAUTHORISED_JWT_EXCEPTION = "status 403 reading "
-        + "IdamApiClient#retrieveUserDetails(String); content:\n";
+        + "IdamApiClient#retrieveUserDetails(String) - ";
 
     @Test
     public void shouldReturnCaseIdWhenUpdatingDataAfterInitialSubmit() throws Exception {
