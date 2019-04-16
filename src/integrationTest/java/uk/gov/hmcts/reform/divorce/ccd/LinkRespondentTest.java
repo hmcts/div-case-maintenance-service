@@ -51,14 +51,14 @@ public class LinkRespondentTest extends PetitionSupport {
     public void givenJWTTokenIsNull_whenLinkRespondent_thenReturnBadRequest() {
         Response cmsResponse = linkRespondent(null, "someCaseId", "someLetterHolderId");
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
     }
 
     @Test
     public void givenNoCase_whenLinkRespondent_thenReturnBadRequest() {
         Response cmsResponse = linkRespondent(getUserToken(), "someCaseId", "someLetterHolderId");
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
     }
 
     @Test
