@@ -17,9 +17,9 @@ import java.net.InetAddress;
 import java.net.URL;
 import javax.annotation.PostConstruct;
 
+@Slf4j
 @RunWith(SerenityRunner.class)
 @ContextConfiguration(classes = {ServiceContextConfiguration.class})
-@Slf4j
 public abstract class IntegrationTest {
     @Value("${case.maintenance.service.base.uri}")
     protected String serverUrl;
@@ -38,7 +38,7 @@ public abstract class IntegrationTest {
     }
 
     @PostConstruct
-    public void init() {
+    public void init(){
         if (!Strings.isNullOrEmpty(httpProxy)) {
             try {
                 URL proxy = new URL(httpProxy);
@@ -54,7 +54,6 @@ public abstract class IntegrationTest {
         }
     }
 
-
     protected UserDetails getUserDetails() {
         return idamTestSupport.createAnonymousCitizenUser();
     }
@@ -67,5 +66,7 @@ public abstract class IntegrationTest {
         return idamTestSupport.createAnonymousCaseWorkerUser();
     }
 
-    protected String getCaseWorkerToken() { return getCaseWorkerUser().getAuthToken(); }
+    protected String getCaseWorkerToken() {
+        return getCaseWorkerUser().getAuthToken();
+    }
 }

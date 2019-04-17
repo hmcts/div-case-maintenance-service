@@ -63,7 +63,7 @@ public class CcdUpdateTest extends CcdUpdateSupport {
 
         Response cmsResponse = updateCase("payment-made.json", -1L, EVENT_ID, userToken);
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
         assertThat(cmsResponse.asString(), containsString("Case reference is not valid"));
     }
 

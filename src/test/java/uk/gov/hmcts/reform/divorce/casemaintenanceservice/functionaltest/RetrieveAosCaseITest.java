@@ -61,18 +61,12 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class RetrieveAosCaseITest extends AuthIdamMockSupport {
+public class RetrieveAosCaseITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrieveAosCase";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
     private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
-
-    @ClassRule
-    public static WireMockClassRule draftStoreServer = new WireMockClassRule(WireMockSpring.options().port(4601));
-
-    @ClassRule
-    public static WireMockClassRule caseFormatterServer = new WireMockClassRule(WireMockSpring.options().port(4011));
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;

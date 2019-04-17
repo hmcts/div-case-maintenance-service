@@ -45,7 +45,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class RetrieveAOSPostCompletedITest  extends AuthIdamMockSupport {
+public class RetrieveAOSPostCompletedITest  extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrieveAosCase";
 
     @Value("${ccd.jurisdictionid}")
