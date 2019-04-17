@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
         int statusCode = exception.status();
 
-        if(exception.contentUTF8().contains(CASE_REFERENCE_IS_NOT_VALID)) {
+        if (exception.contentUTF8().contains(CASE_REFERENCE_IS_NOT_VALID)) {
             //This happens when the case is not found in CCD
             statusCode = HttpStatus.UNAUTHORIZED.value();
         }

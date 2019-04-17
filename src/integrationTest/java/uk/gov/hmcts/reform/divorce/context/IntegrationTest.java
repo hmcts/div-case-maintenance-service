@@ -12,10 +12,10 @@ import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.IdamTestSupport;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
+import javax.annotation.PostConstruct;
 
 @Slf4j
 @RunWith(SerenityRunner.class)
@@ -39,7 +39,7 @@ public abstract class IntegrationTest {
 
     @PostConstruct
     public void init(){
-        if(!Strings.isNullOrEmpty(httpProxy)) {
+        if (!Strings.isNullOrEmpty(httpProxy)) {
             try {
                 URL proxy = new URL(httpProxy);
                 InetAddress.getByName(proxy.getHost()).isReachable(2000); // check proxy connectivity
@@ -66,5 +66,7 @@ public abstract class IntegrationTest {
         return idamTestSupport.createAnonymousCaseWorkerUser();
     }
 
-    protected String getCaseWorkerToken() { return getCaseWorkerUser().getAuthToken(); }
+    protected String getCaseWorkerToken() {
+        return getCaseWorkerUser().getAuthToken();
+    }
 }
