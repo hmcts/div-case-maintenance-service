@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.divorce.context;
 
+import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.runners.SerenityRunner;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationMethodRule;
+import org.assertj.core.util.Strings;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,20 @@ import org.springframework.test.context.ContextConfiguration;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.IdamTestSupport;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URL;
+import javax.annotation.PostConstruct;
+
 @RunWith(SerenityRunner.class)
 @ContextConfiguration(classes = {ServiceContextConfiguration.class})
+@Slf4j
 public abstract class IntegrationTest {
     @Value("${case.maintenance.service.base.uri}")
     protected String serverUrl;
+
+    @Value("${http.proxy:#{null}}")
+    protected String httpProxy;
 
     @Autowired
     protected IdamTestSupport idamTestSupport;
@@ -25,6 +36,24 @@ public abstract class IntegrationTest {
     protected IntegrationTest() {
         this.springMethodIntegration = new SpringIntegrationMethodRule();
     }
+
+    @PostConstruct
+    public void init() {
+        if (!Strings.isNullOrEmpty(httpProxy)) {
+            try {
+                URL proxy = new URL(httpProxy);
+                InetAddress.getByName(proxy.getHost()).isReachable(2000); // check proxy connectivity
+                System.setProperty("http.proxyHost", proxy.getHost());
+                System.setProperty("http.proxyPort", Integer.toString(proxy.getPort()));
+                System.setProperty("https.proxyHost", proxy.getHost());
+                System.setProperty("https.proxyPort", Integer.toString(proxy.getPort()));
+            } catch (IOException e) {
+                log.error("Error setting up proxy - are you connected to the VPN?", e);
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 
     protected UserDetails getUserDetails() {
         return idamTestSupport.createAnonymousCitizenUser();
