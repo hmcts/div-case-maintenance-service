@@ -39,7 +39,7 @@ public class GlobalExceptionHandlerUTest {
     }
 
     @Test
-    public void givenInvalidCaseIdBadException_whenHandleBadException_thenReturnNotFound() {
+    public void givenInvalidCaseIdBadException_whenHandleBadException_thenReturnUnauthorised() {
         final int statusCode = HttpStatus.BAD_REQUEST.value();
         final String errorMessage = "some error message";
         final String errorContent = "Case reference is not valid";
