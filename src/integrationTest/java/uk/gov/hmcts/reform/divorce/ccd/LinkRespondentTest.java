@@ -48,14 +48,14 @@ public class LinkRespondentTest extends PetitionSupport {
     private CcdClientSupport ccdClientSupport;
 
     @Test
-    public void givenJWTTokenIsNull_whenLinkRespondent_thenReturnBadRequest() {
+    public void givenJWTTokenIsNull_whenLinkRespondent_thenReturnUnauthorised() {
         Response cmsResponse = linkRespondent(null, "someCaseId", "someLetterHolderId");
 
         assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
     }
 
     @Test
-    public void givenNoCase_whenLinkRespondent_thenReturnBadRequest() {
+    public void givenNoCase_whenLinkRespondent_thenReturnUnauthorised() {
         Response cmsResponse = linkRespondent(getUserToken(), "someCaseId", "someLetterHolderId");
 
         assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
