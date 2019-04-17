@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.WireMockSpring;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.AuthenticateUserResponse;
@@ -33,7 +32,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
-public class AuthIdamMockSupport {
+public abstract class MockSupport {
     private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
     private static final String IDAM_USER_AUTHENTICATE_CONTEXT_PATH = "/oauth2/authorize";
     private static final String IDAM_USER_AUTH_TOKEN_CONTEXT_PATH = "/oauth2/token";
@@ -86,7 +85,28 @@ public class AuthIdamMockSupport {
     private String authClientSecret;
 
     @ClassRule
-    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(WireMockSpring.options().port(4503));
+    public static WireMockClassRule idamUserDetailsServer = new WireMockClassRule(
+        WireMockSpring
+            .options()
+            .port(4503)
+            .extensions(new ConnectionCloseExtension())
+    );
+
+    @ClassRule
+    public static WireMockClassRule draftStoreServer = new WireMockClassRule(
+        WireMockSpring
+            .options()
+            .port(4601)
+            .extensions(new ConnectionCloseExtension())
+    );
+
+    @ClassRule
+    public static WireMockClassRule caseFormatterServer = new WireMockClassRule(
+        WireMockSpring
+            .options()
+            .port(4011)
+            .extensions(new ConnectionCloseExtension())
+    );
 
     @MockBean
     AuthTokenGenerator serviceTokenGenerator;

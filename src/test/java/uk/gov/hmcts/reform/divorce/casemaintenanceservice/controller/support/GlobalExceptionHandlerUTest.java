@@ -39,6 +39,24 @@ public class GlobalExceptionHandlerUTest {
     }
 
     @Test
+    public void givenInvalidCaseIdBadException_whenHandleBadException_thenReturnUnauthorised() {
+        final int statusCode = HttpStatus.BAD_REQUEST.value();
+        final String errorMessage = "some error message";
+        final String errorContent = "Case reference is not valid";
+
+        final FeignException feignException = mock(FeignException.class);
+
+        when(feignException.status()).thenReturn(statusCode);
+        when(feignException.getMessage()).thenReturn(errorMessage);
+        when(feignException.contentUTF8()).thenReturn(errorContent);
+
+        ResponseEntity<Object> response = classUnderTest.handleBadRequestException(feignException);
+
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCodeValue());
+        assertEquals(errorMessage + " - " + errorContent, response.getBody());
+    }
+
+    @Test
     public void whenHandleCaseNotFoundException_thenReturnUnderLyingError() {
         final HttpStatus statusCode = HttpStatus.NOT_FOUND;
         final String errorMessage = "Error Message";

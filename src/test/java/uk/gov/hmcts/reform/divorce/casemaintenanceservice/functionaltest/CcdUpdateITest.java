@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class CcdUpdateITest extends AuthIdamMockSupport {
+public class CcdUpdateITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/updateCase";
     private static final String EVENT_ID = "payment";
     private static final String CASE_ID = "2";

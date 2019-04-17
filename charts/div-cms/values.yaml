@@ -1,0 +1,16 @@
+java:
+    applicationPort: 4010
+    environment:
+        AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE: "divorce_ccd_submission"
+        REFORM_SERVICE_NAME: "cms"
+        REFORM_TEAM: "div"
+        AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS: "900"
+        LOG_LEVEL: DEBUG
+    keyVaults:
+        "div":
+            resourceGroup: div
+            secrets:
+                - ccd-submission-s2s-auth-secret
+                - idam-secret
+                - draft-store-api-encryption-key
+                - idam-caseworker-password

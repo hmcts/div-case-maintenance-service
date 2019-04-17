@@ -50,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class LinkRespondentITest extends AuthIdamMockSupport {
+public class LinkRespondentITest extends MockSupport {
     private static final String CASE_ID = "12345678";
     private static final String LETTER_HOLDER_ID = "letterHolderId";
     private static final String RESP_LETTER_HOLDER_ID_FIELD =
