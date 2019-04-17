@@ -48,15 +48,6 @@ API documentation is provided with Swagger:
 
 ## Developing
 
-If using IntelliJ:
-    - Download the SCM JSON file from the AAT environment
-    - Save as `settings-aat.json` (be careful to call it this exactly)
-    - Add the ENV plugin to IntelliJ (search plugin repo)
-    - Add the settings-aat.json as a config to the Spring runner, under the ENV tab
-    - Run the Spring runner with VM settings, for the proxy:
-        `-Dhttp.proxyHost=proxyout.reform.hmcts.net -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxyout.reform.hmcts.net -Dhttps.proxyPort=8080`
-    - Application should start with no errors
-    
 ### Unit tests
 
 To run all unit tests please execute following command:
@@ -90,6 +81,11 @@ To run all integration tests locally:
 * Replace the `replace_me` secrets in the _newly created_ files. You can get the values from SCM and Azure secrets key vault (the new files are in .gitignore and should ***not*** be committed to git)
 * Start the app with AAT config using `./gradlew clean bootRunAat`
 * Start the test with AAT config using `./gradlew clean functional`
+
+If using IntelliJ:
+    - Run the Spring runner with VM settings, for the proxy:
+        `-Dspring.profiles.active=aat -Dhttp.proxyHost=proxyout.reform.hmcts.net -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxyout.reform.hmcts.net -Dhttps.proxyPort=8080`
+    - Application should start with no errors
 
 ## Versioning
 
