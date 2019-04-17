@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class UnlinkUserITest  extends AuthIdamMockSupport {
+public class UnlinkUserITest  extends MockSupport {
 
     private static final String CASE_ID = "caseId";
 
