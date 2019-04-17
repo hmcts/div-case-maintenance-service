@@ -42,7 +42,10 @@ public abstract class IntegrationTest {
         if (!Strings.isNullOrEmpty(httpProxy)) {
             try {
                 URL proxy = new URL(httpProxy);
-                InetAddress.getByName(proxy.getHost()).isReachable(2000); // check proxy connectivity
+                // check proxy connectivity
+                if(!InetAddress.getByName(proxy.getHost()).isReachable(2000)) {
+                    throw new RuntimeException("Proxy server is unreachable");
+                }
                 System.setProperty("http.proxyHost", proxy.getHost());
                 System.setProperty("http.proxyPort", Integer.toString(proxy.getPort()));
                 System.setProperty("https.proxyHost", proxy.getHost());
