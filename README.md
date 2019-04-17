@@ -52,7 +52,7 @@ If using IntelliJ:
     - Download the SCM JSON file from the AAT environment
     - Save as `settings-aat.json` (be careful to call it this exactly)
     - Add the ENV plugin to IntelliJ (search plugin repo)
-    - Add the settings-aat.json as a config to the Spring runner
+    - Add the settings-aat.json as a config to the Spring runner, under the ENV tab
     - Run the Spring runner with VM settings, for the proxy:
         `-Dhttp.proxyHost=proxyout.reform.hmcts.net -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxyout.reform.hmcts.net -Dhttps.proxyPort=8080`
     - Application should start with no errors
