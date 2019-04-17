@@ -21,12 +21,13 @@ public class GlobalExceptionHandler {
 
         int statusCode = exception.status();
 
-        if (exception.contentUTF8().contains(CASE_REFERENCE_IS_NOT_VALID)) {
+        String contentUTF8 = exception.contentUTF8();
+        if (contentUTF8 != null && contentUTF8.contains(CASE_REFERENCE_IS_NOT_VALID)) {
             //This happens when the case is not found in CCD
             statusCode = HttpStatus.UNAUTHORIZED.value();
         }
         return ResponseEntity.status(statusCode).body(
-            String.format("%s - %s", exception.getMessage(), exception.contentUTF8())
+            String.format("%s - %s", exception.getMessage(), contentUTF8)
         );
     }
 
