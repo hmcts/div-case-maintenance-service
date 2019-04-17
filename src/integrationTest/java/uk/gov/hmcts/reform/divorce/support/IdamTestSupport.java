@@ -105,6 +105,13 @@ public class IdamTestSupport {
                 .build();
 
         idamUtils.createUserInIdam(registerUserRequest);
+
+        try {
+            //give the user some time to warm up..
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createCitizenUserInIdam(String username, String emailAddress, String password) {
@@ -118,5 +125,12 @@ public class IdamTestSupport {
                 .build();
 
         idamUtils.createUserInIdam(registerUserRequest);
+
+        try {
+            //give the user some time to warm up..
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
