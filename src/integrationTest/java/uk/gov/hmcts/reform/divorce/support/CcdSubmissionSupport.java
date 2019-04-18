@@ -50,8 +50,11 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
 
     String loadJson(String fileName, UserDetails userDetails) throws Exception {
         // Update document links in the Json String to be current environment
-        return loadJson(fileName, PAYLOAD_CONTEXT_PATH)
-            .replaceAll("-aat", "-".concat(testEnvironment))
+        String payload = loadJson(fileName, PAYLOAD_CONTEXT_PATH);
+        if (!testEnvironment.equals("local")) {
+            payload = payload.replaceAll("-aat", "-".concat(testEnvironment));
+        }
+        return payload
             .replaceAll(PETITIONER_DEFAULT_EMAIL, userDetails.getEmailAddress());
     }
 

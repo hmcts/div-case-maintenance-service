@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.support;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.gov.hmcts.reform.divorce.idam.utils.IdamUtils;
 import uk.gov.hmcts.reform.divorce.model.PinResponse;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 public class IdamTestSupport {
     private static final String CASEWORKER_ROLE = "caseworker";
     private static final String CITIZEN_ROLE = "citizen";
@@ -105,6 +107,13 @@ public class IdamTestSupport {
                 .build();
 
         idamUtils.createUserInIdam(registerUserRequest);
+
+        try {
+            //give the user some time to warm up..
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            log.debug("IDAM waiting thread was interrupted");
+        }
     }
 
     private void createCitizenUserInIdam(String username, String emailAddress, String password) {
@@ -118,5 +127,12 @@ public class IdamTestSupport {
                 .build();
 
         idamUtils.createUserInIdam(registerUserRequest);
+
+        try {
+            //give the user some time to warm up..
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            log.debug("IDAM waiting thread was interrupted");
+        }
     }
 }

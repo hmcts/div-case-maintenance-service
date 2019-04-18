@@ -138,6 +138,7 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
 
 
         final Map<String, Object> caseDataFormatRequest = new HashMap<>();
+        caseDataFormatRequest.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_REF);
         caseDataFormatRequest.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
         caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
         caseDataFormatRequest.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES);

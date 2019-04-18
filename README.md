@@ -82,6 +82,11 @@ To run all integration tests locally:
 * Start the app with AAT config using `./gradlew clean bootRunAat`
 * Start the test with AAT config using `./gradlew clean functional`
 
+If using IntelliJ:
+    - Run the Spring runner with VM settings, for the proxy:
+        `-Dspring.profiles.active=aat -Dhttp.proxyHost=proxyout.reform.hmcts.net -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxyout.reform.hmcts.net -Dhttps.proxyPort=8080`
+    - Application should start with no errors
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning.
