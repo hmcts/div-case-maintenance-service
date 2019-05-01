@@ -25,7 +25,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     @Value("${case.maintenance.amend-petition-draft.context-path}")
     private String amendPetitionContextPath;
 
-    private String searchContextPath = "/casemaintenance/version/1//search";
+    private String searchContextPath = "/casemaintenance/version/1/search";
 
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
         return
