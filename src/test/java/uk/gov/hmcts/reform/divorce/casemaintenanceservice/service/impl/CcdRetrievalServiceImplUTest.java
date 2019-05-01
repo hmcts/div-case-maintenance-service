@@ -603,7 +603,6 @@ public class CcdRetrievalServiceImplUTest {
         final UserDetails userDetails = UserDetails.builder()
             .id(USER_ID).roles(Arrays.asList(CASEWORKER_ROLE)).build();
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
-        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
 
         when(coreCaseDataApi.searchCases(BEARER_AUTHORISATION, SERVICE_TOKEN, CASE_TYPE, query))
             .thenReturn(expectedResult);
