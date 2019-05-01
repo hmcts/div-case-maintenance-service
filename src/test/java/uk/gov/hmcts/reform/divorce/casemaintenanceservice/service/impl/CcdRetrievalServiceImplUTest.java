@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
@@ -591,6 +592,25 @@ public class CcdRetrievalServiceImplUTest {
         verify(coreCaseDataApi)
             .readForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
                 testCaseId);
+    }
+
+    @Test
+    public void whenSearchCases_theReturnCcdResponse() {
+
+        String query = "QueryToTest";
+        SearchResult expectedResult = SearchResult.builder().build();
+
+        final UserDetails userDetails = UserDetails.builder()
+            .id(USER_ID).roles(Arrays.asList(CASEWORKER_ROLE)).build();
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+
+        when(coreCaseDataApi.searchCases(BEARER_AUTHORISATION, SERVICE_TOKEN, CASE_TYPE, query))
+            .thenReturn(expectedResult);
+
+        SearchResult result = classUnderTest.searchCase(AUTHORISATION, query);
+
+        assertEquals(expectedResult, result);
     }
 
     private CaseDetails createCaseDetails(Long id, String state) {

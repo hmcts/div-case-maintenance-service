@@ -25,6 +25,8 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     @Value("${case.maintenance.amend-petition-draft.context-path}")
     private String amendPetitionContextPath;
 
+    private String searchContextPath = "/casemaintenance/version/1//search";
+
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
         return
             RestUtil.putToRestService(
@@ -69,6 +71,16 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
+    protected Response searchCases(String userToken, String query) {
+        return
+            RestUtil.postToRestService(
+                getSearchRequestUrl(),
+
+                getHeaders(userToken),
+                query
+            );
+    }
+
     protected Response getCase(String userToken) {
         return
             RestUtil.getFromRestService(
@@ -105,6 +117,10 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
 
     private String getCaseRequestUrl() {
         return serverUrl + getCaseContextPath;
+    }
+
+    private String getSearchRequestUrl() {
+        return serverUrl + searchContextPath;
     }
 
     private String draftsRequestUrl() {
