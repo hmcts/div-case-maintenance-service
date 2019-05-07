@@ -8,7 +8,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
@@ -34,6 +36,9 @@ public class CcdControllerUTest {
 
     @Mock
     private CcdAccessService ccdAccessService;
+
+    @Mock
+    private CcdRetrievalService ccdRetrievalService;
 
     @InjectMocks
     private CcdController classUnderTest;
@@ -93,4 +98,20 @@ public class CcdControllerUTest {
 
         verify(ccdAccessService).unlinkRespondent(JWT_TOKEN, caseId);
     }
+
+    @Test
+    public void  whenSearchCases_thenProceedAsExpected() {
+        String query = "anyQuery";
+
+        SearchResult expectedResult = SearchResult
+            .builder()
+            .build();
+        when(ccdRetrievalService.searchCase(JWT_TOKEN, query)).thenReturn(expectedResult);
+
+        ResponseEntity<SearchResult> caseResult = classUnderTest.search(JWT_TOKEN, query);
+
+        assertEquals(HttpStatus.OK, caseResult.getStatusCode());
+        assertEquals(expectedResult, caseResult.getBody());
+    }
+
 }

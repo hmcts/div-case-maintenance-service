@@ -139,7 +139,8 @@ def versions = [
     guava: '27.0.1-jre',
     bcpkixJdk15on: '1.60',
     springSecurityRsa: '1.0.8.RELEASE',
-    springSecurityCrypto: '5.1.5.RELEASE'
+    springSecurityCrypto: '5.1.5.RELEASE',
+    tomcat: '9.0.19'
 ]
 
 dependencies {
@@ -189,6 +190,16 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-contexts'
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
+
+    compile (group: 'org.apache.tomcat.embed', name:'tomcat-embed-core', version: versions.tomcat) {
+        force = true
+    }
+    compile (group: 'org.apache.tomcat.embed', name:'tomcat-embed-websocket', version: versions.tomcat) {
+        force = true
+    }
+    compile (group: 'org.apache.tomcat.embed', name:'tomcat-embed-el', version: versions.tomcat) {
+        force = true
+    }
 
     compile (group: 'com.google.guava', name:'guava', version: versions.guava) {
             force = true

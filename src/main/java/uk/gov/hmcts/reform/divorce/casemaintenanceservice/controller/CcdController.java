@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateService;
 
@@ -34,6 +37,9 @@ public class CcdController {
 
     @Autowired
     private CcdAccessService ccdAccessService;
+
+    @Autowired
+    private CcdRetrievalService ccdRetrievalService;
 
     @PostMapping(path = "/submit", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -105,5 +111,19 @@ public class CcdController {
         ccdAccessService.unlinkRespondent(authToken, caseId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Retrieve CCD case by CaseId")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Returns list of cases based on search criteria"),
+        @ApiResponse(code = 404, message = "Returns case not found or not authorised to view")
+        })
+    public ResponseEntity<SearchResult> search(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @RequestBody @ApiParam(value = "query", required = true) String query
+    ) {
+        return ResponseEntity.ok(ccdRetrievalService.searchCase(jwt, query));
     }
 }
