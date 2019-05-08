@@ -17,7 +17,7 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
     @Value("${case.maintenance.update.context-path}")
     private String contextPath;
 
-    protected Response updateCase(String fileName, Long caseId, String eventId, String userToken) throws Exception {
+    protected Response updateCase(String fileName, Long caseId, String eventId, String userToken) {
         return
             RestUtil.postToRestService(
                 getRequestUrl(caseId, eventId),

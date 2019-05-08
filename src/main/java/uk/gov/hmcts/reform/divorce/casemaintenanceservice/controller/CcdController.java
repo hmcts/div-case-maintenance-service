@@ -129,7 +129,7 @@ public class CcdController {
     }
 
     @PostMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Query cases on ccd")
+    @ApiOperation(value = "Retrieve CCD case by CaseId")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Returns list of cases based on search criteria"),
         @ApiResponse(code = 404, message = "Returns case not found or not authorised to view")
@@ -137,7 +137,7 @@ public class CcdController {
     public ResponseEntity<SearchResult> search(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
-        @RequestBody @ApiParam(value = "query using ElasticSearch query format", required = true) String query
+        @RequestBody @ApiParam(value = "query", required = true) String query
     ) {
         return ResponseEntity.ok(ccdRetrievalService.searchCase(jwt, query));
     }
