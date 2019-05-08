@@ -29,7 +29,8 @@ public class CcdSubmissionServiceImplUTest {
     private static final String CASE_TYPE = "someCaseType";
     private static final String CREATE_EVENT_ID = "createEventId";
     private static final String CREATE_HWF_EVENT_ID = "createHwfEventId";
-
+    private static final String BULK_CASE_TYPE = "bulkCaseType";
+    private static final String CREATE_BULK_CASE_EVENT_ID = "createBulkCaseEventId";
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
             "DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY");
@@ -37,6 +38,9 @@ public class CcdSubmissionServiceImplUTest {
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
         "DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION");
     private static final String HELP_WITH_FEES_FIELD = "D8HelpWithFeesNeedHelp";
+
+    private static final String DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce Bulk case submission event";
+    private static final String DIVORCE_BULK_CASE_SUBMISSION_EVENT_DESCRIPTION = "Submitting divorce bulk Case";
 
     private static final String USER_ID = "someUserId";
     private static final String AUTHORISATION = "authorisation";
@@ -62,6 +66,9 @@ public class CcdSubmissionServiceImplUTest {
         ReflectionTestUtils.setField(classUnderTest, "caseType", CASE_TYPE);
         ReflectionTestUtils.setField(classUnderTest, "createHwfEventId", CREATE_HWF_EVENT_ID);
         ReflectionTestUtils.setField(classUnderTest, "createEventId", CREATE_EVENT_ID);
+        ReflectionTestUtils.setField(classUnderTest, "bulkCaseType", BULK_CASE_TYPE);
+        ReflectionTestUtils.setField(classUnderTest, "createBulkCaseEventId", CREATE_BULK_CASE_EVENT_ID);
+
     }
 
     @Test
@@ -145,5 +152,41 @@ public class CcdSubmissionServiceImplUTest {
             CASE_TYPE, CREATE_HWF_EVENT_ID);
         verify(coreCaseDataApi).submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE,true, caseDataContent);
+    }
+
+    @Test
+    public void whenSubmitBulkCase_thenProceedAsExpected() {
+        final Map<String, Object> caseData = ImmutableMap.of(HELP_WITH_FEES_FIELD, "NO");
+
+        final StartEventResponse startEventResponse = StartEventResponse.builder()
+            .eventId(CREATE_BULK_CASE_EVENT_ID)
+            .token(TOKEN)
+            .build();
+
+        final CaseDataContent caseDataContent = CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(
+                Event.builder()
+                    .id(startEventResponse.getEventId())
+                    .summary(DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_BULK_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseData)
+            .build();
+
+        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+        final CaseDetails expected = CaseDetails.builder().build();
+
+        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(coreCaseDataApi.startForCaseworker(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
+            BULK_CASE_TYPE, CREATE_BULK_CASE_EVENT_ID)).thenReturn(startEventResponse);
+
+        when(coreCaseDataApi.submitForCaseworker(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
+            BULK_CASE_TYPE,true, caseDataContent)).thenReturn(expected);
+
+        CaseDetails actual = classUnderTest.submitBulkCase(caseData,  AUTHORISATION);
+
+        assertEquals(actual, expected);
     }
 }

@@ -37,6 +37,10 @@ ccd:
   eventid:
     create: create
     createhwf: hwfCreate
+  bulk:
+      casetype: DIVORCE_BulkAction
+      eventid:
+          create: create
   server:
     port: 4452
     health:

@@ -56,6 +56,21 @@ public class CcdController {
         return ResponseEntity.ok(ccdSubmissionService.submitCase(data, jwt));
     }
 
+    @PostMapping(path = "/bulk/submit", consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Submits a divorce session to CCD")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the complete "
+            + "case back", response = CaseDetails.class)
+        }
+    )
+    public ResponseEntity<CaseDetails> submitBulkCase(
+        @RequestBody @ApiParam(value = "Bulk case data", required = true) Map<String, Object> data,
+        @RequestHeader("Authorization")
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        return ResponseEntity.ok(ccdSubmissionService.submitBulkCase(data, jwt));
+    }
+
     @PostMapping(path = "/updateCase/{caseId}/{eventId}", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Updates case details")
@@ -114,7 +129,7 @@ public class CcdController {
     }
 
     @PostMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Retrieve CCD case by CaseId")
+    @ApiOperation(value = "Query cases on ccd")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Returns list of cases based on search criteria"),
         @ApiResponse(code = 404, message = "Returns case not found or not authorised to view")
@@ -122,7 +137,7 @@ public class CcdController {
     public ResponseEntity<SearchResult> search(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
-        @RequestBody @ApiParam(value = "query", required = true) String query
+        @RequestBody @ApiParam(value = "query using ElasticSearch query format", required = true) String query
     ) {
         return ResponseEntity.ok(ccdRetrievalService.searchCase(jwt, query));
     }

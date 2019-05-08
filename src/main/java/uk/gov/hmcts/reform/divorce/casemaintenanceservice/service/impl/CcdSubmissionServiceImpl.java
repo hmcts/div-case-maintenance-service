@@ -50,6 +50,40 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
             caseDataContent);
     }
 
+    @Override
+    public CaseDetails submitBulkCase(Map<String, Object> data, String authorisation) {
+        UserDetails userDetails = getUserDetails(authorisation);
+
+
+        StartEventResponse startEventResponse = coreCaseDataApi.startForCaseworker(
+            getBearerUserToken(authorisation),
+            getServiceAuthToken(),
+            userDetails.getId(),
+            jurisdictionId,
+            bulkCaseType,
+            createBulkCaseEventId);
+
+        CaseDataContent caseDataContent = CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(
+                Event.builder()
+                    .id(startEventResponse.getEventId())
+                    .summary(DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_BULK_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(data)
+            .build();
+
+        return coreCaseDataApi.submitForCaseworker(
+            getBearerUserToken(authorisation),
+            getServiceAuthToken(),
+            userDetails.getId(),
+            jurisdictionId,
+            bulkCaseType,
+            true,
+            caseDataContent);
+    }
+
     private String getCaseCreationEventId(Map<String, Object> data) {
         String hwf = String.valueOf(data.get(HELP_WITH_FEES_FIELD));
         return "YES".equalsIgnoreCase(hwf) ? createHwfEventId  : createEventId;
