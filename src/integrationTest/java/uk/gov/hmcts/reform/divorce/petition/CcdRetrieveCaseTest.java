@@ -1,20 +1,17 @@
 package uk.gov.hmcts.reform.divorce.petition;
 
 import io.restassured.response.Response;
-import org.apache.catalina.User;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
-import uk.gov.hmcts.reform.divorce.util.ResourceLoader;
 
 import java.util.Collections;
-import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 
 public class CcdRetrieveCaseTest extends PetitionSupport {
-    private static final String CASE_DATA_JSON_PATH = "case_data";
 
     private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
         + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
@@ -183,8 +180,17 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
     private Response createACaseMakePaymentAndAmendTheCase(UserDetails userDetails) throws Exception {
         Long caseId = getCaseIdFromSubmittingANewCase(userDetails);
 
-        updateCase("basic-update.json", caseId, TEST_AOS_RESPONDED_EVENT, userDetails.getAuthToken());
-        updateCase("basic-update.json", caseId, AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT, userDetails.getAuthToken());
-        return updateCase("basic-update.json", caseId, AMEND_PETITION_EVENT, userDetails.getAuthToken());
+        assertSuccessfulResponse(() -> updateCase("basic-update.json", caseId, TEST_AOS_RESPONDED_EVENT, userDetails.getAuthToken()));
+        assertSuccessfulResponse(() -> updateCase("basic-update.json", caseId, AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT, userDetails.getAuthToken()));
+        return assertSuccessfulResponse(() -> updateCase("basic-update.json", caseId, AMEND_PETITION_EVENT, userDetails.getAuthToken()));
+    }
+
+    private Response assertSuccessfulResponse(Supplier<Response> request) {
+        Response response = request.get();
+        assert response.getStatusCode() == 200 : String.format("Error processing request %s - %s: ",
+            response.getStatusCode(),
+            response.getBody().asString()
+        );
+        return response;
     }
 }

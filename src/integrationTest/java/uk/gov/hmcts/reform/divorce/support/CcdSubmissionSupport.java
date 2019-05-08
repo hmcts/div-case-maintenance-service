@@ -48,7 +48,7 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
             );
     }
 
-    String loadJson(String fileName, UserDetails userDetails) throws Exception {
+    String loadJson(String fileName, UserDetails userDetails) {
         // Update document links in the Json String to be current environment
         String payload = loadJson(fileName, PAYLOAD_CONTEXT_PATH);
         if (!testEnvironment.equals("local")) {
@@ -58,8 +58,12 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
             .replaceAll(PETITIONER_DEFAULT_EMAIL, userDetails.getEmailAddress());
     }
 
-    String loadJson(String fileName, String contextPath) throws Exception {
-        return ResourceLoader.loadJson(contextPath + fileName);
+    String loadJson(String fileName, String contextPath) {
+        try {
+            return ResourceLoader.loadJson(contextPath + fileName);
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Error loading JSON file: %s", fileName), e);
+        }
     }
 
     protected String getSubmissionRequestUrl() {
