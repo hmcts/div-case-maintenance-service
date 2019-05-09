@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessServi
 import java.util.Map;
 import java.util.Optional;
 
+import static java.lang.String.format;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
@@ -72,7 +73,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
         if (caseDetails == null) {
             throw new CaseNotFoundException(
-                String.format("Case with caseId [%s] and letter holder id [%s] not found",
+                format("Case with caseId [%s] and letter holder id [%s] not found",
                     caseId, letterHolderId));
         }
 
@@ -81,9 +82,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         UserDetails linkingUser = getUserDetails(authorisation);
 
         if (!isValidUser(caseDetails, linkingUser.getEmail(), letterHolderId, caseId)) {
-            throw new UnauthorizedException(
-                String.format("Case with caseId [%s] and letter holder id [%s] already assigned or letter holder mismatch",
-                    caseId, letterHolderId));//TODO - we could have two different errors for letter already assigned and letter holder mismatch, if possible
+            throw new UnauthorizedException(format("Case with caseId [%s] and letter holder id [%s] already assigned or letter holder mismatch. "
+                + "Check previous logs for more information.", caseId, letterHolderId));
         }
 
         grantAccessToCase(caseworkerUser, caseId, linkingUser.getId());
@@ -108,7 +108,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
             return areLetterHolderIdsMatching(caseId, caseData.get(RESP_LETTER_HOLDER_ID_FIELD), letterHolderId);
         } else {
-            log.info("Case {} has already been assigned a respondent. Checking if given e-mail address matches the assigned respondent's...", caseId);
+            log.info("Case {} has already been assigned a respondent. Checking if given e-mail address matches the assigned respondent's...",
+                caseId);
 
             boolean emailAddressesMatch = userEmailAddress.equalsIgnoreCase(emailAddressAssignedToCase.get());
 
@@ -130,7 +131,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
             return areLetterHolderIdsMatching(caseId, caseData.get(CO_RESP_LETTER_HOLDER_ID_FIELD), letterHolderId);
         } else {
-            log.info("Case {} has already been assigned a co-respondent. Checking if given e-mail address matches the assigned co-respondent's...", caseId);
+            log.info("Case {} has already been assigned a co-respondent. Checking if given e-mail address matches the assigned co-respondent's...",
+                caseId);
 
             boolean emailAddressesMatch = userEmailAddress.equalsIgnoreCase(emailAddressAssignedToCase.get());
 
@@ -150,7 +152,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         if (letterHolderIdsMatch) {
             log.info("Letter holder ids match for case {}", caseId);
         } else {
-            log.warn("Letter holder ids for case {} do not match. Given letter holder id is [{}] but case letter holder id is [{}].", caseId, givenLetterHolderId, caseLetterHolderId);
+            log.warn("Letter holder ids for case {} do not match. Given letter holder id is [{}] but case letter holder id is [{}].",
+                caseId, givenLetterHolderId, caseLetterHolderId);
         }
 
         return letterHolderIdsMatch;
