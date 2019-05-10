@@ -81,7 +81,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
                     caseId, letterHolderId));
         }
 
-        RespondentType respondentType = validateLetterIdAndUserType(letterHolderId, caseDetails);
+        RespondentType respondentType = validateLetterIdAndUserType(letterHolderId, caseDetails, caseId);
 
         UserDetails linkingUser = getUserDetails(authorisation);
 
@@ -93,9 +93,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         grantAccessToCase(caseworkerUser, caseId, linkingUser.getId());
     }
 
-    private RespondentType validateLetterIdAndUserType(String letterHolderId, CaseDetails caseDetails) {
+    private RespondentType validateLetterIdAndUserType(String letterHolderId, CaseDetails caseDetails, String caseId) {
         if (caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
-            throw new InvalidRequestException("Case details or letter holder data are invalid");
+            throw new InvalidRequestException(format("Case details or letter holder data are invalid for case ID: [%s]", caseId));
         }
         String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
         String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
@@ -110,7 +110,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
     }
 
-    private static boolean isValidRespondent(CaseDetails caseDetails, String userEmailAddress, RespondentType respondentType) {
+    private boolean isValidRespondent(CaseDetails caseDetails, String userEmailAddress, RespondentType respondentType) {
         String emailField = respondentType == RespondentType.RESPONDENT ? RESP_EMAIL_ADDRESS : CO_RESP_EMAIL_ADDRESS;
         Map<String, Object> caseData = caseDetails.getData();
         String caseId = Long.toString(caseDetails.getId());
