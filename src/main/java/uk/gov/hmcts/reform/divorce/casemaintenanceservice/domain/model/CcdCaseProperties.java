@@ -30,4 +30,6 @@ public class CcdCaseProperties {
     public static final String PREVIOUS_REASONS_DIVORCE = "PreviousReasonsForDivorce";
     public static final String PREVIOUS_ISSUE_DATE = "PreviousIssueDate";
 
+    public static final String RESP_SOLICITOR_EMAIL_ADDRESS = "D8RespondentSolicitorEmail";
+    public static final String RESP_SOLICITOR_LETTER_HOLDER_ID_FIELD = "RespSolLetterHolderId";
 }

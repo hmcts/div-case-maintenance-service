@@ -125,7 +125,7 @@ def versions = [
     serenity: '2.0.41',
     serenityCucumber: '1.9.31',
     serviceTokenGenerator: '3.0.0',
-    ccdStoreClient: '4.6.2',
+    ccdStoreClient: '4.6.4',
     feignHttpClient: '10.2.0',
     reformSpringBootAutoConfigure: '2.0.0',
     springfoxSwagger: '2.9.0',
