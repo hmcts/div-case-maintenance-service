@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.Unauthorized
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
 
 import java.util.Map;
-import java.util.Optional;
 
 import static java.lang.String.format;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
@@ -58,6 +57,11 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
     }
 
+    private enum RespondentType {
+        RESPONDENT,
+        CO_RESPONDENT
+    }
+
     @Override
     public void linkRespondent(String authorisation, String caseId, String letterHolderId) {
         UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
@@ -77,86 +81,56 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
                     caseId, letterHolderId));
         }
 
-        isValidCaseAndLetterHolder(caseDetails, letterHolderId);
+        RespondentType respondentType = validateLetterIdAndUserType(letterHolderId, caseDetails);
 
         UserDetails linkingUser = getUserDetails(authorisation);
 
-        if (!isValidUser(caseDetails, linkingUser.getEmail(), letterHolderId, caseId)) {
-            throw new UnauthorizedException(format("Case with caseId [%s] and letter holder id [%s] already assigned or letter holder mismatch. "
-                + "Check previous logs for more information.", caseId, letterHolderId));
+        if (!isValidRespondent(caseDetails, linkingUser.getEmail(), respondentType)) {
+            throw new UnauthorizedException(format("Case with caseId [%s] and letter holder id [%s] already assigned for [%s] "
+                + "Check previous logs for more information.", caseId, letterHolderId, respondentType));
         }
 
         grantAccessToCase(caseworkerUser, caseId, linkingUser.getId());
     }
 
-    private void isValidCaseAndLetterHolder(CaseDetails caseDetails, String letterHolderId) {
+    private RespondentType validateLetterIdAndUserType(String letterHolderId, CaseDetails caseDetails) {
         if (caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
             throw new InvalidRequestException("Case details or letter holder data are invalid");
         }
-    }
+        String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
+        String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
 
-    private boolean isValidUser(CaseDetails caseDetails, String userEmailAddress, String letterHolderId, String caseId) {
-        return isValidRespondentUser(caseId, caseDetails.getData(), userEmailAddress, letterHolderId)
-            || isValidCoRespondentUser(caseId, caseDetails.getData(), userEmailAddress, letterHolderId);
-    }
-
-    private static boolean isValidRespondentUser(String caseId, Map<String, Object> caseData, String userEmailAddress, String letterHolderId) {
-        Optional<String> emailAddressAssignedToCase = Optional.ofNullable(caseData.get(RESP_EMAIL_ADDRESS)).map(String.class::cast);
-
-        if (!emailAddressAssignedToCase.isPresent()) {
-            log.info("Case {} has not been been assigned a respondent yet.", caseId);
-
-            return areLetterHolderIdsMatching(caseId, caseData.get(RESP_LETTER_HOLDER_ID_FIELD), letterHolderId);
+        if (letterHolderId.equals(respondentLetterHolderId)) {
+            return RespondentType.RESPONDENT;
+        } else if (letterHolderId.equals(coRespondentLetterHolderId)) {
+            return RespondentType.CO_RESPONDENT;
         } else {
-            log.info("Case {} has already been assigned a respondent. Checking if given e-mail address matches the assigned respondent's...",
-                caseId);
+            throw new UnauthorizedException(
+                format("Case with caseId [%s] and letter holder id [%s] mismatch.", caseDetails.getId(), letterHolderId));
+        }
+    }
 
-            boolean emailAddressesMatch = userEmailAddress.equalsIgnoreCase(emailAddressAssignedToCase.get());
+    private static boolean isValidRespondent(CaseDetails caseDetails, String userEmailAddress, RespondentType respondentType) {
+        String emailField = respondentType == RespondentType.RESPONDENT ? RESP_EMAIL_ADDRESS : CO_RESP_EMAIL_ADDRESS;
+        Map<String, Object> caseData = caseDetails.getData();
+        String caseId = Long.toString(caseDetails.getId());
+        String emailAddressAssignedToCase = (String) caseData.get(emailField);
+
+        if (emailAddressAssignedToCase == null) {
+            log.info("Case {} has not been been assigned a {} yet.", caseId, respondentType);
+            return true;
+        } else {
+            boolean emailAddressesMatch = userEmailAddress.equalsIgnoreCase(emailAddressAssignedToCase);
+            log.info("Case {} has already been assigned a {}. Checking if given e-mail address matches existing...",
+                caseId, respondentType);
 
             if (emailAddressesMatch) {
-                log.info("User's e-mail address matches the respondent's e-mail address in the case [{}].", caseId);
+                log.info("User's e-mail address matches the {} e-mail address in the case [{}].", respondentType, caseId);
             } else {
-                log.warn("User's e-mail address doesn't match the respondent's e-mail address in the case [{}].", caseId);
+                log.warn("User's e-mail address doesn't match the {} e-mail address in the case [{}].", respondentType, caseId);
             }
 
             return emailAddressesMatch;
         }
     }
-
-    private static boolean isValidCoRespondentUser(String caseId, Map<String, Object> caseData, String userEmailAddress, String letterHolderId) {
-        Optional<String> emailAddressAssignedToCase = Optional.ofNullable(caseData.get(CO_RESP_EMAIL_ADDRESS)).map(String.class::cast);
-
-        if (!emailAddressAssignedToCase.isPresent()) {
-            log.info("Case {} has not been been assigned a co-respondent yet.", caseId);
-
-            return areLetterHolderIdsMatching(caseId, caseData.get(CO_RESP_LETTER_HOLDER_ID_FIELD), letterHolderId);
-        } else {
-            log.info("Case {} has already been assigned a co-respondent. Checking if given e-mail address matches the assigned co-respondent's...",
-                caseId);
-
-            boolean emailAddressesMatch = userEmailAddress.equalsIgnoreCase(emailAddressAssignedToCase.get());
-
-            if (emailAddressesMatch) {
-                log.info("User's e-mail address matches the co-respondent's e-mail address in the case [{}].", caseId);
-            } else {
-                log.warn("User's e-mail address doesn't match the co-respondent's e-mail address in the case [{}].", caseId);
-            }
-
-            return emailAddressesMatch;
-        }
-    }
-
-    private static boolean areLetterHolderIdsMatching(String caseId, Object caseLetterHolderId, String givenLetterHolderId) {
-        boolean letterHolderIdsMatch = givenLetterHolderId.equals(caseLetterHolderId);
-
-        if (letterHolderIdsMatch) {
-            log.info("Letter holder ids match for case {}", caseId);
-        } else {
-            log.warn("Letter holder ids for case {} do not match. Given letter holder id is [{}] but case letter holder id is [{}].",
-                caseId, givenLetterHolderId, caseLetterHolderId);
-        }
-
-        return letterHolderIdsMatch;
-    }
-
 }
