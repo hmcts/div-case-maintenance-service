@@ -28,6 +28,11 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     @Autowired
     private CaseAccessApi caseAccessApi;
 
+    private enum RespondentType {
+        RESPONDENT,
+        CO_RESPONDENT
+    }
+
     @Override
     public void unlinkRespondent(String authorisation, String caseId) {
         UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
@@ -55,11 +60,6 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             caseId,
             new UserId(respondentId)
         );
-    }
-
-    private enum RespondentType {
-        RESPONDENT,
-        CO_RESPONDENT
     }
 
     @Override
