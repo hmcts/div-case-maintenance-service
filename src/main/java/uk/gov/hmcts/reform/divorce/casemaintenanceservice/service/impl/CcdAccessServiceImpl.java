@@ -118,7 +118,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
     private String findUsersCaseRole(CaseDetails caseDetails, String userEmail, String letterHolderId) {
         if (isValidRespondentUser(caseDetails, userEmail, letterHolderId)) {
-            return CmsConstants.CREATOR_ROLE;
+            return CmsConstants.RESP_SOL_ROLE;
         } else if (isValidCoRespondentUser(caseDetails, userEmail, letterHolderId)) {
             return CmsConstants.CREATOR_ROLE;
         } else if (isValidRespSolicitor(caseDetails, userEmail, letterHolderId)) {
