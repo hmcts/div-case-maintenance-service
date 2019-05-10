@@ -22,8 +22,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
+import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
@@ -32,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -76,6 +79,9 @@ public class LinkRespondentITest extends MockSupport {
 
     @MockBean
     private CaseAccessApi caseAccessApi;
+
+    @MockBean
+    private CaseUserApi caseUserApi;
 
     @Test
     public void givenAuthTokenIsNull_whenLinkRespondent_thenReturnBadRequest() throws Exception {
@@ -294,15 +300,13 @@ public class LinkRespondentITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         doThrow(feignException)
-            .when(caseAccessApi)
-            .grantAccessToCase(
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
                 eq(serviceAuthToken),
-                eq(CASE_WORKER_USER_ID),
-                eq(jurisdictionId),
-                eq(caseType),
                 eq(CASE_ID),
-                argThat(new UserIdMatcher(USER_ID))
+                eq(USER_ID),
+                any(CaseUser.class)
             );
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
@@ -334,16 +338,15 @@ public class LinkRespondentITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         doNothing()
-            .when(caseAccessApi)
-            .grantAccessToCase(
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
                 eq(serviceAuthToken),
-                eq(CASE_WORKER_USER_ID),
-                eq(jurisdictionId),
-                eq(caseType),
                 eq(CASE_ID),
-                argThat(new UserIdMatcher(USER_ID))
+                eq(USER_ID),
+                any(CaseUser.class)
             );
+            
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
@@ -374,15 +377,13 @@ public class LinkRespondentITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         doNothing()
-            .when(caseAccessApi)
-            .grantAccessToCase(
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
                 eq(serviceAuthToken),
-                eq(CASE_WORKER_USER_ID),
-                eq(jurisdictionId),
-                eq(caseType),
                 eq(CASE_ID),
-                argThat(new UserIdMatcher(USER_ID))
+                eq(USER_ID),
+                any(CaseUser.class)
             );
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
