@@ -23,6 +23,9 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     @Value("${case.maintenance.submission.context-path}")
     private String contextPath;
 
+    @Value("${case.maintenance.bulk.submission.context-path}")
+    private String contextBulkCasePath;
+
     @Value("${env}")
     private String testEnvironment;
 
@@ -31,21 +34,27 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
         assertOkResponseAndCaseIdIsNotZero(cmsResponse);
     }
 
-    private Response submitCase(String fileName) throws Exception {
+    private Response submitCase(String fileName) {
         return submitCase(fileName, getUserDetails());
     }
 
-    protected Response submitCase(String fileName, UserDetails userDetails) throws Exception {
-        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken());
+    protected Response submitCase(String fileName, UserDetails userDetails) {
+        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(), getSubmissionRequestUrl());
     }
 
-    protected Response submitCaseJson(String jsonCase, String userToken) {
+    protected Response submitCaseJson(String jsonCase, String userToken, String contextUrl) {
         return
             RestUtil.postToRestService(
-                getSubmissionRequestUrl(),
+                contextUrl,
                 getHeaders(userToken),
                 jsonCase
             );
+    }
+
+    protected Response submitBulkCase(String fileName) {
+        UserDetails caseWorkerUser = getCaseWorkerUser();
+        return submitCaseJson(loadJson(fileName, caseWorkerUser), caseWorkerUser.getAuthToken(), getBulkCaseSubmissionRequestUrl());
+
     }
 
     String loadJson(String fileName, UserDetails userDetails) {
@@ -68,6 +77,10 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
 
     protected String getSubmissionRequestUrl() {
         return serverUrl + contextPath;
+    }
+
+    protected String getBulkCaseSubmissionRequestUrl() {
+        return serverUrl + contextBulkCasePath;
     }
 
     protected Map<String, Object> getHeaders() {
