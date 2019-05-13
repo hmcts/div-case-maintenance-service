@@ -17,11 +17,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FeignException.class)
     ResponseEntity<Object> handleBadRequestException(FeignException exception) {
-        log.warn(exception.getMessage(), exception);
 
         int statusCode = exception.status();
 
         String contentUTF8 = exception.contentUTF8();
+
+        log.warn(contentUTF8, exception);
+
         if (contentUTF8 != null && contentUTF8.contains(CASE_REFERENCE_IS_NOT_VALID)) {
             //This happens when the case is not found in CCD
             statusCode = HttpStatus.UNAUTHORIZED.value();

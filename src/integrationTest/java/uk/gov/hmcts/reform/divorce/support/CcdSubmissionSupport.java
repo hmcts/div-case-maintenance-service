@@ -51,9 +51,9 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
             );
     }
 
-    protected Response submitBulkCase(String fileName) {
-        UserDetails caseWorkerUser = getCaseWorkerUser();
-        return submitCaseJson(loadJson(fileName, caseWorkerUser), caseWorkerUser.getAuthToken(), getBulkCaseSubmissionRequestUrl());
+    protected Response submitBulkCase(String fileName, UserDetails userDetails) {
+
+        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(), getBulkCaseSubmissionRequestUrl());
 
     }
 
