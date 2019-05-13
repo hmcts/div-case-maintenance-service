@@ -38,12 +38,12 @@ public abstract class IntegrationTest {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         if (!Strings.isNullOrEmpty(httpProxy)) {
             try {
                 URL proxy = new URL(httpProxy);
                 // check proxy connectivity
-                if(!InetAddress.getByName(proxy.getHost()).isReachable(2000)) {
+                if (!InetAddress.getByName(proxy.getHost()).isReachable(2000)) {
                     throw new RuntimeException("Proxy server is unreachable");
                 }
                 System.setProperty("http.proxyHost", proxy.getHost());
@@ -52,7 +52,7 @@ public abstract class IntegrationTest {
                 System.setProperty("https.proxyPort", Integer.toString(proxy.getPort()));
             } catch (IOException e) {
                 log.error("Error setting up proxy - are you connected to the VPN?", e);
-                throw new RuntimeException(e);
+                throw new RuntimeException("Error setting up proxy", e);
             }
         }
     }
