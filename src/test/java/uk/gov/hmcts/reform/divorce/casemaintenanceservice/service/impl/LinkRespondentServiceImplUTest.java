@@ -106,6 +106,7 @@ public class LinkRespondentServiceImplUTest {
 
         when(userService.retrieveAnonymousCaseWorkerDetails()).thenReturn(CASE_WORKER_USER);
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
     }
 
     @Test
@@ -227,7 +228,6 @@ public class LinkRespondentServiceImplUTest {
             CASE_TYPE,
             CASE_ID
         )).thenReturn(caseDetails);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
@@ -277,7 +277,6 @@ public class LinkRespondentServiceImplUTest {
             CASE_TYPE,
             CASE_ID
         )).thenReturn(caseDetails);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
@@ -296,7 +295,6 @@ public class LinkRespondentServiceImplUTest {
             )).build();
 
         mockCaseDetails(caseDetails);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
@@ -324,7 +322,6 @@ public class LinkRespondentServiceImplUTest {
             )).build();
 
         mockCaseDetails(caseDetails);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
@@ -348,7 +345,6 @@ public class LinkRespondentServiceImplUTest {
             )).build();
 
         mockCaseDetails(caseDetails);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
@@ -373,7 +369,6 @@ public class LinkRespondentServiceImplUTest {
             )).build();
 
         mockCaseDetails(caseDetails);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
@@ -397,7 +392,6 @@ public class LinkRespondentServiceImplUTest {
             )).build();
 
         mockCaseDetails(caseDetails);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
@@ -422,7 +416,6 @@ public class LinkRespondentServiceImplUTest {
             )).build();
 
         mockCaseDetails(caseDetails);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 

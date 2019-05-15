@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
@@ -51,14 +53,14 @@ public class LinkRespondentTest extends PetitionSupport {
     public void givenJWTTokenIsNull_whenLinkRespondent_thenReturnUnauthorised() {
         Response cmsResponse = linkRespondent(null, "someCaseId", "someLetterHolderId");
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @Test
     public void givenNoCase_whenLinkRespondent_thenReturnUnauthorised() {
         Response cmsResponse = linkRespondent(getUserToken(), "someCaseId", "someLetterHolderId");
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @Test
@@ -69,7 +71,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @SuppressWarnings("unchecked")
@@ -87,7 +89,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @SuppressWarnings("unchecked")
@@ -110,7 +112,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -133,7 +135,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(petitioner.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -159,7 +161,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
 
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.FORBIDDEN.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -193,7 +195,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertEquals(caseId, response.path("id"));
+        assertThat(caseId, equalTo(response.path("id")));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -221,7 +223,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertEquals(caseId, response.path("id"));
+        assertThat(caseId, equalTo(response.path("id")));
     }
 
     @SuppressWarnings("unchecked")
@@ -251,11 +253,11 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertEquals(caseId, response.path("id"));
+        assertThat(caseId, equalTo(response.path("id")));
 
         linkResponse = linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertEquals(HttpStatus.OK.value(),linkResponse.getStatusCode());
+        assertThat(HttpStatus.OK.value(),equalTo(linkResponse.getStatusCode()));
     }
 
 

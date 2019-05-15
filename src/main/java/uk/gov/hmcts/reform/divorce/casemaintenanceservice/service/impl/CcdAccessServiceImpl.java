@@ -88,7 +88,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
         if (!isValidRespondent(caseDetails, linkingUser.getEmail(), respondentType)) {
             throw new UnauthorizedException(format("Case with caseId [%s] and letter holder id [%s] already assigned for [%s] "
-                + "or Petitioner attempted to link case as respondent. Check previous logs for more information.", caseId, letterHolderId, respondentType));
+                + "or Petitioner attempted to link case as respondent. Check previous logs for more information.",
+                caseId, letterHolderId, respondentType));
         }
 
         grantAccessToCase(caseworkerUser, caseId, linkingUser.getId());
