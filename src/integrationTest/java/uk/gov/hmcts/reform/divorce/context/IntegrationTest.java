@@ -38,13 +38,13 @@ public abstract class IntegrationTest {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         if (!Strings.isNullOrEmpty(httpProxy)) {
             try {
                 URL proxy = new URL(httpProxy);
                 // check proxy connectivity
-                if(!InetAddress.getByName(proxy.getHost()).isReachable(2000)) {
-                    throw new RuntimeException("Proxy server is unreachable");
+                if (!InetAddress.getByName(proxy.getHost()).isReachable(2000)) {
+                    throw new IOException();
                 }
                 System.setProperty("http.proxyHost", proxy.getHost());
                 System.setProperty("http.proxyPort", Integer.toString(proxy.getPort()));

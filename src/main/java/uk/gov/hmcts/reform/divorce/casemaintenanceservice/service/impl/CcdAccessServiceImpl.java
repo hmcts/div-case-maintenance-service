@@ -18,6 +18,7 @@ import java.util.Map;
 import static java.lang.String.format;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
@@ -87,7 +88,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
         if (!isValidRespondent(caseDetails, linkingUser.getEmail(), respondentType)) {
             throw new UnauthorizedException(format("Case with caseId [%s] and letter holder id [%s] already assigned for [%s] "
-                + "Check previous logs for more information.", caseId, letterHolderId, respondentType));
+                + "or Petitioner attempted to link case as respondent. Check previous logs for more information.", caseId, letterHolderId, respondentType));
         }
 
         grantAccessToCase(caseworkerUser, caseId, linkingUser.getId());
@@ -118,6 +119,12 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
         if (emailAddressAssignedToCase == null) {
             log.info("Case {} has not been been assigned a {} yet.", caseId, respondentType);
+            String petitionerEmail = (String) caseData.get(D8_PETITIONER_EMAIL);
+
+            if (userEmailAddress.equalsIgnoreCase(petitionerEmail)) {
+                log.warn("Attempt made to link petitioner as {} to case {}. Failed validation.", respondentType, caseId);
+                return false;
+            }
             return true;
         } else {
             boolean emailAddressesMatch = userEmailAddress.equalsIgnoreCase(emailAddressAssignedToCase);

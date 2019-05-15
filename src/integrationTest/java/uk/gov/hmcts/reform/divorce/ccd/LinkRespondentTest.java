@@ -79,7 +79,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
-        Map<String, Object> updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, "nonMatchingLetterHolderId");
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -101,7 +101,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
-        Map<String, Object> updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
         updateCaseData.put(RESP_EMAIL_ADDRESS, RESPONDENT_EMAIL);
 
@@ -113,9 +113,32 @@ public class LinkRespondentTest extends PetitionSupport {
         assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Duplicates"})
     @Test
-    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() throws Exception {
+    public void givenPetitionerAttemptsLinking_whenLinkRespondent_thenReturnUnauthorized() {
+        final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
+
+        final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
+
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "linked-case.json", Map.class);
+
+        UserDetails petitioner = getUserDetails();
+        Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitioner).getId();
+
+        Map<String, Object> updateCaseData = new HashMap<>();
+        updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
+
+        updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
+            getCaseWorkerUser().getAuthToken());
+
+        Response cmsResponse = linkRespondent(petitioner.getAuthToken(), caseId.toString(), pinResponse.getUserId());
+
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+    }
+
+    @SuppressWarnings({"unchecked", "Duplicates"})
+    @Test
+    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -126,7 +149,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitionerUser).getId();
 
-        Map<String, Object> updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -139,10 +162,9 @@ public class LinkRespondentTest extends PetitionSupport {
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Duplicates"})
     @Test
-    public void givenLetterHolderIdMatches_whenLinkRespondent_thenGrantAccessToCase()
-        throws Exception {
+    public void givenLetterHolderIdMatches_whenLinkRespondent_thenGrantAccessToCase() {
 
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
@@ -155,7 +177,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitionerUser).getId();
 
-        Map<String, Object> updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -174,11 +196,9 @@ public class LinkRespondentTest extends PetitionSupport {
         assertEquals(caseId, response.path("id"));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Duplicates"})
     @Test
-    public void givenLetterHolderIdMatches_whenLinkCoRespondent_thenGrantAccessToCase()
-        throws Exception {
-
+    public void givenLetterHolderIdMatches_whenLinkCoRespondent_thenGrantAccessToCase() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -204,9 +224,9 @@ public class LinkRespondentTest extends PetitionSupport {
         assertEquals(caseId, response.path("id"));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void givenLinkedCoRespondent_whenReLinkingCoRespondent_thenProcessAsNormal()
-        throws Exception {
+    public void givenLinkedCoRespondent_whenReLinkingCoRespondent_thenProcessAsNormal() {
 
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
