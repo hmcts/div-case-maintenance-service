@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import com.google.common.collect.ImmutableMap;
 import feign.FeignException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,6 +38,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -53,10 +55,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LinkRespondentITest extends MockSupport {
     private static final String CASE_ID = "12345678";
     private static final String LETTER_HOLDER_ID = "letterHolderId";
-    private static final String RESP_LETTER_HOLDER_ID_FIELD =
-        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "RESP_LETTER_HOLDER_ID_FIELD");
-    private static final String CO_RESP_LETTER_HOLDER_ID_FIELD =
-        (String)ReflectionTestUtils.getField(CcdCaseProperties.class, "CO_RESP_LETTER_HOLDER_ID_FIELD");
 
     private static final String API_URL =
         String.format("/casemaintenance/version/1/link-respondent/%s/%s", CASE_ID, LETTER_HOLDER_ID);
@@ -210,6 +208,37 @@ public class LinkRespondentITest extends MockSupport {
     }
 
     @Test
+    public void givenPetitionerAuthToken_whenLinkRespondent_thenReturnUnauthorized() throws Exception {
+        final String message = getUserDetails();
+        final String serviceAuthToken = "serviceAuthToken";
+
+        final CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
+                D8_PETITIONER_EMAIL, USER_EMAIL
+            ))
+            .build();
+
+        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubCaseWorkerAuthentication(HttpStatus.OK);
+
+        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(coreCaseDataApi.readForCaseWorker(
+            BEARER_CASE_WORKER_TOKEN,
+            serviceAuthToken,
+            CASE_WORKER_USER_ID,
+            jurisdictionId,
+            caseType,
+            CASE_ID)
+        ).thenReturn(caseDetails);
+
+        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     public void givenLetterHolderIdDoNotMatch_whenLinkCoRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
         final String serviceAuthToken = "serviceAuthToken";
@@ -217,6 +246,37 @@ public class LinkRespondentITest extends MockSupport {
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(CO_RESP_LETTER_HOLDER_ID_FIELD, "nonmatchingletterholderid"))
+            .build();
+
+        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
+        stubCaseWorkerAuthentication(HttpStatus.OK);
+
+        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(coreCaseDataApi.readForCaseWorker(
+            BEARER_CASE_WORKER_TOKEN,
+            serviceAuthToken,
+            CASE_WORKER_USER_ID,
+            jurisdictionId,
+            caseType,
+            CASE_ID)
+        ).thenReturn(caseDetails);
+
+        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void givenPetitionerAuthToken_whenLinkCoRespondent_thenReturnUnauthorized() throws Exception {
+        final String message = getUserDetails();
+        final String serviceAuthToken = "serviceAuthToken";
+
+        final CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
+                D8_PETITIONER_EMAIL, USER_EMAIL
+            ))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);

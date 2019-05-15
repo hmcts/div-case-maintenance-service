@@ -55,10 +55,10 @@ public class LinkRespondentServiceImplUTest {
     private static final String RESPONDENT_EMAIL = "aos@respondent.com";
     private static final String RESP_UNAUTHORIZED_MESSAGE =
         "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [RESPONDENT] "
-            + "or Petitioner attempted to link case as respondent. Check previous logs for more information.";
+            + "or Petitioner attempted to link case as [RESPONDENT]. Check previous logs for more information.";
     private static final String CO_RESP_UNAUTHORIZED_MESSAGE =
         "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [CO_RESPONDENT] "
-            + "or Petitioner attempted to link case as respondent. Check previous logs for more information.";
+            + "or Petitioner attempted to link case as [CO_RESPONDENT]. Check previous logs for more information.";
     private static final String UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID =
         "Case with caseId [12345678] and letter holder id [WrongHolderId] mismatch.";
     private static final String INVALID_MESSAGE = "Case details or letter holder data are invalid";
@@ -241,6 +241,31 @@ public class LinkRespondentServiceImplUTest {
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
                 Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
+                Objects.requireNonNull(D8_PETITIONER_EMAIL), USER_EMAIL
+            )).build();
+
+        when(coreCaseDataApi.readForCaseWorker(
+            CASEWORKER_AUTHORISATION,
+            SERVICE_TOKEN,
+            CASEWORKER_USER_ID,
+            JURISDICTION_ID,
+            CASE_TYPE,
+            CASE_ID
+        )).thenReturn(caseDetails);
+        when(userService.retrieveUserDetails(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
+
+        classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+    }
+
+    @Test
+    public void givenUserIsPetitioner_whenLinkCoRespondent_thenThrowUnauthorizedException() {
+        expectedException.expect(UnauthorizedException.class);
+        expectedException.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
+        CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.ISSUED.getValue())
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
                 Objects.requireNonNull(D8_PETITIONER_EMAIL), USER_EMAIL
             )).build();
 
