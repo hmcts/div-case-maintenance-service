@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
@@ -129,6 +130,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
+        updateCaseData.put(D8_PETITIONER_EMAIL, petitioner.getEmailAddress());
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
             getCaseWorkerUser().getAuthToken());
