@@ -53,10 +53,14 @@ public class LinkRespondentServiceImplUTest {
     private static final String USER_EMAIL = "user@email.com";
     private static final String SERVICE_TOKEN = "ServiceToken";
     private static final String RESPONDENT_EMAIL = "aos@respondent.com";
-    private static final String UNAUTHORIZED_MESSAGE =
-        "Case with caseId [12345678] and letter holder id [letterholderId] already assigned or letter holder mismatch";
+    private static final String RESP_UNAUTHORIZED_MESSAGE =
+        "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [RESPONDENT] "
+            + "Check previous logs for more information.";
+    private static final String CO_RESP_UNAUTHORIZED_MESSAGE =
+        "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [CO_RESPONDENT] "
+            + "Check previous logs for more information.";
     private static final String UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID =
-        "Case with caseId [12345678] and letter holder id [WrongHolderId] already assigned or letter holder mismatch";
+        "Case with caseId [12345678] and letter holder id [WrongHolderId] mismatch.";
     private static final String INVALID_MESSAGE = "Case details or letter holder data are invalid";
     private static final String NOT_FOUND_MESSAGE = "Case with caseId [12345678] and letter holder id [letterholderId] not found";
 
@@ -116,8 +120,7 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenNoCaseCaseDataFound_whenLinkRespondent_thenThrowCaseNotFoundException() {
         expectedException.expect(InvalidRequestException.class);
-        expectedException
-            .expectMessage(INVALID_MESSAGE);
+        expectedException.expectMessage(INVALID_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder().build();
 
         mockCaseDetails(caseDetails);
@@ -128,8 +131,7 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenLetterHolderIdIsNull_whenLinkRespondent_thenThrowInvalidRequestException() {
         expectedException.expect(InvalidRequestException.class);
-        expectedException
-            .expectMessage(INVALID_MESSAGE);
+        expectedException.expectMessage(INVALID_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
             .data(Collections.singletonMap(
@@ -144,8 +146,7 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenLetterHolderIdIsBlank_whenLinkRespondent_thenThrowInvalidRequestException() {
         expectedException.expect(InvalidRequestException.class);
-        expectedException
-            .expectMessage(INVALID_MESSAGE);
+        expectedException.expectMessage(INVALID_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .data(Collections.singletonMap(
                 RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
@@ -159,21 +160,20 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenLetterHolderIdInCaseIsNull_whenLinkRespondent_thenThrowUnauthorizedException() {
         expectedException.expect(UnauthorizedException.class);
-        expectedException
-            .expectMessage(UNAUTHORIZED_MESSAGE);
+        expectedException.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
         CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
             .data(Collections.emptyMap()).build();
 
         mockCaseDetails(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, "WrongHolderId");
     }
 
     @Test
     public void givenLetterHolderIdsDoNotMatch_whenLinkRespondent_thenThrowUnauthorizedException() {
         expectedException.expect(UnauthorizedException.class);
-        expectedException
-            .expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
+        expectedException.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
 
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
@@ -191,8 +191,7 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenLetterHolderIdsDoNotMatch_whenLinkCoRespondent_thenThrowUnauthorizedException() {
         expectedException.expect(UnauthorizedException.class);
-        expectedException
-            .expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
+        expectedException.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
             .id(Long.decode(CASE_ID))
@@ -209,8 +208,7 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenCaseAlreadyLinked_whenLinkRespondent_thenThrowUnauthorizedException() {
         expectedException.expect(UnauthorizedException.class);
-        expectedException
-            .expectMessage(UNAUTHORIZED_MESSAGE);
+        expectedException.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
@@ -234,8 +232,7 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenCaseAlreadyLinked_whenLinkCoRespondent_thenThrowUnauthorizedException() {
         expectedException.expect(UnauthorizedException.class);
-        expectedException
-            .expectMessage(UNAUTHORIZED_MESSAGE);
+        expectedException.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
@@ -259,10 +256,10 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenRespondentEmailNotMatch_whenLinkRespondent_thenThrowUnauthorizedException() {
         expectedException.expect(UnauthorizedException.class);
-        expectedException
-            .expectMessage(UNAUTHORIZED_MESSAGE);
+        expectedException.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
 
         CaseDetails caseDetails = CaseDetails.builder()
+            .id(1000L)
             .state(CaseState.AOS_AWAITING.getValue())
             .data(ImmutableMap.of(
                 RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
@@ -285,10 +282,10 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenRespondentEmailNotMatch_whenLinkCoRespondent_thenThrowUnauthorizedException() {
         expectedException.expect(UnauthorizedException.class);
-        expectedException
-            .expectMessage(UNAUTHORIZED_MESSAGE);
+        expectedException.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
+            .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
                 CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
                 CO_RESP_EMAIL_ADDRESS, "RandomEmail@email.com"
@@ -353,6 +350,7 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenLetterHolderIdMatchedAndEmailNull_whenLinkCoRespondent_thenGrantUserPermission() {
         CaseDetails caseDetails = CaseDetails.builder()
+            .id(1000L)
             .data(ImmutableMap.of(
                 CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
             )).build();
@@ -373,6 +371,7 @@ public class LinkRespondentServiceImplUTest {
     @Test
     public void givenLetterHolderIdAndEmailMatches_whenLinkCoRespondent_thenGrantUserPermission() {
         CaseDetails caseDetails = CaseDetails.builder()
+            .id(1000L)
             .data(ImmutableMap.of(
                 CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
                 CO_RESP_EMAIL_ADDRESS, USER_EMAIL
