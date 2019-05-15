@@ -119,10 +119,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
     private String findUsersCaseRole(RespondentType respondentType) {
         if (respondentType == RespondentType.RESP_SOLICITOR) {
-            return CmsConstants.RESP_SOL_ROLE;
-        } else {
-            return CmsConstants.RESP_SOL_ROLE;
+            return CmsConstants.CREATOR_ROLE;
         }
+        return CmsConstants.RESP_SOL_ROLE;
     }
 
     private RespondentType validateLetterIdAndUserType(String letterHolderId, CaseDetails caseDetails, String caseId) {
