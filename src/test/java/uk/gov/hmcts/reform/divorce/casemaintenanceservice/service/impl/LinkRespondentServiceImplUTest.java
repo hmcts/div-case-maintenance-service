@@ -55,10 +55,10 @@ public class LinkRespondentServiceImplUTest {
     private static final String RESPONDENT_EMAIL = "aos@respondent.com";
     private static final String RESP_UNAUTHORIZED_MESSAGE =
         "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [RESPONDENT] "
-            + "or Petitioner attempted to link case as [RESPONDENT]. Check previous logs for more information.";
+            + "or Petitioner attempted to link case. Check previous logs for more information.";
     private static final String CO_RESP_UNAUTHORIZED_MESSAGE =
         "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [CO_RESPONDENT] "
-            + "or Petitioner attempted to link case as [CO_RESPONDENT]. Check previous logs for more information.";
+            + "or Petitioner attempted to link case. Check previous logs for more information.";
     private static final String UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID =
         "Case with caseId [12345678] and letter holder id [WrongHolderId] mismatch.";
     private static final String INVALID_MESSAGE = "Case details or letter holder data are invalid";
