@@ -16,11 +16,9 @@ public class CcdCaseProperties {
     public static final String D8_SCREEN_HAS_MARRIAGE_BROKEN = "D8ScreenHasMarriageBroken";
     public static final String D8_DIVORCE_UNIT = "D8DivorceUnit";
     public static final String CO_RESP_LETTER_HOLDER_ID_FIELD = "CoRespLetterHolderId";
-    public static final String CO_RESP_RECEIVED_AOS_FIELD = "ReceivedAosFromCoResp";
     public static final String CO_RESP_EMAIL_ADDRESS = "CoRespEmailAddress";
 
     public static final String RESP_LETTER_HOLDER_ID_FIELD = "AosLetterHolderId";
-    public static final String RESP_RECEIVED_AOS_FIELD = "ReceivedAOSfromResp";
     public static final String RESP_EMAIL_ADDRESS = "RespEmailAddress";
 
     public static final String D8_DOCUMENTS_UPLOADED = "D8DocumentsUploaded";
