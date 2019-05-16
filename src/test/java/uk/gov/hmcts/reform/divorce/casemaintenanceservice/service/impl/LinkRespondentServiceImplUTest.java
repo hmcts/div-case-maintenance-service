@@ -35,6 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
@@ -44,20 +45,22 @@ public class LinkRespondentServiceImplUTest {
     private static final String CASE_TYPE = "DIVORCE";
 
     private static final String RESPONDENT_AUTHORISATION = "Bearer RespondentAuthToken";
+    private static final String PET_AUTHORISATION = "Bearer PetAuthToken";
     private static final String CASEWORKER_AUTHORISATION = "CaseWorkerAuthToken";
     private static final String CASE_ID = "12345678";
     private static final String LETTER_HOLDER_ID = "letterholderId";
     private static final String CASEWORKER_USER_ID = "1";
     private static final String RESPONDENT_USER_ID = "2";
+    private static final String PET_USER_ID = "3";
     private static final String USER_EMAIL = "user@email.com";
     private static final String SERVICE_TOKEN = "ServiceToken";
     private static final String RESPONDENT_EMAIL = "aos@respondent.com";
     private static final String RESP_UNAUTHORIZED_MESSAGE =
         "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [RESPONDENT] "
-            + "Check previous logs for more information.";
+            + "or Petitioner attempted to link case. Check previous logs for more information.";
     private static final String CO_RESP_UNAUTHORIZED_MESSAGE =
         "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [CO_RESPONDENT] "
-            + "Check previous logs for more information.";
+            + "or Petitioner attempted to link case. Check previous logs for more information.";
     private static final String UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID =
         "Case with caseId [12345678] and letter holder id [WrongHolderId] mismatch.";
     private static final String INVALID_MESSAGE = "Case details or letter holder data are invalid";
@@ -71,6 +74,12 @@ public class LinkRespondentServiceImplUTest {
     private static final UserDetails RESPONDENT_USER = UserDetails.builder()
         .authToken(RESPONDENT_AUTHORISATION)
         .id(RESPONDENT_USER_ID)
+        .email(USER_EMAIL)
+        .build();
+
+    private static final UserDetails PETITIONER_USER = UserDetails.builder()
+        .authToken(PET_AUTHORISATION)
+        .id(PET_USER_ID)
         .email(USER_EMAIL)
         .build();
 
@@ -97,9 +106,9 @@ public class LinkRespondentServiceImplUTest {
         ReflectionTestUtils.setField(classUnderTest, "jurisdictionId", JURISDICTION_ID);
         ReflectionTestUtils.setField(classUnderTest, "caseType", CASE_TYPE);
 
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
         when(userService.retrieveAnonymousCaseWorkerDetails()).thenReturn(CASE_WORKER_USER);
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
     }
 
     @Test
@@ -114,7 +123,7 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenNoCaseCaseDataFound_whenLinkRespondent_thenThrowCaseNotFoundException() {
+    public void givenNoCaseDataFound_whenLinkRespondent_thenThrowCaseNotFoundException() {
         expectedException.expect(InvalidRequestException.class);
         expectedException.expectMessage(INVALID_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder().build();
@@ -223,6 +232,56 @@ public class LinkRespondentServiceImplUTest {
         )).thenReturn(caseDetails);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+    }
+
+    @Test
+    public void givenUserIsPetitioner_whenLinkRespondent_thenThrowUnauthorizedException() {
+        expectedException.expect(UnauthorizedException.class);
+        expectedException.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
+        CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.ISSUED.getValue())
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
+                Objects.requireNonNull(D8_PETITIONER_EMAIL), USER_EMAIL
+            )).build();
+
+        when(coreCaseDataApi.readForCaseWorker(
+            CASEWORKER_AUTHORISATION,
+            SERVICE_TOKEN,
+            CASEWORKER_USER_ID,
+            JURISDICTION_ID,
+            CASE_TYPE,
+            CASE_ID
+        )).thenReturn(caseDetails);
+        when(userService.retrieveUserDetails(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
+
+        classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+    }
+
+    @Test
+    public void givenUserIsPetitioner_whenLinkCoRespondent_thenThrowUnauthorizedException() {
+        expectedException.expect(UnauthorizedException.class);
+        expectedException.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
+        CaseDetails caseDetails = CaseDetails.builder()
+            .state(CaseState.ISSUED.getValue())
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
+                Objects.requireNonNull(D8_PETITIONER_EMAIL), USER_EMAIL
+            )).build();
+
+        when(coreCaseDataApi.readForCaseWorker(
+            CASEWORKER_AUTHORISATION,
+            SERVICE_TOKEN,
+            CASEWORKER_USER_ID,
+            JURISDICTION_ID,
+            CASE_TYPE,
+            CASE_ID
+        )).thenReturn(caseDetails);
+        when(userService.retrieveUserDetails(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
+
+        classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
 
     @Test
@@ -388,6 +447,7 @@ public class LinkRespondentServiceImplUTest {
 
     @Test
     public void givenUserWithCase_whenUnlinkUser_thenCallRemovePermissionAPI() {
+        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
         classUnderTest.unlinkRespondent(RESPONDENT_AUTHORISATION, CASE_ID);
 
         verify(caseUserApi).updateCaseRolesForUser(

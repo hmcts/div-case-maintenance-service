@@ -19,8 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
@@ -51,14 +54,14 @@ public class LinkRespondentTest extends PetitionSupport {
     public void givenJWTTokenIsNull_whenLinkRespondent_thenReturnUnauthorised() {
         Response cmsResponse = linkRespondent(null, "someCaseId", "someLetterHolderId");
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @Test
     public void givenNoCase_whenLinkRespondent_thenReturnUnauthorised() {
         Response cmsResponse = linkRespondent(getUserToken(), "someCaseId", "someLetterHolderId");
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @Test
@@ -69,7 +72,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @SuppressWarnings("unchecked")
@@ -79,7 +82,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
-        Map<String, Object> updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, "nonMatchingLetterHolderId");
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -87,7 +90,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
     @SuppressWarnings("unchecked")
@@ -101,7 +104,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
-        Map<String, Object> updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
         updateCaseData.put(RESP_EMAIL_ADDRESS, RESPONDENT_EMAIL);
 
@@ -110,12 +113,36 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertEquals(HttpStatus.UNAUTHORIZED.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Duplicates"})
     @Test
-    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() throws Exception {
+    public void givenPetitionerAttemptsLinking_whenLinkRespondent_thenReturnUnauthorized() {
+        final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
+
+        final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
+
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "linked-case.json", Map.class);
+
+        UserDetails petitioner = getUserDetails();
+        Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitioner).getId();
+
+        Map<String, Object> updateCaseData = new HashMap<>();
+        updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
+        updateCaseData.put(D8_PETITIONER_EMAIL, petitioner.getEmailAddress());
+
+        updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
+            getCaseWorkerUser().getAuthToken());
+
+        Response cmsResponse = linkRespondent(petitioner.getAuthToken(), caseId.toString(), pinResponse.getUserId());
+
+        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
+    }
+
+    @SuppressWarnings({"unchecked", "Duplicates"})
+    @Test
+    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -126,7 +153,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitionerUser).getId();
 
-        Map<String, Object> updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -136,13 +163,12 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
 
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.FORBIDDEN.value(), equalTo(cmsResponse.getStatusCode()));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Duplicates"})
     @Test
-    public void givenLetterHolderIdMatches_whenLinkRespondent_thenGrantAccessToCase()
-        throws Exception {
+    public void givenLetterHolderIdMatches_whenLinkRespondent_thenGrantAccessToCase() {
 
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
@@ -155,7 +181,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitionerUser).getId();
 
-        Map<String, Object> updateCaseData = new HashMap();
+        Map<String, Object> updateCaseData = new HashMap<>();
         updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
@@ -171,14 +197,12 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertEquals(caseId, response.path("id"));
+        assertThat(caseId, equalTo(response.path("id")));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Duplicates"})
     @Test
-    public void givenLetterHolderIdMatches_whenLinkCoRespondent_thenGrantAccessToCase()
-        throws Exception {
-
+    public void givenLetterHolderIdMatches_whenLinkCoRespondent_thenGrantAccessToCase() {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
@@ -201,12 +225,12 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertEquals(caseId, response.path("id"));
+        assertThat(caseId, equalTo(response.path("id")));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void givenLinkedCoRespondent_whenReLinkingCoRespondent_thenProcessAsNormal()
-        throws Exception {
+    public void givenLinkedCoRespondent_whenReLinkingCoRespondent_thenProcessAsNormal() {
 
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
@@ -231,11 +255,11 @@ public class LinkRespondentTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertEquals(caseId, response.path("id"));
+        assertThat(caseId, equalTo(response.path("id")));
 
         linkResponse = linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertEquals(HttpStatus.OK.value(),linkResponse.getStatusCode());
+        assertThat(HttpStatus.OK.value(),equalTo(linkResponse.getStatusCode()));
     }
 
 
