@@ -23,10 +23,10 @@ import java.util.Set;
 import static java.lang.String.format;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESP_SOLICITOR;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOLICITOR_EMAIL_ADDRESS;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOLICITOR_LETTER_HOLDER_ID_FIELD;
 
 @Service
 @Slf4j
@@ -58,18 +58,6 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             caseType,
             caseId,
             respondentUser.getId()
-        );
-    }
-
-    private void grantAccessToCase(UserDetails anonymousCaseWorker, String caseId, String respondentId) {
-        caseAccessApi.grantAccessToCase(
-            anonymousCaseWorker.getAuthToken(),
-            getServiceAuthToken(),
-            anonymousCaseWorker.getId(),
-            jurisdictionId,
-            caseType,
-            caseId,
-            new UserId(respondentId)
         );
     }
 
@@ -111,17 +99,18 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
                 + "Check previous logs for more information.", caseId, letterHolderId, respondentType));
         }
 
-        Set<String> caseRoles = new HashSet<>();
-        caseRoles.add(findUsersCaseRole(respondentType));
-
-        updateCaseRoles(caseworkerUser, caseId, linkingUser.getId(), caseRoles);
+        updateCaseRoles(caseworkerUser, caseId, linkingUser.getId(), userCaseRoles(respondentType));
     }
 
-    private String findUsersCaseRole(RespondentType respondentType) {
+    private Set<String> userCaseRoles(RespondentType respondentType) {
+
+        Set<String> caseRoles = new HashSet<>();
+        caseRoles.add(CmsConstants.CREATOR_ROLE);
+
         if (respondentType == RespondentType.RESP_SOLICITOR) {
-            return CmsConstants.CREATOR_ROLE;
+            caseRoles.add(CmsConstants.RESP_SOL_ROLE);
         }
-        return CmsConstants.RESP_SOL_ROLE;
+        return caseRoles;
     }
 
     private RespondentType validateLetterIdAndUserType(String letterHolderId, CaseDetails caseDetails, String caseId) {
@@ -130,14 +119,15 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
         String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
         String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
-        String solLetterHolderId = (String) caseDetails.getData().get(RESP_SOLICITOR_LETTER_HOLDER_ID_FIELD);
+        String isRespondentSolicitor = (String) caseDetails.getData().get(D8_RESP_SOLICITOR);
 
         if (letterHolderId.equals(respondentLetterHolderId)) {
+            if (StringUtils.equalsIgnoreCase(CmsConstants.YES_VALUE, isRespondentSolicitor)) {
+                return RespondentType.RESP_SOLICITOR;
+            }
             return RespondentType.RESPONDENT;
         } else if (letterHolderId.equals(coRespondentLetterHolderId)) {
             return RespondentType.CO_RESPONDENT;
-        } else if (letterHolderId.equals(solLetterHolderId)) {
-            return RespondentType.RESP_SOLICITOR;
         } else {
             throw new UnauthorizedException(
                 format("Case with caseId [%s] and letter holder id [%s] mismatch.", caseDetails.getId(), letterHolderId));
