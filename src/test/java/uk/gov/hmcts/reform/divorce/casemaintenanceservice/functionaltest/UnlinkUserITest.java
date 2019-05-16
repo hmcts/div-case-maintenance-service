@@ -20,11 +20,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
+import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 
 import java.util.Collections;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -54,8 +56,8 @@ public class UnlinkUserITest  extends MockSupport {
     @Value("${ccd.casetype}")
     private String caseType;
 
-    @MockBean
-    private CaseAccessApi caseAccessApi;
+    @Autowired
+    private CaseUserApi caseUserApi;
 
     @Autowired
     private MockMvc webClient;
@@ -77,15 +79,13 @@ public class UnlinkUserITest  extends MockSupport {
         when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
 
         doNothing()
-            .when(caseAccessApi)
-            .revokeAccessToCase(
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
                 eq(serviceAuthToken),
-                eq(CASE_WORKER_USER_ID),
-                eq(jurisdictionId),
-                eq(caseType),
                 eq(CASE_ID),
-                eq(USER_ID)
+                eq(USER_ID),
+                any(CaseUser.class)
             );
 
         webClient.perform(MockMvcRequestBuilders.delete(API_URL)
@@ -109,15 +109,13 @@ public class UnlinkUserITest  extends MockSupport {
             .headers(Collections.emptyMap())
             .build();
         doThrow(FeignException.errorStatus("CCD exception", mockResponse))
-            .when(caseAccessApi)
-            .revokeAccessToCase(
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
                 eq(serviceAuthToken),
-                eq(CASE_WORKER_USER_ID),
-                eq(jurisdictionId),
-                eq(caseType),
                 eq(CASE_ID),
-                eq(USER_ID)
+                eq(USER_ID),
+                any(CaseUser.class)
             );
 
         webClient.perform(MockMvcRequestBuilders.delete(API_URL)

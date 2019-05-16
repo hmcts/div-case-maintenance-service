@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
 import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
@@ -33,9 +32,6 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAccessService {
 
     @Autowired
-    private CaseAccessApi caseAccessApi;
-
-    @Autowired
     private CaseUserApi caseUserApi;
 
     private enum RespondentType {
@@ -48,17 +44,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     public void unlinkRespondent(String authorisation, String caseId) {
         UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
 
-        UserDetails respondentUser = getUserDetails(authorisation);
+        UserDetails linkedUser = getUserDetails(authorisation);
 
-        caseAccessApi.revokeAccessToCase(
-            caseworkerUser.getAuthToken(),
-            getServiceAuthToken(),
-            caseworkerUser.getId(),
-            jurisdictionId,
-            caseType,
-            caseId,
-            respondentUser.getId()
-        );
+        updateCaseRoles(caseworkerUser, caseId, linkedUser.getId(), null);
     }
 
     private void updateCaseRoles(UserDetails anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {

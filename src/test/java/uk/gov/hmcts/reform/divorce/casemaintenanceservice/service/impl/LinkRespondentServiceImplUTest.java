@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
 import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -86,9 +85,6 @@ public class LinkRespondentServiceImplUTest {
 
     @Mock
     private AuthTokenGenerator authTokenGenerator;
-
-    @Mock
-    private CaseAccessApi caseAccessApi;
 
     @Mock
     private CaseUserApi caseUserApi;
@@ -394,14 +390,12 @@ public class LinkRespondentServiceImplUTest {
     public void givenUserWithCase_whenUnlinkUser_thenCallRemovePermissionAPI() {
         classUnderTest.unlinkRespondent(RESPONDENT_AUTHORISATION, CASE_ID);
 
-        verify(caseAccessApi).revokeAccessToCase(
+        verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
-            eq(CASEWORKER_USER_ID),
-            eq(JURISDICTION_ID),
-            eq(CASE_TYPE),
             eq(CASE_ID),
-            eq(RESPONDENT_USER.getId())
+            anyString(),
+            any(CaseUser.class)
         );
     }
 
