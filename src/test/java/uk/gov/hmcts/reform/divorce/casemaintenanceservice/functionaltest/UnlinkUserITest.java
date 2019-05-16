@@ -56,7 +56,7 @@ public class UnlinkUserITest  extends MockSupport {
     @Value("${ccd.casetype}")
     private String caseType;
 
-    @Autowired
+    @MockBean
     private CaseUserApi caseUserApi;
 
     @Autowired
