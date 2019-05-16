@@ -116,7 +116,7 @@ public class CcdControllerUTest {
     }
 
     @Test
-    public void  whenSubmitBulkCase_thenProceedAsExpected() {
+    public void whenSubmitBulkCase_thenProceedAsExpected() {
         Map<String, Object> inputData = ImmutableMap.of("key", "value");
 
         CaseDetails expectedResult = CaseDetails.builder().build();

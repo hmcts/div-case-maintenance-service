@@ -24,7 +24,7 @@ public class CcdBulkCaseSubmissionTest extends PetitionSupport {
     private static final String USER_EMAIL = "test@test.com";
 
     private static final String CASE_PAYLOAD_PATH = "bulk-case.json";
-    
+
     @Test
     public void shouldReturnCaseId() {
         UserDetails caseWorkerUser = getCaseWorkerUser();

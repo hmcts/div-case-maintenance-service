@@ -19,7 +19,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -104,7 +104,7 @@ public class CcdSubmissionServiceImplUTest {
 
         CaseDetails actual = classUnderTest.submitCase(caseData,  AUTHORISATION);
 
-        assertEquals(actual, expected);
+        assertThat(actual).isEqualTo(expected);
 
         verify(coreCaseDataApi).startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE, CREATE_EVENT_ID);
@@ -146,7 +146,7 @@ public class CcdSubmissionServiceImplUTest {
 
         CaseDetails actual = classUnderTest.submitCase(caseData, AUTHORISATION);
 
-        assertEquals(actual, expected);
+        assertThat(actual).isEqualTo(expected);
 
         verify(coreCaseDataApi).startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE, CREATE_HWF_EVENT_ID);
@@ -187,6 +187,6 @@ public class CcdSubmissionServiceImplUTest {
 
         CaseDetails actual = classUnderTest.submitBulkCase(caseData,  AUTHORISATION);
 
-        assertEquals(actual, expected);
+        assertThat(actual).isEqualTo(expected);
     }
 }
