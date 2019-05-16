@@ -8,7 +8,6 @@ import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class CcdBulkCaseSubmissionTest extends PetitionSupport {
 
@@ -42,8 +41,8 @@ public class CcdBulkCaseSubmissionTest extends PetitionSupport {
             .emailAddress(USER_EMAIL)
             .build());
 
-        assertThat(HttpStatus.FORBIDDEN.value()).isEqualTo(cmsResponse.getStatusCode());
-        assertThat(UNAUTHORISED_JWT_EXCEPTION).isEqualTo(cmsResponse.asString());
+        assertThat(cmsResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(cmsResponse.asString()).isEqualTo(UNAUTHORISED_JWT_EXCEPTION);
     }
 
     @Test
@@ -54,8 +53,7 @@ public class CcdBulkCaseSubmissionTest extends PetitionSupport {
             null
         );
 
-        assertThat(HttpStatus.BAD_REQUEST.value()).isEqualTo(cmsResponse.getStatusCode());
-        assertTrue(cmsResponse.getBody().asString().contains(REQUEST_BODY_NOT_FOUND));
+        assertThat(cmsResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(cmsResponse.getBody().asString().contains(REQUEST_BODY_NOT_FOUND));
     }
-
 }
