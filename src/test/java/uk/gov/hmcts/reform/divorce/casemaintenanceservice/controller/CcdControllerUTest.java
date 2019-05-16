@@ -101,7 +101,7 @@ public class CcdControllerUTest {
     }
 
     @Test
-    public void  whenSearchCases_thenProceedAsExpected() {
+    public void whenSearchCases_thenProceedAsExpected() {
         String query = "anyQuery";
 
         SearchResult expectedResult = SearchResult

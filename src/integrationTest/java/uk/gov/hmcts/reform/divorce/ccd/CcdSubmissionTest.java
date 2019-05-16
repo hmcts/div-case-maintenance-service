@@ -4,14 +4,13 @@ import io.restassured.response.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.support.CcdSubmissionSupport;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class CcdSubmissionTest extends PetitionSupport {
@@ -98,7 +97,7 @@ public class CcdSubmissionTest extends PetitionSupport {
 
         Response draftsResponseBefore = getAllDraft(userToken);
 
-        assertEquals(1, ((List)draftsResponseBefore.getBody().path("data")).size());
+        assertThat(((List)draftsResponseBefore.getBody().path("data")).size()).isOne();
 
         Response cmsResponse = submitCase("addresses.json", userDetails);
 
@@ -109,7 +108,7 @@ public class CcdSubmissionTest extends PetitionSupport {
 
         Response draftsResponseAfter = getAllDraft(userToken);
 
-        assertEquals(0, ((List)draftsResponseAfter.getBody().path("data")).size());
+        assertThat((List) draftsResponseAfter.getBody().path("data")).isEmpty();
     }
 
     @Test
@@ -119,8 +118,8 @@ public class CcdSubmissionTest extends PetitionSupport {
             .emailAddress(USER_EMAIL)
             .build());
 
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
-        assertEquals(UNAUTHORISED_JWT_EXCEPTION, cmsResponse.asString());
+        assertThat(HttpStatus.FORBIDDEN.value()).isEqualTo(cmsResponse.getStatusCode());
+        assertThat(UNAUTHORISED_JWT_EXCEPTION).isEqualTo(cmsResponse.asString());
     }
 
     @Test
@@ -131,7 +130,7 @@ public class CcdSubmissionTest extends PetitionSupport {
             null
         );
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.BAD_REQUEST.value()).isEqualTo(cmsResponse.getStatusCode());
         assertTrue(cmsResponse.getBody().asString().contains(REQUEST_BODY_NOT_FOUND));
     }
 }

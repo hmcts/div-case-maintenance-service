@@ -7,7 +7,7 @@ import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class CcdBulkCaseSubmissionTest extends PetitionSupport {
@@ -24,6 +24,7 @@ public class CcdBulkCaseSubmissionTest extends PetitionSupport {
     private static final String USER_EMAIL = "test@test.com";
 
     private static final String CASE_PAYLOAD_PATH = "bulk-case.json";
+    
     @Test
     public void shouldReturnCaseId() {
         UserDetails caseWorkerUser = getCaseWorkerUser();
@@ -41,8 +42,8 @@ public class CcdBulkCaseSubmissionTest extends PetitionSupport {
             .emailAddress(USER_EMAIL)
             .build());
 
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
-        assertEquals(UNAUTHORISED_JWT_EXCEPTION, cmsResponse.asString());
+        assertThat(HttpStatus.FORBIDDEN.value()).isEqualTo(cmsResponse.getStatusCode());
+        assertThat(UNAUTHORISED_JWT_EXCEPTION).isEqualTo(cmsResponse.asString());
     }
 
     @Test
@@ -53,7 +54,7 @@ public class CcdBulkCaseSubmissionTest extends PetitionSupport {
             null
         );
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
+        assertThat(HttpStatus.BAD_REQUEST.value()).isEqualTo(cmsResponse.getStatusCode());
         assertTrue(cmsResponse.getBody().asString().contains(REQUEST_BODY_NOT_FOUND));
     }
 
