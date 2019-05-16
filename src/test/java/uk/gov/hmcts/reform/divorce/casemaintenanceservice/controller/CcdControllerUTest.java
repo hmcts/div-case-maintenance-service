@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -100,7 +101,7 @@ public class CcdControllerUTest {
     }
 
     @Test
-    public void  whenSearchCases_thenProceedAsExpected() {
+    public void whenSearchCases_thenProceedAsExpected() {
         String query = "anyQuery";
 
         SearchResult expectedResult = SearchResult
@@ -114,4 +115,16 @@ public class CcdControllerUTest {
         assertEquals(expectedResult, caseResult.getBody());
     }
 
+    @Test
+    public void whenSubmitBulkCase_thenProceedAsExpected() {
+        Map<String, Object> inputData = ImmutableMap.of("key", "value");
+
+        CaseDetails expectedResult = CaseDetails.builder().build();
+        when(ccdSubmissionService.submitBulkCase(inputData,JWT_TOKEN)).thenReturn(expectedResult);
+
+        ResponseEntity<CaseDetails> caseResult = classUnderTest.submitBulkCase(inputData, JWT_TOKEN);
+
+        assertEquals(HttpStatus.OK, caseResult.getStatusCode());
+        assertEquals(expectedResult, caseResult.getBody());
+    }
 }

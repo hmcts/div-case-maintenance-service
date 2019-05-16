@@ -56,6 +56,21 @@ public class CcdController {
         return ResponseEntity.ok(ccdSubmissionService.submitCase(data, jwt));
     }
 
+    @PostMapping(path = "/bulk/submit", consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Submits a divorce session to CCD")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Case Data was submitted to CCD. The body payload returns the complete "
+            + "case back", response = CaseDetails.class)
+        }
+    )
+    public ResponseEntity<CaseDetails> submitBulkCase(
+        @RequestBody @ApiParam(value = "Bulk case data", required = true) Map<String, Object> data,
+        @RequestHeader("Authorization")
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        return ResponseEntity.ok(ccdSubmissionService.submitBulkCase(data, jwt));
+    }
+
     @PostMapping(path = "/updateCase/{caseId}/{eventId}", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Updates case details")

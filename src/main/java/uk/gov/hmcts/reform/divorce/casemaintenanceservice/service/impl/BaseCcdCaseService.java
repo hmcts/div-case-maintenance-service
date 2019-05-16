@@ -12,6 +12,9 @@ class BaseCcdCaseService {
     static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce case submission event";
     static final String DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION = "Submitting Divorce Case";
 
+    static final String DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce Bulk case submission event";
+    static final String DIVORCE_BULK_CASE_SUBMISSION_EVENT_DESCRIPTION = "Submitting divorce bulk Case";
+
     @Value("${ccd.jurisdictionid}")
     String jurisdictionId;
 
@@ -23,6 +26,12 @@ class BaseCcdCaseService {
 
     @Value("${ccd.eventid.createhwf}")
     String createHwfEventId;
+
+    @Value("${ccd.bulk.casetype}")
+    String bulkCaseType;
+
+    @Value("${ccd.bulk.eventid.create}")
+    String createBulkCaseEventId;
 
     @Autowired
     CoreCaseDataApi coreCaseDataApi;

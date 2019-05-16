@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class CCDSearchTest  extends PetitionSupport {
 
     @Test
-    public void whenQueryAllCases_ReturnNumberOfCasesExpected(){
+    public void whenQueryAllCases_ReturnNumberOfCasesExpected() {
         final UserDetails userDetails = getCaseWorkerUser();
         String queryString = "{ \"from\": 0, \"size\": 5, \"query\": { \"match_all\": {} } }";
 

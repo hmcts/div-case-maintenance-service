@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ObjectMapperTestUtil {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     static <T> T convertStringToObject(String data, Class<T> type) {
         try {
-            return new ObjectMapper().readValue(data, type);
+            return OBJECT_MAPPER.readValue(data, type);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -14,7 +16,7 @@ class ObjectMapperTestUtil {
 
     static String convertObjectToJsonString(final Object object) {
         try {
-            return new ObjectMapper().writeValueAsString(object);
+            return OBJECT_MAPPER.writeValueAsString(object);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
