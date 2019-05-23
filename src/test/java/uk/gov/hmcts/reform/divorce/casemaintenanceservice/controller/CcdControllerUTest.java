@@ -127,4 +127,20 @@ public class CcdControllerUTest {
         assertEquals(HttpStatus.OK, caseResult.getStatusCode());
         assertEquals(expectedResult, caseResult.getBody());
     }
+
+    @Test
+    public void whenUpdateBulkCase_thenProceedAsExpected() {
+        final String caseId = "caseId";
+        final String eventId = "eventId";
+
+        when(ccdUpdateService.updateBulkCase(caseId, CASE_DATA_CONTENT,  eventId, JWT_TOKEN)).thenReturn(CASE_DETAILS);
+
+        ResponseEntity<CaseDetails> responseEntity =
+            classUnderTest.updateBulkCase(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
+
+        assertEquals(CASE_DETAILS, responseEntity.getBody());
+        assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
+
+        verify(ccdUpdateService).updateBulkCase(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
+    }
 }
