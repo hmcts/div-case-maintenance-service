@@ -16,7 +16,7 @@ public class CcdBulkCaseUpdateTest extends PetitionSupport {
     public void shouldReturnCaseId() {
         UserDetails caseWorkerUser = getCaseWorkerUser();
 
-        Long caseId = submitBulkCase(CASE_PAYLOAD_PATH, caseWorkerUser).getBody().path("caseId");
+        Long caseId = submitBulkCase(CASE_PAYLOAD_PATH, caseWorkerUser).getBody().path("id");
 
         Response cmsResponse = updateBulkCase(CASE_PAYLOAD_PATH,
             caseId,
