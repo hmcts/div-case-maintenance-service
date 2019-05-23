@@ -13,7 +13,7 @@ public class CcdBulkCaseUpdateTest extends PetitionSupport {
     private static final String CASE_PAYLOAD_PATH = "bulk-case.json";
 
     @Test
-    public void shouldReturnCaseId() {
+    public void shouldUpdateBulkCase() {
         UserDetails caseWorkerUser = getCaseWorkerUser();
 
         Long caseId = submitBulkCase(CASE_PAYLOAD_PATH, caseWorkerUser).getBody().path("caseId");
