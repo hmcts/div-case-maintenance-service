@@ -4,4 +4,6 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 
 public interface CcdUpdateService {
     CaseDetails update(String caseId, Object data, String eventId, String authorisation);
+
+    CaseDetails updateBulkCase(String caseId, Object data, String eventId, String authorisation);
 }

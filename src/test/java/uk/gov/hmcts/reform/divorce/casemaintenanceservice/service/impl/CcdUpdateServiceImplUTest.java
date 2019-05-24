@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 public class CcdUpdateServiceImplUTest {
     private static final String JURISDICTION_ID = "someJurisdictionId";
     private static final String CASE_TYPE = "someCaseType";
+    private static final String BULK_CASE_TYPE = "bulkCaseType";
     private static final String CREATE_EVENT_ID = "createEventId";
     private static final String CASEWORKER_ROLE = "caseworker";
     private static final String CITIZEN_ROLE = "citizen";
@@ -55,6 +56,7 @@ public class CcdUpdateServiceImplUTest {
     public void setup() {
         ReflectionTestUtils.setField(classUnderTest, "jurisdictionId", JURISDICTION_ID);
         ReflectionTestUtils.setField(classUnderTest, "caseType", CASE_TYPE);
+        ReflectionTestUtils.setField(classUnderTest, "bulkCaseType", BULK_CASE_TYPE);
         ReflectionTestUtils.setField(classUnderTest, "createEventId", CREATE_EVENT_ID);
     }
 
@@ -201,5 +203,52 @@ public class CcdUpdateServiceImplUTest {
             CASE_TYPE, caseId, eventId);
         verify(coreCaseDataApi).submitEventForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
             CASE_TYPE, caseId,true, caseDataContent);
+    }
+
+    @Test
+    public void whenUpdateBulkCase_thenProceedAsExpected() {
+        final String caseId = "caseId";
+        final String userId = "someUserId";
+        final String authorisation = "authorisation";
+        final String bearerAuthorisation = "Bearer authorisation";
+        final String serviceToken = "serviceToken";
+        final Object caseData = new Object();
+
+        final String eventId = "eventId";
+        final String token = "token";
+        final StartEventResponse startEventResponse = StartEventResponse.builder()
+            .eventId(eventId)
+            .token(token)
+            .build();
+
+        final CaseDataContent caseDataContent = CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(
+                Event.builder()
+                    .id(startEventResponse.getEventId())
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseData)
+            .build();
+
+        final UserDetails userDetails = UserDetails.builder().id(userId).build();
+        final CaseDetails expected = CaseDetails.builder().build();
+
+        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(serviceToken);
+        when(coreCaseDataApi.startEventForCaseWorker(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
+            BULK_CASE_TYPE, caseId, eventId)).thenReturn(startEventResponse);
+        when(coreCaseDataApi.submitEventForCaseWorker(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
+            BULK_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
+
+        CaseDetails actual = classUnderTest.updateBulkCase(caseId, caseData, eventId, authorisation);
+
+        assertEquals(actual, expected);
+
+        verify(coreCaseDataApi).startEventForCaseWorker(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
+            BULK_CASE_TYPE, caseId, eventId);
+        verify(coreCaseDataApi).submitEventForCaseWorker(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
+            BULK_CASE_TYPE, caseId,true, caseDataContent);
     }
 }

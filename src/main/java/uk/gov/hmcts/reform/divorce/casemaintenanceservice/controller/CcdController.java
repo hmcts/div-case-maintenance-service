@@ -89,6 +89,24 @@ public class CcdController {
         return ResponseEntity.ok(ccdUpdateService.update(caseId, data, eventId, jwt));
     }
 
+    @PostMapping(path = "/bulk/updateCase/{caseId}/{eventId}", consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Updates bulk case details")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "A request to update the bulk case details was sent to CCD. The body payload "
+            + "will return the latest version of the case after the update.", response = CaseDetails.class)
+        }
+    )
+    public ResponseEntity<CaseDetails> updateBulkCase(
+        @PathVariable("caseId") @ApiParam("Unique identifier of the bulk case that was submitted to CCD") String caseId,
+        @RequestBody
+        @ApiParam(value = "The update event that requires the resubmission to CCD", required = true) Object data,
+        @PathVariable("eventId") @ApiParam(value = "Update Event Type Id", required = true) String eventId,
+        @RequestHeader("Authorization")
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        return ResponseEntity.ok(ccdUpdateService.updateBulkCase(caseId, data, eventId, jwt));
+    }
+
     @PostMapping(path = "/link-respondent/{caseId}/{letterHolderId}")
     @ApiOperation(value = "Updates case details")
     @ApiResponses(value = {

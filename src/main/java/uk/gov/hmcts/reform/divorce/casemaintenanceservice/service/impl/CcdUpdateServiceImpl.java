@@ -68,6 +68,32 @@ public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdat
         }
     }
 
+    @Override
+    public CaseDetails updateBulkCase(String caseId, Object data, String eventId, String authorisation) {
+        UserDetails userDetails = getUserDetails(authorisation);
+
+        StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(
+            getBearerUserToken(authorisation),
+            getServiceAuthToken(),
+            userDetails.getId(),
+            jurisdictionId,
+            bulkCaseType,
+            caseId,
+            eventId);
+
+        CaseDataContent caseDataContent = buildCaseDataContent(startEventResponse, data);
+
+        return coreCaseDataApi.submitEventForCaseWorker(
+            getBearerUserToken(authorisation),
+            getServiceAuthToken(),
+            userDetails.getId(),
+            jurisdictionId,
+            bulkCaseType,
+            caseId,
+            true,
+            caseDataContent);
+    }
+
     private CaseDataContent buildCaseDataContent(StartEventResponse startEventResponse, Object data) {
         return CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
