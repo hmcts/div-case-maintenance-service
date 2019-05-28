@@ -50,6 +50,7 @@ module "div-cms" {
         IDAM_CASEWORKER_USERNAME                              = "${data.azurerm_key_vault_secret.idam-caseworker-username.value}"
         IDAM_CASEWORKER_PASSWORD                              = "${data.azurerm_key_vault_secret.idam-caseworker-password.value}"
         IDAM_API_REDIRECT_URL                                 = "${local.petitioner_fe_baseurl}/authenticated"
+        MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIMETOLIVE                = "${var.health_check_ttl}"
     }
 }
 
