@@ -21,7 +21,7 @@ public enum CaseState {
     AWAITING_REISSUE("AwaitingReissue", ApplicationStatus.AWAITING_REISSUE),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer", ApplicationStatus.AOS_SUBMITTED_AWAITING_ANSWER),
     AOS_COMPLETED("AosCompleted", ApplicationStatus.AOS_COMPLETED),
-    AWAITING_DECREE_NISI("AwaitingDecreeNisi", ApplicationStatus.DN_AWAITING),
+    AWAITING_DECREE_NISI("AwaitingDecreeNisi", ApplicationStatus.AWAITING_DECREE_NISI),
     REJECTED("Rejected", ApplicationStatus.REJECTED),
     AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral", ApplicationStatus.AWAITING_LEGAL_ADVISOR_REFERRAL),
     DEFENDED_DIVORCE("DefendedDivorce", ApplicationStatus.DEFENDED_DIVORCE),

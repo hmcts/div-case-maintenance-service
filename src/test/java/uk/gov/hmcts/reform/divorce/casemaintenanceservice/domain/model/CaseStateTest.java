@@ -36,7 +36,7 @@ public class CaseStateTest {
                 {"AosAwaiting", "AosAwaiting"},
                 {"AosStarted", "AosStarted"},
                 {"AosSubmittedAwaitingAnswer", "AosSubmittedAwaitingAnswer"},
-                {"AwaitingDecreeNisi", "DNAwaiting"},
+                {"AwaitingDecreeNisi", "AwaitingDecreeNisi"},
                 {"Rejected", "Rejected"},
                 {"AwaitingLegalAdvisorReferral", "AwaitingLegalAdvisorReferral"},
                 {"DefendedDivorce", "DefendedDivorce"},
