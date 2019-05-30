@@ -33,10 +33,16 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
+                CaseState.AOS_COMPLETED,
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
+                CaseState.AWAITING_CLARIFICATION,
                 CaseState.AWAITING_CONSIDERATION_DN,
-                CaseState.AWAITING_DECREE_ABSOLUTE
+                CaseState.AWAITING_DECREE_ABSOLUTE,
+                CaseState.AWAITING_CONSIDERATION,
+                CaseState.AWAITING_PRONOUNCEMENT,
+                CaseState.DEFENDED_DIVORCE,
+                CaseState.DIVORCE_GRANTED
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
                 CaseState.AMEND_PETITION
