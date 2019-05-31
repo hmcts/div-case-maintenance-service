@@ -39,12 +39,12 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
             );
     }
 
-    protected Response updateBulkCase(String fileName, Long caseId, String eventId, String userToken) {
+    protected Response updateBulkCase(Map<String, Object> data, Long caseId, String eventId, String userToken) {
         return
             RestUtil.postToRestService(
                 getBulkCaseRequestUrl(caseId, eventId),
                 getHeaders(userToken),
-                fileName == null ? "{}" : loadJson(fileName, PAYLOAD_CONTEXT_PATH)
+                data == null ? "{}" : objectToJson(data)
             );
     }
 
