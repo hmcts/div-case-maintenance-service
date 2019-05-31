@@ -6,11 +6,16 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 
 public class CcdBulkCaseUpdateTest extends PetitionSupport {
 
     private static final String CASE_PAYLOAD_PATH = "bulk-case.json";
+    private static final String COURT_HEARING_DATETIME = "hearingDate";
 
     @Test
     public void shouldUpdateBulkCase() {
@@ -18,7 +23,10 @@ public class CcdBulkCaseUpdateTest extends PetitionSupport {
 
         Long caseId = submitBulkCase(CASE_PAYLOAD_PATH, caseWorkerUser).getBody().path("id");
 
-        Response cmsResponse = updateBulkCase(CASE_PAYLOAD_PATH,
+        // Hearing Date is a mandatory field that must be set in the future
+        Map<String, Object> updateData = Collections.singletonMap(COURT_HEARING_DATETIME, LocalDateTime.now().plusMonths(3));
+
+        Response cmsResponse = updateBulkCase(updateData,
             caseId,
             BULK_CASE_SCHEDULE_EVENT_ID,
             caseWorkerUser.getAuthToken());
