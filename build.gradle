@@ -281,6 +281,10 @@ sourceSets {
 }
 
 dependencies {
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+    annotationProcessor("org.projectlombok:lombok:${versions.lombok}")
+    testAnnotationProcessor("org.projectlombok:lombok:${versions.lombok}")
+    integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     integrationTestCompile(sourceSets.test.output)
 }
 
