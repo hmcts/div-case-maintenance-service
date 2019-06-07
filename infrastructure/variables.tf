@@ -38,6 +38,10 @@ variable "capacity" {
     default = "1"
 }
 
+variable "instance_size" {
+    default = "I2"
+}
+
 variable "auth_provider_service_client_microservice" {
   default = "divorce_ccd_submission"
 }
