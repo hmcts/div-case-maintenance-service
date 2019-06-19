@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model;
 
-
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model;
 
-
 import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
