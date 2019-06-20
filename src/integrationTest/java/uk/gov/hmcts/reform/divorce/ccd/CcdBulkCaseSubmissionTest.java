@@ -28,7 +28,7 @@ public class CcdBulkCaseSubmissionTest extends PetitionSupport {
     public void shouldReturnCaseId() {
         UserDetails caseWorkerUser = getCaseWorkerUser();
 
-        String expectedStatus = "Created";
+        String expectedStatus = "ScheduledForCreate";
         Response caseSubmitted = submitBulkCase(CASE_PAYLOAD_PATH, caseWorkerUser);
         assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
         assertCaseStatus(caseSubmitted, expectedStatus);

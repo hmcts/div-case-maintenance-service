@@ -14,6 +14,7 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
 
     protected static final String EVENT_ID = "paymentMade";
     protected static final String BULK_CASE_SCHEDULE_EVENT_ID = "scheduleForListing";
+    protected static final String BULK_CASE_CREATED_EVENT_ID = "create";
 
     @Value("${case.maintenance.update.context-path}")
     private String contextPath;

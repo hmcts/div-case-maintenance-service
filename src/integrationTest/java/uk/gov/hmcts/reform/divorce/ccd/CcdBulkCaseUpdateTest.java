@@ -22,6 +22,12 @@ public class CcdBulkCaseUpdateTest extends PetitionSupport {
         UserDetails caseWorkerUser = getCaseWorkerUser();
 
         Long caseId = submitBulkCase(CASE_PAYLOAD_PATH, caseWorkerUser).getBody().path("id");
+        Response bulkCreateResponse = updateBulkCase(null,
+            caseId,
+            BULK_CASE_CREATED_EVENT_ID,
+            caseWorkerUser.getAuthToken());
+
+        assertEquals(HttpStatus.OK.value(), bulkCreateResponse.getStatusCode());
 
         // Hearing Date is a mandatory field that must be set in the future
         Map<String, Object> updateData = Collections.singletonMap(COURT_HEARING_DATETIME, LocalDateTime.now().plusMonths(3).toString());
