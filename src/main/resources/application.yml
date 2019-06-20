@@ -40,7 +40,7 @@ ccd:
   bulk:
       casetype: DIVORCE_BulkAction
       eventid:
-          create: create
+          create: scheduleCreate
   server:
     port: 4452
     health:
