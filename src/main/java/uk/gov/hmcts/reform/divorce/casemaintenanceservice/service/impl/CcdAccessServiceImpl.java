@@ -4,62 +4,59 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
+import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.InvalidRequestException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.UnauthorizedException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESP_SOLICITOR;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOLICITOR_EMAIL_ADDRESS;
 
 @Service
 @Slf4j
 public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAccessService {
 
     @Autowired
-    private CaseAccessApi caseAccessApi;
+    private CaseUserApi caseUserApi;
 
     private enum RespondentType {
         RESPONDENT,
-        CO_RESPONDENT
+        CO_RESPONDENT,
+        RESP_SOLICITOR
     }
 
     @Override
     public void unlinkRespondent(String authorisation, String caseId) {
         UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
 
-        UserDetails respondentUser = getUserDetails(authorisation);
+        UserDetails linkedUser = getUserDetails(authorisation);
 
-        caseAccessApi.revokeAccessToCase(
-            caseworkerUser.getAuthToken(),
-            getServiceAuthToken(),
-            caseworkerUser.getId(),
-            jurisdictionId,
-            caseType,
-            caseId,
-            respondentUser.getId()
-        );
+        updateCaseRoles(caseworkerUser, caseId, linkedUser.getId(), null);
     }
 
-    private void grantAccessToCase(UserDetails anonymousCaseWorker, String caseId, String respondentId) {
-        caseAccessApi.grantAccessToCase(
+    private void updateCaseRoles(UserDetails anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {
+        caseUserApi.updateCaseRolesForUser(
             anonymousCaseWorker.getAuthToken(),
             getServiceAuthToken(),
-            anonymousCaseWorker.getId(),
-            jurisdictionId,
-            caseType,
             caseId,
-            new UserId(respondentId)
+            userId,
+            new CaseUser(userId, caseRoles)
         );
     }
 
@@ -92,7 +89,18 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
                 caseId, letterHolderId, respondentType));
         }
 
-        grantAccessToCase(caseworkerUser, caseId, linkingUser.getId());
+        updateCaseRoles(caseworkerUser, caseId, linkingUser.getId(), userCaseRoles(respondentType));
+    }
+
+    private Set<String> userCaseRoles(RespondentType respondentType) {
+
+        Set<String> caseRoles = new HashSet<>();
+        caseRoles.add(CmsConstants.CREATOR_ROLE);
+
+        if (respondentType == RespondentType.RESP_SOLICITOR) {
+            caseRoles.add(CmsConstants.RESP_SOL_ROLE);
+        }
+        return caseRoles;
     }
 
     private RespondentType validateLetterIdAndUserType(String letterHolderId, CaseDetails caseDetails, String caseId) {
@@ -101,8 +109,12 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
         String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
         String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
+        String isRespondentSolicitor = (String) caseDetails.getData().get(D8_RESP_SOLICITOR);
 
         if (letterHolderId.equals(respondentLetterHolderId)) {
+            if (StringUtils.equalsIgnoreCase(CmsConstants.YES_VALUE, isRespondentSolicitor)) {
+                return RespondentType.RESP_SOLICITOR;
+            }
             return RespondentType.RESPONDENT;
         } else if (letterHolderId.equals(coRespondentLetterHolderId)) {
             return RespondentType.CO_RESPONDENT;
@@ -113,7 +125,14 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     }
 
     private boolean isValidRespondent(CaseDetails caseDetails, String userEmailAddress, RespondentType respondentType) {
-        String emailField = respondentType == RespondentType.RESPONDENT ? RESP_EMAIL_ADDRESS : CO_RESP_EMAIL_ADDRESS;
+        String emailField = null;
+        if (respondentType == RespondentType.RESPONDENT) {
+            emailField = RESP_EMAIL_ADDRESS;
+        } else if (respondentType == RespondentType.RESP_SOLICITOR) {
+            emailField = RESP_SOLICITOR_EMAIL_ADDRESS;
+        } else {
+            emailField = CO_RESP_EMAIL_ADDRESS;
+        }
         Map<String, Object> caseData = caseDetails.getData();
         String caseId = Long.toString(caseDetails.getId());
         String emailAddressAssignedToCase = (String) caseData.get(emailField);

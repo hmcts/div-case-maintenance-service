@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.model.PinResponse;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
@@ -24,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESP_SOLICITOR;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
@@ -199,6 +201,41 @@ public class LinkRespondentTest extends PetitionSupport {
 
         assertThat(caseId, equalTo(response.path("id")));
     }
+    
+    @SuppressWarnings({"unchecked", "Duplicates"})
+    @Test
+    public void givenLetterHolderIdMatches_whenLinkRespondentSolicitor_thenGrantAccessToCase() {
+
+        final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
+
+        final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
+
+
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+
+        UserDetails petitionerUser = getUserDetails();
+
+        Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitionerUser).getId();
+
+        Map<String, Object> updateCaseData = new HashMap<>();
+        updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
+        updateCaseData.put(D8_RESP_SOLICITOR, CmsConstants.YES_VALUE);
+
+        updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
+            getCaseWorkerUser().getAuthToken());
+
+        updateCase((String) null, caseId, TEST_AOS_AWAITING_EVENT_ID, petitionerUser.getAuthToken());
+
+        UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
+        linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
+
+        updateCase(ImmutableMap.of(RESPONDENT_EMAIL_ADDRESS, upliftedUser.getEmailAddress()),
+            caseId, START_AOS_EVENT_ID, getCaseWorkerUser().getAuthToken());
+
+        Response response = retrieveCase(upliftedUser.getAuthToken());
+
+        assertThat(caseId, equalTo(response.path("id")));
+    }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
     @Test
@@ -261,7 +298,6 @@ public class LinkRespondentTest extends PetitionSupport {
 
         assertThat(HttpStatus.OK.value(),equalTo(linkResponse.getStatusCode()));
     }
-
 
     private Response linkRespondent(String authToken, String caseId, String letterHolderId) {
         return RestUtil.postToRestService(

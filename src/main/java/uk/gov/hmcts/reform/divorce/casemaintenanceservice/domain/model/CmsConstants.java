@@ -7,4 +7,7 @@ import lombok.NoArgsConstructor;
 public class CmsConstants {
     public static final String YEAR_DATE_FORMAT = "yyyy-MM-dd";
     public static final String CTSC_SERVICE_CENTRE = "serviceCentre";
+    public static final String CREATOR_ROLE = "[CREATOR]";
+    public static final String RESP_SOL_ROLE = "[RESPSOLICITOR]";
+    public static final String YES_VALUE = "Yes";
 }

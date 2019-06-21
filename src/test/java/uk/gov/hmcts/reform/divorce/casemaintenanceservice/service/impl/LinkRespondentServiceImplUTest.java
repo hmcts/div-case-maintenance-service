@@ -11,9 +11,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
+import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
@@ -27,6 +28,7 @@ import java.util.Objects;
 
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -94,7 +96,7 @@ public class LinkRespondentServiceImplUTest {
     private AuthTokenGenerator authTokenGenerator;
 
     @Mock
-    private CaseAccessApi caseAccessApi;
+    private CaseUserApi caseUserApi;
 
     @InjectMocks
     private CcdAccessServiceImpl classUnderTest;
@@ -323,14 +325,12 @@ public class LinkRespondentServiceImplUTest {
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
-        verify(caseAccessApi, never()).grantAccessToCase(
+        verify(caseUserApi, never()).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
-            eq(CASEWORKER_USER_ID),
-            eq(JURISDICTION_ID),
-            eq(CASE_TYPE),
             eq(CASE_ID),
-            any(UserId.class)
+            anyString(),
+            any(CaseUser.class)
         );
     }
 
@@ -349,15 +349,13 @@ public class LinkRespondentServiceImplUTest {
         mockCaseDetails(caseDetails);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
-
-        verify(caseAccessApi, never()).grantAccessToCase(
+ 
+        verify(caseUserApi, never()).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
-            eq(CASEWORKER_USER_ID),
-            eq(JURISDICTION_ID),
-            eq(CASE_TYPE),
             eq(CASE_ID),
-            any(UserId.class)
+            anyString(),
+            any(CaseUser.class)
         );
     }
 
@@ -373,14 +371,12 @@ public class LinkRespondentServiceImplUTest {
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
-        verify(caseAccessApi).grantAccessToCase(
+        verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
-            eq(CASEWORKER_USER_ID),
-            eq(JURISDICTION_ID),
-            eq(CASE_TYPE),
             eq(CASE_ID),
-            any(UserId.class)
+            anyString(),
+            any(CaseUser.class)
         );
     }
 
@@ -397,14 +393,12 @@ public class LinkRespondentServiceImplUTest {
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
-        verify(caseAccessApi).grantAccessToCase(
+        verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
-            eq(CASEWORKER_USER_ID),
-            eq(JURISDICTION_ID),
-            eq(CASE_TYPE),
             eq(CASE_ID),
-            any(UserId.class)
+            anyString(),
+            any(CaseUser.class)
         );
     }
 
@@ -420,14 +414,12 @@ public class LinkRespondentServiceImplUTest {
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
-        verify(caseAccessApi).grantAccessToCase(
+        verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
-            eq(CASEWORKER_USER_ID),
-            eq(JURISDICTION_ID),
-            eq(CASE_TYPE),
             eq(CASE_ID),
-            any(UserId.class)
+            anyString(),
+            any(CaseUser.class)
         );
     }
 
@@ -444,14 +436,12 @@ public class LinkRespondentServiceImplUTest {
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
-        verify(caseAccessApi).grantAccessToCase(
+        verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
-            eq(CASEWORKER_USER_ID),
-            eq(JURISDICTION_ID),
-            eq(CASE_TYPE),
             eq(CASE_ID),
-            any(UserId.class)
+            anyString(),
+            any(CaseUser.class)
         );
     }
 
@@ -460,14 +450,12 @@ public class LinkRespondentServiceImplUTest {
         when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
         classUnderTest.unlinkRespondent(RESPONDENT_AUTHORISATION, CASE_ID);
 
-        verify(caseAccessApi).revokeAccessToCase(
+        verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
-            eq(CASEWORKER_USER_ID),
-            eq(JURISDICTION_ID),
-            eq(CASE_TYPE),
             eq(CASE_ID),
-            eq(RESPONDENT_USER.getId())
+            anyString(),
+            any(CaseUser.class)
         );
     }
 
