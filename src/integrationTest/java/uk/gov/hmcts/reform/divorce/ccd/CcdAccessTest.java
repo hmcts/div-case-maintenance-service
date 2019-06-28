@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.model.PinResponse;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
@@ -29,12 +30,14 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
-public class LinkRespondentTest extends PetitionSupport {
+public class CcdAccessTest extends PetitionSupport {
     private static final String PAYLOAD_CONTEXT_PATH = "ccd-submission-payload/";
+    private static final String SOL_PAYLOAD_CONTEXT_PATH = "ccd-solicitor-payload/";
     private static final String RESPONDENT_EMAIL_ADDRESS = "RespEmailAddress";
     private static final String START_AOS_EVENT_ID = "startAos";
     private static final String TEST_AOS_AWAITING_EVENT_ID = "testAosAwaiting";
     private static final String AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID = "paymentReferenceGenerated";
+    private static final String SOLICITOR_PAY_SUBMIT_EVENT = "solicitorStatementOfTruthPaySubmit";
     private static final String RESPONDENT_EMAIL = "aos@respondent.div";
 
     private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
@@ -45,6 +48,9 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @Value("${case.maintenance.link-respondent.context-path}")
     private String linkRespondentContextPath;
+
+    @Value("${case.maintenance.add-petitioner-solicitor-role.context-path}")
+    private String addPetSolContextPath;
 
     @Value("${case.maintenance.aos-case.context-path}")
     private String retrieveAosCaseContextPath;
@@ -68,7 +74,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @Test
     public void givenNoLetterHolderId_whenLinkRespondent_thenReturnUnauthorized() {
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
@@ -80,7 +86,7 @@ public class LinkRespondentTest extends PetitionSupport {
     @SuppressWarnings("unchecked")
     @Test
     public void givenLetterHolderDoNotMatch_whenLinkRespondent_thenReturnUnauthorized() {
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
 
         Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
 
@@ -93,6 +99,21 @@ public class LinkRespondentTest extends PetitionSupport {
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
         assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void givenSolicitorCreatedCase_whenAssignPetitionerSolRole_thenReturnOk() {
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(SOL_PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
+        UserDetails solicitorUser = getSolicitorUser();
+
+        CaseDetails caseDetails = ccdClientSupport.submitCaseForSolicitor(caseData, solicitorUser);
+        Long caseId = caseDetails.getId();
+
+        Response cmsResponse = addPetSolicitorRole(solicitorUser.getAuthToken(), caseId.toString());
+
+        assertThat(HttpStatus.OK.value(), equalTo(cmsResponse.getStatusCode()));
+
     }
 
     @SuppressWarnings("unchecked")
@@ -149,7 +170,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
 
         UserDetails petitionerUser = getUserDetails();
 
@@ -177,7 +198,7 @@ public class LinkRespondentTest extends PetitionSupport {
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
 
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
 
         UserDetails petitionerUser = getUserDetails();
 
@@ -201,7 +222,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         assertThat(caseId, equalTo(response.path("id")));
     }
-    
+
     @SuppressWarnings({"unchecked", "Duplicates"})
     @Test
     public void givenLetterHolderIdMatches_whenLinkRespondentSolicitor_thenGrantAccessToCase() {
@@ -211,7 +232,7 @@ public class LinkRespondentTest extends PetitionSupport {
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
 
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
 
         UserDetails petitionerUser = getUserDetails();
 
@@ -246,7 +267,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         UserDetails upliftedUser = idamTestSupport.createRespondentUser(respondentFirstName, pinResponse.getPin());
 
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         UserDetails petitionerUser = getUserDetails();
@@ -273,7 +294,7 @@ public class LinkRespondentTest extends PetitionSupport {
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "addresses.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
 
         UserDetails petitionerUser = getUserDetails();
@@ -304,6 +325,13 @@ public class LinkRespondentTest extends PetitionSupport {
             serverUrl + linkRespondentContextPath + "/" + caseId + "/" + letterHolderId,
             Collections.singletonMap(HttpHeaders.AUTHORIZATION, authToken),
             null);
+    }
+
+    private Response addPetSolicitorRole(String authToken, String caseId) {
+        return RestUtil.putToRestService(
+            serverUrl + addPetSolContextPath + "/" + caseId,
+            Collections.singletonMap(HttpHeaders.AUTHORIZATION, authToken),
+            null, null);
     }
 
     @Override

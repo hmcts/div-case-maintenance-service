@@ -45,7 +45,7 @@ public class DraftGetAllTest extends PetitionSupport {
     @Test
     public void givenDraftsExist_whenSaveDraft_thenReturnDrafts() throws Exception {
         final String userToken = getUserToken();
-        final String divorceFormatDraftFileUri = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        final String divorceFormatDraftFileUri = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "base-case-divorce-session.json";
 
         saveDraft(userToken, divorceFormatDraftFileUri,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));

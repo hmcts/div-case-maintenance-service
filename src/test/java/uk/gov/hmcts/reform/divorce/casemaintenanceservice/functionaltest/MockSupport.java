@@ -68,6 +68,7 @@ public abstract class MockSupport {
 
     private static final String CASE_WORKER_AUTH_CODE = "AuthCode";
     private static final String CITIZEN_ROLE = "citizen";
+    private static final String SOLICITOR_ROLE = "caseworker-divorce-solicitor";
     private static final String CASEWORKER_ROLE = "caseworker";
 
     private final AuthenticateUserResponse authenticateUserResponse =
@@ -157,6 +158,10 @@ public abstract class MockSupport {
 
     String getUserDetails() {
         return getUserDetails(USER_ID, USER_TOKEN, CITIZEN_ROLE);
+    }
+
+    String getSolicitorUserDetails() {
+        return getUserDetails(USER_ID, USER_TOKEN, SOLICITOR_ROLE);
     }
 
     private String getUserDetails(String userId, String authToken, String role) {

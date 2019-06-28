@@ -88,6 +88,20 @@ public class CcdControllerUTest {
     }
 
     @Test
+    public void whenAssignPetitionerSolicitorRole_thenProceedAsExpected() {
+        final String caseId = "caseId";
+
+        doNothing().when(ccdAccessService).addPetitionerSolicitorRole(JWT_TOKEN, caseId);
+
+        ResponseEntity responseEntity =
+            classUnderTest.addPetitionerSolicitorRole(JWT_TOKEN, caseId);
+
+        assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
+
+        verify(ccdAccessService).addPetitionerSolicitorRole(JWT_TOKEN, caseId);
+    }
+
+    @Test
     public void whenUnlinkRespondent_thenProceedAsExpected() {
         final String caseId = "caseId";
 

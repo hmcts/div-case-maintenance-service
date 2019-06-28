@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
-import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
@@ -50,14 +49,14 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         updateCaseRoles(caseworkerUser, caseId, linkedUser.getId(), null);
     }
 
-    private void updateCaseRoles(UserDetails anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {
-        caseUserApi.updateCaseRolesForUser(
-            anonymousCaseWorker.getAuthToken(),
-            getServiceAuthToken(),
-            caseId,
-            userId,
-            new CaseUser(userId, caseRoles)
-        );
+    @Override
+    public void addPetitionerSolicitorRole(String authorisation, String caseId) {
+        UserDetails solicitorUser = getUserDetails(authorisation);
+        UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
+        Set<String> caseRoles = new HashSet<>();
+        caseRoles.add(CmsConstants.CREATOR_ROLE);
+        caseRoles.add(CmsConstants.PET_SOL_ROLE);
+        updateCaseRoles(caseworkerUser, caseId, solicitorUser.getId(), caseRoles);
     }
 
     @Override
@@ -90,6 +89,16 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
 
         updateCaseRoles(caseworkerUser, caseId, linkingUser.getId(), userCaseRoles(respondentType));
+    }
+
+    private void updateCaseRoles(UserDetails anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {
+        caseUserApi.updateCaseRolesForUser(
+            anonymousCaseWorker.getAuthToken(),
+            getServiceAuthToken(),
+            caseId,
+            userId,
+            new CaseUser(userId, caseRoles)
+        );
     }
 
     private Set<String> userCaseRoles(RespondentType respondentType) {

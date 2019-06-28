@@ -21,7 +21,7 @@ public class DraftSaveTest extends PetitionSupport {
 
     @Test
     public void givenJWTTokenIsNull_whenSaveDraft_thenReturnBadRequest() throws Exception {
-        Response cmsResponse = saveDraft(null, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json",
+        Response cmsResponse = saveDraft(null, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
             Collections.emptyMap());
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
@@ -36,7 +36,7 @@ public class DraftSaveTest extends PetitionSupport {
 
     @Test
     public void givenInvalidUserToken_whenSaveDraft_thenReturnForbiddenError() throws Exception {
-        Response cmsResponse = saveDraft(INVALID_USER_TOKEN, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json",
+        Response cmsResponse = saveDraft(INVALID_USER_TOKEN, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
             Collections.emptyMap());
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
@@ -50,7 +50,7 @@ public class DraftSaveTest extends PetitionSupport {
 
         assertEquals(0, ((List)draftsResponseBefore.getBody().path("data")).size());
 
-        Response cmsResponse = saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json",
+        Response cmsResponse = saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
             Collections.emptyMap());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
@@ -63,11 +63,12 @@ public class DraftSaveTest extends PetitionSupport {
     }
 
     @Test
+    @SuppressWarnings("Duplicates")
     public void givenDraftAlreadyExists_whenSaveDraft_thenUpdateExistingDraft() throws Exception {
         final String userToken = getUserToken();
-        final String divorceFormatDraftFileUri = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        final String divorceFormatDraftFileUri = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "base-case-divorce-session.json";
 
-        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json", Collections.emptyMap());
+        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json", Collections.emptyMap());
 
         Response draftsResponseBefore = getAllDraft(userToken);
 

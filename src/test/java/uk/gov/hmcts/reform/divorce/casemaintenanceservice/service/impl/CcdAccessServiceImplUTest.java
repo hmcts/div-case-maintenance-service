@@ -40,11 +40,12 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LinkRespondentServiceImplUTest {
+public class CcdAccessServiceImplUTest {
     private static final String JURISDICTION_ID = "DIVORCE";
     private static final String CASE_TYPE = "DIVORCE";
 
     private static final String RESPONDENT_AUTHORISATION = "Bearer RespondentAuthToken";
+    private static final String PET_SOLICITOR_AUTHORISATION = "Bearer PetSolicitorAuthorisation";
     private static final String PET_AUTHORISATION = "Bearer PetAuthToken";
     private static final String CASEWORKER_AUTHORISATION = "CaseWorkerAuthToken";
     private static final String CASE_ID = "12345678";
@@ -79,6 +80,12 @@ public class LinkRespondentServiceImplUTest {
 
     private static final UserDetails PETITIONER_USER = UserDetails.builder()
         .authToken(PET_AUTHORISATION)
+        .id(PET_USER_ID)
+        .email(USER_EMAIL)
+        .build();
+
+    private static final UserDetails PET_SOL_USER = UserDetails.builder()
+        .authToken(PET_SOLICITOR_AUTHORISATION)
         .id(PET_USER_ID)
         .email(USER_EMAIL)
         .build();
@@ -349,7 +356,7 @@ public class LinkRespondentServiceImplUTest {
         mockCaseDetails(caseDetails);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
- 
+
         verify(caseUserApi, never()).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
@@ -413,6 +420,20 @@ public class LinkRespondentServiceImplUTest {
         mockCaseDetails(caseDetails);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(SERVICE_TOKEN),
+            eq(CASE_ID),
+            anyString(),
+            any(CaseUser.class)
+        );
+    }
+
+    @Test
+    public void givenValidSolicitorCase_whenCreatingCase_thenAssignRole() {
+        when(userService.retrieveUserDetails(PET_SOLICITOR_AUTHORISATION)).thenReturn(PET_SOL_USER);
+        classUnderTest.addPetitionerSolicitorRole(PET_SOLICITOR_AUTHORISATION, CASE_ID);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),

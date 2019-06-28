@@ -49,7 +49,7 @@ public class BulkCaseUpdateITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/bulk/updateCase";
     private static final String EVENT_ID = "payment";
     private static final String CASE_ID = "2";
-    private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/addresses.json";
+    private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/base-case.json";
 
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
