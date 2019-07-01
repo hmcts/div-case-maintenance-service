@@ -27,6 +27,7 @@ public enum ApplicationStatus {
     AMEND_PETITION("AmendPetition"),
     AWAITING_CLARIFICATION("AwaitingClarification"),
     AWAITING_CONSIDERATION("AwaitingConsideration"),
+    DN_PRONOUNCED("DNPronounced"),
     AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute"),
     AWAITING_PRONOUNCEMENT("AwaitingPronouncement"),
     DIVORCE_GRANTED("DivorceGranted"),
