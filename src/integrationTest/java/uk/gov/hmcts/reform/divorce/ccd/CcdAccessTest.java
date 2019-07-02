@@ -37,7 +37,6 @@ public class CcdAccessTest extends PetitionSupport {
     private static final String START_AOS_EVENT_ID = "startAos";
     private static final String TEST_AOS_AWAITING_EVENT_ID = "testAosAwaiting";
     private static final String AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID = "paymentReferenceGenerated";
-    private static final String SOLICITOR_PAY_SUBMIT_EVENT = "solicitorStatementOfTruthPaySubmit";
     private static final String RESPONDENT_EMAIL = "aos@respondent.div";
 
     private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
@@ -197,7 +196,6 @@ public class CcdAccessTest extends PetitionSupport {
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
 
-
         Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
 
         UserDetails petitionerUser = getUserDetails();
@@ -230,7 +228,6 @@ public class CcdAccessTest extends PetitionSupport {
         final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
 
         final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
-
 
         Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
 

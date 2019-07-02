@@ -153,18 +153,18 @@ public abstract class MockSupport {
     }
 
     String getCaseWorkerUserDetails() {
-        return getUserDetails(CASE_WORKER_USER_ID, CASE_WORKER_TOKEN, CASEWORKER_ROLE);
+        return getUserDetailsForRole(CASE_WORKER_USER_ID, CASE_WORKER_TOKEN, CASEWORKER_ROLE);
     }
 
     String getUserDetails() {
-        return getUserDetails(USER_ID, USER_TOKEN, CITIZEN_ROLE);
+        return getUserDetailsForRole(USER_ID, USER_TOKEN, CITIZEN_ROLE);
     }
 
     String getSolicitorUserDetails() {
-        return getUserDetails(USER_ID, USER_TOKEN, SOLICITOR_ROLE);
+        return getUserDetailsForRole(USER_ID, USER_TOKEN, SOLICITOR_ROLE);
     }
 
-    private String getUserDetails(String userId, String authToken, String role) {
+    private String getUserDetailsForRole(String userId, String authToken, String role) {
         try {
             return new ObjectMapper().writeValueAsString(
                 UserDetails.builder()
