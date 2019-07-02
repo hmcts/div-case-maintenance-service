@@ -88,7 +88,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
                 caseId, letterHolderId, respondentType));
         }
 
-        updateCaseRoles(caseworkerUser, caseId, linkingUser.getId(), userCaseRoles(respondentType));
+        updateCaseRoles(caseworkerUser, caseId, linkingUser.getId(), getRolesForRespondentType(respondentType));
     }
 
     private void updateCaseRoles(UserDetails anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {
@@ -101,7 +101,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         );
     }
 
-    private Set<String> userCaseRoles(RespondentType respondentType) {
+    private Set<String> getRolesForRespondentType(RespondentType respondentType) {
 
         Set<String> caseRoles = new HashSet<>();
         caseRoles.add(CmsConstants.CREATOR_ROLE);

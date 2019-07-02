@@ -61,14 +61,14 @@ public class CcdAccessTest extends PetitionSupport {
     public void givenJWTTokenIsNull_whenLinkRespondent_thenReturnUnauthorised() {
         Response cmsResponse = linkRespondent(null, "someCaseId", "someLetterHolderId");
 
-        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
+        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
     }
 
     @Test
     public void givenNoCase_whenLinkRespondent_thenReturnUnauthorised() {
         Response cmsResponse = linkRespondent(getUserToken(), "someCaseId", "someLetterHolderId");
 
-        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
+        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
-        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
+        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
     }
 
     @SuppressWarnings("unchecked")
@@ -97,7 +97,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
 
-        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
+        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
     }
 
     @SuppressWarnings("unchecked")
@@ -111,7 +111,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response cmsResponse = addPetSolicitorRole(solicitorUser.getAuthToken(), caseId.toString());
 
-        assertThat(HttpStatus.OK.value(), equalTo(cmsResponse.getStatusCode()));
+        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.OK.value()));
 
     }
 
@@ -135,7 +135,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
+        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -159,7 +159,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(petitioner.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertThat(HttpStatus.UNAUTHORIZED.value(), equalTo(cmsResponse.getStatusCode()));
+        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -185,7 +185,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
 
-        assertThat(HttpStatus.FORBIDDEN.value(), equalTo(cmsResponse.getStatusCode()));
+        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.FORBIDDEN.value()));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -218,7 +218,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertThat(caseId, equalTo(response.path("id")));
+        assertThat(response.path("id"), equalTo(caseId));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -252,7 +252,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertThat(caseId, equalTo(response.path("id")));
+        assertThat(response.path("id"), equalTo(caseId));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -280,7 +280,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         Response response = retrieveCase(upliftedUser.getAuthToken());
 
-        assertThat(caseId, equalTo(response.path("id")));
+        assertThat(response.path("id"), equalTo(caseId));
     }
 
     @SuppressWarnings("unchecked")
@@ -314,7 +314,7 @@ public class CcdAccessTest extends PetitionSupport {
 
         linkResponse = linkRespondent(upliftedUser.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
-        assertThat(HttpStatus.OK.value(),equalTo(linkResponse.getStatusCode()));
+        assertThat(linkResponse.getStatusCode(), equalTo(HttpStatus.OK.value()));
     }
 
     private Response linkRespondent(String authToken, String caseId, String letterHolderId) {
