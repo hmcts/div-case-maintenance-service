@@ -336,7 +336,7 @@ public class CcdAccessServiceImplUTest {
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
-            anyString(),
+            eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
         );
     }
@@ -361,7 +361,7 @@ public class CcdAccessServiceImplUTest {
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
-            anyString(),
+            eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
         );
     }
@@ -382,7 +382,7 @@ public class CcdAccessServiceImplUTest {
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
-            anyString(),
+            eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
         );
     }
@@ -404,7 +404,7 @@ public class CcdAccessServiceImplUTest {
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
-            anyString(),
+            eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
         );
     }
@@ -425,7 +425,7 @@ public class CcdAccessServiceImplUTest {
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
-            anyString(),
+            eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
         );
     }
@@ -461,7 +461,7 @@ public class CcdAccessServiceImplUTest {
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
-            anyString(),
+            eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
         );
     }
@@ -475,7 +475,7 @@ public class CcdAccessServiceImplUTest {
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
-            anyString(),
+            eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
         );
     }

@@ -121,7 +121,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         String isRespondentSolicitor = (String) caseDetails.getData().get(D8_RESP_SOLICITOR);
 
         if (letterHolderId.equals(respondentLetterHolderId)) {
-            if (StringUtils.equalsIgnoreCase(CmsConstants.YES_VALUE, isRespondentSolicitor)) {
+            if (CmsConstants.YES_VALUE.equalsIgnoreCase(isRespondentSolicitor)) {
                 return RespondentType.RESP_SOLICITOR;
             }
             return RespondentType.RESPONDENT;
@@ -134,14 +134,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     }
 
     private boolean isValidRespondent(CaseDetails caseDetails, String userEmailAddress, RespondentType respondentType) {
-        String emailField = null;
-        if (respondentType == RespondentType.RESPONDENT) {
-            emailField = RESP_EMAIL_ADDRESS;
-        } else if (respondentType == RespondentType.RESP_SOLICITOR) {
-            emailField = RESP_SOLICITOR_EMAIL_ADDRESS;
-        } else {
-            emailField = CO_RESP_EMAIL_ADDRESS;
-        }
+        String emailField = determineEmailFieldFor(respondentType);
         Map<String, Object> caseData = caseDetails.getData();
         String caseId = Long.toString(caseDetails.getId());
         String emailAddressAssignedToCase = (String) caseData.get(emailField);
@@ -167,6 +160,17 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             }
 
             return emailAddressesMatch;
+        }
+    }
+
+    private String determineEmailFieldFor(RespondentType respondentType) {
+        switch (respondentType) {
+            case RESPONDENT:
+                return RESP_EMAIL_ADDRESS;
+            case RESP_SOLICITOR:
+                return RESP_SOLICITOR_EMAIL_ADDRESS;
+            default:
+                return CO_RESP_EMAIL_ADDRESS;
         }
     }
 }
