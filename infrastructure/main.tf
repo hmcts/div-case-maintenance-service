@@ -53,7 +53,6 @@ module "div-cms" {
         IDAM_API_REDIRECT_URL                                 = "${local.petitioner_fe_baseurl}/authenticated"
         MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIMETOLIVE           = "${var.health_check_ttl}"
         DOCUMENTATION_SWAGGER_ENABLED                         = "${var.documentation_swagger_enabled}"
-
     }
 }
 
