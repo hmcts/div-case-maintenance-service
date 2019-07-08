@@ -69,3 +69,7 @@ variable "health_check_ttl" {
     type = "string"
     default = "4000"
 }
+
+variable "documentation_swagger_enabled" {
+    default = true
+}
