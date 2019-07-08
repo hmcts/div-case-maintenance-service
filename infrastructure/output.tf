@@ -25,3 +25,7 @@ output "auth_idam_client_redirect-url" {
 output "ccd_casedatastore_baseurl" {
     value = "${local.ccd_casedatastore_baseurl}"
 }
+
+output "documentation_swagger_enabled" {
+    value = "${var.documentation_swagger_enabled}"
+}

@@ -43,6 +43,7 @@ public class CaseStateTest {
                 {"AmendPetition", "AmendPetition"},
                 {"AwaitingClarification", "AwaitingClarification"},
                 {"AwaitingConsideration", "AwaitingConsideration"},
+                {"DNPronounced", "DNPronounced"},
                 {"AwaitingDecreeAbsolute", "AwaitingDecreeAbsolute"},
                 {"AwaitingPronouncement", "AwaitingPronouncement"},
                 {"DefendedDivorce", "DefendedDivorce"},
