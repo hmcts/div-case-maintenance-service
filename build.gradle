@@ -140,7 +140,7 @@ def versions = [
     bcpkixJdk15on: '1.60',
     springSecurityRsa: '1.0.8.RELEASE',
     springSecurityCrypto: '5.1.5.RELEASE',
-    tomcat: '9.0..22'
+    tomcat: '9.0.22'
 ]
 
 dependencies {
