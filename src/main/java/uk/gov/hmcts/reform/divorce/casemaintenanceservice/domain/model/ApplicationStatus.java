@@ -31,7 +31,7 @@ public enum ApplicationStatus {
     AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute"),
     AWAITING_PRONOUNCEMENT("AwaitingPronouncement"),
     DIVORCE_GRANTED("DivorceGranted"),
-    AOS_AWAITING_SOL("ApplicationStatus"),
+    AOS_AWAITING_SOL("AosAwaitingSol"),
     UNKNOWN("DNCompleted");
 
     private final String value;
