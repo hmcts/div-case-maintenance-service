@@ -82,6 +82,8 @@ To run all integration tests locally:
 
 API documentation is provided with Swagger:
  - `http://localhost:4010/swagger-ui.html` - UI to interact with the API resources
+
+The `documentation.swagger.enabled` property should be 'true' to enable Swagger.
  
 **Versioning**
 
