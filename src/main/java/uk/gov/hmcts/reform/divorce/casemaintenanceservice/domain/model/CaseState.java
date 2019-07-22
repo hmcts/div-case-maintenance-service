@@ -36,6 +36,7 @@ public enum CaseState {
     AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute", ApplicationStatus.AWAITING_DECREE_ABSOLUTE),
     AWAITING_PRONOUNCEMENT("AwaitingPronouncement", ApplicationStatus.AWAITING_PRONOUNCEMENT),
     DIVORCE_GRANTED("DivorceGranted", ApplicationStatus.DIVORCE_GRANTED),
+    AOS_AWAITING_SOL("AosAwaitingSol", ApplicationStatus.AOS_AWAITING_SOL),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;
