@@ -71,5 +71,5 @@ variable "health_check_ttl" {
 }
 
 variable "documentation_swagger_enabled" {
-    default = true
+    default = "false"
 }
