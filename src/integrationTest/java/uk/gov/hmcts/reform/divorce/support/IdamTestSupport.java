@@ -68,7 +68,7 @@ public class IdamTestSupport {
     }
 
     private UserDetails createNewUser(String username, String password, String roleType) {
-        final String emailAddress =  username + "@notifications.service.gov.uk";
+        final String emailAddress =  username + "@mailinator.com";
 
         if (CASEWORKER_ROLE.equals(roleType)) {
             createCaseWorkerCourtAdminUserInIdam(username, emailAddress, password);
