@@ -65,7 +65,7 @@ draft:
       encryption:
         key:
           template: "%s_%s"
-          value: ${DRAFT_STORE_API_ENCRYPTION_KEY_VALUE:9VQKhID861AdxWWv1zlI}
+          value: ${DRAFT_STORE_API_ENCRYPTION_KEY_VALUE:encryptionKey}
 
 case:
   formatter:

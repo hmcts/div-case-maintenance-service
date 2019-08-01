@@ -18,6 +18,9 @@ draft:
     store:
         api:
             baseurl: ${DRAFT_STORE_API_BASEURL:http://draft-store-service-aat.service.core-compute-aat.internal}
+            encryption:
+                key:
+                    value: ${DRAFT_STORE_API_ENCRYPTION_KEY_VALUE:replace_me}
 
 case:
     formatter:
