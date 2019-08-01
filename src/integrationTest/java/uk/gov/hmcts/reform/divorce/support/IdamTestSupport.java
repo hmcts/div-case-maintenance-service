@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Slf4j
 public class IdamTestSupport {
@@ -25,20 +26,22 @@ public class IdamTestSupport {
     private IdamUtils idamUtils;
 
     public UserDetails createRespondentUser(String username, String pin) {
-        final UserDetails respondentUser = createNewUser(username, GENERIC_PASSWORD, CITIZEN_ROLE);
+        return wrapInRetry(() -> {
+            final UserDetails respondentUser = createNewUser(username, GENERIC_PASSWORD, CITIZEN_ROLE);
 
-        final String pinAuthToken = idamUtils.authenticatePinUser(pin);
+            final String pinAuthToken = idamUtils.authenticatePinUser(pin);
 
-        idamUtils.upliftUser(respondentUser.getEmailAddress(),
-            respondentUser.getPassword(),
-            pinAuthToken);
+            idamUtils.upliftUser(respondentUser.getEmailAddress(),
+                respondentUser.getPassword(),
+                pinAuthToken);
 
-        String upliftedUserToken = idamUtils.authenticateUser(respondentUser.getEmailAddress(),
-            respondentUser.getPassword());
+            String upliftedUserToken = idamUtils.authenticateUser(respondentUser.getEmailAddress(),
+                respondentUser.getPassword());
 
-        respondentUser.setAuthToken(upliftedUserToken);
+            respondentUser.setAuthToken(upliftedUserToken);
 
-        return respondentUser;
+            return respondentUser;
+        });
     }
 
     public PinResponse createPinUser(String firstName) {
@@ -46,25 +49,29 @@ public class IdamTestSupport {
     }
 
     public UserDetails createAnonymousCaseWorkerUser() {
-        synchronized (this) {
-            if (defaultCaseWorkerUser == null) {
-                final String username = "simulate-delivered" + UUID.randomUUID();
-                final String password = GENERIC_PASSWORD;
+        return wrapInRetry(() -> {
+            synchronized (this) {
+                if (defaultCaseWorkerUser == null) {
+                    final String username = "simulate-delivered" + UUID.randomUUID();
+                    final String password = GENERIC_PASSWORD;
 
-                defaultCaseWorkerUser = createNewUser(username, password, CASEWORKER_ROLE);
+                    defaultCaseWorkerUser = createNewUser(username, password, CASEWORKER_ROLE);
+                }
+
+                return defaultCaseWorkerUser;
             }
-
-            return defaultCaseWorkerUser;
-        }
+        });
     }
 
     public UserDetails createAnonymousCitizenUser() {
-        synchronized (this) {
-            final String username = "simulate-delivered" + UUID.randomUUID();
-            final String password = GENERIC_PASSWORD;
+        return wrapInRetry(() -> {
+            synchronized (this) {
+                final String username = "simulate-delivered" + UUID.randomUUID();
+                final String password = GENERIC_PASSWORD;
 
-            return createNewUser(username, password, CITIZEN_ROLE);
-        }
+                return createNewUser(username, password, CITIZEN_ROLE);
+            }
+        });
     }
 
     private UserDetails createNewUser(String username, String password, String roleType) {
@@ -133,6 +140,29 @@ public class IdamTestSupport {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             log.debug("IDAM waiting thread was interrupted");
+        }
+    }
+
+    private UserDetails wrapInRetry(Supplier<UserDetails> supplier) {
+        //tactical solution as sometimes the newly created user is somehow corrupted and won't generate a code..
+        int count = 0;
+        int maxTries = 5;
+        while (true) {
+            try {
+                return supplier.get();
+            } catch (Exception e) {
+                if (++count == maxTries) {
+                    log.error("Exhausted the number of maximum retry attempts..", e);
+                    throw e;
+                }
+                try {
+                    //some backoff time
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    log.error("Error during sleep", ex);
+                }
+                log.trace("Encountered an error creating a user/token - retrying", e);
+            }
         }
     }
 }
