@@ -43,6 +43,7 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,
                 CaseState.DIVORCE_GRANTED,
+                CaseState.DN_IS_REFUSED,
                 CaseState.AOS_AWAITING_SOL
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
@@ -75,6 +76,7 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,
                 CaseState.DIVORCE_GRANTED,
+                CaseState.DN_IS_REFUSED,
                 CaseState.AOS_AWAITING_SOL )
         );
 
