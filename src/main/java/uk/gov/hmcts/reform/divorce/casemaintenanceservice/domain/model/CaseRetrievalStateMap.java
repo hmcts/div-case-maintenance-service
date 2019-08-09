@@ -37,11 +37,13 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_CLARIFICATION,
                 CaseState.AWAITING_CONSIDERATION_DN,
+                CaseState.DN_PRONOUNCED,
                 CaseState.AWAITING_DECREE_ABSOLUTE,
                 CaseState.AWAITING_CONSIDERATION,
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,
-                CaseState.DIVORCE_GRANTED
+                CaseState.DIVORCE_GRANTED,
+                CaseState.AOS_AWAITING_SOL
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
                 CaseState.AMEND_PETITION
@@ -68,10 +70,12 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_CLARIFICATION,
                 CaseState.AWAITING_CONSIDERATION,
+                CaseState.DN_PRONOUNCED,
                 CaseState.AWAITING_DECREE_ABSOLUTE,
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,
-                CaseState.DIVORCE_GRANTED )
+                CaseState.DIVORCE_GRANTED,
+                CaseState.AOS_AWAITING_SOL )
         );
 
 }
