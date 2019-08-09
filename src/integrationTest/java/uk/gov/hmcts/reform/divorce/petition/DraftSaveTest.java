@@ -63,7 +63,6 @@ public class DraftSaveTest extends PetitionSupport {
     }
 
     @Test
-    @SuppressWarnings("Duplicates")
     public void givenDraftAlreadyExists_whenSaveDraft_thenUpdateExistingDraft() throws Exception {
         final String userToken = getUserToken();
         final String divorceFormatDraftFileUri = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "base-case-divorce-session.json";
