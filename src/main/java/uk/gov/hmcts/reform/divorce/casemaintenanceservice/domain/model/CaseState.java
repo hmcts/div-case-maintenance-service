@@ -35,6 +35,7 @@ public enum CaseState {
     DN_PRONOUNCED("DNPronounced", ApplicationStatus.DN_PRONOUNCED),
     AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute", ApplicationStatus.AWAITING_DECREE_ABSOLUTE),
     AWAITING_PRONOUNCEMENT("AwaitingPronouncement", ApplicationStatus.AWAITING_PRONOUNCEMENT),
+    DECREE_ABSOLUTE_REQUESTED("DaRequested", ApplicationStatus.DECREE_ABSOLUTE_REQUESTED),
     DIVORCE_GRANTED("DivorceGranted", ApplicationStatus.DIVORCE_GRANTED),
     AOS_AWAITING_SOL("AosAwaitingSol", ApplicationStatus.AOS_AWAITING_SOL),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
