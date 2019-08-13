@@ -134,7 +134,7 @@ def versions = [
     pitest: '1.4.2',
     gradlePitest: '1.3.0',
     sonarPitest: '0.5',
-    jacksonDatabind: '2.9.9.1',
+    jacksonDatabind: '2.9.9.3',
     springCloudDependencies: '2.1.0.RELEASE',
     guava: '27.0.1-jre',
     bcpkixJdk15on: '1.60',
