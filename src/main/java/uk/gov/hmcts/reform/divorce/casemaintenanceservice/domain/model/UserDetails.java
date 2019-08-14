@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 @Setter
+@Deprecated
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDetails {
     private String id;

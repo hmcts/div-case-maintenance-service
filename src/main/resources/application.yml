@@ -17,6 +17,10 @@ server:
   port: 4010
 
 idam:
+  client:
+    redirect_url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
+    id: divorce
+    secret: ${AUTH2_CLIENT_SECRET:dummysecret}
   api:
     url: ${IDAM_API_BASEURL:http://localhost:4503}
     redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
@@ -72,11 +76,6 @@ case:
     service:
       api:
         baseurl: ${CASE_FORMATTER_SERVICE_API_BASEURL:http://localhost:4011}
-
-auth2:
-  client:
-    id: divorce
-    secret: ${AUTH2_CLIENT_SECRET:dummysecret}
 
 http:
   connect:

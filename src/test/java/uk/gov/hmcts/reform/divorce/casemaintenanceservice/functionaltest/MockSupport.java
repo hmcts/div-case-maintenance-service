@@ -43,7 +43,6 @@ public abstract class MockSupport {
     static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
     static final String FEIGN_ERROR = "some error message";
 
-
     private static final String BEARER = (String)ReflectionTestUtils.getField(UserServiceImpl.class, "BEARER");
     private static final String AUTHORIZATION_CODE =
         (String)ReflectionTestUtils.getField(UserServiceImpl.class, "AUTHORIZATION_CODE");
@@ -73,7 +72,6 @@ public abstract class MockSupport {
     private final AuthenticateUserResponse authenticateUserResponse =
         getAuthenticateUserResponse();
     private final TokenExchangeResponse tokenExchangeResponse = getTokenExchangeResponse();
-
 
     @Value("${idam.api.redirect-url}")
     private String authRedirectUrl;

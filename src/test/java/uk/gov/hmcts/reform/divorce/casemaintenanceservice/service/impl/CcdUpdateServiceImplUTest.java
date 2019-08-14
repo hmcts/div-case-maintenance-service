@@ -13,8 +13,9 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
+import uk.gov.hmcts.reform.idam.client.models.User;
+import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -87,10 +88,10 @@ public class CcdUpdateServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final UserDetails userDetails = UserDetails.builder().id(userId).build();
+        final User userDetails = new User("auth", UserDetails.builder().id(userId).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUser(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi.startEventForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
             CASE_TYPE, caseId, eventId)).thenReturn(startEventResponse);
@@ -134,11 +135,13 @@ public class CcdUpdateServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final UserDetails userDetails = UserDetails.builder().id(userId)
-            .roles(Collections.singletonList(CASEWORKER_ROLE)).build();
+        final User userDetails = new User(
+            "auth",
+            UserDetails.builder().id(userId).roles(Collections.singletonList(CASEWORKER_ROLE)).build()
+        );
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUser(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi.startEventForCaseWorker(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
             CASE_TYPE, caseId, eventId)).thenReturn(startEventResponse);
@@ -184,11 +187,10 @@ public class CcdUpdateServiceImplUTest {
 
         List<String> userRoles = Arrays.asList(CASEWORKER_ROLE, CITIZEN_ROLE);
 
-        final UserDetails userDetails = UserDetails.builder().id(userId)
-            .roles(userRoles).build();
+        final User userDetails = new User("auth",UserDetails.builder().id(userId).roles(userRoles).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUser(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi.startEventForCitizen(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
             CASE_TYPE, caseId, eventId)).thenReturn(startEventResponse);
@@ -232,10 +234,10 @@ public class CcdUpdateServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final UserDetails userDetails = UserDetails.builder().id(userId).build();
+        final User userDetails = new User("auth",UserDetails.builder().id(userId).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUserDetails(bearerAuthorisation)).thenReturn(userDetails);
+        when(userService.retrieveUser(bearerAuthorisation)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(serviceToken);
         when(coreCaseDataApi.startEventForCaseWorker(bearerAuthorisation, serviceToken, userId, JURISDICTION_ID,
             BULK_CASE_TYPE, caseId, eventId)).thenReturn(startEventResponse);

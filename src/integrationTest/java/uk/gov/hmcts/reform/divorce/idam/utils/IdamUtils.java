@@ -18,14 +18,13 @@ public abstract class IdamUtils {
     static final String CLIENT_ID = "divorce";
     static final String CODE = "code";
 
-
-    @Value("${auth.idam.client.baseUrl}")
+    @Value("${idam.client.baseUrl}")
     String idamUserBaseUrl;
 
-    @Value("${auth.idam.client.redirect-url}")
+    @Value("${idam.client.redirect_url}")
     String idamRedirectUrl;
 
-    @Value("${auth.idam.client.secret}")
+    @Value("${idam.client.secret}")
     private String idamClientSecret;
 
     public final void createUserInIdam(RegisterUserRequest registerUserRequest) {
@@ -38,7 +37,7 @@ public abstract class IdamUtils {
     private Response retrieveUserDetails(String authToken) {
         return SerenityRest.given()
             .header(HttpHeaders.AUTHORIZATION, authToken)
-            .get(idamUserBaseUrl +  "/details")
+            .get(idamUserBaseUrl + "/details")
             .andReturn();
     }
 
@@ -85,7 +84,7 @@ public abstract class IdamUtils {
                 .lastName(lastName)
                 .build();
 
-        Response pinResponse =  SerenityRest.given()
+        Response pinResponse = SerenityRest.given()
             .header(HttpHeaders.AUTHORIZATION, authToken)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(ResourceLoader.objectToJson(generatePinRequest))
