@@ -11,16 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.WireMockSpring;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.AuthenticateUserResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.TokenExchangeResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.UserServiceImpl;
+import uk.gov.hmcts.reform.idam.client.models.AuthenticateUserResponse;
+import uk.gov.hmcts.reform.idam.client.models.TokenExchangeResponse;
+import uk.gov.hmcts.reform.idam.client.models.User;
+import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -43,10 +40,9 @@ public abstract class MockSupport {
     static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
     static final String FEIGN_ERROR = "some error message";
 
-    private static final String BEARER = (String)ReflectionTestUtils.getField(UserServiceImpl.class, "BEARER");
-    private static final String AUTHORIZATION_CODE =
-        (String)ReflectionTestUtils.getField(UserServiceImpl.class, "AUTHORIZATION_CODE");
-    private static final String CODE = (String)ReflectionTestUtils.getField(UserServiceImpl.class, "CODE");
+    private static final String BEARER = "Bearer ";
+    private static final String AUTHORIZATION_CODE = "authorization_code";
+    private static final String CODE = "code";
 
     private static final String CASEWORKER_BASIC_AUTH_HEADER =
         "Basic ZHVtbXljYXNld29ya2VyQHRlc3QuY29tOmR1bW15";
@@ -63,23 +59,19 @@ public abstract class MockSupport {
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrMM";
 
-    static final String BEARER_CASE_WORKER_TOKEN = BEARER + CASE_WORKER_TOKEN;
+    static final String BEARER_CASE_WORKER_TOKEN = BEARER + " " + CASE_WORKER_TOKEN;
 
     private static final String CASE_WORKER_AUTH_CODE = "AuthCode";
     private static final String CITIZEN_ROLE = "citizen";
     private static final String CASEWORKER_ROLE = "caseworker";
 
-    private final AuthenticateUserResponse authenticateUserResponse =
-        getAuthenticateUserResponse();
-    private final TokenExchangeResponse tokenExchangeResponse = getTokenExchangeResponse();
-
-    @Value("${idam.api.redirect-url}")
+    @Value("${idam.client.redirect_uri}")
     private String authRedirectUrl;
 
-    @Value("${auth2.client.id}")
+    @Value("${idam.client.id}")
     private String authClientId;
 
-    @Value("${auth2.client.secret}")
+    @Value("${idam.client.secret}")
     private String authClientSecret;
 
     @ClassRule
@@ -119,31 +111,31 @@ public abstract class MockSupport {
     }
 
     void stubCaseWorkerAuthentication(HttpStatus status) {
-        try {
-            idamUserDetailsServer.stubFor(post(IDAM_USER_AUTHENTICATE_CONTEXT_PATH
-                + "?response_type=" + CODE
-                + "&client_id=" + authClientId
-                + "&redirect_uri=" + URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name()))
+
+        idamUserDetailsServer.stubFor(
+            post(IDAM_USER_AUTHENTICATE_CONTEXT_PATH)
                 .withHeader(AUTHORIZATION, new EqualToPattern(CASEWORKER_BASIC_AUTH_HEADER))
+                .withHeader("Content-type", new EqualToPattern("application/x-www-form-urlencoded; charset=UTF-8"))
+                .withRequestBody(new EqualToPattern("response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauthenticated&client_id=divorce"))
                 .willReturn(aResponse()
                     .withStatus(status.value())
                     .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                    .withBody(ObjectMapperTestUtil.convertObjectToJsonString(authenticateUserResponse))));
+                    .withBody(ObjectMapperTestUtil.convertObjectToJsonString(new AuthenticateUserResponse(CASE_WORKER_AUTH_CODE)))
+                )
+        );
 
-            idamUserDetailsServer.stubFor(post(IDAM_USER_AUTH_TOKEN_CONTEXT_PATH
-                + "?code=" + CASE_WORKER_AUTH_CODE
-                + "&grant_type=" + AUTHORIZATION_CODE
-                + "&redirect_uri=" + URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name())
-                + "&client_id=" + authClientId
-                + "&client_secret=" + authClientSecret)
+        idamUserDetailsServer.stubFor(
+            post(IDAM_USER_AUTH_TOKEN_CONTEXT_PATH).
+                withRequestBody(new EqualToPattern("code=AuthCode&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauthenticated&client_secret=dummysecret&client_id=divorce"))
+//                + "?code=" + CASE_WORKER_AUTH_CODE
+//                + "&grant_type=" + AUTHORIZATION_CODE
+//                + "&redirect_uri=" + URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name())
+//                + "&client_id=" + authClientId
+//                + "&client_secret=" + authClientSecret)
                 .willReturn(aResponse()
                     .withStatus(HttpStatus.OK.value())
                     .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                    .withBody(ObjectMapperTestUtil.convertObjectToJsonString(tokenExchangeResponse))));
-
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+                    .withBody("{ \"access_token\" : \"" + CASE_WORKER_TOKEN + "\" }")));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(BEARER_CASE_WORKER_TOKEN),
             getCaseWorkerUserDetails());
@@ -160,14 +152,17 @@ public abstract class MockSupport {
     private String getUserDetails(String userId, String authToken, String role) {
         try {
             return new ObjectMapper().writeValueAsString(
-                UserDetails.builder()
-                    .id(userId)
-                    .authToken(authToken)
-                    .email(USER_EMAIL)
-                    .forename("forename")
-                    .surname("surname")
-                    .roles(Collections.singletonList(role))
-                    .build());
+                new User(
+                    authToken,
+                    UserDetails.builder()
+                        .id(userId)
+                        .email(USER_EMAIL)
+                        .forename("forename")
+                        .surname("surname")
+                        .roles(Collections.singletonList(role))
+                        .build()
+                )
+            );
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -180,19 +175,5 @@ public abstract class MockSupport {
         when(feignException.getMessage()).thenReturn(FEIGN_ERROR);
 
         return feignException;
-    }
-
-    private AuthenticateUserResponse getAuthenticateUserResponse() {
-        AuthenticateUserResponse authenticateUserResponse = new AuthenticateUserResponse();
-        authenticateUserResponse.setCode(CASE_WORKER_AUTH_CODE);
-
-        return  authenticateUserResponse;
-    }
-
-    private TokenExchangeResponse getTokenExchangeResponse() {
-        TokenExchangeResponse tokenExchangeResponse = new TokenExchangeResponse();
-        tokenExchangeResponse.setAccessToken(CASE_WORKER_TOKEN);
-
-        return tokenExchangeResponse;
     }
 }

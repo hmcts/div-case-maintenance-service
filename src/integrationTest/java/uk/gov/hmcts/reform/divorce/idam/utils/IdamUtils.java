@@ -21,7 +21,7 @@ public abstract class IdamUtils {
     @Value("${idam.client.baseUrl}")
     String idamUserBaseUrl;
 
-    @Value("${idam.client.redirect_url}")
+    @Value("${idam.client.redirect_uri}")
     String idamRedirectUrl;
 
     @Value("${idam.client.secret}")

@@ -18,7 +18,7 @@ server:
 
 idam:
   client:
-    redirect_url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
+    redirect_uri: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
     id: divorce
     secret: ${AUTH2_CLIENT_SECRET:dummysecret}
   api:
