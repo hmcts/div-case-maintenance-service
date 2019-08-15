@@ -6,7 +6,7 @@ idam:
         secret: ${AUTH2_CLIENT_SECRET:dummysecret}
     api:
         url: ${IDAM_API_BASEURL:https://idam-api.aat.platform.hmcts.net}
-        redirect_url: ${IDAM_API_REDIRECT_URL:https://div-pfe-aat.service.core-compute-aat.internal/authenticated}
+        redirect-url: ${IDAM_API_REDIRECT_URL:https://div-pfe-aat.service.core-compute-aat.internal/authenticated}
     caseworker:
         username: ${IDAM_CASEWORKER_USERNAME:replace_me}
         password: ${IDAM_CASEWORKER_PASSWORD:replace_me}
