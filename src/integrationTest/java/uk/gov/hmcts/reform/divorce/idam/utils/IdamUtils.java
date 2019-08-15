@@ -18,13 +18,14 @@ public abstract class IdamUtils {
     static final String CLIENT_ID = "divorce";
     static final String CODE = "code";
 
-    @Value("${idam.client.baseUrl}")
+
+    @Value("${auth.idam.client.baseUrl}")
     String idamUserBaseUrl;
 
-    @Value("${idam.client.redirect_uri}")
+    @Value("${auth.idam.client.redirect-url}")
     String idamRedirectUrl;
 
-    @Value("${idam.client.secret}")
+    @Value("${auth.idam.client.secret}")
     private String idamClientSecret;
 
     public final void createUserInIdam(RegisterUserRequest registerUserRequest) {
