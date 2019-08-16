@@ -14,8 +14,9 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
+import uk.gov.hmcts.reform.idam.client.models.User;
+import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
 import java.util.Map;
 
@@ -32,11 +33,11 @@ public class CcdSubmissionServiceImplUTest {
     private static final String BULK_CASE_TYPE = "bulkCaseType";
     private static final String CREATE_BULK_CASE_EVENT_ID = "createBulkCaseEventId";
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
-        (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
+        (String) ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
             "DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY");
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION =
-        (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
-        "DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION");
+        (String) ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
+            "DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION");
     private static final String HELP_WITH_FEES_FIELD = "D8HelpWithFeesNeedHelp";
 
     private static final String DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce Bulk case submission event";
@@ -68,7 +69,6 @@ public class CcdSubmissionServiceImplUTest {
         ReflectionTestUtils.setField(classUnderTest, "createEventId", CREATE_EVENT_ID);
         ReflectionTestUtils.setField(classUnderTest, "bulkCaseType", BULK_CASE_TYPE);
         ReflectionTestUtils.setField(classUnderTest, "createBulkCaseEventId", CREATE_BULK_CASE_EVENT_ID);
-
     }
 
     @Test
@@ -91,25 +91,25 @@ public class CcdSubmissionServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+        final User userDetails = new User(TOKEN, UserDetails.builder().id(USER_ID).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(userService.retrieveUser(BEARER_AUTHORISATION)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(coreCaseDataApi.startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE, CREATE_EVENT_ID)).thenReturn(startEventResponse);
 
         when(coreCaseDataApi.submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE,true, caseDataContent)).thenReturn(expected);
+            CASE_TYPE, true, caseDataContent)).thenReturn(expected);
 
-        CaseDetails actual = classUnderTest.submitCase(caseData,  AUTHORISATION);
+        CaseDetails actual = classUnderTest.submitCase(caseData, AUTHORISATION);
 
         assertThat(actual).isEqualTo(expected);
 
         verify(coreCaseDataApi).startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE, CREATE_EVENT_ID);
         verify(coreCaseDataApi).submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE,true, caseDataContent);
+            CASE_TYPE, true, caseDataContent);
     }
 
     @Test
@@ -133,16 +133,16 @@ public class CcdSubmissionServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+        final User userDetails = new User(TOKEN, UserDetails.builder().id(USER_ID).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(userService.retrieveUser(BEARER_AUTHORISATION)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(coreCaseDataApi.startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE, CREATE_HWF_EVENT_ID)).thenReturn(startEventResponse);
 
         when(coreCaseDataApi.submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE,true, caseDataContent)).thenReturn(expected);
+            CASE_TYPE, true, caseDataContent)).thenReturn(expected);
 
         CaseDetails actual = classUnderTest.submitCase(caseData, AUTHORISATION);
 
@@ -151,7 +151,7 @@ public class CcdSubmissionServiceImplUTest {
         verify(coreCaseDataApi).startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             CASE_TYPE, CREATE_HWF_EVENT_ID);
         verify(coreCaseDataApi).submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE,true, caseDataContent);
+            CASE_TYPE, true, caseDataContent);
     }
 
     @Test
@@ -174,18 +174,18 @@ public class CcdSubmissionServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final UserDetails userDetails = UserDetails.builder().id(USER_ID).build();
+        final User userDetails = new User(TOKEN, UserDetails.builder().id(USER_ID).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUserDetails(BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(userService.retrieveUser(BEARER_AUTHORISATION)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(coreCaseDataApi.startForCaseworker(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
             BULK_CASE_TYPE, CREATE_BULK_CASE_EVENT_ID)).thenReturn(startEventResponse);
 
         when(coreCaseDataApi.submitForCaseworker(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            BULK_CASE_TYPE,true, caseDataContent)).thenReturn(expected);
+            BULK_CASE_TYPE, true, caseDataContent)).thenReturn(expected);
 
-        CaseDetails actual = classUnderTest.submitBulkCase(caseData,  AUTHORISATION);
+        CaseDetails actual = classUnderTest.submitBulkCase(caseData, AUTHORISATION);
 
         assertThat(actual).isEqualTo(expected);
     }
