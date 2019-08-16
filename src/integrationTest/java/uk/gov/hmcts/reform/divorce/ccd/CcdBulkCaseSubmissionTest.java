@@ -17,7 +17,7 @@ public class CcdBulkCaseSubmissionTest extends PetitionSupport {
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrVU";
     private static final String UNAUTHORISED_JWT_EXCEPTION = "status 403 reading "
-        + "IdamClient#retrieveUserDetails(String) - ";
+        + "IdamApi#retrieveUserDetails(String) - ";
     private static final String REQUEST_BODY_NOT_FOUND = "Required request body is missing";
 
     private static final String USER_EMAIL = "test@test.com";
