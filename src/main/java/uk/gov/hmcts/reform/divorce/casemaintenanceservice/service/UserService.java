@@ -1,9 +1,9 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service;
 
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
+import uk.gov.hmcts.reform.idam.client.models.User;
 
 public interface UserService {
-    UserDetails retrieveUserDetails(String authorisation);
+    User retrieveUser(String authorisation);
 
-    UserDetails retrieveAnonymousCaseWorkerDetails();
+    User retrieveAnonymousCaseWorkerDetails();
 }

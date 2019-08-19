@@ -12,7 +12,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
@@ -20,6 +19,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCas
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
+import uk.gov.hmcts.reform.idam.client.models.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,7 +119,7 @@ public class PetitionServiceImpl implements PetitionService,
 
     @Override
     public Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException {
-        final UserDetails userDetails = userService.retrieveUserDetails(authorisation);
+        User userDetails = userService.retrieveUser(authorisation);
         if (userDetails == null) {
             log.warn("No user found for token");
             return null;
@@ -127,11 +127,11 @@ public class PetitionServiceImpl implements PetitionService,
         final CaseDetails oldCase = this.retrievePetition(authorisation);
 
         if (oldCase == null) {
-            log.warn("No case found for the user [{}]", userDetails.getId());
+            log.warn("No case found for the user [{}]", userDetails.getUserDetails().getId());
             return null;
         } else if (!oldCase.getData().containsKey(CcdCaseProperties.D8_CASE_REFERENCE)) {
             log.warn("Case [{}] has not progressed to have a Family Man reference found for the user [{}]",
-                oldCase.getId(), userDetails.getId());
+                oldCase.getId(), userDetails.getUserDetails().getId());
             return null;
         }
 

@@ -8,11 +8,11 @@ import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.InvalidRequestException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.UnauthorizedException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
+import uk.gov.hmcts.reform.idam.client.models.User;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -25,7 +25,6 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESP_SOLICITOR;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOLICITOR_EMAIL_ADDRESS;
 
 @Service
 @Slf4j
@@ -42,31 +41,31 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
     @Override
     public void unlinkRespondent(String authorisation, String caseId) {
-        UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
+        User caseworkerUser = getAnonymousCaseWorkerDetails();
 
-        UserDetails linkedUser = getUserDetails(authorisation);
+        User linkedUser = getUser(authorisation);
 
-        updateCaseRoles(caseworkerUser, caseId, linkedUser.getId(), null);
+        updateCaseRoles(caseworkerUser, caseId, linkedUser.getUserDetails().getId(), null);
     }
 
     @Override
     public void addPetitionerSolicitorRole(String authorisation, String caseId) {
-        UserDetails solicitorUser = getUserDetails(authorisation);
-        UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
+        User solicitorUser = getUser(authorisation);
+        User caseworkerUser = getAnonymousCaseWorkerDetails();
         Set<String> caseRoles = new HashSet<>();
         caseRoles.add(CmsConstants.CREATOR_ROLE);
         caseRoles.add(CmsConstants.PET_SOL_ROLE);
-        updateCaseRoles(caseworkerUser, caseId, solicitorUser.getId(), caseRoles);
+        updateCaseRoles(caseworkerUser, caseId, solicitorUser.getUserDetails().getId(), caseRoles);
     }
 
     @Override
     public void linkRespondent(String authorisation, String caseId, String letterHolderId) {
-        UserDetails caseworkerUser = getAnonymousCaseWorkerDetails();
+        User caseworkerUser = getAnonymousCaseWorkerDetails();
 
         CaseDetails caseDetails = coreCaseDataApi.readForCaseWorker(
             caseworkerUser.getAuthToken(),
             getServiceAuthToken(),
-            caseworkerUser.getId(),
+            caseworkerUser.getUserDetails().getId(),
             jurisdictionId,
             caseType,
             caseId
@@ -74,24 +73,30 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
         if (caseDetails == null) {
             throw new CaseNotFoundException(
-                format("Case with caseId [%s] and letter holder id [%s] not found",
-                    caseId, letterHolderId));
+                format("Case with caseId [%s] and letter holder id [%s] not found", caseId, letterHolderId)
+            );
         }
 
         RespondentType respondentType = validateLetterIdAndUserType(letterHolderId, caseDetails, caseId);
 
-        UserDetails linkingUser = getUserDetails(authorisation);
+        User linkingUser = getUser(authorisation);
 
-        if (!isValidRespondent(caseDetails, linkingUser.getEmail(), respondentType)) {
-            throw new UnauthorizedException(format("Case with caseId [%s] and letter holder id [%s] already assigned for [%s] "
-                + "or Petitioner attempted to link case. Check previous logs for more information.",
-                caseId, letterHolderId, respondentType));
+        if (!isValidRespondent(caseDetails, linkingUser.getUserDetails().getEmail(), respondentType)) {
+            throw new UnauthorizedException(
+                format(
+                    "Case with caseId [%s] and letter holder id [%s] already assigned for [%s] "
+                        + "or Petitioner attempted to link case. Check previous logs for more information.",
+                    caseId,
+                    letterHolderId,
+                    respondentType
+                )
+            );
         }
 
-        updateCaseRoles(caseworkerUser, caseId, linkingUser.getId(), getRolesForRespondentType(respondentType));
+        updateCaseRoles(caseworkerUser, caseId, linkingUser.getUserDetails().getId(), getRolesForRespondentType(respondentType));
     }
 
-    private void updateCaseRoles(UserDetails anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {
+    private void updateCaseRoles(User anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {
         caseUserApi.updateCaseRolesForUser(
             anonymousCaseWorker.getAuthToken(),
             getServiceAuthToken(),
@@ -127,14 +132,15 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             return RespondentType.RESPONDENT;
         } else if (letterHolderId.equals(coRespondentLetterHolderId)) {
             return RespondentType.CO_RESPONDENT;
-        } else {
-            throw new UnauthorizedException(
-                format("Case with caseId [%s] and letter holder id [%s] mismatch.", caseDetails.getId(), letterHolderId));
         }
+
+        throw new UnauthorizedException(
+            format("Case with caseId [%s] and letter holder id [%s] mismatch.", caseDetails.getId(), letterHolderId)
+        );
     }
 
     private boolean isValidRespondent(CaseDetails caseDetails, String userEmailAddress, RespondentType respondentType) {
-        String emailField = determineEmailFieldFor(respondentType);
+        String emailField = (respondentType == RespondentType.RESPONDENT) ? RESP_EMAIL_ADDRESS : CO_RESP_EMAIL_ADDRESS;
         Map<String, Object> caseData = caseDetails.getData();
         String caseId = Long.toString(caseDetails.getId());
         String emailAddressAssignedToCase = (String) caseData.get(emailField);
@@ -147,30 +153,20 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
                 log.warn("Attempt made to link petitioner as {} to case {}. Failed validation.", respondentType, caseId);
                 return false;
             }
+
             return true;
+        }
+
+        boolean emailAddressesMatch = userEmailAddress.equalsIgnoreCase(emailAddressAssignedToCase);
+        log.info("Case {} has already been assigned a {}. Checking if given e-mail address matches existing...",
+            caseId, respondentType);
+
+        if (emailAddressesMatch) {
+            log.info("User's e-mail address matches the {} e-mail address in the case [{}].", respondentType, caseId);
         } else {
-            boolean emailAddressesMatch = userEmailAddress.equalsIgnoreCase(emailAddressAssignedToCase);
-            log.info("Case {} has already been assigned a {}. Checking if given e-mail address matches existing...",
-                caseId, respondentType);
-
-            if (emailAddressesMatch) {
-                log.info("User's e-mail address matches the {} e-mail address in the case [{}].", respondentType, caseId);
-            } else {
-                log.warn("User's e-mail address doesn't match the {} e-mail address in the case [{}].", respondentType, caseId);
-            }
-
-            return emailAddressesMatch;
+            log.warn("User's e-mail address doesn't match the {} e-mail address in the case [{}].", respondentType, caseId);
         }
-    }
 
-    private String determineEmailFieldFor(RespondentType respondentType) {
-        switch (respondentType) {
-            case RESPONDENT:
-                return RESP_EMAIL_ADDRESS;
-            case RESP_SOLICITOR:
-                return RESP_SOLICITOR_EMAIL_ADDRESS;
-            default:
-                return CO_RESP_EMAIL_ADDRESS;
-        }
+        return emailAddressesMatch;
     }
 }

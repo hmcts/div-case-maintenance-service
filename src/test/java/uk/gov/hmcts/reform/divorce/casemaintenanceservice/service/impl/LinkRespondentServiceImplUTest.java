@@ -15,13 +15,15 @@ import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
+import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.InvalidRequestException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.UnauthorizedException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
+import uk.gov.hmcts.reform.idam.client.models.User;
+import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -40,7 +42,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CcdAccessServiceImplUTest {
+public class LinkRespondentServiceImplUTest {
     private static final String JURISDICTION_ID = "DIVORCE";
     private static final String CASE_TYPE = "DIVORCE";
 
@@ -67,28 +69,25 @@ public class CcdAccessServiceImplUTest {
     private static final String INVALID_MESSAGE = "Case details or letter holder data are invalid";
     private static final String NOT_FOUND_MESSAGE = "Case with caseId [12345678] and letter holder id [letterholderId] not found";
 
-    private static final UserDetails CASE_WORKER_USER = UserDetails.builder()
-        .authToken(CASEWORKER_AUTHORISATION)
-        .id(CASEWORKER_USER_ID)
-        .build();
+    private static final User CASE_WORKER_USER = new User(
+        CASEWORKER_AUTHORISATION,
+        UserDetails.builder().id(CASEWORKER_USER_ID).build()
+    );
 
-    private static final UserDetails RESPONDENT_USER = UserDetails.builder()
-        .authToken(RESPONDENT_AUTHORISATION)
-        .id(RESPONDENT_USER_ID)
-        .email(USER_EMAIL)
-        .build();
+    private static final User RESPONDENT_USER = new User(
+        RESPONDENT_AUTHORISATION,
+        UserDetails.builder().id(RESPONDENT_USER_ID).email(USER_EMAIL).build()
+    );
 
-    private static final UserDetails PETITIONER_USER = UserDetails.builder()
-        .authToken(PET_AUTHORISATION)
-        .id(PET_USER_ID)
-        .email(USER_EMAIL)
-        .build();
+    private static final User PETITIONER_USER = new User(
+        PET_AUTHORISATION,
+        UserDetails.builder().id(PET_USER_ID).email(USER_EMAIL).build()
+    );
 
-    private static final UserDetails PET_SOL_USER = UserDetails.builder()
-        .authToken(PET_SOLICITOR_AUTHORISATION)
-        .id(PET_USER_ID)
-        .email(USER_EMAIL)
-        .build();
+    private static final User PET_SOL_USER = new User(
+        PET_AUTHORISATION,
+        UserDetails.builder().id(PET_USER_ID).email(USER_EMAIL).build()
+    );
 
     @Rule
     public ExpectedException expectedException = none();
@@ -115,7 +114,7 @@ public class CcdAccessServiceImplUTest {
 
         when(userService.retrieveAnonymousCaseWorkerDetails()).thenReturn(CASE_WORKER_USER);
         when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
+        when(userService.retrieveUser(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
     }
 
     @Test
@@ -261,7 +260,7 @@ public class CcdAccessServiceImplUTest {
             CASE_TYPE,
             CASE_ID
         )).thenReturn(caseDetails);
-        when(userService.retrieveUserDetails(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
+        when(userService.retrieveUser(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
 
         classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
@@ -286,7 +285,7 @@ public class CcdAccessServiceImplUTest {
             CASE_TYPE,
             CASE_ID
         )).thenReturn(caseDetails);
-        when(userService.retrieveUserDetails(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
+        when(userService.retrieveUser(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
 
         classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
     }
@@ -432,7 +431,7 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenValidSolicitorCase_whenCreatingCase_thenAssignRole() {
-        when(userService.retrieveUserDetails(PET_SOLICITOR_AUTHORISATION)).thenReturn(PET_SOL_USER);
+        when(userService.retrieveUser(PET_SOLICITOR_AUTHORISATION)).thenReturn(PET_SOL_USER);
         classUnderTest.addPetitionerSolicitorRole(PET_SOLICITOR_AUTHORISATION, CASE_ID);
 
         verify(caseUserApi).updateCaseRolesForUser(
@@ -468,14 +467,14 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenUserWithCase_whenUnlinkUser_thenCallRemovePermissionAPI() {
-        when(userService.retrieveUserDetails(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
+        when(userService.retrieveUser(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
         classUnderTest.unlinkRespondent(RESPONDENT_AUTHORISATION, CASE_ID);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
-            eq(RESPONDENT_USER_ID),
+            eq(RESPONDENT_USER.getUserDetails().getId()),
             any(CaseUser.class)
         );
     }

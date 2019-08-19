@@ -11,12 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.WireMockSpring;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.AuthenticateUserResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.TokenExchangeResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.UserServiceImpl;
+import uk.gov.hmcts.reform.idam.client.IdamClient;
+import uk.gov.hmcts.reform.idam.client.models.AuthenticateUserResponse;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -30,6 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 public abstract class MockSupport {
@@ -43,11 +41,7 @@ public abstract class MockSupport {
     static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
     static final String FEIGN_ERROR = "some error message";
 
-
-    private static final String BEARER = (String)ReflectionTestUtils.getField(UserServiceImpl.class, "BEARER");
-    private static final String AUTHORIZATION_CODE =
-        (String)ReflectionTestUtils.getField(UserServiceImpl.class, "AUTHORIZATION_CODE");
-    private static final String CODE = (String)ReflectionTestUtils.getField(UserServiceImpl.class, "CODE");
+    private static final String BEARER = "Bearer";
 
     private static final String CASEWORKER_BASIC_AUTH_HEADER =
         "Basic ZHVtbXljYXNld29ya2VyQHRlc3QuY29tOmR1bW15";
@@ -64,25 +58,20 @@ public abstract class MockSupport {
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrMM";
 
-    static final String BEARER_CASE_WORKER_TOKEN = BEARER + CASE_WORKER_TOKEN;
+    static final String BEARER_CASE_WORKER_TOKEN = BEARER + " " + CASE_WORKER_TOKEN;
 
     private static final String CASE_WORKER_AUTH_CODE = "AuthCode";
     private static final String CITIZEN_ROLE = "citizen";
     private static final String SOLICITOR_ROLE = "caseworker-divorce-solicitor";
     private static final String CASEWORKER_ROLE = "caseworker";
 
-    private final AuthenticateUserResponse authenticateUserResponse =
-        getAuthenticateUserResponse();
-    private final TokenExchangeResponse tokenExchangeResponse = getTokenExchangeResponse();
-
-
-    @Value("${idam.api.redirect-url}")
+    @Value("${idam.client.redirect_uri}")
     private String authRedirectUrl;
 
-    @Value("${auth2.client.id}")
+    @Value("${idam.client.id}")
     private String authClientId;
 
-    @Value("${auth2.client.secret}")
+    @Value("${idam.client.secret}")
     private String authClientSecret;
 
     @ClassRule
@@ -122,62 +111,65 @@ public abstract class MockSupport {
     }
 
     void stubCaseWorkerAuthentication(HttpStatus status) {
-        try {
-            idamUserDetailsServer.stubFor(post(IDAM_USER_AUTHENTICATE_CONTEXT_PATH
-                + "?response_type=" + CODE
-                + "&client_id=" + authClientId
-                + "&redirect_uri=" + URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name()))
+        idamUserDetailsServer.stubFor(
+            post(IDAM_USER_AUTHENTICATE_CONTEXT_PATH)
                 .withHeader(AUTHORIZATION, new EqualToPattern(CASEWORKER_BASIC_AUTH_HEADER))
+                .withHeader(CONTENT_TYPE, new EqualToPattern("application/x-www-form-urlencoded; charset=UTF-8"))
+                .withRequestBody(new EqualToPattern(authorisedBody()))
                 .willReturn(aResponse()
                     .withStatus(status.value())
                     .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                    .withBody(ObjectMapperTestUtil.convertObjectToJsonString(authenticateUserResponse))));
+                    .withBody(ObjectMapperTestUtil.convertObjectToJsonString(new AuthenticateUserResponse(CASE_WORKER_AUTH_CODE)))
+                )
+        );
 
-            idamUserDetailsServer.stubFor(post(IDAM_USER_AUTH_TOKEN_CONTEXT_PATH
-                + "?code=" + CASE_WORKER_AUTH_CODE
-                + "&grant_type=" + AUTHORIZATION_CODE
-                + "&redirect_uri=" + URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name())
-                + "&client_id=" + authClientId
-                + "&client_secret=" + authClientSecret)
+        idamUserDetailsServer.stubFor(
+            post(IDAM_USER_AUTH_TOKEN_CONTEXT_PATH)
+                .withRequestBody(new EqualToPattern(tokenBody()))
                 .willReturn(aResponse()
                     .withStatus(HttpStatus.OK.value())
-                    .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                    .withBody(ObjectMapperTestUtil.convertObjectToJsonString(tokenExchangeResponse))));
-
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+                    .withBody("{ \"access_token\" : \"" + CASE_WORKER_TOKEN + "\" }")));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(BEARER_CASE_WORKER_TOKEN),
             getCaseWorkerUserDetails());
     }
 
     String getCaseWorkerUserDetails() {
-        return getUserDetailsForRole(CASE_WORKER_USER_ID, CASE_WORKER_TOKEN, CASEWORKER_ROLE);
+        return getUserDetailsForRole(CASE_WORKER_USER_ID, CASEWORKER_ROLE);
     }
 
     String getUserDetails() {
-        return getUserDetailsForRole(USER_ID, USER_TOKEN, CITIZEN_ROLE);
+        return getUserDetailsForRole(USER_ID, CITIZEN_ROLE);
     }
 
     String getSolicitorUserDetails() {
-        return getUserDetailsForRole(USER_ID, USER_TOKEN, SOLICITOR_ROLE);
+        return getUserDetailsForRole(USER_ID, SOLICITOR_ROLE);
     }
 
-    private String getUserDetailsForRole(String userId, String authToken, String role) {
+    private String getUserDetailsForRole(String userId, String role) {
+        return "{\"id\":\"" + userId
+            + "\",\"email\":\"" + USER_EMAIL
+            + "\",\"forename\":\"forename\",\"surname\":\"Surname\",\"roles\":[\"" + role + "\"]}";
+    }
+
+    private String tokenBody() {
+        return "code=" + CASE_WORKER_AUTH_CODE
+            + "&grant_type=" + IdamClient.GRANT_TYPE
+            + "&redirect_uri=" + getRedirectUri()
+            + "&client_secret=" + authClientSecret
+            + "&client_id=" + authClientId;
+    }
+
+    private String getRedirectUri() {
         try {
-            return new ObjectMapper().writeValueAsString(
-                UserDetails.builder()
-                    .id(userId)
-                    .authToken(authToken)
-                    .email(USER_EMAIL)
-                    .forename("forename")
-                    .surname("surname")
-                    .roles(Collections.singletonList(role))
-                    .build());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            return URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name());
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
+    }
+
+    private String authorisedBody() {
+        return "response_type=code&redirect_uri=" + getRedirectUri() + "&client_id=" + authClientId;
     }
 
     FeignException getMockedFeignException(int statusCode) {
@@ -187,19 +179,5 @@ public abstract class MockSupport {
         when(feignException.getMessage()).thenReturn(FEIGN_ERROR);
 
         return feignException;
-    }
-
-    private AuthenticateUserResponse getAuthenticateUserResponse() {
-        AuthenticateUserResponse authenticateUserResponse = new AuthenticateUserResponse();
-        authenticateUserResponse.setCode(CASE_WORKER_AUTH_CODE);
-
-        return  authenticateUserResponse;
-    }
-
-    private TokenExchangeResponse getTokenExchangeResponse() {
-        TokenExchangeResponse tokenExchangeResponse = new TokenExchangeResponse();
-        tokenExchangeResponse.setAccessToken(CASE_WORKER_TOKEN);
-
-        return tokenExchangeResponse;
     }
 }
