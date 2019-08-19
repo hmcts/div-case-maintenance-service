@@ -16,6 +16,7 @@ public enum ApplicationStatus {
     AOS_COMPLETED("AosCompleted"),
     AWAITING_REISSUE("AwaitingReissue"),
     AWAITING_DECREE_NISI("AwaitingDecreeNisi"),
+    DN_DRAFTED("DNDrafted"),
     DN_STARTED("DNStarted"),
     DN_COMPLETED("DNCompleted"),
     REJECTED("Rejected"),
