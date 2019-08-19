@@ -21,9 +21,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
-import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
+import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 
@@ -31,7 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -52,19 +53,19 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class LinkRespondentITest extends MockSupport {
+public class CcdAccessITest extends MockSupport {
     private static final String CASE_ID = "12345678";
     private static final String LETTER_HOLDER_ID = "letterHolderId";
-
-    private static final String API_URL =
+    private static final String LINK_RESP_URL =
         String.format("/casemaintenance/version/1/link-respondent/%s/%s", CASE_ID, LETTER_HOLDER_ID);
+    private static final String ADD_PET_SOL_ROLE_URL =
+        String.format("/casemaintenance/version/1/add-petitioner-solicitor-role/%s", CASE_ID);
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
 
     @Value("${ccd.casetype}")
     private String caseType;
-
 
     @Autowired
     private MockMvc webClient;
@@ -73,11 +74,11 @@ public class LinkRespondentITest extends MockSupport {
     private CoreCaseDataApi coreCaseDataApi;
 
     @MockBean
-    private CaseAccessApi caseAccessApi;
+    private CaseUserApi caseUserApi;
 
     @Test
     public void givenAuthTokenIsNull_whenLinkRespondent_thenReturnBadRequest() throws Exception {
-        webClient.perform(MockMvcRequestBuilders.post(API_URL))
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL))
             .andExpect(status().isBadRequest());
     }
 
@@ -87,7 +88,7 @@ public class LinkRespondentITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.BAD_GATEWAY);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isBadGateway());
     }
@@ -100,7 +101,7 @@ public class LinkRespondentITest extends MockSupport {
 
         when(serviceTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isServiceUnavailable());
     }
@@ -125,7 +126,7 @@ public class LinkRespondentITest extends MockSupport {
             CASE_ID)
         ).thenThrow(feignException);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isBadRequest());
     }
@@ -149,7 +150,7 @@ public class LinkRespondentITest extends MockSupport {
             CASE_ID)
         ).thenReturn(null);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isNotFound());
     }
@@ -174,7 +175,7 @@ public class LinkRespondentITest extends MockSupport {
             CASE_ID)
         ).thenReturn(caseDetails);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
@@ -202,7 +203,7 @@ public class LinkRespondentITest extends MockSupport {
             CASE_ID)
         ).thenReturn(caseDetails);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
@@ -233,7 +234,7 @@ public class LinkRespondentITest extends MockSupport {
             CASE_ID)
         ).thenReturn(caseDetails);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
@@ -261,7 +262,7 @@ public class LinkRespondentITest extends MockSupport {
             CASE_ID)
         ).thenReturn(caseDetails);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
@@ -292,7 +293,7 @@ public class LinkRespondentITest extends MockSupport {
             CASE_ID)
         ).thenReturn(caseDetails);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
@@ -322,7 +323,7 @@ public class LinkRespondentITest extends MockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.FORBIDDEN, new EqualToPattern(USER_TOKEN), message);
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isForbidden())
             .andExpect(content().string(containsString(message)));
@@ -354,18 +355,16 @@ public class LinkRespondentITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         doThrow(feignException)
-            .when(caseAccessApi)
-            .grantAccessToCase(
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
                 eq(serviceAuthToken),
-                eq(CASE_WORKER_USER_ID),
-                eq(jurisdictionId),
-                eq(caseType),
                 eq(CASE_ID),
-                argThat(new UserIdMatcher(USER_ID))
+                eq(USER_ID),
+                any(CaseUser.class)
             );
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isBadRequest());
     }
@@ -394,18 +393,17 @@ public class LinkRespondentITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         doNothing()
-            .when(caseAccessApi)
-            .grantAccessToCase(
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
                 eq(serviceAuthToken),
-                eq(CASE_WORKER_USER_ID),
-                eq(jurisdictionId),
-                eq(caseType),
                 eq(CASE_ID),
-                argThat(new UserIdMatcher(USER_ID))
+                eq(USER_ID),
+                any(CaseUser.class)
             );
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isOk());
     }
@@ -434,36 +432,42 @@ public class LinkRespondentITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         doNothing()
-            .when(caseAccessApi)
-            .grantAccessToCase(
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
                 eq(serviceAuthToken),
-                eq(CASE_WORKER_USER_ID),
-                eq(jurisdictionId),
-                eq(caseType),
                 eq(CASE_ID),
-                argThat(new UserIdMatcher(USER_ID))
+                eq(USER_ID),
+                any(CaseUser.class)
             );
 
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
+        webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isOk());
     }
 
-    private static class UserIdMatcher implements ArgumentMatcher<UserId> {
-        private final String code;
+    @Test
+    public void givenAllGoesWell_whenAssigningPetSolicitorRole_thenProceedAsExpected() throws Exception {
+        final String solicitorUserDetails = getSolicitorUserDetails();
+        final String serviceAuthToken = "serviceAuthToken";
 
-        UserIdMatcher(String code) {
-            this.code = code;
-        }
+        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), solicitorUserDetails);
+        stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        @Override
-        public boolean matches(UserId compare) {
-            if (compare == null) {
-                return false;
-            }
+        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
 
-            return code.equals(compare.getId());
-        }
+        doNothing()
+            .when(caseUserApi)
+            .updateCaseRolesForUser(
+                eq(BEARER_CASE_WORKER_TOKEN),
+                eq(serviceAuthToken),
+                eq(CASE_ID),
+                eq(USER_ID),
+                any(CaseUser.class)
+            );
+
+        webClient.perform(MockMvcRequestBuilders.put(ADD_PET_SOL_ROLE_URL)
+            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+            .andExpect(status().isOk());
     }
 }

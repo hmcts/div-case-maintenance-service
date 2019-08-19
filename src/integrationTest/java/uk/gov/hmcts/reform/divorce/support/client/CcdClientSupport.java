@@ -24,6 +24,9 @@ public class CcdClientSupport {
     @Value("${ccd.eventid.create}")
     private String createEventId;
 
+    @Value("${ccd.eventid.solicitorCreate}")
+    private String solicitorCreateEventId;
+
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
 
@@ -63,7 +66,7 @@ public class CcdClientSupport {
             caseDataContent);
     }
 
-    public CaseDetails submitCase(Object data, UserDetails userDetails) {
+    public CaseDetails submitCaseForSolicitor(Object data, UserDetails userDetails) {
         final String serviceToken = authTokenGenerator.generate();
 
         StartEventResponse startEventResponse = coreCaseDataApi.startForCaseworker(
@@ -72,7 +75,7 @@ public class CcdClientSupport {
             userDetails.getId(),
             jurisdictionId,
             caseType,
-            createEventId);
+            solicitorCreateEventId);
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
@@ -95,7 +98,7 @@ public class CcdClientSupport {
             caseDataContent);
     }
 
-    public CaseDetails read(UserDetails userDetails, String caseId) {
+    public CaseDetails fetchCaseForUser(UserDetails userDetails, String caseId) {
         final String serviceToken = authTokenGenerator.generate();
         return coreCaseDataApi.readForCaseWorker(
             userDetails.getAuthToken(),

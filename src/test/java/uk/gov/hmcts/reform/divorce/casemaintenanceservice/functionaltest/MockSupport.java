@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
@@ -16,6 +18,7 @@ import uk.gov.hmcts.reform.idam.client.models.AuthenticateUserResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -59,6 +62,7 @@ public abstract class MockSupport {
 
     private static final String CASE_WORKER_AUTH_CODE = "AuthCode";
     private static final String CITIZEN_ROLE = "citizen";
+    private static final String SOLICITOR_ROLE = "caseworker-divorce-solicitor";
     private static final String CASEWORKER_ROLE = "caseworker";
 
     @Value("${idam.client.redirect_uri}")
@@ -131,14 +135,18 @@ public abstract class MockSupport {
     }
 
     String getCaseWorkerUserDetails() {
-        return getUserDetails(CASE_WORKER_USER_ID, CASEWORKER_ROLE);
+        return getUserDetailsForRole(CASE_WORKER_USER_ID, CASEWORKER_ROLE);
     }
 
     String getUserDetails() {
-        return getUserDetails(USER_ID, CITIZEN_ROLE);
+        return getUserDetailsForRole(USER_ID, CITIZEN_ROLE);
     }
 
-    private String getUserDetails(String userId, String role) {
+    String getSolicitorUserDetails() {
+        return getUserDetailsForRole(USER_ID, SOLICITOR_ROLE);
+    }
+
+    private String getUserDetailsForRole(String userId, String role) {
         return "{\"id\":\"" + userId
             + "\",\"email\":\"" + USER_EMAIL
             + "\",\"forename\":\"forename\",\"surname\":\"Surname\",\"roles\":[\"" + role + "\"]}";

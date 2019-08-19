@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CcdSubmissionITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/submit";
-    private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/addresses.json";
+    private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/base-case.json";
     private static final String NO_HELP_WITH_FEES_PATH = "ccd-submission-payload/addresses-no-hwf.json";
 
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";

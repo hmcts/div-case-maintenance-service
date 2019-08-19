@@ -28,7 +28,7 @@ public class CcdSubmissionTest extends PetitionSupport {
     @Test
     public void shouldReturnCaseIdForValidAddressesSessionData() throws Exception {
         String expectedStatus = "AwaitingHWFDecision";
-        Response caseSubmitted = submitCase("addresses.json", getUserDetails());
+        Response caseSubmitted = submitCase("base-case.json", getUserDetails());
         assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
         assertCaseStatus(caseSubmitted, expectedStatus);
 
@@ -93,13 +93,13 @@ public class CcdSubmissionTest extends PetitionSupport {
 
         final String userToken = userDetails.getAuthToken();
 
-        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json", Collections.emptyMap());
+        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json", Collections.emptyMap());
 
         Response draftsResponseBefore = getAllDraft(userToken);
 
         assertThat(((List)draftsResponseBefore.getBody().path("data")).size()).isOne();
 
-        Response cmsResponse = submitCase("addresses.json", userDetails);
+        Response cmsResponse = submitCase("base-case.json", userDetails);
 
         assertOkResponseAndCaseIdIsNotZero(cmsResponse);
 
@@ -113,7 +113,7 @@ public class CcdSubmissionTest extends PetitionSupport {
 
     @Test
     public void shouldReturnErrorForInvalidUserJwtToken() throws Exception {
-        Response cmsResponse = submitCase("addresses.json", UserDetails.builder()
+        Response cmsResponse = submitCase("base-case.json", UserDetails.builder()
             .authToken(INVALID_USER_TOKEN)
             .emailAddress(USER_EMAIL)
             .build());

@@ -4,21 +4,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.ccd.client.CaseAccessApi;
+import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.UserId;
+import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.InvalidRequestException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.UnauthorizedException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdAccessService;
 import uk.gov.hmcts.reform.idam.client.models.User;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESP_SOLICITOR;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
@@ -27,39 +31,31 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAccessService {
 
     @Autowired
-    private CaseAccessApi caseAccessApi;
+    private CaseUserApi caseUserApi;
 
     private enum RespondentType {
         RESPONDENT,
-        CO_RESPONDENT
+        CO_RESPONDENT,
+        RESP_SOLICITOR
     }
 
     @Override
     public void unlinkRespondent(String authorisation, String caseId) {
         User caseworkerUser = getAnonymousCaseWorkerDetails();
-        User respondentUser = getUser(authorisation);
 
-        caseAccessApi.revokeAccessToCase(
-            caseworkerUser.getAuthToken(),
-            getServiceAuthToken(),
-            caseworkerUser.getUserDetails().getId(),
-            jurisdictionId,
-            caseType,
-            caseId,
-            respondentUser.getUserDetails().getId()
-        );
+        User linkedUser = getUser(authorisation);
+
+        updateCaseRoles(caseworkerUser, caseId, linkedUser.getUserDetails().getId(), null);
     }
 
-    private void grantAccessToCase(User anonymousCaseWorker, String caseId, String respondentId) {
-        caseAccessApi.grantAccessToCase(
-            anonymousCaseWorker.getAuthToken(),
-            getServiceAuthToken(),
-            anonymousCaseWorker.getUserDetails().getId(),
-            jurisdictionId,
-            caseType,
-            caseId,
-            new UserId(respondentId)
-        );
+    @Override
+    public void addPetitionerSolicitorRole(String authorisation, String caseId) {
+        User solicitorUser = getUser(authorisation);
+        User caseworkerUser = getAnonymousCaseWorkerDetails();
+        Set<String> caseRoles = new HashSet<>();
+        caseRoles.add(CmsConstants.CREATOR_ROLE);
+        caseRoles.add(CmsConstants.PET_SOL_ROLE);
+        updateCaseRoles(caseworkerUser, caseId, solicitorUser.getUserDetails().getId(), caseRoles);
     }
 
     @Override
@@ -97,7 +93,28 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             );
         }
 
-        grantAccessToCase(caseworkerUser, caseId, linkingUser.getUserDetails().getId());
+        updateCaseRoles(caseworkerUser, caseId, linkingUser.getUserDetails().getId(), getRolesForRespondentType(respondentType));
+    }
+
+    private void updateCaseRoles(User anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {
+        caseUserApi.updateCaseRolesForUser(
+            anonymousCaseWorker.getAuthToken(),
+            getServiceAuthToken(),
+            caseId,
+            userId,
+            new CaseUser(userId, caseRoles)
+        );
+    }
+
+    private Set<String> getRolesForRespondentType(RespondentType respondentType) {
+
+        Set<String> caseRoles = new HashSet<>();
+        caseRoles.add(CmsConstants.CREATOR_ROLE);
+
+        if (respondentType == RespondentType.RESP_SOLICITOR) {
+            caseRoles.add(CmsConstants.RESP_SOL_ROLE);
+        }
+        return caseRoles;
     }
 
     private RespondentType validateLetterIdAndUserType(String letterHolderId, CaseDetails caseDetails, String caseId) {
@@ -106,8 +123,12 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
         String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
         String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
+        String isRespondentSolicitor = (String) caseDetails.getData().get(D8_RESP_SOLICITOR);
 
         if (letterHolderId.equals(respondentLetterHolderId)) {
+            if (CmsConstants.YES_VALUE.equalsIgnoreCase(isRespondentSolicitor)) {
+                return RespondentType.RESP_SOLICITOR;
+            }
             return RespondentType.RESPONDENT;
         } else if (letterHolderId.equals(coRespondentLetterHolderId)) {
             return RespondentType.CO_RESPONDENT;
