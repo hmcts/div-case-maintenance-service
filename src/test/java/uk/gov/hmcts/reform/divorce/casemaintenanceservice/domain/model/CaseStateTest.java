@@ -48,6 +48,7 @@ public class CaseStateTest {
                 {"AwaitingPronouncement", "AwaitingPronouncement"},
                 {"DefendedDivorce", "DefendedDivorce"},
                 {"DivorceGranted", "DivorceGranted"},
+                {"DNDrafted", "DNDrafted"},
                 {"Unknown", "DNCompleted"},
                 {"DaRequested", "DARequested"}
         });
