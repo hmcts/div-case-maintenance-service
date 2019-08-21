@@ -4,4 +4,6 @@ public interface CcdAccessService {
     void linkRespondent(String authorisation, String caseId, String letterHolderId);
 
     void unlinkRespondent(String authorisation, String caseId);
+
+    void addPetitionerSolicitorRole(String authorisation, String caseId);
 }

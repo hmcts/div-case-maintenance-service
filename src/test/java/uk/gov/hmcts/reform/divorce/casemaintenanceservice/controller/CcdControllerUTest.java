@@ -18,7 +18,9 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdUpdateServi
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,6 +87,20 @@ public class CcdControllerUTest {
         assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
 
         verify(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId);
+    }
+
+    @Test
+    public void whenAssignPetitionerSolicitorRole_thenProceedAsExpected() {
+        final String caseId = "caseId";
+
+        doNothing().when(ccdAccessService).addPetitionerSolicitorRole(JWT_TOKEN, caseId);
+
+        ResponseEntity responseEntity =
+            classUnderTest.addPetitionerSolicitorRole(JWT_TOKEN, caseId);
+
+        assertThat(responseEntity.getStatusCodeValue(), is(HttpStatus.OK.value()));
+
+        verify(ccdAccessService).addPetitionerSolicitorRole(JWT_TOKEN, caseId);
     }
 
     @Test

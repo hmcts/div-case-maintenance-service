@@ -21,7 +21,7 @@ public class DraftCreateTest extends PetitionSupport {
 
     @Test
     public void givenJWTTokenIsNull_whenCreateDraft_thenReturnBadRequest() throws Exception {
-        Response cmsResponse = createDraft(null, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json",
+        Response cmsResponse = createDraft(null, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
             Collections.emptyMap());
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
@@ -36,7 +36,7 @@ public class DraftCreateTest extends PetitionSupport {
 
     @Test
     public void givenInvalidUserToken_whenCreateDraft_thenReturnForbiddenError() throws Exception {
-        Response cmsResponse = createDraft(INVALID_USER_TOKEN, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json",
+        Response cmsResponse = createDraft(INVALID_USER_TOKEN, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
             Collections.emptyMap());
 
         assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
@@ -46,7 +46,7 @@ public class DraftCreateTest extends PetitionSupport {
     public void givenSingleDivorceFormatDraft_whenCreateDraft_thenCreateNewDraft() throws Exception {
         final String userToken = getUserToken();
 
-        final String filePath = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        final String filePath = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "base-case-divorce-session.json";
 
         Response draftsResponseBefore = getAllDraft(userToken);
 
@@ -69,8 +69,8 @@ public class DraftCreateTest extends PetitionSupport {
     @Test
     public void givenDraftAlreadyExist_whenCreateDraft_thenAddNewNewDraft() throws Exception {
         final String userToken = getUserToken();
-        final String filePath1 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
-        final String filePath2 = CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json";
+        final String filePath1 = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "base-case-divorce-session.json";
+        final String filePath2 = CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json";
 
         Response draftsResponseBefore = getAllDraft(userToken);
 

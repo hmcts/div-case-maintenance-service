@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.DraftModelFactory;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.EncryptionKeyFactory;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
@@ -15,6 +14,8 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.UpdateDraft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
+import uk.gov.hmcts.reform.idam.client.models.User;
+import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -125,7 +126,7 @@ public class DraftServiceImplUTest {
         final Map<String, Object> data = Collections.emptyMap();
         final CreateDraft createDraft = new CreateDraft(data, null, 2);
 
-        when(userService.retrieveUserDetails(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
+        when(userService.retrieveUser(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
         when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(encryptionKeyFactory.createEncryptionKey(USER_ID)).thenReturn(ENCRYPTED_USER_ID);
         when(modelFactory.createDraft(data, DIVORCE_FORMAT)).thenReturn(createDraft);
@@ -238,7 +239,7 @@ public class DraftServiceImplUTest {
     }
 
     private void mockGetDraftsAndReturn(String after, DraftList draftList) {
-        when(userService.retrieveUserDetails(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
+        when(userService.retrieveUser(BEARER_AUTH_TOKEN)).thenReturn(createUserDetails());
         when(serviceTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
         when(encryptionKeyFactory.createEncryptionKey(USER_ID)).thenReturn(ENCRYPTED_USER_ID);
 
@@ -251,8 +252,8 @@ public class DraftServiceImplUTest {
         }
     }
 
-    private UserDetails createUserDetails() {
-        return UserDetails.builder().id(USER_ID).build();
+    private User createUserDetails() {
+        return new User("auth", UserDetails.builder().id(USER_ID).build());
     }
 
     private Draft createDraft(String id) {

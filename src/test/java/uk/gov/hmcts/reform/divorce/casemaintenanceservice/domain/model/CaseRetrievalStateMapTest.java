@@ -81,5 +81,4 @@ public class CaseRetrievalStateMapTest {
                 CaseState.DECREE_ABSOLUTE_REQUESTED
             );
     }
-
 }

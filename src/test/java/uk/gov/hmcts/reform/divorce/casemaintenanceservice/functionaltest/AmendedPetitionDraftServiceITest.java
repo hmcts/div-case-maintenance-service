@@ -136,7 +136,6 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
         final CaseDetails oldCase = CaseDetails.builder().data(caseData)
             .id(Long.decode(TEST_CASE_ID)).build();
 
-
         final Map<String, Object> caseDataFormatRequest = new HashMap<>();
         caseDataFormatRequest.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_REF);
         caseDataFormatRequest.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);

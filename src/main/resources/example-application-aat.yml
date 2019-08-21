@@ -1,5 +1,9 @@
 
 idam:
+    client:
+        redirect_uri: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
+        id: divorce
+        secret: ${AUTH2_CLIENT_SECRET:dummysecret}
     api:
         url: ${IDAM_API_BASEURL:https://idam-api.aat.platform.hmcts.net}
         redirect-url: ${IDAM_API_REDIRECT_URL:https://div-pfe-aat.service.core-compute-aat.internal/authenticated}
@@ -24,8 +28,3 @@ case:
         service:
             api:
                 baseurl: ${CASE_FORMATTER_SERVICE_API_BASEURL:http://div-cfs-aat.service.core-compute-aat.internal}
-
-auth2:
-    client:
-        id: divorce
-        secret: ${AUTH2_CLIENT_SECRET:replace_me}

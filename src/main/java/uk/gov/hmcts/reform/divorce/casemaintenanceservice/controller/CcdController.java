@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -158,5 +159,20 @@ public class CcdController {
         @RequestBody @ApiParam(value = "query", required = true) String query
     ) {
         return ResponseEntity.ok(ccdRetrievalService.searchCase(jwt, query));
+    }
+
+    @PutMapping(path = "/add-petitioner-solicitor-role/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Assign the role of [PETSOLICITOR] for user and case")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Role of [PETSOLICITOR] was added to the given case"),
+        @ApiResponse(code = 404, message = "Case not found with given ID")
+        })
+    public ResponseEntity<Void> addPetitionerSolicitorRole(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM for solicitor user", required = true) final String jwt,
+        @PathVariable @ApiParam(value = "caseId", required = true) String caseId
+    ) {
+        ccdAccessService.addPetitionerSolicitorRole(jwt, caseId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -39,6 +39,6 @@ public class AuthUtilUTest {
     }
 
     private void testGetBearToken(String input, String expected) {
-        assertEquals(AuthUtil.getBearToken(input), expected);
+        assertEquals(AuthUtil.getBearerToken(input), expected);
     }
 }

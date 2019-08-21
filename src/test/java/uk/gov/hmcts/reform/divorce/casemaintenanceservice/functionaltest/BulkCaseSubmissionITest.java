@@ -49,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BulkCaseSubmissionITest extends MockSupport {
 
     private static final String API_URL = "/casemaintenance/version/1/bulk/submit";
-    private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/addresses.json";
+    private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/base-case.json";
     private static final String NO_HELP_WITH_FEES_PATH = "ccd-submission-payload/addresses-no-hwf.json";
 
     private static final String DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY =

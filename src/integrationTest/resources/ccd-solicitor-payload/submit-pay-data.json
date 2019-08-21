@@ -1,0 +1,26 @@
+{
+    "SolStatementOfReconciliationCertify": "Yes",
+    "SolStatementOfReconciliationDiscussed": "Yes",
+    "D8StatementOfTruth": "Yes",
+    "solSignStatementofTruth": "Yes",
+    "SolStatementOfReconciliationName": "Test Solicitor",
+    "SolStatementOfReconciliationFirm": "Solicitor Firm",
+    "SolPaymentHowToPay": "feePayByAccount",
+    "SolicitorFeeAccountNumber": "PBA0896366",
+    "FeeAccountReference": "Solicitor PBA",
+    "solApplicationFeeOrderSummary": {
+        "Fees": [
+            {
+                "id": "816675f2-dd53-4950-8afa-7d4b164f0e34",
+                "value": {
+                    "FeeCode": "FEE0002",
+                    "FeeAmount": "55000",
+                    "FeeVersion": "4",
+                    "FeeDescription": "Filing an application for a divorce, nullity or civil partnership dissolution – fees order 1.2."
+                }
+            }
+        ],
+        "PaymentTotal": "55000",
+        "PaymentReference": null
+    }
+}

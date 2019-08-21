@@ -20,7 +20,7 @@ public class CcdSubmissionTest extends PetitionSupport {
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrVU";
     private static final String  UNAUTHORISED_JWT_EXCEPTION = "status 403 reading "
-        + "IdamApiClient#retrieveUserDetails(String) - ";
+        + "IdamApi#retrieveUserDetails(String) - ";
     private static final String REQUEST_BODY_NOT_FOUND = "Required request body is missing";
 
     private static final String USER_EMAIL = "test@test.com";
@@ -28,7 +28,7 @@ public class CcdSubmissionTest extends PetitionSupport {
     @Test
     public void shouldReturnCaseIdForValidAddressesSessionData() throws Exception {
         String expectedStatus = "AwaitingHWFDecision";
-        Response caseSubmitted = submitCase("addresses.json", getUserDetails());
+        Response caseSubmitted = submitCase("base-case.json", getUserDetails());
         assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
         assertCaseStatus(caseSubmitted, expectedStatus);
 
@@ -93,13 +93,13 @@ public class CcdSubmissionTest extends PetitionSupport {
 
         final String userToken = userDetails.getAuthToken();
 
-        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json", Collections.emptyMap());
+        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json", Collections.emptyMap());
 
         Response draftsResponseBefore = getAllDraft(userToken);
 
         assertThat(((List)draftsResponseBefore.getBody().path("data")).size()).isOne();
 
-        Response cmsResponse = submitCase("addresses.json", userDetails);
+        Response cmsResponse = submitCase("base-case.json", userDetails);
 
         assertOkResponseAndCaseIdIsNotZero(cmsResponse);
 
@@ -113,7 +113,7 @@ public class CcdSubmissionTest extends PetitionSupport {
 
     @Test
     public void shouldReturnErrorForInvalidUserJwtToken() throws Exception {
-        Response cmsResponse = submitCase("addresses.json", UserDetails.builder()
+        Response cmsResponse = submitCase("base-case.json", UserDetails.builder()
             .authToken(INVALID_USER_TOKEN)
             .emailAddress(USER_EMAIL)
             .build());
