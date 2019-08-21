@@ -127,4 +127,4 @@ logging:
     console: "%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n"
 
 azure:
-  app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:false}
+  app_insights_key: ${AZURE_APPLICATIONINSIGHTS_INSTRUMENTATIONKEY:false}
