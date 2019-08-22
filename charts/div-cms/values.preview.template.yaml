@@ -8,7 +8,7 @@ java:
         REFORM_ENVIRONMENT : "aat"
         IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
         IDAM_API_REDIRECT_URL : "https://div-pfe-aat.service.core-compute-aat.internal/authenticated"
-        CASE_DATA_STORE_BASEURL : "http://ccd-data-store-api-aat.service.core-compute-aat.internal"
+        CASE_DATA_STORE_BASEURL : "http://data-store-api-div-ccd-definitions-pr-227.service.core-compute-preview.internal"
         MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIMETOLIVE: "30000"
         DOCUMENTATION_SWAGGER_ENABLED: "true"
 
