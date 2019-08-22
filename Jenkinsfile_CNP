@@ -40,7 +40,7 @@ withPipeline(type , product, component) {
 
     enableDockerBuild()
     installCharts()
-
+    enableAksStagingDeployment()
     loadVaultSecrets(secrets)
 
     after('checkout') {
