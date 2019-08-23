@@ -145,8 +145,6 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         String caseId = Long.toString(caseDetails.getId());
         String emailAddressAssignedToCase = (String) caseData.get(emailField);
 
-        log.info("emailAddressAssignedToCase: {}", emailAddressAssignedToCase);
-
         if (emailAddressAssignedToCase == null) {
             log.info("Case {} has not been been assigned a {} yet.", caseId, respondentType);
             String petitionerEmail = (String) caseData.get(D8_PETITIONER_EMAIL);
