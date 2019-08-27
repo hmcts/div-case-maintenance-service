@@ -78,7 +78,8 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,
                 CaseState.DIVORCE_GRANTED,
-                CaseState.DECREE_ABSOLUTE_REQUESTED
+                CaseState.DECREE_ABSOLUTE_REQUESTED,
+                CaseState.DN_DRAFTED
             );
     }
 }

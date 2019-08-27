@@ -451,23 +451,6 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
-    public void givenCaseDnDrafted_whenRespondentRetrieveCase_thenReturnCaseWithValidRole() {
-        CaseDetails expectedCase = createCaseDetails(2L, CaseState.DN_DRAFTED.getValue(),
-            ImmutableMap.of(RESP_EMAIL_ADDRESS, USER_EMAIL));
-        List<CaseDetails> caseDetailsList = Arrays.asList(
-            createCaseDetails(1L, CaseState.DN_DRAFTED.getValue()),
-            expectedCase);
-
-        when(userService.retrieveUser(BEARER_AUTHORISATION)).thenReturn(USER);
-        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
-        when(coreCaseDataApi
-            .searchForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID, CASE_TYPE,
-                Collections.emptyMap())).thenReturn(caseDetailsList);
-
-        assertThat(expectedCase, equalTo(classUnderTest.retrieveCase(AUTHORISATION, RESPONDENT)));
-    }
-
-    @Test
     public void givenMultipleCaseInCcd_whenCoRespondentRetrieveCase_thenReturnCaseWithValidRole() {
         CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
             ImmutableMap.of(CO_RESP_EMAIL_ADDRESS, USER_EMAIL));
