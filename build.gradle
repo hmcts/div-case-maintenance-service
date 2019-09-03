@@ -111,6 +111,7 @@ dependencyCheck {
 }
 
 def versions = [
+    commonsBeanUtils: '1.9.4',
     commonsLang3: '3.7',
     commonsIo: '2.5',
     jsonAssert: '1.2.3',
@@ -147,6 +148,11 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-aop')
+
+    compileOnly("org.projectlombok:lombok:${versions.lombok}")
+    testCompileOnly("org.projectlombok:lombok:${versions.lombok}")
+    annotationProcessor("org.projectlombok:lombok:${versions.lombok}")
+    testAnnotationProcessor("org.projectlombok:lombok:${versions.lombok}")
 
     compile group: 'org.springframework', name: 'spring-context-support'
     compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')
@@ -222,7 +228,6 @@ dependencies {
     compile group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
     compile group: 'org.codehaus.sonar-plugins', name:'sonar-pitest-plugin', version: versions.sonarPitest
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testCompile group: 'com.github.tomakehurst', name:'wiremock', version: versions.wiremockVersion
     testCompile group: 'org.springframework.cloud', name: 'spring-cloud-contract-wiremock', version: versions.springCloudDependencies
     testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -266,6 +271,12 @@ dependencies {
         }
     integrationTestCompile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0'
     integrationTestCompile group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
+}
+
+dependencyManagement {
+    dependencies {
+        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
+    }
 }
 
 sourceSets {
