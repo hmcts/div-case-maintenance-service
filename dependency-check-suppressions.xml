@@ -23,4 +23,12 @@
             <cve>CVE-2018-1260</cve>
             <cve>CVE-2018-1258</cve>
         </suppress>
+    <suppress>
+        <notes><![CDATA[
+            This is a false positive on gradle-pi-test
+            which fails because it is prefixed with gradle ]]>
+        </notes>
+        <gav regex="true">.*</gav>
+        <cve>CVE-2019-15052</cve>
+    </suppress>
 </suppressions>
