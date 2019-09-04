@@ -43,7 +43,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
     "eureka.client.enabled=false"
     })
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SearchCasesITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/search";
 
