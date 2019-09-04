@@ -52,7 +52,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
     "eureka.client.enabled=false"
     })
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CcdAccessITest extends MockSupport {
     private static final String CASE_ID = "12345678";
     private static final String LETTER_HOLDER_ID = "letterHolderId";

@@ -50,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "draft.delete.async=false"
     })
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CcdSubmissionITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/submit";
     private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/base-case.json";
