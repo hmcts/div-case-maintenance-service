@@ -201,6 +201,18 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
+    public void givenDnDraftedCase_whenRetrievePetitionForRespondent_thenReturnCase() throws DuplicateCaseException {
+        final CaseDetails caseDetails = CaseDetails.builder().state(CaseState.DN_DRAFTED.getValue()).build();
+
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, RESPONDENT_CASE_STATE_GROUPING, RESPONDENT))
+            .thenReturn(caseDetails);
+
+        assertEquals(caseDetails, classUnderTest.retrievePetitionForAos(AUTHORISATION));
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, RESPONDENT_CASE_STATE_GROUPING, RESPONDENT);
+    }
+
+    @Test
     public void whenRetrievePetition_thenProceedAsExpected() throws DuplicateCaseException {
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
