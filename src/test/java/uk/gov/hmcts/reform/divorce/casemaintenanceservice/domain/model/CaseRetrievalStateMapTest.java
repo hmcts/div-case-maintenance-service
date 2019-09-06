@@ -41,7 +41,7 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,
                 CaseState.DIVORCE_GRANTED,
-                CaseState.DN_IS_REFUSED
+                CaseState.DN_IS_REFUSED,
                 CaseState.DECREE_ABSOLUTE_REQUESTED
             );
 
