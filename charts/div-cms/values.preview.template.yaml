@@ -6,7 +6,7 @@ java:
         CASE_FORMATTER_SERVICE_API_BASEURL : "http://div-cfs-aat.service.core-compute-aat.internal"
         IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
         IDAM_API_REDIRECT_URL : "https://div-pfe-aat.service.core-compute-aat.internal/authenticated"
-        CASE_DATA_STORE_BASEURL : "http://data-store-api-div-ccd-definitions-pr-235.service.core-compute-preview.internal"
+        CASE_DATA_STORE_BASEURL : "http://data-store-api-div-ccd-definitions-pr-240.service.core-compute-preview.internal"
         MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIMETOLIVE: "30000"
         DOCUMENTATION_SWAGGER_ENABLED: "true"
 
