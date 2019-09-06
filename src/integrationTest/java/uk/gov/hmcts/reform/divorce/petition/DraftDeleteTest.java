@@ -30,7 +30,7 @@ public class DraftDeleteTest extends PetitionSupport {
     public void givenThereIsADraft_whenDeleteDraft_thenDeleteDraft() throws Exception {
         final String userToken = getUserToken();
 
-        createDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json",
+        createDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
             Collections.emptyMap());
 
         Response draftsResponseBefore = getAllDraft(userToken);
@@ -52,7 +52,7 @@ public class DraftDeleteTest extends PetitionSupport {
 
         createDraft(userToken, DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "jurisdiction-6-12.json",
             Collections.singletonMap(DIVORCE_FORMAT_KEY, "true"));
-        createDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json",
+        createDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
             Collections.emptyMap());
 
         Response draftsResponseBefore = getAllDraft(userToken);

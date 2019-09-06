@@ -4,9 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil;
+import uk.gov.hmcts.reform.idam.client.models.User;
+
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil.getBearerToken;
 
 class BaseCcdCaseService {
     static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce case submission event";
@@ -42,16 +43,12 @@ class BaseCcdCaseService {
     @Autowired
     private AuthTokenGenerator authTokenGenerator;
 
-    UserDetails getUserDetails(String userToken) {
-        return userService.retrieveUserDetails(getBearerUserToken(userToken));
+    User getUser(String userToken) {
+        return userService.retrieveUser(getBearerToken(userToken));
     }
 
-    UserDetails getAnonymousCaseWorkerDetails() {
+    User getAnonymousCaseWorkerDetails() {
         return userService.retrieveAnonymousCaseWorkerDetails();
-    }
-
-    String getBearerUserToken(String userToken) {
-        return AuthUtil.getBearToken(userToken);
     }
 
     String getServiceAuthToken() {

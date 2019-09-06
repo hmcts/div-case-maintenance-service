@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 public class IdamTestSupport {
     private static final String CASEWORKER_ROLE = "caseworker";
     private static final String CITIZEN_ROLE = "citizen";
+    private static final String SOLICITOR_ROLE = "solicitor";
     private static final String GENERIC_PASSWORD = "genericPassword123";
 
     private UserDetails defaultCaseWorkerUser;
@@ -63,6 +64,16 @@ public class IdamTestSupport {
         });
     }
 
+    public UserDetails createAnonymousSolicitorUser() {
+        return wrapInRetry(() -> {
+            synchronized (this) {
+                final String username = "simulate-delivered" + UUID.randomUUID();
+                final String password = GENERIC_PASSWORD;
+                return createNewUser(username, password, SOLICITOR_ROLE);
+            }
+        });
+    }
+
     public UserDetails createAnonymousCitizenUser() {
         return wrapInRetry(() -> {
             synchronized (this) {
@@ -79,6 +90,8 @@ public class IdamTestSupport {
 
         if (CASEWORKER_ROLE.equals(roleType)) {
             createCaseWorkerCourtAdminUserInIdam(username, emailAddress, password);
+        } else if (SOLICITOR_ROLE.equals(roleType)) {
+            createSolicitorUserInIdam(username, emailAddress, password);
         } else {
             createCitizenUserInIdam(username, emailAddress, password);
         }
@@ -100,6 +113,32 @@ public class IdamTestSupport {
         List<UserGroup> roles = new ArrayList<>(Arrays.asList(
             UserGroup.builder().code("caseworker-divorce-courtadmin_beta").build(),
             UserGroup.builder().code("caseworker-divorce-courtadmin").build(),
+            UserGroup.builder().code("caseworker-divorce").build(),
+            UserGroup.builder().code("caseworker").build()
+        ));
+
+        final RegisterUserRequest registerUserRequest =
+            RegisterUserRequest.builder()
+                .email(emailAddress)
+                .forename(username)
+                .password(password)
+                .roles(roles.toArray(new UserGroup[roles.size()]))
+                .userGroup(UserGroup.builder().code("caseworker").build())
+                .build();
+
+        idamUtils.createUserInIdam(registerUserRequest);
+
+        try {
+            //give the user some time to warm up..
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            log.debug("IDAM waiting thread was interrupted");
+        }
+    }
+
+    private void createSolicitorUserInIdam(String username, String emailAddress, String password) {
+        List<UserGroup> roles = new ArrayList<>(Arrays.asList(
+            UserGroup.builder().code("caseworker-divorce-solicitor").build(),
             UserGroup.builder().code("caseworker-divorce").build(),
             UserGroup.builder().code("caseworker").build()
         ));

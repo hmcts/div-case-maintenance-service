@@ -42,6 +42,7 @@ public class CaseRetrievalStateMapTest {
                 CaseState.DEFENDED_DIVORCE,
                 CaseState.DIVORCE_GRANTED,
                 CaseState.DN_IS_REFUSED
+                CaseState.DECREE_ABSOLUTE_REQUESTED
             );
 
         assertThat(PETITIONER_CASE_STATE_GROUPING.get(CaseStateGrouping.AMEND))
@@ -78,8 +79,9 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_DECREE_ABSOLUTE,
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,
-                CaseState.DIVORCE_GRANTED
+                CaseState.DIVORCE_GRANTED,
+                CaseState.DECREE_ABSOLUTE_REQUESTED,
+                CaseState.DN_DRAFTED
             );
     }
-
 }

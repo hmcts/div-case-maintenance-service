@@ -61,6 +61,10 @@ public abstract class IntegrationTest {
         return idamTestSupport.createAnonymousCitizenUser();
     }
 
+    protected UserDetails getSolicitorUser() {
+        return idamTestSupport.createAnonymousSolicitorUser();
+    }
+
     protected String getUserToken() {
         return getUserDetails().getAuthToken();
     }

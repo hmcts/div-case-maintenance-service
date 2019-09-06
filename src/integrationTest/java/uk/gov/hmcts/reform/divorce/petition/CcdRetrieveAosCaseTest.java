@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.petition;
 
 import io.restassured.response.Response;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -49,7 +50,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     public void whenUserAlreadyHasDraftSaved_AndTriesToLogInAsRespondent_ThenCaseIsNotFound() throws Exception {
         //Create a draft
         final String userToken = getUserToken();
-        final String filePath = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        final String filePath = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "base-case-divorce-session.json";
         Response draftCreationResponse = createDraft(userToken, filePath, singletonMap(DIVORCE_FORMAT_KEY, "true"));
         assertEquals(HttpStatus.OK.value(), draftCreationResponse.getStatusCode());
 
@@ -117,6 +118,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     }
 
     @Test
+    @Ignore
     public void givenMultipleAosStartedAndNoAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnMultipleChoice()
             throws Exception {
         final UserDetails userDetails = getUserDetails();
