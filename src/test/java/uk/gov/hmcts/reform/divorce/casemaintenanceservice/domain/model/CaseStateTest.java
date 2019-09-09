@@ -23,7 +23,7 @@ public class CaseStateTest {
         this.expectedApplicationStatus = expectedApplicationStatus;
     }
 
-    @Parameters
+    @Parameters(name = "{index}: caseSate: {0}, expectedApplicationStatus:{1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"AwaitingPetitioner", "AwaitingPetitioner"},
@@ -48,6 +48,7 @@ public class CaseStateTest {
                 {"AwaitingPronouncement", "AwaitingPronouncement"},
                 {"DefendedDivorce", "DefendedDivorce"},
                 {"DivorceGranted", "DivorceGranted"},
+                {"DNisRefused", "DNisRefused"},
                 {"DNDrafted", "DNDrafted"},
                 {"Unknown", "DNCompleted"},
                 {"DaRequested", "DARequested"}

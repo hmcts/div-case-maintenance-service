@@ -29,6 +29,7 @@ public enum ApplicationStatus {
     AWAITING_CLARIFICATION("AwaitingClarification"),
     AWAITING_CONSIDERATION("AwaitingConsideration"),
     DN_PRONOUNCED("DNPronounced"),
+    DN_IS_REFUSED("DNisRefused"),
     AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute"),
     AWAITING_PRONOUNCEMENT("AwaitingPronouncement"),
     DIVORCE_GRANTED("DivorceGranted"),
