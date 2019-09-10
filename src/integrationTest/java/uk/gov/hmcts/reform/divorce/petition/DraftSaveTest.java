@@ -13,34 +13,6 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class DraftSaveTest extends PetitionSupport {
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
-
-    @Test
-    public void givenJWTTokenIsNull_whenSaveDraft_thenReturnBadRequest() throws Exception {
-        Response cmsResponse = saveDraft(null, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
-            Collections.emptyMap());
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
-    }
-
-    @Test
-    public void givenBodyIsNull_whenSaveDraft_thenReturnBadRequest() throws Exception {
-        Response cmsResponse = saveDraft(getUserToken(), null, Collections.emptyMap());
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
-    }
-
-    @Test
-    public void givenInvalidUserToken_whenSaveDraft_thenReturnForbiddenError() throws Exception {
-        Response cmsResponse = saveDraft(INVALID_USER_TOKEN, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json",
-            Collections.emptyMap());
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
-    }
 
     @Test
     public void givenNoDraft_whenSaveDraft_thenCreateNewDraft() throws Exception {

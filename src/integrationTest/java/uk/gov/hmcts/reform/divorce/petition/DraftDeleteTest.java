@@ -13,13 +13,6 @@ import static org.junit.Assert.assertEquals;
 public class DraftDeleteTest extends PetitionSupport {
 
     @Test
-    public void givenJWTTokenIsNull_whenDeleteDraft_thenReturnBadRequest() {
-        Response cmsResponse = deleteDraft(null);
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
-    }
-
-    @Test
     public void givenNoDraft_whenDeleteDraft_thenDoNothing() {
         Response cmsResponse = deleteDraft(getUserToken());
 
