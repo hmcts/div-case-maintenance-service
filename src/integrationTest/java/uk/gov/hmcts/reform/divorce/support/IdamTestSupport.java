@@ -8,27 +8,25 @@ import uk.gov.hmcts.reform.divorce.model.RegisterUserRequest;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.model.UserGroup;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 @Slf4j
 public class IdamTestSupport {
-    private static final String CASEWORKER_ROLE = "caseworker";
-    private static final String CITIZEN_ROLE = "citizen";
-    private static final String SOLICITOR_ROLE = "solicitor";
+    private static final String CASE_WORKER_USERNAME = "TEST_CASE_WORKER_USER";
+    private static final String SOLICITOR_USER_NAME = "TEST_SOLICITOR";
+    private static final String EMAIL_DOMAIN = "@mailinator.com";
     private static final String GENERIC_PASSWORD = "genericPassword123";
 
     private UserDetails defaultCaseWorkerUser;
+    private UserDetails defaultSolicitorUser;
 
     @Autowired
     private IdamUtils idamUtils;
 
     public UserDetails createRespondentUser(String username, String pin) {
         return wrapInRetry(() -> {
-            final UserDetails respondentUser = createNewUser(username, GENERIC_PASSWORD, CITIZEN_ROLE);
+            final UserDetails respondentUser = createNewUser(username, GENERIC_PASSWORD);
 
             final String pinAuthToken = idamUtils.authenticatePinUser(pin);
 
@@ -49,14 +47,11 @@ public class IdamTestSupport {
         return idamUtils.generatePin(firstName, "",  createAnonymousCitizenUser().getAuthToken());
     }
 
-    public UserDetails createAnonymousCaseWorkerUser() {
+    public UserDetails getCaseworkerUser() {
         return wrapInRetry(() -> {
             synchronized (this) {
                 if (defaultCaseWorkerUser == null) {
-                    final String username = "simulate-delivered" + UUID.randomUUID();
-                    final String password = GENERIC_PASSWORD;
-
-                    defaultCaseWorkerUser = createNewUser(username, password, CASEWORKER_ROLE);
+                    defaultCaseWorkerUser = getUser(CASE_WORKER_USERNAME + EMAIL_DOMAIN, GENERIC_PASSWORD);
                 }
 
                 return defaultCaseWorkerUser;
@@ -64,12 +59,14 @@ public class IdamTestSupport {
         });
     }
 
-    public UserDetails createAnonymousSolicitorUser() {
+    public UserDetails getSolicitorUser() {
         return wrapInRetry(() -> {
             synchronized (this) {
-                final String username = "simulate-delivered" + UUID.randomUUID();
-                final String password = GENERIC_PASSWORD;
-                return createNewUser(username, password, SOLICITOR_ROLE);
+                if (defaultSolicitorUser == null) {
+                    defaultSolicitorUser = getUser(SOLICITOR_USER_NAME + EMAIL_DOMAIN, GENERIC_PASSWORD);
+                }
+
+                return defaultSolicitorUser;
             }
         });
     }
@@ -80,86 +77,30 @@ public class IdamTestSupport {
                 final String username = "simulate-delivered" + UUID.randomUUID();
                 final String password = GENERIC_PASSWORD;
 
-                return createNewUser(username, password, CITIZEN_ROLE);
+                return createNewUser(username, password);
             }
         });
     }
 
-    private UserDetails createNewUser(String username, String password, String roleType) {
+    private UserDetails createNewUser(String username, String password) {
         final String emailAddress =  username + "@mailinator.com";
 
-        if (CASEWORKER_ROLE.equals(roleType)) {
-            createCaseWorkerCourtAdminUserInIdam(username, emailAddress, password);
-        } else if (SOLICITOR_ROLE.equals(roleType)) {
-            createSolicitorUserInIdam(username, emailAddress, password);
-        } else {
-            createCitizenUserInIdam(username, emailAddress, password);
-        }
+        createCitizenUserInIdam(username, emailAddress, password);
 
-        final String authToken = idamUtils.authenticateUser(emailAddress, password);
+        return getUser(emailAddress, password);
+    }
 
+    private UserDetails getUser(String username, String password) {
+        final String authToken = idamUtils.authenticateUser(username, password);
         final String userId = idamUtils.getUserId(authToken);
 
         return UserDetails.builder()
             .id(userId)
             .username(username)
-            .emailAddress(emailAddress)
+            .emailAddress(username)
             .password(password)
             .authToken(authToken)
             .build();
-    }
-
-    private void createCaseWorkerCourtAdminUserInIdam(String username, String emailAddress, String password) {
-        List<UserGroup> roles = new ArrayList<>(Arrays.asList(
-            UserGroup.builder().code("caseworker-divorce-courtadmin_beta").build(),
-            UserGroup.builder().code("caseworker-divorce-courtadmin").build(),
-            UserGroup.builder().code("caseworker-divorce").build(),
-            UserGroup.builder().code("caseworker").build()
-        ));
-
-        final RegisterUserRequest registerUserRequest =
-            RegisterUserRequest.builder()
-                .email(emailAddress)
-                .forename(username)
-                .password(password)
-                .roles(roles.toArray(new UserGroup[roles.size()]))
-                .userGroup(UserGroup.builder().code("caseworker").build())
-                .build();
-
-        idamUtils.createUserInIdam(registerUserRequest);
-
-        try {
-            //give the user some time to warm up..
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            log.debug("IDAM waiting thread was interrupted");
-        }
-    }
-
-    private void createSolicitorUserInIdam(String username, String emailAddress, String password) {
-        List<UserGroup> roles = new ArrayList<>(Arrays.asList(
-            UserGroup.builder().code("caseworker-divorce-solicitor").build(),
-            UserGroup.builder().code("caseworker-divorce").build(),
-            UserGroup.builder().code("caseworker").build()
-        ));
-
-        final RegisterUserRequest registerUserRequest =
-            RegisterUserRequest.builder()
-                .email(emailAddress)
-                .forename(username)
-                .password(password)
-                .roles(roles.toArray(new UserGroup[roles.size()]))
-                .userGroup(UserGroup.builder().code("caseworker").build())
-                .build();
-
-        idamUtils.createUserInIdam(registerUserRequest);
-
-        try {
-            //give the user some time to warm up..
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            log.debug("IDAM waiting thread was interrupted");
-        }
     }
 
     private void createCitizenUserInIdam(String username, String emailAddress, String password) {
