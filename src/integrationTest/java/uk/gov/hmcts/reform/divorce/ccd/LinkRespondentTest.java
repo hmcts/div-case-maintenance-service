@@ -35,12 +35,6 @@ public class LinkRespondentTest extends PetitionSupport {
     private static final String AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID = "paymentReferenceGenerated";
     private static final String RESPONDENT_EMAIL = "aos@respondent.div";
 
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
-
     @Value("${case.maintenance.link-respondent.context-path}")
     private String linkRespondentContextPath;
 
@@ -49,49 +43,6 @@ public class LinkRespondentTest extends PetitionSupport {
 
     @Autowired
     private CcdClientSupport ccdClientSupport;
-
-    @Test
-    public void givenJWTTokenIsNull_whenLinkRespondent_thenReturnUnauthorised() {
-        Response cmsResponse = linkRespondent(null, "someCaseId", "someLetterHolderId");
-
-        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
-    }
-
-    @Test
-    public void givenNoCase_whenLinkRespondent_thenReturnUnauthorised() {
-        Response cmsResponse = linkRespondent(getUserToken(), "someCaseId", "someLetterHolderId");
-
-        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
-    }
-
-    @Test
-    public void givenNoLetterHolderId_whenLinkRespondent_thenReturnUnauthorized() {
-        Map caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
-
-        Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
-
-        Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
-
-        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void givenLetterHolderDoNotMatch_whenLinkRespondent_thenReturnUnauthorized() {
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
-
-        Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, getUserDetails()).getId();
-
-        Map<String, Object> updateCaseData = new HashMap<>();
-        updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, "nonMatchingLetterHolderId");
-
-        updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
-            getCaseWorkerUser().getAuthToken());
-
-        Response cmsResponse = linkRespondent(getUserToken(), caseId.toString(), "someLetterHolderId");
-
-        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
-    }
 
     @SuppressWarnings("unchecked")
     @Test
@@ -138,32 +89,6 @@ public class LinkRespondentTest extends PetitionSupport {
         Response cmsResponse = linkRespondent(petitioner.getAuthToken(), caseId.toString(), pinResponse.getUserId());
 
         assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED.value()));
-    }
-
-    @SuppressWarnings({"unchecked", "Duplicates"})
-    @Test
-    public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbidden() {
-        final String respondentFirstName = "respondent-" + UUID.randomUUID().toString();
-
-        final PinResponse pinResponse = idamTestSupport.createPinUser(respondentFirstName);
-
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
-
-        UserDetails petitionerUser = getUserDetails();
-
-        Long caseId = ccdClientSupport.submitCaseForCitizen(caseData, petitionerUser).getId();
-
-        Map<String, Object> updateCaseData = new HashMap<>();
-        updateCaseData.put(RESP_LETTER_HOLDER_ID_FIELD, pinResponse.getUserId());
-
-        updateCase(updateCaseData, caseId, AWAITING_PAYMENT_NO_STATE_CHANGE_EVENT_ID,
-            getCaseWorkerUser().getAuthToken());
-
-        updateCase((String) null, caseId, TEST_AOS_AWAITING_EVENT_ID, petitionerUser.getAuthToken());
-
-        Response cmsResponse = linkRespondent(INVALID_USER_TOKEN, caseId.toString(), pinResponse.getUserId());
-
-        assertThat(cmsResponse.getStatusCode(), equalTo(HttpStatus.FORBIDDEN.value()));
     }
 
     @SuppressWarnings({"unchecked", "Duplicates"})

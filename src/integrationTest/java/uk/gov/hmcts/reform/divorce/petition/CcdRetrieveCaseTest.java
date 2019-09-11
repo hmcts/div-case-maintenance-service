@@ -13,29 +13,9 @@ import static org.junit.Assert.assertEquals;
 
 public class CcdRetrieveCaseTest extends PetitionSupport {
 
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
-
     private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
     private static final String AOS_RECEIVED_CONSENT_NO_DEFEND_EVENT = "aosReceivedNoAdConStarted";
     private static final String AMEND_PETITION_EVENT = "amendPetition";
-
-    @Test
-    public void givenJWTTokenIsNull_whenRetrieveCase_thenReturnBadRequest() {
-        Response cmsResponse = retrieveCase(null);
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
-    }
-
-    @Test
-    public void givenInvalidUserToken_whenRetrieveCase_thenReturnForbiddenError() {
-        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN);
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
-    }
 
     @Test
     public void givenNoCaseInCcdOrDraftStore_whenRetrieveCase_thenReturnNull() {
