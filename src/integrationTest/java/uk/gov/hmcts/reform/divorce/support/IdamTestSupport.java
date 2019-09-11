@@ -51,7 +51,8 @@ public class IdamTestSupport {
         return wrapInRetry(() -> {
             synchronized (this) {
                 if (defaultCaseWorkerUser == null) {
-                    defaultCaseWorkerUser = getUser(CASE_WORKER_USERNAME + EMAIL_DOMAIN, GENERIC_PASSWORD);
+                    String emailAddress = CASE_WORKER_USERNAME + EMAIL_DOMAIN;
+                    defaultCaseWorkerUser = getUser(CASE_WORKER_USERNAME, emailAddress, GENERIC_PASSWORD);
                 }
 
                 return defaultCaseWorkerUser;
@@ -63,7 +64,8 @@ public class IdamTestSupport {
         return wrapInRetry(() -> {
             synchronized (this) {
                 if (defaultSolicitorUser == null) {
-                    defaultSolicitorUser = getUser(SOLICITOR_USER_NAME + EMAIL_DOMAIN, GENERIC_PASSWORD);
+                    String emailAddress = SOLICITOR_USER_NAME + EMAIL_DOMAIN;
+                    defaultSolicitorUser = getUser(SOLICITOR_USER_NAME, emailAddress, GENERIC_PASSWORD);
                 }
 
                 return defaultSolicitorUser;
@@ -87,17 +89,17 @@ public class IdamTestSupport {
 
         createCitizenUserInIdam(username, emailAddress, password);
 
-        return getUser(emailAddress, password);
+        return getUser(username, emailAddress, password);
     }
 
-    private UserDetails getUser(String username, String password) {
-        final String authToken = idamUtils.authenticateUser(username, password);
+    private UserDetails getUser(String username, String emailAddress, String password) {
+        final String authToken = idamUtils.authenticateUser(emailAddress, password);
         final String userId = idamUtils.getUserId(authToken);
 
         return UserDetails.builder()
             .id(userId)
             .username(username)
-            .emailAddress(username)
+            .emailAddress(emailAddress)
             .password(password)
             .authToken(authToken)
             .build();
