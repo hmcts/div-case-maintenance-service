@@ -30,4 +30,6 @@ public class CcdCaseProperties {
 
     public static final String RESP_SOLICITOR_EMAIL_ADDRESS = "D8RespondentSolicitorEmail";
     public static final String D8_RESP_SOLICITOR = "D8RespondentCorrespondenceSendToSol";
+    public static final String D8_RESPONDENT_SOLICITOR_NAME = "D8RespondentSolicitorName";
+    public static final String D8_RESPONDENT_SOLICITOR_COMPANY = "D8RespondentSolicitorCompany";
 }

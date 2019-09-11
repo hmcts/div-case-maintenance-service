@@ -22,7 +22,8 @@ import static java.lang.String.format;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESP_SOLICITOR;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_COMPANY;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_NAME;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
 
@@ -123,10 +124,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
         String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
         String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
-        String isRespondentSolicitor = (String) caseDetails.getData().get(D8_RESP_SOLICITOR);
 
         if (letterHolderId.equals(respondentLetterHolderId)) {
-            if (CmsConstants.YES_VALUE.equalsIgnoreCase(isRespondentSolicitor)) {
+            if (isRespondentSolicitorInformationPresent(caseDetails.getData())) {
                 return RespondentType.RESP_SOLICITOR;
             }
             return RespondentType.RESPONDENT;
@@ -168,5 +168,14 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
 
         return emailAddressesMatch;
+    }
+
+    private boolean isRespondentSolicitorInformationPresent(Map<String, Object> caseData) {
+        // temporary fix until we implement setting respondentSolicitorRepresented from CCD for RespSols
+
+        final String respondentSolicitorName = (String) caseData.get(D8_RESPONDENT_SOLICITOR_NAME);
+        final String respondentSolicitorCompany = (String) caseData.get(D8_RESPONDENT_SOLICITOR_COMPANY);
+
+        return ((respondentSolicitorName != null) && (respondentSolicitorCompany != null));
     }
 }
