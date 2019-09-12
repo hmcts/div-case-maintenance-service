@@ -1,5 +1,5 @@
 variable "product" {
-    type = "string"
+  type = "string"
 }
 
 variable "component" {
@@ -7,7 +7,7 @@ variable "component" {
 }
 
 variable "raw_product" {
-    default = "div"
+  default = "div"
 }
 
 variable "env" {
@@ -26,20 +26,20 @@ variable "jenkins_AAD_objectId" {
 }
 
 variable "appinsights_instrumentation_key" {
-    description = "Instrumentation key of the App Insights instance this webapp should use. Module will create own App Insights resource if this is not provided"
-    default = ""
+  description = "Instrumentation key of the App Insights instance this webapp should use. Module will create own App Insights resource if this is not provided"
+  default     = ""
 }
 
 variable "idam_api_baseurl" {
-    type = "string"
+  type = "string"
 }
 
 variable "capacity" {
-    default = "1"
+  default = "1"
 }
 
 variable "instance_size" {
-    default = "I2"
+  default = "I2"
 }
 
 variable "auth_provider_service_client_microservice" {
@@ -62,14 +62,24 @@ variable "ilbIp" {}
 variable "vault_env" {}
 
 variable "common_tags" {
-    type = "map"
+  type = "map"
 }
 
 variable "health_check_ttl" {
-    type = "string"
-    default = "4000"
+  type    = "string"
+  default = "4000"
 }
 
 variable "documentation_swagger_enabled" {
-    default = "false"
+  default = "false"
+}
+
+variable "enable_ase" {
+  default = true
+}
+
+variable "appinsights_location" {
+  type        = "string"
+  default     = "West Europe"
+  description = "Location for Application Insights"
 }
