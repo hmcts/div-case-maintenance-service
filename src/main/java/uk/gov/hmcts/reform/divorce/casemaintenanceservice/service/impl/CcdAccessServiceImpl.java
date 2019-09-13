@@ -26,6 +26,8 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_NAME;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOL_REPRESENTED;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 
 @Service
 @Slf4j
@@ -126,7 +128,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
 
         if (letterHolderId.equals(respondentLetterHolderId)) {
-            if (isRespondentSolicitorInformationPresent(caseDetails.getData())) {
+            if (usingRespondentSolicitor(caseDetails.getData())) {
                 return RespondentType.RESP_SOLICITOR;
             }
             return RespondentType.RESPONDENT;
@@ -170,12 +172,15 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         return emailAddressesMatch;
     }
 
-    private boolean isRespondentSolicitorInformationPresent(Map<String, Object> caseData) {
-        // temporary fix until we implement setting respondentSolicitorRepresented from CCD for RespSols
+    private boolean usingRespondentSolicitor(Map<String, Object> caseData) {
+        final String respondentSolicitorRepresented = (String) caseData.get(RESP_SOL_REPRESENTED);
 
+        // temporary fix until we implement setting respondentSolicitorRepresented from CCD for RespSols
+        // in all scenarios https://tools.hmcts.net/jira/browse/DIV-5759
         final String respondentSolicitorName = (String) caseData.get(D8_RESPONDENT_SOLICITOR_NAME);
         final String respondentSolicitorCompany = (String) caseData.get(D8_RESPONDENT_SOLICITOR_COMPANY);
 
-        return ((respondentSolicitorName != null) && (respondentSolicitorCompany != null));
+        return YES_VALUE.equalsIgnoreCase(respondentSolicitorRepresented)
+            || respondentSolicitorName != null && respondentSolicitorCompany != null;
     }
 }
