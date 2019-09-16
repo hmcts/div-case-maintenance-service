@@ -8,4 +8,5 @@ spring:
                 div.ccd-submission-s2s-auth-secret: AUTH_PROVIDER_SERVICE_CLIENT_KEY
                 div.idam-secret: AUTH2_CLIENT_SECRET
                 div.draft-store-api-encryption-key: DRAFT_STORE_API_ENCRYPTION_KEY_VALUE
+                div.idam-caseworker-username: IDAM_CASEWORKER_USERNAME
                 div.idam-caseworker-password: IDAM_CASEWORKER_PASSWORD

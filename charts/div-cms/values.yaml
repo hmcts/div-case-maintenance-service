@@ -8,10 +8,9 @@ java:
         IDAM_API_REDIRECT_URL: "https://div-pfe-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/authenticated"
         CASE_DATA_STORE_BASEURL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
         AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE: "divorce_ccd_submission"
-        REFORM_SERVICE_NAME: "cms"
-        REFORM_TEAM: "div"
         AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS: "900"
         LOG_LEVEL: DEBUG
+        MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIMETOLIVE: "30000"
     keyVaults:
         "div":
             resourceGroup: div
@@ -19,4 +18,5 @@ java:
                 - ccd-submission-s2s-auth-secret
                 - idam-secret
                 - draft-store-api-encryption-key
+                - idam-caseworker-username
                 - idam-caseworker-password

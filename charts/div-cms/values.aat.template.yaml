@@ -1,9 +1,6 @@
 java:
     environment:
-        IDAM_CASEWORKER_USERNAME : "DivCaseWorker@AAT.com"
         IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
-        MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIMETOLIVE: "30000"
-        DOCUMENTATION_SWAGGER_ENABLED: "true"
 
     # Don't modify below here
     image: ${IMAGE_NAME}
