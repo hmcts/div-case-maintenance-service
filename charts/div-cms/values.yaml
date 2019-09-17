@@ -11,6 +11,7 @@ java:
         AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS: "900"
         LOG_LEVEL: DEBUG
         MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIMETOLIVE: "30000"
+        DOCUMENTATION_SWAGGER_ENABLED: true
     keyVaults:
         "div":
             resourceGroup: div
