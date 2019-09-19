@@ -9,9 +9,9 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Applicati
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
+import uk.gov.hmcts.reform.idam.client.models.User;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil.getBearerToken;
 
 @Service
 @Slf4j
@@ -34,8 +35,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     @Override
     public CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
                                     DivCaseRole role) {
-        UserDetails userDetails = getUserDetails(authorisation);
-
+        User userDetails = getUser(authorisation);
         List<CaseDetails> caseDetailsList = getCaseListForUser(userDetails, role);
 
         if (CollectionUtils.isEmpty(caseDetailsList)) {
@@ -43,7 +43,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         }
 
         if (caseDetailsList.size() > 1) {
-            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getId());
+            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getUserDetails().getId());
         }
 
         Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap = caseDetailsList.stream()
@@ -80,7 +80,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             return null;
         } else if (incompleteCases.size() > 1) {
             String message = String.format("[%d] cases in incomplete status found for the user [%s]",
-                incompleteCases.size(), userDetails.getEmail());
+                incompleteCases.size(), userDetails.getUserDetails().getEmail());
             log.warn(message);
             throw new DuplicateCaseException(message);
         }
@@ -90,16 +90,11 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
     @Override
     public CaseDetails retrieveCase(String authorisation, DivCaseRole role) {
-        UserDetails userDetails = getUserDetails(authorisation);
+        User userDetails = getUser(authorisation);
 
         List<CaseDetails> caseDetailsList = getCaseListForUser(userDetails, role);
 
-        //Filter out amended cases
-        caseDetailsList = Optional.ofNullable(caseDetailsList)
-            .orElse(Collections.emptyList())
-            .stream()
-            .filter(caseDetails -> !CaseState.AMEND_PETITION.getValue().equals(caseDetails.getState()))
-            .collect(Collectors.toList());
+        caseDetailsList = filterOutAmendedCases(caseDetailsList);
 
         if (CollectionUtils.isEmpty(caseDetailsList)) {
             return null;
@@ -107,7 +102,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         if (caseDetailsList.size() > 1) {
             throw new DuplicateCaseException(String.format("There are [%d] case for the user [%s]",
-                caseDetailsList.size(), userDetails.getId()));
+                caseDetailsList.size(), userDetails.getUserDetails().getId()));
         }
 
         return caseDetailsList.get(0);
@@ -115,67 +110,76 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
     @Override
     public CaseDetails retrieveCaseById(String authorisation, String caseId) {
-        UserDetails userDetails = getUserDetails(authorisation);
-        List<String> userRoles = Optional.ofNullable(userDetails.getRoles()).orElse(Collections.emptyList());
+        User userDetails = getUser(authorisation);
+        List<String> userRoles = Optional.ofNullable(userDetails.getUserDetails().getRoles())
+            .orElse(Collections.emptyList());
 
         if (userRoles.contains(CASEWORKER_ROLE) && !userRoles.contains(CITIZEN_ROLE)) {
             return coreCaseDataApi.readForCaseWorker(
-                getBearerUserToken(authorisation),
+                getBearerToken(authorisation),
                 getServiceAuthToken(),
-                userDetails.getId(),
-                jurisdictionId,
-                caseType,
-                caseId
-            );
-        } else {
-            return coreCaseDataApi.readForCitizen(
-                getBearerUserToken(authorisation),
-                getServiceAuthToken(),
-                userDetails.getId(),
+                userDetails.getUserDetails().getId(),
                 jurisdictionId,
                 caseType,
                 caseId
             );
         }
+
+        return coreCaseDataApi.readForCitizen(
+            getBearerToken(authorisation),
+            getServiceAuthToken(),
+            userDetails.getUserDetails().getId(),
+            jurisdictionId,
+            caseType,
+            caseId
+        );
     }
 
     @Override
-    public SearchResult  searchCase(String authorisation, String query) {
+    public SearchResult searchCase(String authorisation, String query) {
         return coreCaseDataApi.searchCases(
-            getBearerUserToken(authorisation),
+            getBearerToken(authorisation),
             getServiceAuthToken(),
             caseType,
             query
         );
     }
 
-    private List<CaseDetails> getCaseListForUser(UserDetails user, DivCaseRole role) {
+    private List<CaseDetails> filterOutAmendedCases(List<CaseDetails> caseDetailsList) {
+        caseDetailsList = Optional.ofNullable(caseDetailsList)
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(caseDetails -> !CaseState.AMEND_PETITION.getValue().equals(caseDetails.getState()))
+            .collect(Collectors.toList());
+        return caseDetailsList;
+    }
 
-        List<CaseDetails> cases = Optional.ofNullable(coreCaseDataApi.searchForCitizen(
-            getBearerUserToken(user.getAuthToken()),
-            getServiceAuthToken(),
-            user.getId(),
-            jurisdictionId,
-            caseType,
-            Collections.emptyMap())).orElse(Collections.emptyList());
+    private List<CaseDetails> getCaseListForUser(User user, DivCaseRole role) {
+        List<CaseDetails> cases = Optional.ofNullable(
+            coreCaseDataApi.searchForCitizen(
+                getBearerToken(user.getAuthToken()),
+                getServiceAuthToken(),
+                user.getUserDetails().getId(),
+                jurisdictionId,
+                caseType,
+                Collections.emptyMap())
+        ).orElse(Collections.emptyList());
 
         return cases.stream()
-            .filter(caseDetails -> userHasSpecifiedRole(caseDetails, user.getEmail(), role))
+            .filter(caseDetails -> userHasSpecifiedRole(caseDetails, user.getUserDetails().getEmail(), role))
             .collect(Collectors.toList());
-
     }
 
     private boolean userHasSpecifiedRole(CaseDetails caseDetails, String userEmail, DivCaseRole role) {
-
         if (role == null) {
             return false;
         }
 
         switch (role) {
             case PETITIONER:
-                return  userEmail.equalsIgnoreCase((String) caseDetails.getData().get(D8_PETITIONER_EMAIL));
+                return userEmail.equalsIgnoreCase((String) caseDetails.getData().get(D8_PETITIONER_EMAIL));
             case RESPONDENT:
-                return  userEmail.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_EMAIL_ADDRESS))
+                return userEmail.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_EMAIL_ADDRESS))
                     || userEmail.equalsIgnoreCase((String) caseDetails.getData().get(RESP_EMAIL_ADDRESS));
             default: return false;
         }

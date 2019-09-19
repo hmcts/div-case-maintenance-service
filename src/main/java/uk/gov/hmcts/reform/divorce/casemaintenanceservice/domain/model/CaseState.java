@@ -21,7 +21,8 @@ public enum CaseState {
     AWAITING_REISSUE("AwaitingReissue", ApplicationStatus.AWAITING_REISSUE),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer", ApplicationStatus.AOS_SUBMITTED_AWAITING_ANSWER),
     AOS_COMPLETED("AosCompleted", ApplicationStatus.AOS_COMPLETED),
-    AWAITING_DECREE_NISI("AwaitingDecreeNisi", ApplicationStatus.DN_AWAITING),
+    AWAITING_DECREE_NISI("AwaitingDecreeNisi", ApplicationStatus.AWAITING_DECREE_NISI),
+    DN_DRAFTED("DNDrafted", ApplicationStatus.DN_DRAFTED),
     REJECTED("Rejected", ApplicationStatus.REJECTED),
     AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral", ApplicationStatus.AWAITING_LEGAL_ADVISOR_REFERRAL),
     DEFENDED_DIVORCE("DefendedDivorce", ApplicationStatus.DEFENDED_DIVORCE),
@@ -35,7 +36,10 @@ public enum CaseState {
     DN_PRONOUNCED("DNPronounced", ApplicationStatus.DN_PRONOUNCED),
     AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute", ApplicationStatus.AWAITING_DECREE_ABSOLUTE),
     AWAITING_PRONOUNCEMENT("AwaitingPronouncement", ApplicationStatus.AWAITING_PRONOUNCEMENT),
+    DN_IS_REFUSED("DNisRefused", ApplicationStatus.DN_IS_REFUSED),
+    DECREE_ABSOLUTE_REQUESTED("DaRequested", ApplicationStatus.DECREE_ABSOLUTE_REQUESTED),
     DIVORCE_GRANTED("DivorceGranted", ApplicationStatus.DIVORCE_GRANTED),
+    AOS_AWAITING_SOL("AosAwaitingSol", ApplicationStatus.AOS_AWAITING_SOL),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;

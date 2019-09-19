@@ -5,11 +5,13 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.NotifyCaseSubmission;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdSubmissionService;
+import uk.gov.hmcts.reform.idam.client.models.User;
 
 import java.util.Map;
+
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil.getBearerToken;
 
 @Service
 public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdSubmissionService {
@@ -19,15 +21,16 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
     @NotifyCaseSubmission
     @Override
     public CaseDetails submitCase(Map<String, Object> data, String authorisation) {
-        UserDetails userDetails = getUserDetails(authorisation);
+        User userDetails = getUser(authorisation);
 
         StartEventResponse startEventResponse = coreCaseDataApi.startForCitizen(
-            getBearerUserToken(authorisation),
+            getBearerToken(authorisation),
             getServiceAuthToken(),
-            userDetails.getId(),
+            userDetails.getUserDetails().getId(),
             jurisdictionId,
             caseType,
-            getCaseCreationEventId(data));
+            getCaseCreationEventId(data)
+        );
 
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
@@ -41,24 +44,24 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
             .build();
 
         return coreCaseDataApi.submitForCitizen(
-            getBearerUserToken(authorisation),
+            getBearerToken(authorisation),
             getServiceAuthToken(),
-            userDetails.getId(),
+            userDetails.getUserDetails().getId(),
             jurisdictionId,
             caseType,
             true,
-            caseDataContent);
+            caseDataContent
+        );
     }
 
     @Override
     public CaseDetails submitBulkCase(Map<String, Object> data, String authorisation) {
-        UserDetails userDetails = getUserDetails(authorisation);
-
+        User userDetails = getUser(authorisation);
 
         StartEventResponse startEventResponse = coreCaseDataApi.startForCaseworker(
-            getBearerUserToken(authorisation),
+            getBearerToken(authorisation),
             getServiceAuthToken(),
-            userDetails.getId(),
+            userDetails.getUserDetails().getId(),
             jurisdictionId,
             bulkCaseType,
             createBulkCaseEventId);
@@ -75,9 +78,9 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
             .build();
 
         return coreCaseDataApi.submitForCaseworker(
-            getBearerUserToken(authorisation),
+            getBearerToken(authorisation),
             getServiceAuthToken(),
-            userDetails.getId(),
+            userDetails.getUserDetails().getId(),
             jurisdictionId,
             bulkCaseType,
             true,

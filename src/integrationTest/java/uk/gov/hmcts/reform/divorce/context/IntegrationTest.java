@@ -21,6 +21,7 @@ import javax.annotation.PostConstruct;
 @RunWith(SerenityRunner.class)
 @ContextConfiguration(classes = {ServiceContextConfiguration.class})
 public abstract class IntegrationTest {
+
     @Value("${case.maintenance.service.base.uri}")
     protected String serverUrl;
 
@@ -61,12 +62,16 @@ public abstract class IntegrationTest {
         return idamTestSupport.createAnonymousCitizenUser();
     }
 
+    protected UserDetails getSolicitorUser() {
+        return idamTestSupport.getSolicitorUser();
+    }
+
     protected String getUserToken() {
         return getUserDetails().getAuthToken();
     }
 
     protected UserDetails getCaseWorkerUser() {
-        return idamTestSupport.createAnonymousCaseWorkerUser();
+        return idamTestSupport.getCaseworkerUser();
     }
 
     protected String getCaseWorkerToken() {

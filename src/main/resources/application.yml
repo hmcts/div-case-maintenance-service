@@ -17,6 +17,10 @@ server:
   port: 4010
 
 idam:
+  client:
+    redirect_uri: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
+    id: divorce
+    secret: ${AUTH2_CLIENT_SECRET:dummysecret}
   api:
     url: ${IDAM_API_BASEURL:http://localhost:4503}
     redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
@@ -121,6 +125,3 @@ logging:
     uk.gov.hmcts.reform.divorce.casemaintenanceservice: DEBUG
   pattern:
     console: "%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n"
-
-azure:
-  app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:false}

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.petition;
 
 import io.restassured.response.Response;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -11,31 +12,12 @@ import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 
 public class CcdRetrieveAosCaseTest extends PetitionSupport {
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwO"
-            + "Tg3NjU0MyIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR"
-            + "5cGUiOiJBQ0NFU1MiLCJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY"
-            + "2UiOiJEaXZvcmNlIiwibG9hIjoxLCJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ"
-            + "9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMXCJOQrVU";
 
     private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
     private static final String TEST_AOS_AWAITING_DN = "testAwaitingDecreeNisi";
 
     @Value("${case.maintenance.aos-case.context-path}")
     private String retrieveAosCaseContextPath;
-
-    @Test
-    public void givenJWTTokenIsNull_whenRetrieveAosCase_thenReturnBadRequest() {
-        Response cmsResponse = retrieveCase(null);
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), cmsResponse.getStatusCode());
-    }
-
-    @Test
-    public void givenInvalidUserToken_whenRetrieveAosCase_thenReturnForbiddenError() {
-        Response cmsResponse = retrieveCase(INVALID_USER_TOKEN);
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
-    }
 
     @Test
     public void givenNoCaseInCcd_whenRetrieveAosCase_thenReturnNull() {
@@ -49,7 +31,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     public void whenUserAlreadyHasDraftSaved_AndTriesToLogInAsRespondent_ThenCaseIsNotFound() throws Exception {
         //Create a draft
         final String userToken = getUserToken();
-        final String filePath = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "addresses.json";
+        final String filePath = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + "base-case-divorce-session.json";
         Response draftCreationResponse = createDraft(userToken, filePath, singletonMap(DIVORCE_FORMAT_KEY, "true"));
         assertEquals(HttpStatus.OK.value(), draftCreationResponse.getStatusCode());
 
@@ -117,6 +99,7 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
     }
 
     @Test
+    @Ignore
     public void givenMultipleAosStartedAndNoAosCompletedCaseInCcd_whenRetrieveAosCase_thenReturnMultipleChoice()
             throws Exception {
         final UserDetails userDetails = getUserDetails();

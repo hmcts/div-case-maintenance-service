@@ -5,17 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.DraftModelFactory;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.EncryptionKeyFactory;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.DraftService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil;
+import uk.gov.hmcts.reform.idam.client.models.User;
 
 import java.util.Map;
 import java.util.Optional;
+
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil.getBearerToken;
 
 @Service
 @Slf4j
@@ -38,13 +39,15 @@ public class DraftServiceImpl implements DraftService {
 
     @Override
     public DraftList getAllDrafts(String userToken) {
-        return draftStoreClient.getAllDrafts(getBearerToken(userToken), serviceTokenGenerator.generate(),
-            getSecret(userToken));
+        return draftStoreClient.getAllDrafts(
+            getBearerToken(userToken), serviceTokenGenerator.generate(), getSecret(userToken)
+        );
     }
 
     private DraftList getAllDrafts(String userToken, String after) {
-        return draftStoreClient.getAllDrafts(after, getBearerToken(userToken), serviceTokenGenerator.generate(),
-            getSecret(userToken));
+        return draftStoreClient.getAllDrafts(
+            after, getBearerToken(userToken), serviceTokenGenerator.generate(), getSecret(userToken)
+        );
     }
 
     @Override
@@ -66,7 +69,8 @@ public class DraftServiceImpl implements DraftService {
             modelFactory.createDraft(data, divorceFormat),
             getBearerToken(userToken),
             serviceTokenGenerator.generate(),
-            getSecret(userToken));
+            getSecret(userToken)
+        );
     }
 
     private void updateDraft(String userToken, Map<String, Object> data, boolean divorceFormat, Draft draft) {
@@ -75,7 +79,8 @@ public class DraftServiceImpl implements DraftService {
             modelFactory.updateDraft(data, divorceFormat),
             getBearerToken(userToken),
             serviceTokenGenerator.generate(),
-            getSecret(userToken));
+            getSecret(userToken)
+        );
     }
 
     @Override
@@ -105,25 +110,22 @@ public class DraftServiceImpl implements DraftService {
             if (divorceDraft.isPresent()) {
                 log.debug("Divorce session draft found");
                 return divorceDraft;
-            } else {
-                if (draftList.getPaging().getAfter() != null) {
-                    log.debug("Divorce session draft could not be found on the current page with drafts. "
-                        + "Going to next page");
-                    return findDivorceDraft(userToken, getAllDrafts(userToken, draftList.getPaging().getAfter()));
-                }
+            }
+
+            if (draftList.getPaging().getAfter() != null) {
+                log.debug("Divorce session draft could not be found on the current page with drafts. "
+                    + "Going to next page");
+                return findDivorceDraft(userToken, getAllDrafts(userToken, draftList.getPaging().getAfter()));
             }
         }
+
         log.debug("Divorce session draft could not be found");
         return Optional.empty();
     }
 
     private String getSecret(String userToken) {
-        UserDetails userDetails = userService.retrieveUserDetails(getBearerToken(userToken));
+        User userDetails = userService.retrieveUser(getBearerToken(userToken));
 
-        return encryptionKeyFactory.createEncryptionKey(userDetails.getId());
-    }
-
-    private String getBearerToken(String userToken) {
-        return AuthUtil.getBearToken(userToken);
+        return encryptionKeyFactory.createEncryptionKey(userDetails.getUserDetails().getId());
     }
 }
