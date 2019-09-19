@@ -11,14 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class CcdUpdateTest extends CcdUpdateSupport {
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
-
-    private static final String UNAUTHORISED_JWT_EXCEPTION = "status 403 reading "
-        + "IdamApi#retrieveUserDetails(String) - ";
 
     @Test
     public void shouldReturnCaseIdWhenUpdatingDataAfterInitialSubmit() throws Exception {
@@ -93,17 +85,5 @@ public class CcdUpdateTest extends CcdUpdateSupport {
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), cmsResponse.getStatusCode());
         assertThat(cmsResponse.asString(),
             containsString("The case status did not qualify for the event"));
-    }
-
-    @Test
-    public void shouldReturnErrorForInvalidUserJwtToken() throws Exception {
-        UserDetails userDetails = getUserDetails();
-
-        Long caseId = getCaseIdFromSubmittingANewCase(userDetails);
-
-        Response cmsResponse = updateCase("payment-made.json", caseId, EVENT_ID, INVALID_USER_TOKEN);
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), cmsResponse.getStatusCode());
-        assertEquals(UNAUTHORISED_JWT_EXCEPTION, cmsResponse.asString());
     }
 }

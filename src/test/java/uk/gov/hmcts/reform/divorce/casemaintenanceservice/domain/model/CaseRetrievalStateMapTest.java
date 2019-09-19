@@ -41,6 +41,7 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,
                 CaseState.DIVORCE_GRANTED,
+                CaseState.DN_IS_REFUSED,
                 CaseState.DECREE_ABSOLUTE_REQUESTED
             );
 
@@ -74,6 +75,7 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AWAITING_CLARIFICATION,
                 CaseState.AWAITING_CONSIDERATION,
                 CaseState.DN_PRONOUNCED,
+                CaseState.DN_IS_REFUSED,
                 CaseState.AWAITING_DECREE_ABSOLUTE,
                 CaseState.AWAITING_PRONOUNCEMENT,
                 CaseState.DEFENDED_DIVORCE,

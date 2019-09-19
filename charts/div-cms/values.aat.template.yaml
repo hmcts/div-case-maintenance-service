@@ -1,14 +1,6 @@
 java:
     environment:
-        AUTH_PROVIDER_SERVICE_CLIENT_BASEURL : "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-        DRAFT_STORE_API_BASEURL : "http://draft-store-service-aat.service.core-compute-aat.internal"
-        IDAM_CASEWORKER_USERNAME : "DivCaseWorker@AAT.com"
-        CASE_FORMATTER_SERVICE_API_BASEURL : "http://div-cfs-aat.service.core-compute-aat.internal"
         IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
-        IDAM_API_REDIRECT_URL : "https://div-pfe-aat.service.core-compute-aat.internal/authenticated"
-        CASE_DATA_STORE_BASEURL : "http://data-store-api-div-ccd-definitions-pr-224.service.core-compute-preview.internal"
-        MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIMETOLIVE: "30000"
-        DOCUMENTATION_SWAGGER_ENABLED: "true"
 
     # Don't modify below here
     image: ${IMAGE_NAME}
