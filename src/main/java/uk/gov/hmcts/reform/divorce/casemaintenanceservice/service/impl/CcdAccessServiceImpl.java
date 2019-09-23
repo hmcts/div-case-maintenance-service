@@ -22,9 +22,12 @@ import static java.lang.String.format;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESP_SOLICITOR;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_COMPANY;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_NAME;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOL_REPRESENTED;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 
 @Service
 @Slf4j
@@ -123,10 +126,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
         String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
         String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
-        String isRespondentSolicitor = (String) caseDetails.getData().get(D8_RESP_SOLICITOR);
 
         if (letterHolderId.equals(respondentLetterHolderId)) {
-            if (CmsConstants.YES_VALUE.equalsIgnoreCase(isRespondentSolicitor)) {
+            if (usingRespondentSolicitor(caseDetails.getData())) {
                 return RespondentType.RESP_SOLICITOR;
             }
             return RespondentType.RESPONDENT;
@@ -168,5 +170,17 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
 
         return emailAddressesMatch;
+    }
+
+    private boolean usingRespondentSolicitor(Map<String, Object> caseData) {
+        final String respondentSolicitorRepresented = (String) caseData.get(RESP_SOL_REPRESENTED);
+
+        // temporary fix until we implement setting respondentSolicitorRepresented from CCD for RespSols
+        // in all scenarios https://tools.hmcts.net/jira/browse/DIV-5759
+        final String respondentSolicitorName = (String) caseData.get(D8_RESPONDENT_SOLICITOR_NAME);
+        final String respondentSolicitorCompany = (String) caseData.get(D8_RESPONDENT_SOLICITOR_COMPANY);
+
+        return YES_VALUE.equalsIgnoreCase(respondentSolicitorRepresented)
+            || respondentSolicitorName != null && respondentSolicitorCompany != null;
     }
 }
