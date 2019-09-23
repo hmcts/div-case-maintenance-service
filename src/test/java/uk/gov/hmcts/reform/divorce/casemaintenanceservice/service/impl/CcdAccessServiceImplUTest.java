@@ -15,9 +15,8 @@ import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
-import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
-import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.CaseNotFoundException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.InvalidRequestException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.UnauthorizedException;
@@ -26,7 +25,9 @@ import uk.gov.hmcts.reform.idam.client.models.User;
 import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,11 +39,15 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_COMPANY;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_NAME;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOL_REPRESENTED;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LinkRespondentServiceImplUTest {
+public class CcdAccessServiceImplUTest {
     private static final String JURISDICTION_ID = "DIVORCE";
     private static final String CASE_TYPE = "DIVORCE";
 
@@ -58,6 +63,8 @@ public class LinkRespondentServiceImplUTest {
     private static final String USER_EMAIL = "user@email.com";
     private static final String SERVICE_TOKEN = "ServiceToken";
     private static final String RESPONDENT_EMAIL = "aos@respondent.com";
+    private static final String RESPONDENT_SOL_NAME = "Test Solicitor Name";
+    private static final String RESPONDENT_SOLICITOR_COMPANY = "Respondent Solicitor Firm";
     private static final String RESP_UNAUTHORIZED_MESSAGE =
         "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [RESPONDENT] "
             + "or Petitioner attempted to link case. Check previous logs for more information.";
@@ -387,7 +394,7 @@ public class LinkRespondentServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdMatchesAndEmailMatched_whenLinkRespondent_thenGrantUserPermission() {
+    public void givenLetterHolderIdMatchesAndEmailMatched_whenLinkRespondent_thenGrantCorrectUserPermissions() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
@@ -397,6 +404,11 @@ public class LinkRespondentServiceImplUTest {
 
         mockCaseDetails(caseDetails);
 
+        Set<String> expectedCaseRoles = new HashSet<>();
+        expectedCaseRoles.add(CmsConstants.CREATOR_ROLE);
+
+        CaseUser expectedCaseUser = new CaseUser(RESPONDENT_USER_ID, expectedCaseRoles);
+
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
 
         verify(caseUserApi).updateCaseRolesForUser(
@@ -404,7 +416,68 @@ public class LinkRespondentServiceImplUTest {
             eq(SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
-            any(CaseUser.class)
+            eq(expectedCaseUser)
+        );
+    }
+
+    @Test
+    public void givenLetterHolderIdMatchesAndEmailMatchedAndSolicitorRepresentingRespFieldIsYes_whenLinkRespondent_thenGrantCorrectUserPermissions() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
+                RESP_EMAIL_ADDRESS, USER_EMAIL,
+                RESP_SOL_REPRESENTED, YES_VALUE
+            )).build();
+
+        mockCaseDetails(caseDetails);
+
+        Set<String> expectedCaseRoles = new HashSet<>();
+        expectedCaseRoles.add(CmsConstants.CREATOR_ROLE);
+        expectedCaseRoles.add(CmsConstants.RESP_SOL_ROLE);
+
+        CaseUser expectedCaseUser = new CaseUser(RESPONDENT_USER_ID, expectedCaseRoles);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(SERVICE_TOKEN),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER_ID),
+            eq(expectedCaseUser)
+        );
+    }
+
+    // test for temporary fix until we implement setting respondentSolicitorRepresented from CCD for RespSols
+    // in all scenarios https://tools.hmcts.net/jira/browse/DIV-5759
+    @Test
+    public void givenLetterHolderIdMatchesAndEmailMatchedAndSolRepresentingRespWithoutRespSolRepFieldPresent_whenLinkRespondent_thenGrantCorrectUserPermissions() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
+                RESP_EMAIL_ADDRESS, USER_EMAIL,
+                D8_RESPONDENT_SOLICITOR_NAME, RESPONDENT_SOL_NAME,
+                D8_RESPONDENT_SOLICITOR_COMPANY, RESPONDENT_SOLICITOR_COMPANY
+            )).build();
+
+        mockCaseDetails(caseDetails);
+
+        Set<String> expectedCaseRoles = new HashSet<>();
+        expectedCaseRoles.add(CmsConstants.CREATOR_ROLE);
+        expectedCaseRoles.add(CmsConstants.RESP_SOL_ROLE);
+
+        CaseUser expectedCaseUser = new CaseUser(RESPONDENT_USER_ID, expectedCaseRoles);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(SERVICE_TOKEN),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER_ID),
+            eq(expectedCaseUser)
         );
     }
 
