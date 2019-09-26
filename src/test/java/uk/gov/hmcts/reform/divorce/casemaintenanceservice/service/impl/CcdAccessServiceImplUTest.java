@@ -57,7 +57,7 @@ public class CcdAccessServiceImplUTest {
     private static final String CASEWORKER_AUTHORISATION = "CaseWorkerAuthToken";
     private static final String CASE_ID = "12345678";
     private static final String LETTER_HOLDER_ID = "letterholderId";
-    private static final String LETTER_HOLDER_ID_SOL = "letterholderId";
+    private static final String LETTER_HOLDER_ID_SOL = "letterholderIdSol";
     private static final String CASEWORKER_USER_ID = "1";
     private static final String RESPONDENT_USER_ID = "2";
     private static final String PET_USER_ID = "3";
@@ -97,10 +97,6 @@ public class CcdAccessServiceImplUTest {
         PET_AUTHORISATION,
         UserDetails.builder().id(PET_USER_ID).email(USER_EMAIL).build()
     );
-
-    enum FAKE_ENUM {
-        RESPONDENT_ERROR_TYPE
-    }
 
     @Rule
     public ExpectedException expectedException = none();

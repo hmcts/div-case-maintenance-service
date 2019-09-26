@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import feign.FeignException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,10 +24,8 @@ import uk.gov.hmcts.reform.ccd.client.CaseUserApi;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
-import uk.gov.hmcts.reform.ccd.client.model.UserId;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 
-import java.awt.image.Kernel;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -454,6 +451,7 @@ public class CcdAccessITest extends MockSupport {
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isOk());
     }
+
     @Test
     public void givenCoRespLinkedAlready_whenLinkRespondentSolicitor_thenProceedAsExpected() throws Exception {
         final String message = getUserDetails();
