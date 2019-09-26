@@ -98,6 +98,10 @@ public class CcdAccessServiceImplUTest {
         UserDetails.builder().id(PET_USER_ID).email(USER_EMAIL).build()
     );
 
+    enum FAKE_ENUM {
+        RESPONDENT_ERROR_TYPE
+    }
+
     @Rule
     public ExpectedException expectedException = none();
 

@@ -112,7 +112,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
     private Set<String> getRolesForRespondentType(RespondentType respondentType) {
 
-        Set<String> caseRoles = new HashSet<>();
+        final Set<String> caseRoles = new HashSet<>();
         caseRoles.add(CmsConstants.CREATOR_ROLE);
 
         if (respondentType == RespondentType.RESP_SOLICITOR) {
@@ -125,8 +125,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         if (caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
             throw new InvalidRequestException(format("Case details or letter holder data are invalid for case ID: [%s]", caseId));
         }
-        String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
-        String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
+        final String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
+        final String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
 
         if (letterHolderId.equals(respondentLetterHolderId)) {
             if (usingRespondentSolicitor(caseDetails.getData())) {
@@ -143,7 +143,9 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     }
 
     private boolean isValidRespondent(CaseDetails caseDetails, String userEmailAddress, RespondentType respondentType) {
-        String emailField = "";
+        String emailField;
+        final Map<String, Object> caseData = caseDetails.getData();
+        final String caseId = Long.toString(caseDetails.getId());
         switch (respondentType) {
             case RESPONDENT:
                 emailField = RESP_EMAIL_ADDRESS;
@@ -154,14 +156,15 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             case CO_RESPONDENT:
                 emailField = CO_RESP_EMAIL_ADDRESS;
                 break;
+            default:
+                throw new IllegalStateException(
+                    String.format("Unexpected respondent type: %s for case %s", respondentType, caseId));
         }
-        Map<String, Object> caseData = caseDetails.getData();
-        String caseId = Long.toString(caseDetails.getId());
-        String emailAddressAssignedToCase = (String) caseData.get(emailField);
+        final String emailAddressAssignedToCase = (String) caseData.get(emailField);
 
         if (emailAddressAssignedToCase == null) {
             log.info("Case {} has not been been assigned a {} yet.", caseId, respondentType);
-            String petitionerEmail = (String) caseData.get(D8_PETITIONER_EMAIL);
+            final String petitionerEmail = (String) caseData.get(D8_PETITIONER_EMAIL);
 
             if (userEmailAddress.equalsIgnoreCase(petitionerEmail)) {
                 log.warn("Attempt made to link petitioner as {} to case {}. Failed validation.", respondentType, caseId);
