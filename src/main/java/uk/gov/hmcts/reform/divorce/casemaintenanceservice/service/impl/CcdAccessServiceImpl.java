@@ -26,6 +26,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_NAME;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOLICITOR_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOL_REPRESENTED;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 
@@ -142,7 +143,18 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
     }
 
     private boolean isValidRespondent(CaseDetails caseDetails, String userEmailAddress, RespondentType respondentType) {
-        String emailField = (respondentType == RespondentType.RESPONDENT) ? RESP_EMAIL_ADDRESS : CO_RESP_EMAIL_ADDRESS;
+        String emailField = "";
+        switch (respondentType) {
+            case RESPONDENT:
+                emailField = RESP_EMAIL_ADDRESS;
+                break;
+            case RESP_SOLICITOR:
+                emailField = RESP_SOLICITOR_EMAIL_ADDRESS;
+                break;
+            case CO_RESPONDENT:
+                emailField = CO_RESP_EMAIL_ADDRESS;
+                break;
+        }
         Map<String, Object> caseData = caseDetails.getData();
         String caseId = Long.toString(caseDetails.getId());
         String emailAddressAssignedToCase = (String) caseData.get(emailField);

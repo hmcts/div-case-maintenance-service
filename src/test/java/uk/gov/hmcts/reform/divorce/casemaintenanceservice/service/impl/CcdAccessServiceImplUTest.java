@@ -57,12 +57,14 @@ public class CcdAccessServiceImplUTest {
     private static final String CASEWORKER_AUTHORISATION = "CaseWorkerAuthToken";
     private static final String CASE_ID = "12345678";
     private static final String LETTER_HOLDER_ID = "letterholderId";
+    private static final String LETTER_HOLDER_ID_SOL = "letterholderId";
     private static final String CASEWORKER_USER_ID = "1";
     private static final String RESPONDENT_USER_ID = "2";
     private static final String PET_USER_ID = "3";
     private static final String USER_EMAIL = "user@email.com";
     private static final String SERVICE_TOKEN = "ServiceToken";
     private static final String RESPONDENT_EMAIL = "aos@respondent.com";
+    private static final String CO_RESP_EMAIL = "test@user.local";
     private static final String RESPONDENT_SOL_NAME = "Test Solicitor Name";
     private static final String RESPONDENT_SOLICITOR_COMPANY = "Respondent Solicitor Firm";
     private static final String RESP_UNAUTHORIZED_MESSAGE =
@@ -528,6 +530,31 @@ public class CcdAccessServiceImplUTest {
         mockCaseDetails(caseDetails);
 
         classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(SERVICE_TOKEN),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER_ID),
+            any(CaseUser.class)
+        );
+    }
+
+    @Test
+    public void givenCoRespLinked_whenLinkRespSolicitor_thenGrantUserPermission() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .id(1000L)
+            .data(ImmutableMap.of(
+                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
+                CO_RESP_EMAIL_ADDRESS, CO_RESP_EMAIL,
+                RESP_EMAIL_ADDRESS, USER_EMAIL,
+                RESP_SOL_REPRESENTED, YES_VALUE,
+                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID_SOL
+            )).build();
+
+        mockCaseDetails(caseDetails);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID_SOL);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
