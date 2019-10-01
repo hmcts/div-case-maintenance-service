@@ -38,6 +38,7 @@ public abstract class MockSupport {
     static final String USER_ID = "1";
     static final String CASE_WORKER_USER_ID = "2";
     static final String USER_EMAIL = "test@test.com";
+    static final String CO_RESP_EMAIL = "test@user.local";
     static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
     static final String FEIGN_ERROR = "some error message";
 
