@@ -10,6 +10,10 @@ output "test_environment" {
   value = "${local.local_env}"
 }
 
+output "idam_api_baseurl" {
+    value = "${var.idam_api_baseurl}"
+}
+
 output "idam_s2s_url" {
   value = "${local.idam_s2s_url}"
 }
