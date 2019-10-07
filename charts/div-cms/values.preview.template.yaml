@@ -1,6 +1,7 @@
 java:
     environment:
         IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
+        CASE_DATA_STORE_BASEURL: "http://data-store-api-div-ccd-definitions-pr-288.service.core-compute-preview.internal"
 
     # Don't modify below here
     image: ${IMAGE_NAME}
