@@ -141,7 +141,8 @@ def versions = [
     springSecurityRsa: '1.0.8.RELEASE',
     springSecurityCrypto: '5.1.5.RELEASE',
     tomcat: '9.0.22',
-    idamClient: '1.1.0'
+    idamClient: '1.1.0',
+    divCommonLib: '1.1.8'
 ]
 
 dependencies {
@@ -183,6 +184,7 @@ dependencies {
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformsJavaLogging
     compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformsJavaLogging
     compile group: 'uk.gov.hmcts.reform', name: 'idam-client', version: versions.idamClient
+    compile group: 'uk.gov.hmcts.reform', name: 'div-common-lib', version: versions.divCommonLib
     compile (group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator)
         {
             exclude group: 'io.reactivex', module: 'io.reactivex'
