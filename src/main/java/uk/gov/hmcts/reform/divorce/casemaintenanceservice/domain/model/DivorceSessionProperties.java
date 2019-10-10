@@ -13,4 +13,5 @@ public class DivorceSessionProperties {
     public static final String SCREEN_HAS_MARRIAGE_BROKEN = "screenHasMarriageBroken";
     public static final String CREATED_DATE = "createdDate";
     public static final String COURTS = "courts";
+    public static final String PETITIONER_EMAIL = "petitionerEmail";
 }

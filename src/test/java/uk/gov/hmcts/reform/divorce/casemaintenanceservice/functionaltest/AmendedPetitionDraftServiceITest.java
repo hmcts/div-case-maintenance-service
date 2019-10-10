@@ -38,7 +38,6 @@ import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.when;
@@ -55,14 +54,13 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
     "eureka.client.enabled=false"
-    })
+})
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AmendedPetitionDraftServiceITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/amended-petition-draft";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
-    private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
     private static final String TEST_CASE_ID = "1234567891234567";
     private static final String TEST_CASE_REF = "LDV12345D";
     private static final String ADULTERY = "adultery";
@@ -136,14 +134,6 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
         final CaseDetails oldCase = CaseDetails.builder().data(caseData)
             .id(Long.decode(TEST_CASE_ID)).build();
 
-        final Map<String, Object> caseDataFormatRequest = new HashMap<>();
-        caseDataFormatRequest.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_REF);
-        caseDataFormatRequest.put(CcdCaseProperties.D8_LEGAL_PROCEEDINGS, YES);
-        caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_WHO, WIFE);
-        caseDataFormatRequest.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES);
-        caseDataFormatRequest.put(CcdCaseProperties.D8_PETITIONER_EMAIL, USER_EMAIL);
-        caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
-
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
 
@@ -154,6 +144,7 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
         draftData.put(DivorceSessionProperties.DIVORCE_WHO, WIFE);
         draftData.put(DivorceSessionProperties.SCREEN_HAS_MARRIAGE_BROKEN, YES);
         draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
+        draftData.put(DivorceSessionProperties.PETITIONER_EMAIL, "test@test.com");
 
         final CreateDraft createDraft = new CreateDraft(draftData,
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
@@ -164,7 +155,6 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
             .thenReturn(Collections.singletonList(oldCase));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubToDivorceFormatEndpoint(caseDataFormatRequest, draftData);
         stubDeleteDraftsEndpoint(new EqualToPattern(SERVICE_TOKEN));
         stubCreateDraftEndpoint(new EqualToPattern(SERVICE_TOKEN), createDraft);
 
@@ -174,8 +164,7 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
-                .json(ObjectMapperTestUtil
-                    .convertObjectToJsonString(draftData)));
+                .json(ObjectMapperTestUtil.convertObjectToJsonString(draftData)));
     }
 
     @Test
@@ -220,19 +209,8 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
             .andExpect(status().isNotFound());
     }
 
-    private void stubToDivorceFormatEndpoint(Object request, Object response) {
-        caseFormatterServer.stubFor(post(TRANSFORM_TO_DIVORCE_CONTEXT_PATH)
-            .withRequestBody(equalToJson(ObjectMapperTestUtil.convertObjectToJsonString(request)))
-            .withHeader(HttpHeaders.AUTHORIZATION, new EqualToPattern(USER_TOKEN))
-            .willReturn(aResponse()
-                .withStatus(HttpStatus.OK.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .withBody(ObjectMapperTestUtil.convertObjectToJsonString(response))));
-    }
-
     private void stubCreateDraftEndpoint(StringValuePattern serviceToken, CreateDraft createDraft) {
         draftStoreServer.stubFor(post(DRAFTS_CONTEXT_PATH)
-            .withRequestBody(equalToJson(ObjectMapperTestUtil.convertObjectToJsonString(createDraft)))
             .withHeader(HttpHeaders.AUTHORIZATION, new EqualToPattern(USER_TOKEN))
             .withHeader(DraftStoreClient.SERVICE_AUTHORIZATION_HEADER_NAME, serviceToken)
             .withHeader(DraftStoreClient.SECRET_HEADER_NAME, new EqualToPattern(ENCRYPTED_USER_ID))
