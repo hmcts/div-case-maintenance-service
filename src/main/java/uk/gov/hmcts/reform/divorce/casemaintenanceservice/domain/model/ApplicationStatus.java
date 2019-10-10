@@ -15,7 +15,8 @@ public enum ApplicationStatus {
     AOS_OVERDUE("AosOverdue"),
     AOS_COMPLETED("AosCompleted"),
     AWAITING_REISSUE("AwaitingReissue"),
-    DN_AWAITING("DNAwaiting"),
+    AWAITING_DECREE_NISI("AwaitingDecreeNisi"),
+    DN_DRAFTED("DNDrafted"),
     DN_STARTED("DNStarted"),
     DN_COMPLETED("DNCompleted"),
     REJECTED("Rejected"),
@@ -28,9 +29,12 @@ public enum ApplicationStatus {
     AWAITING_CLARIFICATION("AwaitingClarification"),
     AWAITING_CONSIDERATION("AwaitingConsideration"),
     DN_PRONOUNCED("DNPronounced"),
+    DN_IS_REFUSED("DNisRefused"),
     AWAITING_DECREE_ABSOLUTE("AwaitingDecreeAbsolute"),
     AWAITING_PRONOUNCEMENT("AwaitingPronouncement"),
     DIVORCE_GRANTED("DivorceGranted"),
+    DECREE_ABSOLUTE_REQUESTED("DARequested"),
+    AOS_AWAITING_SOL("AosAwaitingSol"),
     UNKNOWN("DNCompleted");
 
     private final String value;

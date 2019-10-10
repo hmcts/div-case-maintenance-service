@@ -38,7 +38,7 @@ public abstract class IdamUtils {
     private Response retrieveUserDetails(String authToken) {
         return SerenityRest.given()
             .header(HttpHeaders.AUTHORIZATION, authToken)
-            .get(idamUserBaseUrl +  "/details")
+            .get(idamUserBaseUrl + "/details")
             .andReturn();
     }
 
@@ -85,7 +85,7 @@ public abstract class IdamUtils {
                 .lastName(lastName)
                 .build();
 
-        Response pinResponse =  SerenityRest.given()
+        Response pinResponse = SerenityRest.given()
             .header(HttpHeaders.AUTHORIZATION, authToken)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(ResourceLoader.objectToJson(generatePinRequest))
