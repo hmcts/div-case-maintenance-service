@@ -308,19 +308,6 @@ dependencyManagement {
             entry 'jackson-core'
             entry 'jackson-databind'
         }
-        dependencySet(
-            group: 'com.fasterxml.jackson.datatype',
-            version: versions.jackson
-        ) {
-            entry 'jackson-datatype-jdk8'
-            entry 'jackson-datatype-jsr310'
-        }
-        dependencySet(
-            group: 'com.fasterxml.jackson.module',
-            version: versions.jackson
-        ) {
-            entry 'jackson-module-parameter-names'
-        }
     }
 }
 
