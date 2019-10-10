@@ -57,7 +57,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
     "eureka.client.enabled=false"
     })
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AmendedPetitionDraftServiceITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/amended-petition-draft";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
@@ -135,7 +135,6 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
         caseData.put(CcdCaseProperties.D8_PETITIONER_EMAIL, USER_EMAIL);
         final CaseDetails oldCase = CaseDetails.builder().data(caseData)
             .id(Long.decode(TEST_CASE_ID)).build();
-
 
         final Map<String, Object> caseDataFormatRequest = new HashMap<>();
         caseDataFormatRequest.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_REF);

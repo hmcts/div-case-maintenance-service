@@ -3,29 +3,13 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.IdamApiClient;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.AuthenticateUserResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.TokenExchangeResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
-
-import java.util.Base64;
+import uk.gov.hmcts.reform.idam.client.IdamClient;
+import uk.gov.hmcts.reform.idam.client.models.User;
+import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private static final String BEARER = "Bearer ";
-    private static final String AUTHORIZATION_CODE = "authorization_code";
-    private static final String CODE = "code";
-    private static final String BASIC = "Basic ";
-
-    @Value("${idam.api.redirect-url}")
-    private String authRedirectUrl;
-
-    @Value("${auth2.client.id}")
-    private String authClientId;
-
-    @Value("${auth2.client.secret}")
-    private String authClientSecret;
 
     @Value("${idam.caseworker.username}")
     private String caseworkerUserName;
@@ -34,42 +18,21 @@ public class UserServiceImpl implements UserService {
     private String caseworkerPassword;
 
     @Autowired
-    private IdamApiClient idamApiClient;
+    private IdamClient idamClient;
 
     @Override
-    public UserDetails retrieveUserDetails(String authorisation) {
-        UserDetails userDetails = idamApiClient.retrieveUserDetails(authorisation);
-        userDetails.setAuthToken(authorisation);
+    public User retrieveUser(String authorisation) {
+        UserDetails userDetails = idamClient.getUserDetails(authorisation);
 
-        return userDetails;
+        return new User(authorisation, userDetails);
     }
 
     @Override
-    public UserDetails retrieveAnonymousCaseWorkerDetails() {
-        return retrieveUserDetails(getIdamOauth2Token(caseworkerUserName, caseworkerPassword));
+    public User retrieveAnonymousCaseWorkerDetails() {
+        return retrieveUser(getIdamOauth2Token(caseworkerUserName, caseworkerPassword));
     }
 
     private String getIdamOauth2Token(String username, String password) {
-        AuthenticateUserResponse authenticateUserResponse = idamApiClient.authenticateUser(
-            getBasicAuthHeader(username, password),
-            CODE,
-            authClientId,
-            authRedirectUrl
-        );
-
-        TokenExchangeResponse tokenExchangeResponse = idamApiClient.exchangeCode(
-            authenticateUserResponse.getCode(),
-            AUTHORIZATION_CODE,
-            authRedirectUrl,
-            authClientId,
-            authClientSecret
-        );
-
-        return BEARER + tokenExchangeResponse.getAccessToken();
-    }
-
-    private String getBasicAuthHeader(String username, String password) {
-        String authorisation = username + ":" + password;
-        return BASIC + Base64.getEncoder().encodeToString(authorisation.getBytes());
+        return idamClient.authenticateUser(username, password);
     }
 }

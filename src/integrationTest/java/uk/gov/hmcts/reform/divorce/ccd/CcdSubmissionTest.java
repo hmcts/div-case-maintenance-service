@@ -2,33 +2,20 @@ package uk.gov.hmcts.reform.divorce.ccd;
 
 import io.restassured.response.Response;
 import org.junit.Test;
-import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
-import uk.gov.hmcts.reform.divorce.util.RestUtil;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class CcdSubmissionTest extends PetitionSupport {
-    private static final String INVALID_USER_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTg3NjU0M"
-        + "yIsInN1YiI6IjEwMCIsImlhdCI6MTUwODk0MDU3MywiZXhwIjoxNTE5MzAzNDI3LCJkYXRhIjoiY2l0aXplbiIsInR5cGUiOiJBQ0NFU1MiL"
-        + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
-        + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
-        + "CJOQrVU";
-    private static final String  UNAUTHORISED_JWT_EXCEPTION = "status 403 reading "
-        + "IdamApiClient#retrieveUserDetails(String) - ";
-    private static final String REQUEST_BODY_NOT_FOUND = "Required request body is missing";
-
-    private static final String USER_EMAIL = "test@test.com";
 
     @Test
     public void shouldReturnCaseIdForValidAddressesSessionData() throws Exception {
         String expectedStatus = "AwaitingHWFDecision";
-        Response caseSubmitted = submitCase("addresses.json", getUserDetails());
+        Response caseSubmitted = submitCase("base-case.json", getUserDetails());
         assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
         assertCaseStatus(caseSubmitted, expectedStatus);
 
@@ -93,13 +80,13 @@ public class CcdSubmissionTest extends PetitionSupport {
 
         final String userToken = userDetails.getAuthToken();
 
-        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "addresscase.json", Collections.emptyMap());
+        saveDraft(userToken, CCD_FORMAT_DRAFT_CONTEXT_PATH + "base-case.json", Collections.emptyMap());
 
         Response draftsResponseBefore = getAllDraft(userToken);
 
         assertThat(((List)draftsResponseBefore.getBody().path("data")).size()).isOne();
 
-        Response cmsResponse = submitCase("addresses.json", userDetails);
+        Response cmsResponse = submitCase("base-case.json", userDetails);
 
         assertOkResponseAndCaseIdIsNotZero(cmsResponse);
 
@@ -109,28 +96,5 @@ public class CcdSubmissionTest extends PetitionSupport {
         Response draftsResponseAfter = getAllDraft(userToken);
 
         assertThat((List) draftsResponseAfter.getBody().path("data")).isEmpty();
-    }
-
-    @Test
-    public void shouldReturnErrorForInvalidUserJwtToken() throws Exception {
-        Response cmsResponse = submitCase("addresses.json", UserDetails.builder()
-            .authToken(INVALID_USER_TOKEN)
-            .emailAddress(USER_EMAIL)
-            .build());
-
-        assertThat(cmsResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
-        assertThat(cmsResponse.asString()).isEqualTo(UNAUTHORISED_JWT_EXCEPTION);
-    }
-
-    @Test
-    public void shouldReturnBadRequestForNoRequestBody() {
-        Response cmsResponse = RestUtil.postToRestService(
-            getSubmissionRequestUrl(),
-            getHeaders(),
-            null
-        );
-
-        assertThat(cmsResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(cmsResponse.getBody().asString().contains(REQUEST_BODY_NOT_FOUND));
     }
 }
