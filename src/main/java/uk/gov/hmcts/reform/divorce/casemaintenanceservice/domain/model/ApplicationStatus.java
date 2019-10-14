@@ -35,6 +35,7 @@ public enum ApplicationStatus {
     DIVORCE_GRANTED("DivorceGranted"),
     DECREE_ABSOLUTE_REQUESTED("DARequested"),
     AOS_AWAITING_SOL("AosAwaitingSol"),
+    CLARIFICATION_SUBMITTED("ClarificationSubmitted"),
     UNKNOWN("DNCompleted");
 
     private final String value;
