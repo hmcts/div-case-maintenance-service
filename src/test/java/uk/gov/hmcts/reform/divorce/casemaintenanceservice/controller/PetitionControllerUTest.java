@@ -313,4 +313,54 @@ public class PetitionControllerUTest {
 
         verify(petitionService).createAmendedPetitionDraft(AUTHORISATION);
     }
+
+    @Test
+    public void givenNoCaseFound_whenAmendToDraftPetitionForRefusal_thenReturn404() throws DuplicateCaseException {
+
+        when(petitionService.createAmendedPetitionDraftRefusal(AUTHORISATION))
+            .thenReturn(null);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
+        assertNull(actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraftRefusal(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenAmendToDraftPetitionForRefusal_thenReturnDraftData() throws DuplicateCaseException {
+
+        final Map<String, Object> draftData = new HashMap<>();
+
+        when(petitionService.createAmendedPetitionDraftRefusal(AUTHORISATION))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraftRefusal(AUTHORISATION);
+    }
+
+    @Test
+    public void givenCaseFound_whenAmendToDraftPetitionForRefusal_thenSetDraftDataFromCase() throws DuplicateCaseException {
+        final Map<String, Object> draftData = new HashMap<>();
+        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
+
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.toPattern());
+        draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
+
+        when(petitionService.createAmendedPetitionDraftRefusal(AUTHORISATION))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraftRefusal(AUTHORISATION);
+    }
 }

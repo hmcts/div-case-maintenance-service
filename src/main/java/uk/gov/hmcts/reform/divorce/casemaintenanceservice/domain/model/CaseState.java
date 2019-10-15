@@ -40,6 +40,8 @@ public enum CaseState {
     DECREE_ABSOLUTE_REQUESTED("DaRequested", ApplicationStatus.DECREE_ABSOLUTE_REQUESTED),
     DIVORCE_GRANTED("DivorceGranted", ApplicationStatus.DIVORCE_GRANTED),
     AOS_AWAITING_SOL("AosAwaitingSol", ApplicationStatus.AOS_AWAITING_SOL),
+    CLARIFICATION_SUBMITTED("ClarificationSubmitted", ApplicationStatus.CLARIFICATION_SUBMITTED),
+    AWAITING_ADMIN_CLARIFICATION("AwaitingAdminClarification", ApplicationStatus.AWAITING_ADMIN_CLARIFICATION),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;
