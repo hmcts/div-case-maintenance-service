@@ -46,7 +46,8 @@ public class CaseRetrievalStateMap {
                 CaseState.DN_IS_REFUSED,
                 CaseState.DECREE_ABSOLUTE_REQUESTED,
                 CaseState.AOS_AWAITING_SOL,
-                CaseState.CLARIFICATION_SUBMITTED
+                CaseState.CLARIFICATION_SUBMITTED,
+                CaseState.AWAITING_ADMIN_CLARIFICATION
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
                 CaseState.AMEND_PETITION
@@ -82,7 +83,8 @@ public class CaseRetrievalStateMap {
                 CaseState.DN_IS_REFUSED,
                 CaseState.DECREE_ABSOLUTE_REQUESTED,
                 CaseState.AOS_AWAITING_SOL,
-                CaseState.CLARIFICATION_SUBMITTED)
+                CaseState.CLARIFICATION_SUBMITTED,
+                CaseState.AWAITING_ADMIN_CLARIFICATION)
         );
 
 }

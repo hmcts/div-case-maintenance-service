@@ -52,7 +52,8 @@ public class CaseStateTest {
                 {"DNDrafted", "DNDrafted"},
                 {"Unknown", "DNCompleted"},
                 {"DaRequested", "DARequested"},
-                {"ClarificationSubmitted", "ClarificationSubmitted"}
+                {"ClarificationSubmitted", "ClarificationSubmitted"},
+                {"AwaitingAdminClarification", "AwaitingAdminClarification"}
         });
     }
 

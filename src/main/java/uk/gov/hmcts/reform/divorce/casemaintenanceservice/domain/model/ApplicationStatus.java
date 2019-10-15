@@ -36,6 +36,7 @@ public enum ApplicationStatus {
     DECREE_ABSOLUTE_REQUESTED("DARequested"),
     AOS_AWAITING_SOL("AosAwaitingSol"),
     CLARIFICATION_SUBMITTED("ClarificationSubmitted"),
+    AWAITING_ADMIN_CLARIFICATION("AwaitingAdminClarification"),
     UNKNOWN("DNCompleted");
 
     private final String value;
