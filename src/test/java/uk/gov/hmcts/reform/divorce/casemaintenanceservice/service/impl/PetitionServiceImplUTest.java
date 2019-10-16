@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +49,10 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_REJECT_DOCUMENTS_UPLOADED;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.ISSUE_DATE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.PREVIOUS_REASONS_DIVORCE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.REFUSAL_ORDER_REJECTION_REASONS;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.REJECTION_INSUFFICIENT_DETAILS;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.REJECTION_NO_CRITERIA;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.REJECTION_NO_JURISDICTION;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
 
@@ -62,6 +67,10 @@ public class PetitionServiceImplUTest {
     private static final String TWO_YEAR_SEPARATION = "2yr-separation";
     private static final String DRAFT_ID = "1";
     private static final String DIVORCE_DRAFT_FORMAT = "divorcedraft";
+    private static final String D_8_DIVORCE_WHO = "D8DivorceWho";
+    private static final String D_8_REASON_FOR_DIVORCE = "D8ReasonForDivorce";
+    private static final String D_8_HELP_WITH_FEES_NEED_HELP = "D8HelpWithFeesNeedHelp";
+    private static final String D_8_CONNECTIONS = "D8Connections";
 
     @Mock
     private CcdRetrievalService ccdRetrievalService;
@@ -448,6 +457,250 @@ public class PetitionServiceImplUTest {
         ));
 
         assertThat(petition.getData(), equalTo(expectedDraft.getDocument()));
+    }
+
+    @Test
+    public void whenCreateAmendedPetitionDraftForRefusal_thenProceedAsExpected() throws DuplicateCaseException {
+        Date originalCaseIssueDate = new Date();
+
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(ISSUE_DATE, originalCaseIssueDate);
+        caseData.put(D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
+
+        final CoreCaseData coreCaseData = new CoreCaseData();
+        final DivorceSession divorceSession = new DivorceSession();
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
+            .id(Long.decode(TEST_CASE_ID)).build();
+
+        final Map<String, Object> draftData = new HashMap<>();
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+
+        final User user = new User(AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(caseDetails);
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(user);
+        when(caseFormatterService.transformToDivorceSession(any(CoreCaseData.class))).thenReturn(divorceSession);
+        when(objectMapper.convertValue(caseDetails.getData(), CoreCaseData.class)).thenReturn(coreCaseData);
+        when(objectMapper.convertValue(divorceSession, Map.class)).thenReturn(draftData);
+
+        classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER);
+        verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void givenCaseWasNotIssued_whenCreateAmendedPetitionDraftForRefusal_thenProceedAsExpected() throws DuplicateCaseException {
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
+
+        final CoreCaseData coreCaseData = new CoreCaseData();
+        final DivorceSession divorceSession = new DivorceSession();
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
+            .id(Long.decode(TEST_CASE_ID)).build();
+
+        final Map<String, Object> draftData = new HashMap<>();
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+
+        final User user = new User(AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(caseDetails);
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(user);
+        when(caseFormatterService.transformToDivorceSession(any(CoreCaseData.class))).thenReturn(divorceSession);
+        when(objectMapper.convertValue(caseDetails.getData(), CoreCaseData.class)).thenReturn(coreCaseData);
+        when(objectMapper.convertValue(divorceSession, Map.class)).thenReturn(draftData);
+
+        classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER);
+        verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void givenCaseNotProgressed_whenCreateAmendedPetitionDraftForRefusal_thenReturnNull() throws DuplicateCaseException {
+        final User user = new User(AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
+            .id(Long.decode(TEST_CASE_ID)).build();
+
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(user);
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(caseDetails);
+
+        assertNull(classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION));
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER);
+    }
+
+    @Test
+    public void givenNoUserExists_whenCreateAmendedPetitionDraftForRefusal_thenReturnNull() throws DuplicateCaseException {
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(null);
+
+        assertNull(classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION));
+
+        verify(userService).retrieveUser(AUTHORISATION);
+    }
+
+    @Test
+    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForNoJurisdiction_thenProceedAsExpected()
+        throws DuplicateCaseException {
+
+        final CoreCaseData coreCaseData = new CoreCaseData();
+        final DivorceSession divorceSession = new DivorceSession();
+
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList(REJECTION_NO_JURISDICTION));
+        // Case Data to Keep
+        caseData.put(D_8_DIVORCE_WHO, "husband");
+        caseData.put(D_8_REASON_FOR_DIVORCE, "adultery");
+        // Case Data to be Removed
+        caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, "Yes");
+        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(Long.decode(TEST_CASE_ID)).build();
+        final Map<String, Object> draftData = new HashMap<>();
+
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+
+        final User user = new User(AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(user);
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(caseDetails);
+        when(caseFormatterService.transformToDivorceSession(any(CoreCaseData.class))).thenReturn(divorceSession);
+        when(objectMapper.convertValue(caseDetails.getData(), CoreCaseData.class)).thenReturn(coreCaseData);
+        when(objectMapper.convertValue(divorceSession, Map.class)).thenReturn(draftData);
+
+        classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER);
+        verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForNoCriteria_thenProceedAsExpected()
+        throws DuplicateCaseException {
+
+        final CoreCaseData coreCaseData = new CoreCaseData();
+        final DivorceSession divorceSession = new DivorceSession();
+
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList(REJECTION_NO_CRITERIA));
+        // Case Data to Keep
+        caseData.put(D_8_DIVORCE_WHO, "husband");
+        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+        // Case Data to be Removed
+        caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, "Yes");
+        caseData.put(D_8_REASON_FOR_DIVORCE, "adultery");
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(Long.decode(TEST_CASE_ID)).build();
+        final Map<String, Object> draftData = new HashMap<>();
+
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+
+        final User user = new User(AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(user);
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(caseDetails);
+        when(caseFormatterService.transformToDivorceSession(any(CoreCaseData.class))).thenReturn(divorceSession);
+        when(objectMapper.convertValue(caseDetails.getData(), CoreCaseData.class)).thenReturn(coreCaseData);
+        when(objectMapper.convertValue(divorceSession, Map.class)).thenReturn(draftData);
+
+        classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER);
+        verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForInsufficientDetails_thenProceedAsExpected()
+        throws DuplicateCaseException {
+
+        final CoreCaseData coreCaseData = new CoreCaseData();
+        final DivorceSession divorceSession = new DivorceSession();
+
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList(REJECTION_INSUFFICIENT_DETAILS));
+        // Case Data to Keep
+        caseData.put(D_8_DIVORCE_WHO, "husband");
+        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+        // Case Data to be Removed
+        caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, "Yes");
+        caseData.put(D_8_REASON_FOR_DIVORCE, "adultery");
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(Long.decode(TEST_CASE_ID)).build();
+        final Map<String, Object> draftData = new HashMap<>();
+
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+
+        final User user = new User(AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(user);
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(caseDetails);
+        when(caseFormatterService.transformToDivorceSession(any(CoreCaseData.class))).thenReturn(divorceSession);
+        when(objectMapper.convertValue(caseDetails.getData(), CoreCaseData.class)).thenReturn(coreCaseData);
+        when(objectMapper.convertValue(divorceSession, Map.class)).thenReturn(draftData);
+
+        classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER);
+        verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForAllReasons_thenProceedAsExpected()
+        throws DuplicateCaseException {
+
+        final CoreCaseData coreCaseData = new CoreCaseData();
+        final DivorceSession divorceSession = new DivorceSession();
+
+        final Map<String, Object> caseData = new HashMap<>();
+        caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, ImmutableList.of(
+            REJECTION_NO_JURISDICTION, REJECTION_NO_CRITERIA, REJECTION_INSUFFICIENT_DETAILS
+        ));
+        // Case Data to Keep
+        caseData.put(D_8_DIVORCE_WHO, "husband");
+        // Case Data to be Removed
+        caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, "Yes");
+        caseData.put(D_8_REASON_FOR_DIVORCE, "adultery");
+        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+
+        final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(Long.decode(TEST_CASE_ID)).build();
+        final Map<String, Object> draftData = new HashMap<>();
+
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+
+        final User user = new User(AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(user);
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(caseDetails);
+        when(caseFormatterService.transformToDivorceSession(any(CoreCaseData.class))).thenReturn(divorceSession);
+        when(objectMapper.convertValue(caseDetails.getData(), CoreCaseData.class)).thenReturn(coreCaseData);
+        when(objectMapper.convertValue(divorceSession, Map.class)).thenReturn(draftData);
+
+        classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER);
+        verify(draftService).createDraft(AUTHORISATION, draftData, true);
+    }
+
+    @Test
+    public void whenCreateAmendedPetitionDraftForRefusal_whenPetitionNotFound_thenProceedAsExpected()
+        throws DuplicateCaseException {
+        final User user = new User(AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+
+        when(ccdRetrievalService.retrieveCase(AUTHORISATION, PETITIONER)).thenReturn(null);
+        when(userService.retrieveUser(AUTHORISATION)).thenReturn(user);
+
+        classUnderTest.createAmendedPetitionDraftRefusal(AUTHORISATION);
+
+        verify(ccdRetrievalService).retrieveCase(AUTHORISATION, PETITIONER);
     }
 
     private Draft buildDraft(Map<String, Object> properties) {
