@@ -155,7 +155,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
-        assertEquals(UNFORMATTED_CASE_ID, cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
+        assertEquals("01234567890", cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
     }
 
     private Response createACaseMakePaymentAndReturnTheCase(UserDetails userDetails) throws Exception {
