@@ -52,8 +52,8 @@ public class CcdControllerUTest {
 
         ResponseEntity<CaseDetails> responseEntity = classUnderTest.submitCase(CASE_DATA_CONTENT, JWT_TOKEN);
 
-        assertEquals(responseEntity.getBody(), CASE_DETAILS);
-        assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
+        assertEquals(CASE_DETAILS, responseEntity.getBody());
+        assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
 
         verify(ccdSubmissionService).submitCase(CASE_DATA_CONTENT, JWT_TOKEN);
     }
