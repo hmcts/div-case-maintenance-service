@@ -39,6 +39,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -116,16 +117,15 @@ public class SaveDraftServiceITest extends MockSupport {
     @Test
     public void givenThereIsNoDraft_whenSaveDraft_thenSaveDraft() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
         final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(), DRAFT_DOCUMENT_TYPE_CCD_FORMAT, maxAge);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
-        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(TEST_SERVICE_TOKEN), "");
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubSaveDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
+        stubSaveDraftEndpoint(new EqualToPattern(TEST_SERVICE_TOKEN), createDraft);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .content(DATA_TO_SAVE)
@@ -139,17 +139,16 @@ public class SaveDraftServiceITest extends MockSupport {
     @Test
     public void givenThereIsNoDraftAndDivorceFormatTrue_whenSaveDraft_thenSaveDraft() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
         final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(),
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
-        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken), "");
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(TEST_SERVICE_TOKEN), "");
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubSaveDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
+        stubSaveDraftEndpoint(new EqualToPattern(TEST_SERVICE_TOKEN), createDraft);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .content(DATA_TO_SAVE)
@@ -163,19 +162,18 @@ public class SaveDraftServiceITest extends MockSupport {
     @Test
     public void givenThereIsAlreadyADraft_whenSaveDraft_thenUpdateDraft() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
         final DraftList draftList = new DraftList(Collections.singletonList(DRAFT), null);
 
         final UpdateDraft updateDraft = new UpdateDraft(Collections.emptyMap(), DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
-        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken),
+        stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(TEST_SERVICE_TOKEN),
             ObjectMapperTestUtil.convertObjectToJsonString(draftList));
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubUpdateDraftEndpoint(new EqualToPattern(serviceToken), updateDraft);
+        stubUpdateDraftEndpoint(new EqualToPattern(TEST_SERVICE_TOKEN), updateDraft);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .content(DATA_TO_SAVE)

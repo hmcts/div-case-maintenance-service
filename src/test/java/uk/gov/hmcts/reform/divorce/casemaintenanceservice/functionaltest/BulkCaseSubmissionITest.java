@@ -34,6 +34,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -77,7 +79,7 @@ public class BulkCaseSubmissionITest extends MockSupport {
     @Test
     public void givenCaseDataIsNull_whenSubmitCase_thenReturnBadRequest() throws Exception {
         webClient.perform(post(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, "Some JWT Token")
+            .header(HttpHeaders.AUTHORIZATION, TEST_AUTH_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
@@ -87,7 +89,6 @@ public class BulkCaseSubmissionITest extends MockSupport {
     public void givenAllGoesWell_whenSubmitBulkCase_thenProceedAsExpected() throws Exception {
         final String caseData = ResourceLoader.loadJson(NO_HELP_WITH_FEES_PATH);
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final StartEventResponse startEventResponse = StartEventResponse.builder()
             .eventId(createEventId)
@@ -109,12 +110,12 @@ public class BulkCaseSubmissionITest extends MockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCaseworker(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createEventId))
+            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, createEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
-            .submitForCaseworker(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType,
+            .submitForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
                 true, caseDataContent))
             .thenReturn(caseDetails);
 
@@ -130,16 +131,15 @@ public class BulkCaseSubmissionITest extends MockSupport {
     @Test
     public void givenCcdThrowsFeignExceptionOnStartForCitizen_whenSubmitCase_thenReturnFeignError() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
 
         final FeignException feignException = getMockedFeignException(feignStatusCode);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCaseworker(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createEventId))
+            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, createEventId))
             .thenThrow(feignException);
 
         webClient.perform(post(API_URL)
@@ -155,7 +155,6 @@ public class BulkCaseSubmissionITest extends MockSupport {
     public void givenCcdThrowsFeignExceptionOnSubmitForCitizen_whenSubmitCase_thenReturnFeignError() throws Exception {
         final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
 
         final FeignException feignException = getMockedFeignException(feignStatusCode);
@@ -178,12 +177,12 @@ public class BulkCaseSubmissionITest extends MockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCaseworker(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createEventId))
+            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, createEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
-            .submitForCaseworker(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType,
+            .submitForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
                 true, caseDataContent))
             .thenThrow(feignException);
 

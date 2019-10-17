@@ -11,4 +11,10 @@ public class CmsConstants {
     public static final String RESP_SOL_ROLE = "[RESPSOLICITOR]";
     public static final String PET_SOL_ROLE = "[PETSOLICITOR]";
     public static final String YES_VALUE = "Yes";
+    public static final String NO_VALUE = "No";
+    public static final String CASE_EVENT_ID = "eventId";
+    public static final String D_8_REASON_FOR_DIVORCE = "D8ReasonForDivorce";
+    public static final String D_8_DIVORCE_WHO = "D8DivorceWho";
+    public static final String D_8_HELP_WITH_FEES_NEED_HELP = "D8HelpWithFeesNeedHelp";
+    public static final String D_8_CONNECTIONS = "D8Connections";
 }

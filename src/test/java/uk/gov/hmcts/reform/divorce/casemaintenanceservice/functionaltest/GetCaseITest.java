@@ -31,6 +31,8 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_USER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 
 @RunWith(SpringRunner.class)
@@ -93,14 +95,13 @@ public class GetCaseITest extends MockSupport {
     @Test
     public void givenNoCaseInCcd_whenGetCase_thenReturnNull() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
+            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(null);
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
@@ -113,15 +114,14 @@ public class GetCaseITest extends MockSupport {
     @Test
     public void givenSingleCaseInCcd_whenGetCase_thenReturnTheCase() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final CaseDetails caseDetails = createCaseDetails();
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
+            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Collections.singletonList(caseDetails));
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
@@ -136,15 +136,15 @@ public class GetCaseITest extends MockSupport {
     @Test
     public void givenMultipleCaseInCcd_whenGetCase_thenReturnReturn300() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
+
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final CaseDetails caseDetails1 = createCaseDetails();
         final CaseDetails caseDetails2 = createCaseDetails();
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
+            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Arrays.asList(caseDetails1, caseDetails2));
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
@@ -156,7 +156,7 @@ public class GetCaseITest extends MockSupport {
     private CaseDetails createCaseDetails() {
         return CaseDetails
             .builder()
-            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, USER_EMAIL))
+            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
             .build();
     }
 

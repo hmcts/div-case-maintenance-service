@@ -34,6 +34,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -109,15 +110,14 @@ public class CreateDraftServiceITest extends MockSupport {
     @Test
     public void givenInDivorceFormat_whenCreateDraft_thenCreateDraft() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
         final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(),
             DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubCreateDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
+        stubCreateDraftEndpoint(new EqualToPattern(TEST_SERVICE_TOKEN), createDraft);
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
             .content(DATA_TO_SAVE)
@@ -131,15 +131,14 @@ public class CreateDraftServiceITest extends MockSupport {
     @Test
     public void givenInCcdFormat_whenCreateDraft_thenCreateDraft() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
         final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(),
             DRAFT_DOCUMENT_TYPE_CCD_FORMAT, maxAge);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubCreateDraftEndpoint(new EqualToPattern(serviceToken), createDraft);
+        stubCreateDraftEndpoint(new EqualToPattern(TEST_SERVICE_TOKEN), createDraft);
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
             .content(DATA_TO_SAVE)
@@ -159,6 +158,6 @@ public class CreateDraftServiceITest extends MockSupport {
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
-                .withBody("{}")));
+                .withBody(DATA_TO_SAVE)));
     }
 }

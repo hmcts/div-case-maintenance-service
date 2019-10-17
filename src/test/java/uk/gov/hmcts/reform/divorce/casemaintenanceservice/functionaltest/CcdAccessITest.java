@@ -38,6 +38,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CO_RESP_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_USER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
@@ -115,17 +118,16 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenCouldNotConnectToCcd_whenLinkRespondent_thenReturnHttp503() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
         final FeignException feignException = getMockedFeignException(feignStatusCode);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -141,15 +143,14 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenNoCaseWithId_whenLinkRespondent_thenReturnNotFound() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -164,17 +165,16 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenLetterHolderIdIsNull_whenLinkRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder().data(new HashMap<>()).build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -189,7 +189,6 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenLetterHolderIdDoNotMatch_whenLinkRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
@@ -199,10 +198,10 @@ public class CcdAccessITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -217,23 +216,22 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenPetitionerAuthToken_whenLinkRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
                 RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                D8_PETITIONER_EMAIL, USER_EMAIL
+                D8_PETITIONER_EMAIL, TEST_USER_EMAIL
             ))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -248,7 +246,6 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenLetterHolderIdDoNotMatch_whenLinkCoRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
@@ -258,10 +255,10 @@ public class CcdAccessITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -276,23 +273,22 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenPetitionerAuthToken_whenLinkCoRespondent_thenReturnUnauthorized() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
                 CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                D8_PETITIONER_EMAIL, USER_EMAIL
+                D8_PETITIONER_EMAIL, TEST_USER_EMAIL
             ))
             .build();
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -307,7 +303,6 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenInvalidUserToken_whenLinkRespondent_thenReturnForbiddenError() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
@@ -317,10 +312,10 @@ public class CcdAccessITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -338,7 +333,6 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenGrantAccessFails_whenLinkRespondent_thenReturnBadRequest() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
         final FeignException feignException = getMockedFeignException(feignStatusCode);
 
@@ -350,10 +344,10 @@ public class CcdAccessITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -364,7 +358,7 @@ public class CcdAccessITest extends MockSupport {
             .when(caseUserApi)
             .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
-                eq(serviceAuthToken),
+                eq(TEST_SERVICE_TOKEN),
                 eq(CASE_ID),
                 eq(USER_ID),
                 any(CaseUser.class)
@@ -378,7 +372,6 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenAllGoesWell_whenLinkRespondent_thenProceedAsExpected() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
@@ -388,10 +381,10 @@ public class CcdAccessITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -402,7 +395,7 @@ public class CcdAccessITest extends MockSupport {
             .when(caseUserApi)
             .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
-                eq(serviceAuthToken),
+                eq(TEST_SERVICE_TOKEN),
                 eq(CASE_ID),
                 eq(USER_ID),
                 any(CaseUser.class)
@@ -417,7 +410,6 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenAllGoesWell_whenLinkCoRespondent_thenProceedAsExpected() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
@@ -427,10 +419,10 @@ public class CcdAccessITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -441,7 +433,7 @@ public class CcdAccessITest extends MockSupport {
             .when(caseUserApi)
             .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
-                eq(serviceAuthToken),
+                eq(TEST_SERVICE_TOKEN),
                 eq(CASE_ID),
                 eq(USER_ID),
                 any(CaseUser.class)
@@ -455,12 +447,11 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenCoRespLinkedAlready_whenLinkRespondentSolicitor_thenProceedAsExpected() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID);
         caseData.put(RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID_OTHER);
-        caseData.put(CO_RESP_EMAIL_ADDRESS, CO_RESP_EMAIL);
-        caseData.put(RESP_EMAIL_ADDRESS, USER_EMAIL);
+        caseData.put(CO_RESP_EMAIL_ADDRESS, TEST_CO_RESP_EMAIL);
+        caseData.put(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL);
         caseData.put(RESP_SOL_REPRESENTED, YES_VALUE);
 
         final CaseDetails caseDetails = CaseDetails.builder()
@@ -471,10 +462,10 @@ public class CcdAccessITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi.readForCaseWorker(
             BEARER_CASE_WORKER_TOKEN,
-            serviceAuthToken,
+            TEST_SERVICE_TOKEN,
             CASE_WORKER_USER_ID,
             jurisdictionId,
             caseType,
@@ -485,7 +476,7 @@ public class CcdAccessITest extends MockSupport {
             .when(caseUserApi)
             .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
-                eq(serviceAuthToken),
+                eq(TEST_SERVICE_TOKEN),
                 eq(CASE_ID),
                 eq(USER_ID),
                 any(CaseUser.class)
@@ -499,18 +490,17 @@ public class CcdAccessITest extends MockSupport {
     @Test
     public void givenAllGoesWell_whenAssigningPetSolicitorRole_thenProceedAsExpected() throws Exception {
         final String solicitorUserDetails = getSolicitorUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), solicitorUserDetails);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         doNothing()
             .when(caseUserApi)
             .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
-                eq(serviceAuthToken),
+                eq(TEST_SERVICE_TOKEN),
                 eq(CASE_ID),
                 eq(USER_ID),
                 any(CaseUser.class)

@@ -14,11 +14,10 @@ import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplUTest {
-    private static final String CITIZEN_AUTHORISATION = "auth token";
-
     private static final String CASEWORKER_USER_NAME = "caseworker user name";
     private static final String CASEWORKER_PASSWORD = "caseworker password";
 
@@ -37,21 +36,21 @@ public class UserServiceImplUTest {
     @Test
     public void givenUserExists_whenRetrieveUserDetails_thenReturnUserDetails() {
         UserDetails userDetails = UserDetails.builder().build();
-        final User expected = new User(CITIZEN_AUTHORISATION, userDetails);
+        final User expected = new User(TEST_AUTH_TOKEN, userDetails);
 
-        when(idamClient.getUserDetails(CITIZEN_AUTHORISATION)).thenReturn(userDetails);
+        when(idamClient.getUserDetails(TEST_AUTH_TOKEN)).thenReturn(userDetails);
 
-        User actual = classUnderTest.retrieveUser(CITIZEN_AUTHORISATION);
+        User actual = classUnderTest.retrieveUser(TEST_AUTH_TOKEN);
 
         assertEquals(expected.getUserDetails(), actual.getUserDetails());
-        assertEquals(CITIZEN_AUTHORISATION, actual.getAuthToken());
+        assertEquals(TEST_AUTH_TOKEN, actual.getAuthToken());
 
-        verify(idamClient).getUserDetails(CITIZEN_AUTHORISATION);
+        verify(idamClient).getUserDetails(TEST_AUTH_TOKEN);
     }
 
     @Test
     public void givenCorrectCredentials_whenRetrieveAnonymousCaseWorkerDetails_thenReturnReturnCaseWorkerDetails() {
-        final String bearerAuthToken = IdamClient.BEARER_AUTH_TYPE + " " + CITIZEN_AUTHORISATION;
+        final String bearerAuthToken = IdamClient.BEARER_AUTH_TYPE + " " + TEST_AUTH_TOKEN;
 
         final UserDetails userDetails = UserDetails.builder().id("2").build();
         final User expected = new User(bearerAuthToken, userDetails);
