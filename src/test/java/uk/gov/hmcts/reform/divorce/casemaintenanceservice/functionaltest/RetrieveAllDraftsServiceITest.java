@@ -33,6 +33,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_DRAFT_DOCUMENT_TYPE_CCD_FORMAT;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 
 @RunWith(SpringRunner.class)
@@ -48,9 +49,8 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.T
 public class RetrieveAllDraftsServiceITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/drafts";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
-    private static final String DRAFT_DOCUMENT_TYPE = "divorcedraftccdformat";
     private static final String DRAFT_ID = "1";
-    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE);
+    private static final Draft DRAFT = new Draft(DRAFT_ID, null, TEST_DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
 
     @Autowired
     private MockMvc webClient;

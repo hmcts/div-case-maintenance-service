@@ -46,6 +46,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_USER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
@@ -64,8 +65,6 @@ public class RetrieveAosCaseITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrieveAosCase";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
     private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
-    private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
-    private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
@@ -317,7 +316,7 @@ public class RetrieveAosCaseITest extends MockSupport {
         final String message = getUserDetails();
 
         final DraftList draftList = new DraftList(Collections.singletonList(
-            createDraft("1", DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)), null);
+            createDraft("1", TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT)), null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -345,7 +344,7 @@ public class RetrieveAosCaseITest extends MockSupport {
         final Map<String, Object> caseData = Collections.emptyMap();
 
         final DraftList draftList = new DraftList(Collections.singletonList(
-            new Draft("1", divorceSessionData, DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT)),
+            new Draft("1", divorceSessionData, TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT)),
             null);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);

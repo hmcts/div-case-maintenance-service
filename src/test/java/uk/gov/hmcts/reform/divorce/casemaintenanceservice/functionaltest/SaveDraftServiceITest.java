@@ -39,6 +39,9 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_DIVORCE_FORMAT_KEY;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_DRAFT_DOCUMENT_TYPE_CCD_FORMAT;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 
 @RunWith(SpringRunner.class)
@@ -54,12 +57,9 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.T
 public class SaveDraftServiceITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/drafts";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
-    private static final String DRAFT_DOCUMENT_TYPE_CCD_FORMAT = "divorcedraftccdformat";
-    private static final String DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT = "divorcedraft";
     private static final String DRAFT_ID = "1";
-    private static final Draft DRAFT = new Draft(DRAFT_ID, null, DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
+    private static final Draft DRAFT = new Draft(DRAFT_ID, null, TEST_DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
     private static final String DATA_TO_SAVE = "{}";
-    private static final String DIVORCE_FORMAT_KEY = "divorceFormat";
 
     @Value("${draft.store.api.max.age}")
     private int maxAge;
@@ -118,7 +118,7 @@ public class SaveDraftServiceITest extends MockSupport {
     public void givenThereIsNoDraft_whenSaveDraft_thenSaveDraft() throws Exception {
         final String message = getUserDetails();
 
-        final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(), DRAFT_DOCUMENT_TYPE_CCD_FORMAT, maxAge);
+        final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(), TEST_DRAFT_DOCUMENT_TYPE_CCD_FORMAT, maxAge);
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
@@ -129,7 +129,7 @@ public class SaveDraftServiceITest extends MockSupport {
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .content(DATA_TO_SAVE)
-            .param(DIVORCE_FORMAT_KEY, "false")
+            .param(TEST_DIVORCE_FORMAT_KEY, "false")
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -141,7 +141,7 @@ public class SaveDraftServiceITest extends MockSupport {
         final String message = getUserDetails();
 
         final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(),
-            DRAFT_DOCUMENT_TYPE_DIVORCE_FORMAT, maxAge);
+            TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT, maxAge);
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
@@ -152,7 +152,7 @@ public class SaveDraftServiceITest extends MockSupport {
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
             .content(DATA_TO_SAVE)
-            .param(DIVORCE_FORMAT_KEY, "true")
+            .param(TEST_DIVORCE_FORMAT_KEY, "true")
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -165,7 +165,7 @@ public class SaveDraftServiceITest extends MockSupport {
 
         final DraftList draftList = new DraftList(Collections.singletonList(DRAFT), null);
 
-        final UpdateDraft updateDraft = new UpdateDraft(Collections.emptyMap(), DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
+        final UpdateDraft updateDraft = new UpdateDraft(Collections.emptyMap(), TEST_DRAFT_DOCUMENT_TYPE_CCD_FORMAT);
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 

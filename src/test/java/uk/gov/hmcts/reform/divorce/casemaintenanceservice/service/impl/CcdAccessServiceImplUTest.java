@@ -38,7 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CO_RESP_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_LETTER_HOLDER_ID_CODE;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RESPONDENT_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RESP_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RESP_SOL_COMPANY;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RESP_SOL_NAME;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
@@ -234,7 +234,7 @@ public class CcdAccessServiceImplUTest {
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
                 Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), TEST_LETTER_HOLDER_ID_CODE,
-                Objects.requireNonNull(RESP_EMAIL_ADDRESS), TEST_RESPONDENT_EMAIL
+                Objects.requireNonNull(RESP_EMAIL_ADDRESS), TEST_RESP_EMAIL
             )).build();
 
         when(coreCaseDataApi.readForCaseWorker(
@@ -308,7 +308,7 @@ public class CcdAccessServiceImplUTest {
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
                 Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), TEST_LETTER_HOLDER_ID_CODE,
-                Objects.requireNonNull(CO_RESP_EMAIL_ADDRESS), TEST_RESPONDENT_EMAIL
+                Objects.requireNonNull(CO_RESP_EMAIL_ADDRESS), TEST_RESP_EMAIL
             )).build();
 
         when(coreCaseDataApi.readForCaseWorker(
@@ -333,7 +333,7 @@ public class CcdAccessServiceImplUTest {
             .state(CaseState.AOS_AWAITING.getValue())
             .data(ImmutableMap.of(
                 RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
-                RESP_EMAIL_ADDRESS, TEST_RESPONDENT_EMAIL
+                RESP_EMAIL_ADDRESS, TEST_RESP_EMAIL
             )).build();
 
         mockCaseDetails(caseDetails);

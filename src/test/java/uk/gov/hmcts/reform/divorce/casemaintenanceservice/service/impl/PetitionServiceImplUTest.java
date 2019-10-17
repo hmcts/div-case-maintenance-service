@@ -46,6 +46,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CASE_REF;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_REASON_ADULTERY;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RELATIONSHIP;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
@@ -76,7 +77,6 @@ public class PetitionServiceImplUTest {
     private static final String USER_FIRST_NAME = "John";
     private static final String TWO_YEAR_SEPARATION = "2yr-separation";
     private static final String DRAFT_ID = "1";
-    private static final String DIVORCE_DRAFT_FORMAT = "divorcedraft";
 
     @Captor
     private ArgumentCaptor<Object> ccdCaseDataArgumentCaptor;
@@ -676,7 +676,7 @@ public class PetitionServiceImplUTest {
     }
 
     private Draft buildDraft(Map<String, Object> properties) {
-        return new Draft(DRAFT_ID, properties, DIVORCE_DRAFT_FORMAT);
+        return new Draft(DRAFT_ID, properties, TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT);
     }
 
     private CaseDetails buildAdulteryCaseData() {

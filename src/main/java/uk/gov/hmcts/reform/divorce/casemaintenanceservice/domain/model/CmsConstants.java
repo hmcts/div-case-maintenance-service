@@ -17,4 +17,12 @@ public class CmsConstants {
     public static final String D_8_DIVORCE_WHO = "D8DivorceWho";
     public static final String D_8_HELP_WITH_FEES_NEED_HELP = "D8HelpWithFeesNeedHelp";
     public static final String D_8_CONNECTIONS = "D8Connections";
+    public static final String BULK_CASE_TYPE = "bulkCaseType";
+    public static final String CASEWORKER_ROLE = "caseworker";
+    public static final String CITIZEN_ROLE = "citizen";
+
+    // Event IDs
+    public static final String CREATE_EVENT_ID = "createEventId";
+    public static final String CREATE_HWF_EVENT_ID = "createHwfEventId";
+    public static final String CREATE_BULK_CASE_EVENT_ID = "createBulkCaseEventId";
 }
