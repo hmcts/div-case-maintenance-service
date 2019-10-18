@@ -39,6 +39,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_EVENT_ID;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_TOKEN;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -86,7 +90,7 @@ public class CcdSubmissionITest extends MockSupport {
     @Test
     public void givenCaseDataIsNull_whenSubmitCase_thenReturnBadRequest() throws Exception {
         webClient.perform(post(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, "Some JWT Token")
+            .header(HttpHeaders.AUTHORIZATION, TEST_AUTH_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
@@ -133,16 +137,15 @@ public class CcdSubmissionITest extends MockSupport {
     @Test
     public void givenCcdThrowsFeignExceptionOnStartForCitizen_whenSubmitCase_thenReturnFeignError() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
 
         final FeignException feignException = getMockedFeignException(feignStatusCode);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createHwfEventId))
+            .startForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, createHwfEventId))
             .thenThrow(feignException);
 
         webClient.perform(post(API_URL)
@@ -158,16 +161,13 @@ public class CcdSubmissionITest extends MockSupport {
     public void givenCcdThrowsFeignExceptionOnSubmitForCitizen_whenSubmitCase_thenReturnFeignError() throws Exception {
         final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
 
         final FeignException feignException = getMockedFeignException(feignStatusCode);
 
-        final String eventId = "eventId";
-        final String token = "token";
         final StartEventResponse startEventResponse = StartEventResponse.builder()
-            .eventId(eventId)
-            .token(token)
+            .eventId(TEST_EVENT_ID)
+            .token(TEST_TOKEN)
             .build();
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -183,12 +183,12 @@ public class CcdSubmissionITest extends MockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createHwfEventId))
+            .startForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, createHwfEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
-            .submitForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType,
+            .submitForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
             true, caseDataContent))
             .thenThrow(feignException);
 
@@ -205,13 +205,10 @@ public class CcdSubmissionITest extends MockSupport {
     public void givenAllGoesWell_whenSubmitCase_thenProceedAsExpected() throws Exception {
         final String caseData = ResourceLoader.loadJson(NO_HELP_WITH_FEES_PATH);
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
-        final String eventId = "eventId";
-        final String token = "token";
         final StartEventResponse startEventResponse = StartEventResponse.builder()
-            .eventId(eventId)
-            .token(token)
+            .eventId(TEST_EVENT_ID)
+            .token(TEST_TOKEN)
             .build();
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -227,15 +224,15 @@ public class CcdSubmissionITest extends MockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
-        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceAuthToken));
+        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(TEST_SERVICE_TOKEN));
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createEventId))
+            .startForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, createEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
-            .submitForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType,
+            .submitForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
                 true, caseDataContent))
             .thenReturn(caseDetails);
 
@@ -252,13 +249,10 @@ public class CcdSubmissionITest extends MockSupport {
     public void givenHwfCase_whenSubmitCase_thenProceedWithHwfEvent() throws Exception {
         final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
-        final String eventId = "eventId";
-        final String token = "token";
         final StartEventResponse startEventResponse = StartEventResponse.builder()
-            .eventId(eventId)
-            .token(token)
+            .eventId(TEST_EVENT_ID)
+            .token(TEST_TOKEN)
             .build();
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -274,15 +268,15 @@ public class CcdSubmissionITest extends MockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
-        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceAuthToken));
+        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(TEST_SERVICE_TOKEN));
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType, createHwfEventId))
+            .startForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, createHwfEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
-            .submitForCitizen(USER_TOKEN, serviceAuthToken, USER_ID, jurisdictionId, caseType,
+            .submitForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
                 true, caseDataContent))
             .thenReturn(caseDetails);
 

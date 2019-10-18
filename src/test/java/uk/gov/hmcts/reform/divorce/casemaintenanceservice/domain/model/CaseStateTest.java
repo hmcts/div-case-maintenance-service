@@ -63,5 +63,4 @@ public class CaseStateTest {
 
         assertThat(applicationStatus.getValue(), equalTo(expectedApplicationStatus));
     }
-
 }

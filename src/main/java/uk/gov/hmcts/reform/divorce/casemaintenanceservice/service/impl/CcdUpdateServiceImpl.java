@@ -12,13 +12,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CASEWORKER_ROLE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil.getBearerToken;
 
 @Service
 public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {
-
-    private static final String CASEWORKER_ROLE = "caseworker";
-    private static final String CITIZEN_ROLE = "citizen";
 
     @Override
     public CaseDetails update(String caseId, Object data, String eventId, String authorisation) {
