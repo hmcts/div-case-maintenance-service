@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -74,7 +75,7 @@ public class CcdUpdateITest extends MockSupport {
     @Test
     public void givenCaseDataIsNull_whenUpdateCase_thenReturnBadRequest() throws Exception {
         webClient.perform(post(getApiUrl())
-            .header(HttpHeaders.AUTHORIZATION, "Some JWT Token")
+            .header(HttpHeaders.AUTHORIZATION, TEST_AUTH_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());

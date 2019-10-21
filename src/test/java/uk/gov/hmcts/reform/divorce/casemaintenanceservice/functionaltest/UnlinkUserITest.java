@@ -32,6 +32,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -71,18 +72,17 @@ public class UnlinkUserITest  extends MockSupport {
     @Test
     public void givenAllGoesWell_whenUnlinkRespondent_thenReturn200Response() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         doNothing()
             .when(caseUserApi)
             .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
-                eq(serviceAuthToken),
+                eq(TEST_SERVICE_TOKEN),
                 eq(CASE_ID),
                 eq(USER_ID),
                 any(CaseUser.class)
@@ -96,12 +96,11 @@ public class UnlinkUserITest  extends MockSupport {
     @Test
     public void givenCaseNotFound_whenUnlinkRespondent_thenReturnNotFoundResponse() throws Exception {
         final String message = getUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         Response mockResponse = Response.builder()
             .request(Request.create(Request.HttpMethod.GET, "http//example.com", Collections.emptyMap(), null))
@@ -112,7 +111,7 @@ public class UnlinkUserITest  extends MockSupport {
             .when(caseUserApi)
             .updateCaseRolesForUser(
                 eq(BEARER_CASE_WORKER_TOKEN),
-                eq(serviceAuthToken),
+                eq(TEST_SERVICE_TOKEN),
                 eq(CASE_ID),
                 eq(USER_ID),
                 any(CaseUser.class)

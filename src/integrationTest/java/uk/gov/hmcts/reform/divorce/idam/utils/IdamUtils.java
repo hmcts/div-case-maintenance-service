@@ -12,8 +12,9 @@ import uk.gov.hmcts.reform.divorce.util.ResourceLoader;
 
 import java.util.Base64;
 
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_TOKEN;
+
 public abstract class IdamUtils {
-    private static final String TOKEN = "token";
     private static final String AUTHORIZATION_CODE = "authorization_code";
     static final String CLIENT_ID = "divorce";
     static final String CODE = "code";
@@ -75,7 +76,7 @@ public abstract class IdamUtils {
             .queryParam("client_secret", idamClientSecret)
             .post(idamUserBaseUrl + "/oauth2/token")
             .body()
-            .jsonPath().get("access_" + TOKEN);
+            .jsonPath().get("access_" + TEST_TOKEN);
     }
 
     public final PinResponse generatePin(String firstName, String lastName, String authToken) {

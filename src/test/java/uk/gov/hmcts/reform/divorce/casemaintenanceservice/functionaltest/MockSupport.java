@@ -24,6 +24,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_USER_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CASEWORKER_ROLE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
 
 public abstract class MockSupport {
     private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
@@ -32,8 +35,6 @@ public abstract class MockSupport {
 
     static final String USER_ID = "1";
     static final String CASE_WORKER_USER_ID = "2";
-    static final String USER_EMAIL = "test@test.com";
-    static final String CO_RESP_EMAIL = "test@user.local";
     static final String ENCRYPTED_USER_ID = "OVZRS2hJRDg2MUFkeFdXdjF6bElfMQ==";
     static final String FEIGN_ERROR = "some error message";
 
@@ -57,9 +58,7 @@ public abstract class MockSupport {
     static final String BEARER_CASE_WORKER_TOKEN = BEARER + " " + CASE_WORKER_TOKEN;
 
     private static final String CASE_WORKER_AUTH_CODE = "AuthCode";
-    private static final String CITIZEN_ROLE = "citizen";
     private static final String SOLICITOR_ROLE = "caseworker-divorce-solicitor";
-    private static final String CASEWORKER_ROLE = "caseworker";
 
     @Value("${idam.client.redirect_uri}")
     private String authRedirectUrl;
@@ -83,14 +82,6 @@ public abstract class MockSupport {
         WireMockSpring
             .options()
             .port(4601)
-            .extensions(new ConnectionCloseExtension())
-    );
-
-    @ClassRule
-    public static WireMockClassRule caseFormatterServer = new WireMockClassRule(
-        WireMockSpring
-            .options()
-            .port(4011)
             .extensions(new ConnectionCloseExtension())
     );
 
@@ -144,7 +135,7 @@ public abstract class MockSupport {
 
     private String getUserDetailsForRole(String userId, String role) {
         return "{\"id\":\"" + userId
-            + "\",\"email\":\"" + USER_EMAIL
+            + "\",\"email\":\"" + TEST_USER_EMAIL
             + "\",\"forename\":\"forename\",\"surname\":\"Surname\",\"roles\":[\"" + role + "\"]}";
     }
 

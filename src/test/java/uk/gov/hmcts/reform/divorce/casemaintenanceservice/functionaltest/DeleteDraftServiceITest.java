@@ -24,6 +24,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -64,9 +65,8 @@ public class DeleteDraftServiceITest extends MockSupport {
     @Test
     public void givenNoDrafts_whenDeleteDraft_thenReturnHttp200() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
@@ -78,12 +78,11 @@ public class DeleteDraftServiceITest extends MockSupport {
     @Test
     public void givenThereIsDrafts_whenDeleteDraft_thenReturnHttp200() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(serviceToken));
+        stubDeleteDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(TEST_SERVICE_TOKEN));
 
         webClient.perform(MockMvcRequestBuilders.delete(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
