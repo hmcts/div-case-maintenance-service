@@ -440,6 +440,7 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(ISSUE_DATE, originalCaseIssueDate);
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(D8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
@@ -447,6 +448,7 @@ public class PetitionServiceImplUTest {
 
         final Map<String, Object> draftData = new HashMap<>();
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY));
 
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
@@ -466,6 +468,7 @@ public class PetitionServiceImplUTest {
     public void givenCaseWasNotIssued_whenCreateAmendedPetitionDraftForRefusal_thenProceedAsExpected() throws DuplicateCaseException {
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_ID);
+        caseData.put(D8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
@@ -473,6 +476,7 @@ public class PetitionServiceImplUTest {
 
         final Map<String, Object> draftData = new HashMap<>();
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY));
 
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
@@ -530,6 +534,7 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> draftData = new HashMap<>();
 
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY));
 
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
 
@@ -567,6 +572,7 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> draftData = new HashMap<>();
 
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY));
 
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
 
@@ -604,6 +610,7 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> draftData = new HashMap<>();
 
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY));
 
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
 
@@ -629,9 +636,10 @@ public class PetitionServiceImplUTest {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
-        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, ImmutableList.of(
+        List<String> refusalRejectionReasons = ImmutableList.of(
             REJECTION_NO_JURISDICTION, REJECTION_NO_CRITERIA, REJECTION_INSUFFICIENT_DETAILS
-        ));
+        );
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, refusalRejectionReasons);
         // Case Data to Keep
         caseData.put(D_8_DIVORCE_WHO, TEST_RELATIONSHIP);
         // Case Data to be Removed
@@ -643,6 +651,7 @@ public class PetitionServiceImplUTest {
         final Map<String, Object> draftData = new HashMap<>();
 
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY));
 
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
 
