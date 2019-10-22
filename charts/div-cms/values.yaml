@@ -6,7 +6,7 @@ java:
         DRAFT_STORE_API_BASEURL: "http://draft-store-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
         CASE_FORMATTER_SERVICE_API_BASEURL: "http://div-cfs-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
         IDAM_API_REDIRECT_URL: "https://div-pfe-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/authenticated"
-        CASE_DATA_STORE_BASEURL: "http://data-store-api-div-ccd-definitions-pr-273.service.core-compute-preview.internal"
+        CASE_DATA_STORE_BASEURL: "http://data-store-api-div-ccd-definitions-pr-309.service.core-compute-preview.internal"
         AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE: "divorce_ccd_submission"
         AUTH_PROVIDER_SERVICE_CLIENT_TOKENTIMETOLIVEINSECONDS: "900"
         LOG_LEVEL: DEBUG
