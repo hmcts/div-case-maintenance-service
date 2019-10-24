@@ -209,6 +209,17 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
     private Map<String, Object> getDraftAmendmentCaseRefusal(CaseDetails oldCase, String authorisation) {
         Map<String, Object> caseData = oldCase.getData();
 
+        List<String> previousReasons = (ArrayList<String>) caseData
+            .get(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE_REFUSAL);
+
+        if (previousReasons == null) {
+            previousReasons = new ArrayList<>();
+        } else {
+            // clone to avoid updating old case
+            previousReasons = new ArrayList<>(previousReasons);
+        }
+        previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
+
         Object issueDateFromOriginalCase = caseData.get(CcdCaseProperties.ISSUE_DATE);
         if (issueDateFromOriginalCase != null) {
             caseData.put(CcdCaseProperties.PREVIOUS_ISSUE_DATE, issueDateFromOriginalCase);
@@ -231,6 +242,7 @@ public class PetitionServiceImpl implements PetitionService, ApplicationListener
 
         final Map<String, Object> amendmentCaseDraft = transformToDivorceFormat(caseData);
         amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, String.valueOf(oldCase.getId()));
+        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, previousReasons);
 
         return amendmentCaseDraft;
     }
