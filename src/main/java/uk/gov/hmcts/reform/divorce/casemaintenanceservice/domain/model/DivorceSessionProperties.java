@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 public class DivorceSessionProperties {
     public static final String PREVIOUS_CASE_ID = "previousCaseId";
     public static final String PREVIOUS_REASONS_FOR_DIVORCE = "previousReasonsForDivorce";
+    public static final String PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL = "previousReasonsForDivorceRefusal";
 
     public static final String LEGAL_PROCEEDINGS = "legalProceedings";
     public static final String DIVORCE_WHO = "divorceWho";

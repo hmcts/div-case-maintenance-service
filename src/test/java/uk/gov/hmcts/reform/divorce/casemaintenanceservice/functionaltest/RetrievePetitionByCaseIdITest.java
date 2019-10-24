@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -56,7 +57,6 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
     public void givenCaseExistsWithId_whenRetrievePetitionById_thenReturnCaseDetails()
         throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final Long caseId = 1L;
@@ -64,9 +64,9 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
 
         final CaseDetails caseDetails = createCaseDetails(caseId, "state");
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .readForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, testCaseId))
+            .readForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, testCaseId))
             .thenReturn(caseDetails);
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL + "/" + testCaseId)
@@ -82,7 +82,6 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
     public void givenCaseExistsWithId_whenRetrievePetitionByIdWithCaseworker_thenReturnCaseDetails()
         throws Exception {
         final String message = getCaseWorkerUserDetails();
-        final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(BEARER_CASE_WORKER_TOKEN), message);
 
         final Long caseId = 1L;
@@ -90,9 +89,9 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
 
         final CaseDetails caseDetails = createCaseDetails(caseId, "state");
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .readForCaseWorker(BEARER_CASE_WORKER_TOKEN, serviceToken, CASE_WORKER_USER_ID,
+            .readForCaseWorker(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, CASE_WORKER_USER_ID,
                 jurisdictionId, caseType, testCaseId))
             .thenReturn(caseDetails);
 
@@ -106,18 +105,16 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
     }
 
     @Test
-    public void givenCaseDoesNotExistWithId_whenRetrievePetitionById_thenReturnNotFound()
-        throws Exception {
+    public void givenCaseDoesNotExistWithId_whenRetrievePetitionById_thenReturnNotFound() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         final Long caseId = 1L;
         final String testCaseId = String.valueOf(caseId);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .readForCitizen(USER_TOKEN, serviceToken, USER_ID, jurisdictionId, caseType, testCaseId))
+            .readForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, testCaseId))
             .thenReturn(null);
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL + "/" + testCaseId)
