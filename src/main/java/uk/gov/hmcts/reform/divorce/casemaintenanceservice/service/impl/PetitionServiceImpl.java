@@ -40,7 +40,8 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Di
 
 @Service
 @Slf4j
-public class PetitionServiceImpl implements PetitionService, ApplicationListener<CaseSubmittedEvent> {
+public class PetitionServiceImpl implements PetitionService,
+    ApplicationListener<CaseSubmittedEvent> {
 
     public static final String IS_DRAFT_KEY = "fetchedDraft";
 

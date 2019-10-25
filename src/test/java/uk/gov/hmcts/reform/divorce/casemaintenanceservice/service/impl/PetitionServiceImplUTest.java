@@ -83,10 +83,10 @@ public class PetitionServiceImplUTest {
     private DraftServiceImpl draftService;
 
     @Mock
-    private UserService userService;
+    private CaseFormatterService caseFormatterService;
 
     @Mock
-    private CaseFormatterService caseFormatterService;
+    private UserService userService;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -477,6 +477,8 @@ public class PetitionServiceImplUTest {
         caseData.put(D8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
 
+        final CoreCaseData coreCaseData = new CoreCaseData();
+        final DivorceSession divorceSession = new DivorceSession();
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
             .id(Long.decode(TEST_CASE_ID)).build();
 
@@ -485,17 +487,17 @@ public class PetitionServiceImplUTest {
         draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY));
 
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
+
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
+        when(caseFormatterService.transformToDivorceSession(any(CoreCaseData.class))).thenReturn(divorceSession);
+        when(objectMapper.convertValue(caseDetails.getData(), CoreCaseData.class)).thenReturn(coreCaseData);
+        when(objectMapper.convertValue(divorceSession, Map.class)).thenReturn(draftData);
 
         classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
         verify(draftService).createDraft(TEST_AUTH_TOKEN, draftData, true);
-        Map<String, Object> ccdCaseDataToBeTransformed = verifyCcdCaseDataToBeTransformed();
-        assertThat(ccdCaseDataToBeTransformed, allOf(
-            hasEntry(CcdCaseProperties.PREVIOUS_ISSUE_DATE, originalCaseIssueDate)
-        ));
     }
 
     @Test
@@ -569,7 +571,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCaseNotProgressed_whenCreateAmendedPetitionDraftForRefusal_thenReturnNull() throws DuplicateCaseException {
+    public void givenCaseNotProgressed_whenCreateAmendedPetitgivenValidRequestToAmend_whenAmendedPetitionDraftForRefusal_thenCreateAmendedPetitionDraftionDraftForRefusal_thenReturnNull() throws DuplicateCaseException {
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
