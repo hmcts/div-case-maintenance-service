@@ -51,7 +51,9 @@ public class CaseStateTest {
                 {"DNisRefused", "DNisRefused"},
                 {"DNDrafted", "DNDrafted"},
                 {"Unknown", "DNCompleted"},
-                {"DaRequested", "DARequested"}
+                {"DaRequested", "DARequested"},
+                {"ClarificationSubmitted", "ClarificationSubmitted"},
+                {"AwaitingAdminClarification", "AwaitingAdminClarification"}
         });
     }
 
@@ -61,5 +63,4 @@ public class CaseStateTest {
 
         assertThat(applicationStatus.getValue(), equalTo(expectedApplicationStatus));
     }
-
 }

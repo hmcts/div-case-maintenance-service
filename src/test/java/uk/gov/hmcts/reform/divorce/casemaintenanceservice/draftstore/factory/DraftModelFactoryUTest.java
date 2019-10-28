@@ -111,5 +111,4 @@ public class DraftModelFactoryUTest {
 
         assertFalse(underTest.isDivorceDraftInCcdFormat(draft));
     }
-
 }

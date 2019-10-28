@@ -11,6 +11,8 @@ import uk.gov.hmcts.reform.divorce.model.UserGroup;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
+
 @Slf4j
 public class IdamTestSupport {
     private static final String CASE_WORKER_USERNAME = "TEST_CASE_WORKER_USER";
@@ -111,7 +113,7 @@ public class IdamTestSupport {
                 .email(emailAddress)
                 .forename(username)
                 .password(password)
-                .roles(new UserGroup[]{ UserGroup.builder().code("citizen").build() })
+                .roles(new UserGroup[]{ UserGroup.builder().code(CITIZEN_ROLE).build() })
                 .userGroup(UserGroup.builder().code("citizens").build())
                 .build();
 

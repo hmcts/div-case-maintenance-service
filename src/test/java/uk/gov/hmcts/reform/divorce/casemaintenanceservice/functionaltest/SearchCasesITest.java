@@ -19,7 +19,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -32,6 +31,8 @@ import java.util.Arrays;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_USER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 
 @RunWith(SpringRunner.class)
@@ -63,7 +64,6 @@ public class SearchCasesITest extends MockSupport {
     @Test
     public void whenSearchCases_thenReturnCcdResult() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
 
         final CaseDetails caseDetails2 = createCaseDetails(1L, CitizenCaseState.ISSUED.getValue());
         final CaseDetails caseDetails3 = createCaseDetails(2L, CitizenCaseState.PENDING_REJECTION.getValue());
@@ -76,9 +76,9 @@ public class SearchCasesITest extends MockSupport {
             .total(10)
             .build();
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(USER_TOKEN, serviceToken, caseType, query))
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, query))
             .thenReturn(expectedResult);
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
@@ -94,14 +94,13 @@ public class SearchCasesITest extends MockSupport {
     @Test
     public void givenCcdError_whenSearchCases_thenPropagateCcdError() throws Exception {
         final String message = getUserDetails();
-        final String serviceToken = "serviceToken";
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         String query = "{}";
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(USER_TOKEN, serviceToken, caseType, query))
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, query))
             .thenThrow(new FeignException.BadRequest("Malformed url", query.getBytes()));
 
         webClient.perform(MockMvcRequestBuilders.post(API_URL)
@@ -112,13 +111,11 @@ public class SearchCasesITest extends MockSupport {
             .andExpect(content().string("Malformed url - {}"));
     }
 
-
     private CaseDetails createCaseDetails(Long id, String state) {
         return CaseDetails.builder()
             .id(id)
             .state(state)
-            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, USER_EMAIL))
+            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
             .build();
     }
-
 }

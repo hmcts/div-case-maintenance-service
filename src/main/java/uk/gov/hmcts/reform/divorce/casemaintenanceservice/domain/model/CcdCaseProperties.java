@@ -26,10 +26,16 @@ public class CcdCaseProperties {
     public static final String D8_DOCUMENTS_GENERATED = "D8DocumentsGenerated";
 
     public static final String PREVIOUS_REASONS_DIVORCE = "PreviousReasonsForDivorce";
+    public static final String PREVIOUS_REASONS_DIVORCE_REFUSAL = "PreviousReasonsForDivorceRefusal";
     public static final String PREVIOUS_ISSUE_DATE = "PreviousIssueDate";
 
     public static final String RESP_SOLICITOR_EMAIL_ADDRESS = "D8RespondentSolicitorEmail";
     public static final String RESP_SOL_REPRESENTED = "respondentSolicitorRepresented";
     public static final String D8_RESPONDENT_SOLICITOR_NAME = "D8RespondentSolicitorName";
     public static final String D8_RESPONDENT_SOLICITOR_COMPANY = "D8RespondentSolicitorCompany";
+
+    public static final String REFUSAL_ORDER_REJECTION_REASONS = "RefusalRejectionReason";
+    public static final String REJECTION_NO_JURISDICTION = "noJurisdiction";
+    public static final String REJECTION_NO_CRITERIA = "noCriteria";
+    public static final String REJECTION_INSUFFICIENT_DETAILS = "insufficentDetails";
 }
