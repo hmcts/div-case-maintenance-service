@@ -19,10 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -34,8 +31,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConsta
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
-import uk.gov.hmcts.reform.divorce.formatter.service.CaseFormatterService;
-import uk.gov.hmcts.reform.divorce.model.ccd.CoreCaseData;
 import uk.gov.hmcts.reform.idam.client.models.User;
 import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
@@ -46,7 +41,6 @@ import java.util.Map;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -57,7 +51,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.test.web.servlet.ResultMatcher.matchAll;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CASE_REF;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT;
@@ -94,9 +87,6 @@ public class AmendedPetitionForRefusalDraftServiceITest extends MockSupport {
 
     @MockBean
     private CoreCaseDataApi coreCaseDataApi;
-
-    @MockBean
-    private UserService userService;
 
     @Value("${ccd.jurisdictionid}")
     private String jurisdictionId;
@@ -186,7 +176,6 @@ public class AmendedPetitionForRefusalDraftServiceITest extends MockSupport {
         when(coreCaseDataApi
             .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
             .thenReturn(Collections.singletonList(oldCase));
-        when(userService.retrieveUser(USER_TOKEN)).thenReturn(user);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubDeleteDraftsEndpoint(new EqualToPattern(TEST_SERVICE_TOKEN));
