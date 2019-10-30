@@ -118,7 +118,7 @@ def versions = [
     junit: '4.12',
     lombok: '1.16.16',
     puppyCrawl: '8.21',
-    reformHealth: '0.0.3',
+    reformHealth: '0.0.5',
     reformPropertiesVolume: '0.0.4',
     reformsJavaLogging: '5.0.1',
     restAssured: '3.0.3',
