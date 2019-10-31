@@ -123,7 +123,7 @@ def versions = [
     jackson: '2.10.0',
     jsonAssert: '1.2.3',
     junit: '4.12',
-    lombok: '1.16.16',
+    lombok: '1.18.10',
     pitest: '1.4.10',
     puppyCrawl: '8.25',
     reformHealth: '0.0.5',
