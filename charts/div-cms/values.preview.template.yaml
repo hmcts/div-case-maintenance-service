@@ -1,6 +1,7 @@
 java:
     environment:
         IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
+        CASE_FORMATTER_SERVICE_API_BASEURL: "http://div-cfs-pr-185.service.core-compute-preview.internal"
 
     # Don't modify below here
     image: ${IMAGE_NAME}
