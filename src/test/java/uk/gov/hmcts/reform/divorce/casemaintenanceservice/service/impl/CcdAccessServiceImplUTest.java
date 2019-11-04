@@ -36,6 +36,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CO_RESP_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_LETTER_HOLDER_ID_CODE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RESP_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RESP_SOL_COMPANY;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RESP_SOL_NAME;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_USER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_LETTER_HOLDER_ID_FIELD;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
@@ -56,27 +63,20 @@ public class CcdAccessServiceImplUTest {
     private static final String PET_AUTHORISATION = "Bearer PetAuthToken";
     private static final String CASEWORKER_AUTHORISATION = "CaseWorkerAuthToken";
     private static final String CASE_ID = "12345678";
-    private static final String LETTER_HOLDER_ID = "letterholderId";
     private static final String LETTER_HOLDER_ID_SOL = "letterholderIdSol";
     private static final String CASEWORKER_USER_ID = "1";
     private static final String RESPONDENT_USER_ID = "2";
     private static final String PET_USER_ID = "3";
-    private static final String USER_EMAIL = "user@email.com";
-    private static final String SERVICE_TOKEN = "ServiceToken";
-    private static final String RESPONDENT_EMAIL = "aos@respondent.com";
-    private static final String CO_RESP_EMAIL = "test@user.local";
-    private static final String RESPONDENT_SOL_NAME = "Test Solicitor Name";
-    private static final String RESPONDENT_SOLICITOR_COMPANY = "Respondent Solicitor Firm";
     private static final String RESP_UNAUTHORIZED_MESSAGE =
-        "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [RESPONDENT] "
+        "Case with caseId [12345678] and letter holder id [test.letter.holder.id] already assigned for [RESPONDENT] "
             + "or Petitioner attempted to link case. Check previous logs for more information.";
     private static final String CO_RESP_UNAUTHORIZED_MESSAGE =
-        "Case with caseId [12345678] and letter holder id [letterholderId] already assigned for [CO_RESPONDENT] "
+        "Case with caseId [12345678] and letter holder id [test.letter.holder.id] already assigned for [CO_RESPONDENT] "
             + "or Petitioner attempted to link case. Check previous logs for more information.";
     private static final String UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID =
         "Case with caseId [12345678] and letter holder id [WrongHolderId] mismatch.";
     private static final String INVALID_MESSAGE = "Case details or letter holder data are invalid";
-    private static final String NOT_FOUND_MESSAGE = "Case with caseId [12345678] and letter holder id [letterholderId] not found";
+    private static final String NOT_FOUND_MESSAGE = "Case with caseId [12345678] and letter holder id [test.letter.holder.id] not found";
 
     private static final User CASE_WORKER_USER = new User(
         CASEWORKER_AUTHORISATION,
@@ -85,17 +85,17 @@ public class CcdAccessServiceImplUTest {
 
     private static final User RESPONDENT_USER = new User(
         RESPONDENT_AUTHORISATION,
-        UserDetails.builder().id(RESPONDENT_USER_ID).email(USER_EMAIL).build()
+        UserDetails.builder().id(RESPONDENT_USER_ID).email(TEST_USER_EMAIL).build()
     );
 
     private static final User PETITIONER_USER = new User(
         PET_AUTHORISATION,
-        UserDetails.builder().id(PET_USER_ID).email(USER_EMAIL).build()
+        UserDetails.builder().id(PET_USER_ID).email(TEST_USER_EMAIL).build()
     );
 
     private static final User PET_SOL_USER = new User(
         PET_AUTHORISATION,
-        UserDetails.builder().id(PET_USER_ID).email(USER_EMAIL).build()
+        UserDetails.builder().id(PET_USER_ID).email(TEST_USER_EMAIL).build()
     );
 
     @Rule
@@ -122,7 +122,7 @@ public class CcdAccessServiceImplUTest {
         ReflectionTestUtils.setField(classUnderTest, "caseType", CASE_TYPE);
 
         when(userService.retrieveAnonymousCaseWorkerDetails()).thenReturn(CASE_WORKER_USER);
-        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
+        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(userService.retrieveUser(RESPONDENT_AUTHORISATION)).thenReturn(RESPONDENT_USER);
     }
 
@@ -134,7 +134,7 @@ public class CcdAccessServiceImplUTest {
 
         mockCaseDetails(null);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class CcdAccessServiceImplUTest {
 
         mockCaseDetails(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class CcdAccessServiceImplUTest {
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
             .data(Collections.singletonMap(
-                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
             )).build();
 
         mockCaseDetails(caseDetails);
@@ -169,7 +169,7 @@ public class CcdAccessServiceImplUTest {
         expectedException.expectMessage(INVALID_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .data(Collections.singletonMap(
-                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
             )).build();
 
         mockCaseDetails(caseDetails);
@@ -199,7 +199,7 @@ public class CcdAccessServiceImplUTest {
             .state(CaseState.AOS_AWAITING.getValue())
             .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(
-                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
             )).build();
 
         mockCaseDetails(caseDetails);
@@ -216,7 +216,7 @@ public class CcdAccessServiceImplUTest {
             .state(CaseState.AOS_AWAITING.getValue())
             .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(
-                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+                CO_RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
             )).build();
 
         mockCaseDetails(caseDetails);
@@ -233,20 +233,20 @@ public class CcdAccessServiceImplUTest {
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
-                Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(RESP_EMAIL_ADDRESS), RESPONDENT_EMAIL
+                Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), TEST_LETTER_HOLDER_ID_CODE,
+                Objects.requireNonNull(RESP_EMAIL_ADDRESS), TEST_RESP_EMAIL
             )).build();
 
         when(coreCaseDataApi.readForCaseWorker(
             CASEWORKER_AUTHORISATION,
-            SERVICE_TOKEN,
+            TEST_SERVICE_TOKEN,
             CASEWORKER_USER_ID,
             JURISDICTION_ID,
             CASE_TYPE,
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
     }
 
     @Test
@@ -257,13 +257,13 @@ public class CcdAccessServiceImplUTest {
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
-                Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(D8_PETITIONER_EMAIL), USER_EMAIL
+                Objects.requireNonNull(RESP_LETTER_HOLDER_ID_FIELD), TEST_LETTER_HOLDER_ID_CODE,
+                Objects.requireNonNull(D8_PETITIONER_EMAIL), TEST_USER_EMAIL
             )).build();
 
         when(coreCaseDataApi.readForCaseWorker(
             CASEWORKER_AUTHORISATION,
-            SERVICE_TOKEN,
+            TEST_SERVICE_TOKEN,
             CASEWORKER_USER_ID,
             JURISDICTION_ID,
             CASE_TYPE,
@@ -271,7 +271,7 @@ public class CcdAccessServiceImplUTest {
         )).thenReturn(caseDetails);
         when(userService.retrieveUser(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
 
-        classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
     }
 
     @Test
@@ -282,13 +282,13 @@ public class CcdAccessServiceImplUTest {
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
-                Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(D8_PETITIONER_EMAIL), USER_EMAIL
+                Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), TEST_LETTER_HOLDER_ID_CODE,
+                Objects.requireNonNull(D8_PETITIONER_EMAIL), TEST_USER_EMAIL
             )).build();
 
         when(coreCaseDataApi.readForCaseWorker(
             CASEWORKER_AUTHORISATION,
-            SERVICE_TOKEN,
+            TEST_SERVICE_TOKEN,
             CASEWORKER_USER_ID,
             JURISDICTION_ID,
             CASE_TYPE,
@@ -296,7 +296,7 @@ public class CcdAccessServiceImplUTest {
         )).thenReturn(caseDetails);
         when(userService.retrieveUser(PET_AUTHORISATION)).thenReturn(PETITIONER_USER);
 
-        classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(PET_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
     }
 
     @Test
@@ -307,20 +307,20 @@ public class CcdAccessServiceImplUTest {
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
-                Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), LETTER_HOLDER_ID,
-                Objects.requireNonNull(CO_RESP_EMAIL_ADDRESS), RESPONDENT_EMAIL
+                Objects.requireNonNull(CO_RESP_LETTER_HOLDER_ID_FIELD), TEST_LETTER_HOLDER_ID_CODE,
+                Objects.requireNonNull(CO_RESP_EMAIL_ADDRESS), TEST_RESP_EMAIL
             )).build();
 
         when(coreCaseDataApi.readForCaseWorker(
             CASEWORKER_AUTHORISATION,
-            SERVICE_TOKEN,
+            TEST_SERVICE_TOKEN,
             CASEWORKER_USER_ID,
             JURISDICTION_ID,
             CASE_TYPE,
             CASE_ID
         )).thenReturn(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
     }
 
     @Test
@@ -332,17 +332,17 @@ public class CcdAccessServiceImplUTest {
             .id(1000L)
             .state(CaseState.AOS_AWAITING.getValue())
             .data(ImmutableMap.of(
-                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                RESP_EMAIL_ADDRESS, "RandomEmail@email.com"
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                RESP_EMAIL_ADDRESS, TEST_RESP_EMAIL
             )).build();
 
         mockCaseDetails(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         verify(caseUserApi, never()).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
@@ -357,17 +357,17 @@ public class CcdAccessServiceImplUTest {
             .state(CaseState.AOS_AWAITING.getValue())
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
-                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                CO_RESP_EMAIL_ADDRESS, "RandomEmail@email.com"
+                CO_RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                CO_RESP_EMAIL_ADDRESS, TEST_CO_RESP_EMAIL
             )).build();
 
         mockCaseDetails(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         verify(caseUserApi, never()).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
@@ -379,16 +379,16 @@ public class CcdAccessServiceImplUTest {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(Collections.singletonMap(
-                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
             )).build();
 
         mockCaseDetails(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
@@ -400,8 +400,8 @@ public class CcdAccessServiceImplUTest {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
-                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                RESP_EMAIL_ADDRESS, USER_EMAIL
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                RESP_EMAIL_ADDRESS, TEST_USER_EMAIL
             )).build();
 
         mockCaseDetails(caseDetails);
@@ -411,11 +411,11 @@ public class CcdAccessServiceImplUTest {
 
         CaseUser expectedCaseUser = new CaseUser(RESPONDENT_USER_ID, expectedCaseRoles);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             eq(expectedCaseUser)
@@ -427,8 +427,8 @@ public class CcdAccessServiceImplUTest {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
-                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                RESP_EMAIL_ADDRESS, USER_EMAIL,
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                RESP_EMAIL_ADDRESS, TEST_USER_EMAIL,
                 RESP_SOL_REPRESENTED, YES_VALUE
             )).build();
 
@@ -440,11 +440,11 @@ public class CcdAccessServiceImplUTest {
 
         CaseUser expectedCaseUser = new CaseUser(RESPONDENT_USER_ID, expectedCaseRoles);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             eq(expectedCaseUser)
@@ -458,10 +458,10 @@ public class CcdAccessServiceImplUTest {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
-                RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                RESP_EMAIL_ADDRESS, USER_EMAIL,
-                D8_RESPONDENT_SOLICITOR_NAME, RESPONDENT_SOL_NAME,
-                D8_RESPONDENT_SOLICITOR_COMPANY, RESPONDENT_SOLICITOR_COMPANY
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                RESP_EMAIL_ADDRESS, TEST_USER_EMAIL,
+                D8_RESPONDENT_SOLICITOR_NAME, TEST_RESP_SOL_NAME,
+                D8_RESPONDENT_SOLICITOR_COMPANY, TEST_RESP_SOL_COMPANY
             )).build();
 
         mockCaseDetails(caseDetails);
@@ -472,11 +472,11 @@ public class CcdAccessServiceImplUTest {
 
         CaseUser expectedCaseUser = new CaseUser(RESPONDENT_USER_ID, expectedCaseRoles);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             eq(expectedCaseUser)
@@ -488,16 +488,16 @@ public class CcdAccessServiceImplUTest {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(1000L)
             .data(ImmutableMap.of(
-                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID
+                CO_RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
             )).build();
 
         mockCaseDetails(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
@@ -511,7 +511,7 @@ public class CcdAccessServiceImplUTest {
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             anyString(),
             any(CaseUser.class)
@@ -523,17 +523,17 @@ public class CcdAccessServiceImplUTest {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(1000L)
             .data(ImmutableMap.of(
-                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                CO_RESP_EMAIL_ADDRESS, USER_EMAIL
+                CO_RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                CO_RESP_EMAIL_ADDRESS, TEST_USER_EMAIL
             )).build();
 
         mockCaseDetails(caseDetails);
 
-        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, LETTER_HOLDER_ID);
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
@@ -545,9 +545,9 @@ public class CcdAccessServiceImplUTest {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(1000L)
             .data(ImmutableMap.of(
-                CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
-                CO_RESP_EMAIL_ADDRESS, CO_RESP_EMAIL,
-                RESP_EMAIL_ADDRESS, USER_EMAIL,
+                CO_RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                CO_RESP_EMAIL_ADDRESS, TEST_CO_RESP_EMAIL,
+                RESP_EMAIL_ADDRESS, TEST_USER_EMAIL,
                 RESP_SOL_REPRESENTED, YES_VALUE,
                 RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID_SOL
             )).build();
@@ -558,7 +558,7 @@ public class CcdAccessServiceImplUTest {
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER_ID),
             any(CaseUser.class)
@@ -572,7 +572,7 @@ public class CcdAccessServiceImplUTest {
 
         verify(caseUserApi).updateCaseRolesForUser(
             eq(CASEWORKER_AUTHORISATION),
-            eq(SERVICE_TOKEN),
+            eq(TEST_SERVICE_TOKEN),
             eq(CASE_ID),
             eq(RESPONDENT_USER.getUserDetails().getId()),
             any(CaseUser.class)
@@ -582,7 +582,7 @@ public class CcdAccessServiceImplUTest {
     private void mockCaseDetails(CaseDetails caseDetails) {
         when(coreCaseDataApi.readForCaseWorker(
             CASEWORKER_AUTHORISATION,
-            SERVICE_TOKEN,
+            TEST_SERVICE_TOKEN,
             CASEWORKER_USER_ID,
             JURISDICTION_ID,
             CASE_TYPE,

@@ -27,4 +27,6 @@ public interface PetitionService {
     void deleteDraft(String authorisation);
 
     Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException;
+
+    Map<String, Object> createAmendedPetitionDraftRefusal(String authorisation) throws DuplicateCaseException;
 }

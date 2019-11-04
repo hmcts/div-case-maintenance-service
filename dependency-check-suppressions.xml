@@ -31,15 +31,7 @@
         <gav regex="true">.*</gav>
         <cve>CVE-2019-15052</cve>
         <cve>CVE-2019-16370</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-            This is exploitable in com.zaxxer.hikari.HikariConfig and com.zaxxer.hikari.HikariDataSource
-            which we do not use. Pending the release of a stable jackson databind version (>2.9.9.3) ]]>
-        </notes>
-        <gav regex="true">.*</gav>
-        <cve>CVE-2019-14540</cve>
-        <cve>CVE-2019-16335</cve>
+        <cve>CVE-2019-11065</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[

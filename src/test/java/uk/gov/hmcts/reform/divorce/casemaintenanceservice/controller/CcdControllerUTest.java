@@ -24,12 +24,15 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CASE_ID;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_EVENT_ID;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_LETTER_HOLDER_ID_CODE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CcdControllerUTest {
     private static final CaseDetails CASE_DETAILS = CaseDetails.builder().build();
     private static final Map<String, Object> CASE_DATA_CONTENT = new HashMap<>();
-    private static final String JWT_TOKEN = "token";
 
     @Mock
     private CcdSubmissionService ccdSubmissionService;
@@ -48,72 +51,62 @@ public class CcdControllerUTest {
 
     @Test
     public void whenSubmitCase_thenProceedAsExpected() {
-        when(ccdSubmissionService.submitCase(CASE_DATA_CONTENT, JWT_TOKEN)).thenReturn(CASE_DETAILS);
+        when(ccdSubmissionService.submitCase(CASE_DATA_CONTENT, TEST_AUTH_TOKEN)).thenReturn(CASE_DETAILS);
 
-        ResponseEntity<CaseDetails> responseEntity = classUnderTest.submitCase(CASE_DATA_CONTENT, JWT_TOKEN);
-
-        assertEquals(responseEntity.getBody(), CASE_DETAILS);
-        assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
-
-        verify(ccdSubmissionService).submitCase(CASE_DATA_CONTENT, JWT_TOKEN);
-    }
-
-    @Test
-    public void whenUpdateCase_thenProceedAsExpected() {
-        final String caseId = "caseId";
-        final String eventId = "eventId";
-
-        when(ccdUpdateService.update(caseId, CASE_DATA_CONTENT,  eventId, JWT_TOKEN)).thenReturn(CASE_DETAILS);
-
-        ResponseEntity<CaseDetails> responseEntity =
-            classUnderTest.updateCase(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
+        ResponseEntity<CaseDetails> responseEntity = classUnderTest.submitCase(CASE_DATA_CONTENT, TEST_AUTH_TOKEN);
 
         assertEquals(CASE_DETAILS, responseEntity.getBody());
         assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
 
-        verify(ccdUpdateService).update(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
+        verify(ccdSubmissionService).submitCase(CASE_DATA_CONTENT, TEST_AUTH_TOKEN);
+    }
+
+    @Test
+    public void whenUpdateCase_thenProceedAsExpected() {
+        when(ccdUpdateService.update(TEST_CASE_ID, CASE_DATA_CONTENT,  TEST_EVENT_ID, TEST_AUTH_TOKEN)).thenReturn(CASE_DETAILS);
+
+        ResponseEntity<CaseDetails> responseEntity =
+            classUnderTest.updateCase(TEST_CASE_ID, CASE_DATA_CONTENT, TEST_EVENT_ID, TEST_AUTH_TOKEN);
+
+        assertEquals(CASE_DETAILS, responseEntity.getBody());
+        assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
+
+        verify(ccdUpdateService).update(TEST_CASE_ID, CASE_DATA_CONTENT, TEST_EVENT_ID, TEST_AUTH_TOKEN);
     }
 
     @Test
     public void whenLinkRespondent_thenProceedAsExpected() {
-        final String caseId = "caseId";
-        final String letterHolderId = "letterHolderId";
-
-        doNothing().when(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId);
+        doNothing().when(ccdAccessService).linkRespondent(TEST_AUTH_TOKEN, TEST_CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         ResponseEntity responseEntity =
-            classUnderTest.linkRespondent(JWT_TOKEN, caseId, letterHolderId);
+            classUnderTest.linkRespondent(TEST_AUTH_TOKEN, TEST_CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
 
         assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
 
-        verify(ccdAccessService).linkRespondent(JWT_TOKEN, caseId, letterHolderId);
+        verify(ccdAccessService).linkRespondent(TEST_AUTH_TOKEN, TEST_CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
     }
 
     @Test
     public void whenAssignPetitionerSolicitorRole_thenProceedAsExpected() {
-        final String caseId = "caseId";
-
-        doNothing().when(ccdAccessService).addPetitionerSolicitorRole(JWT_TOKEN, caseId);
+        doNothing().when(ccdAccessService).addPetitionerSolicitorRole(TEST_AUTH_TOKEN, TEST_CASE_ID);
 
         ResponseEntity responseEntity =
-            classUnderTest.addPetitionerSolicitorRole(JWT_TOKEN, caseId);
+            classUnderTest.addPetitionerSolicitorRole(TEST_AUTH_TOKEN, TEST_CASE_ID);
 
         assertThat(responseEntity.getStatusCodeValue(), is(HttpStatus.OK.value()));
 
-        verify(ccdAccessService).addPetitionerSolicitorRole(JWT_TOKEN, caseId);
+        verify(ccdAccessService).addPetitionerSolicitorRole(TEST_AUTH_TOKEN, TEST_CASE_ID);
     }
 
     @Test
     public void whenUnlinkRespondent_thenProceedAsExpected() {
-        final String caseId = "caseId";
+        doNothing().when(ccdAccessService).unlinkRespondent(TEST_AUTH_TOKEN, TEST_CASE_ID);
 
-        doNothing().when(ccdAccessService).unlinkRespondent(JWT_TOKEN, caseId);
-
-        ResponseEntity responseEntity = classUnderTest.unlinkRespondent(JWT_TOKEN, caseId);
+        ResponseEntity responseEntity = classUnderTest.unlinkRespondent(TEST_AUTH_TOKEN, TEST_CASE_ID);
 
         assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.OK.value());
 
-        verify(ccdAccessService).unlinkRespondent(JWT_TOKEN, caseId);
+        verify(ccdAccessService).unlinkRespondent(TEST_AUTH_TOKEN, TEST_CASE_ID);
     }
 
     @Test
@@ -123,9 +116,9 @@ public class CcdControllerUTest {
         SearchResult expectedResult = SearchResult
             .builder()
             .build();
-        when(ccdRetrievalService.searchCase(JWT_TOKEN, query)).thenReturn(expectedResult);
+        when(ccdRetrievalService.searchCase(TEST_AUTH_TOKEN, query)).thenReturn(expectedResult);
 
-        ResponseEntity<SearchResult> caseResult = classUnderTest.search(JWT_TOKEN, query);
+        ResponseEntity<SearchResult> caseResult = classUnderTest.search(TEST_AUTH_TOKEN, query);
 
         assertEquals(HttpStatus.OK, caseResult.getStatusCode());
         assertEquals(expectedResult, caseResult.getBody());
@@ -136,9 +129,9 @@ public class CcdControllerUTest {
         Map<String, Object> inputData = ImmutableMap.of("key", "value");
 
         CaseDetails expectedResult = CaseDetails.builder().build();
-        when(ccdSubmissionService.submitBulkCase(inputData,JWT_TOKEN)).thenReturn(expectedResult);
+        when(ccdSubmissionService.submitBulkCase(inputData, TEST_AUTH_TOKEN)).thenReturn(expectedResult);
 
-        ResponseEntity<CaseDetails> caseResult = classUnderTest.submitBulkCase(inputData, JWT_TOKEN);
+        ResponseEntity<CaseDetails> caseResult = classUnderTest.submitBulkCase(inputData, TEST_AUTH_TOKEN);
 
         assertEquals(HttpStatus.OK, caseResult.getStatusCode());
         assertEquals(expectedResult, caseResult.getBody());
@@ -146,17 +139,14 @@ public class CcdControllerUTest {
 
     @Test
     public void whenUpdateBulkCase_thenProceedAsExpected() {
-        final String caseId = "caseId";
-        final String eventId = "eventId";
-
-        when(ccdUpdateService.updateBulkCase(caseId, CASE_DATA_CONTENT,  eventId, JWT_TOKEN)).thenReturn(CASE_DETAILS);
+        when(ccdUpdateService.updateBulkCase(TEST_CASE_ID, CASE_DATA_CONTENT,  TEST_EVENT_ID, TEST_AUTH_TOKEN)).thenReturn(CASE_DETAILS);
 
         ResponseEntity<CaseDetails> responseEntity =
-            classUnderTest.updateBulkCase(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
+            classUnderTest.updateBulkCase(TEST_CASE_ID, CASE_DATA_CONTENT, TEST_EVENT_ID, TEST_AUTH_TOKEN);
 
         assertEquals(CASE_DETAILS, responseEntity.getBody());
         assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
 
-        verify(ccdUpdateService).updateBulkCase(caseId, CASE_DATA_CONTENT, eventId, JWT_TOKEN);
+        verify(ccdUpdateService).updateBulkCase(TEST_CASE_ID, CASE_DATA_CONTENT, TEST_EVENT_ID, TEST_AUTH_TOKEN);
     }
 }

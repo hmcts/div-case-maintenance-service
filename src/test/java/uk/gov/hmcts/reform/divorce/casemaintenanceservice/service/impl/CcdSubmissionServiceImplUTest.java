@@ -23,31 +23,34 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTHORISATION;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_BEARER_AUTHORISATION;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CASE_TYPE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_JURISDICTION_ID;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.BULK_CASE_TYPE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CREATE_BULK_CASE_EVENT_ID;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CREATE_EVENT_ID;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CREATE_HWF_EVENT_ID;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.D_8_HELP_WITH_FEES_NEED_HELP;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.NO_VALUE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CcdSubmissionServiceImplUTest {
-    private static final String JURISDICTION_ID = "someJurisdictionId";
-    private static final String CASE_TYPE = "someCaseType";
-    private static final String CREATE_EVENT_ID = "createEventId";
-    private static final String CREATE_HWF_EVENT_ID = "createHwfEventId";
-    private static final String BULK_CASE_TYPE = "bulkCaseType";
-    private static final String CREATE_BULK_CASE_EVENT_ID = "createBulkCaseEventId";
+
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
         (String) ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
             "DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY");
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION =
         (String) ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
             "DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION");
-    private static final String HELP_WITH_FEES_FIELD = "D8HelpWithFeesNeedHelp";
 
     private static final String DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce Bulk case submission event";
     private static final String DIVORCE_BULK_CASE_SUBMISSION_EVENT_DESCRIPTION = "Submitting divorce bulk Case";
 
     private static final String USER_ID = "someUserId";
-    private static final String AUTHORISATION = "authorisation";
-    private static final String BEARER_AUTHORISATION = "Bearer authorisation";
-    private static final String SERVICE_TOKEN = "serviceToken";
-    public static final String TOKEN = "token";
 
     @Mock
     private CoreCaseDataApi coreCaseDataApi;
@@ -63,8 +66,8 @@ public class CcdSubmissionServiceImplUTest {
 
     @Before
     public void setup() {
-        ReflectionTestUtils.setField(classUnderTest, "jurisdictionId", JURISDICTION_ID);
-        ReflectionTestUtils.setField(classUnderTest, "caseType", CASE_TYPE);
+        ReflectionTestUtils.setField(classUnderTest, "jurisdictionId", TEST_JURISDICTION_ID);
+        ReflectionTestUtils.setField(classUnderTest, "caseType", TEST_CASE_TYPE);
         ReflectionTestUtils.setField(classUnderTest, "createHwfEventId", CREATE_HWF_EVENT_ID);
         ReflectionTestUtils.setField(classUnderTest, "createEventId", CREATE_EVENT_ID);
         ReflectionTestUtils.setField(classUnderTest, "bulkCaseType", BULK_CASE_TYPE);
@@ -73,11 +76,11 @@ public class CcdSubmissionServiceImplUTest {
 
     @Test
     public void whenUpdate_thenProceedAsExpected() {
-        final Map<String, Object> caseData = ImmutableMap.of(HELP_WITH_FEES_FIELD, "NO");
+        final Map<String, Object> caseData = ImmutableMap.of(D_8_HELP_WITH_FEES_NEED_HELP, NO_VALUE);
 
         final StartEventResponse startEventResponse = StartEventResponse.builder()
             .eventId(CREATE_EVENT_ID)
-            .token(TOKEN)
+            .token(TEST_AUTH_TOKEN)
             .build();
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -91,35 +94,35 @@ public class CcdSubmissionServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final User userDetails = new User(TOKEN, UserDetails.builder().id(USER_ID).build());
+        final User userDetails = new User(TEST_AUTH_TOKEN, UserDetails.builder().id(USER_ID).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUser(BEARER_AUTHORISATION)).thenReturn(userDetails);
-        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
-        when(coreCaseDataApi.startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE, CREATE_EVENT_ID)).thenReturn(startEventResponse);
+        when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+        when(coreCaseDataApi.startForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, CREATE_EVENT_ID)).thenReturn(startEventResponse);
 
-        when(coreCaseDataApi.submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE, true, caseDataContent)).thenReturn(expected);
+        when(coreCaseDataApi.submitForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, true, caseDataContent)).thenReturn(expected);
 
-        CaseDetails actual = classUnderTest.submitCase(caseData, AUTHORISATION);
+        CaseDetails actual = classUnderTest.submitCase(caseData, TEST_AUTHORISATION);
 
         assertThat(actual).isEqualTo(expected);
 
-        verify(coreCaseDataApi).startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE, CREATE_EVENT_ID);
-        verify(coreCaseDataApi).submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE, true, caseDataContent);
+        verify(coreCaseDataApi).startForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, CREATE_EVENT_ID);
+        verify(coreCaseDataApi).submitForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, true, caseDataContent);
     }
 
     @Test
     public void givenCaseWithHelpWithFees_whenSubmit_thenCrateWithWHFEventTriggered() {
 
-        final Map<String, Object> caseData = ImmutableMap.of(HELP_WITH_FEES_FIELD, "YES");
+        final Map<String, Object> caseData = ImmutableMap.of(D_8_HELP_WITH_FEES_NEED_HELP, YES_VALUE);
 
         final StartEventResponse startEventResponse = StartEventResponse.builder()
             .eventId(CREATE_HWF_EVENT_ID)
-            .token(TOKEN)
+            .token(TEST_AUTH_TOKEN)
             .build();
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -133,34 +136,34 @@ public class CcdSubmissionServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final User userDetails = new User(TOKEN, UserDetails.builder().id(USER_ID).build());
+        final User userDetails = new User(TEST_AUTH_TOKEN, UserDetails.builder().id(USER_ID).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUser(BEARER_AUTHORISATION)).thenReturn(userDetails);
-        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
-        when(coreCaseDataApi.startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE, CREATE_HWF_EVENT_ID)).thenReturn(startEventResponse);
+        when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+        when(coreCaseDataApi.startForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, CREATE_HWF_EVENT_ID)).thenReturn(startEventResponse);
 
-        when(coreCaseDataApi.submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE, true, caseDataContent)).thenReturn(expected);
+        when(coreCaseDataApi.submitForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, true, caseDataContent)).thenReturn(expected);
 
-        CaseDetails actual = classUnderTest.submitCase(caseData, AUTHORISATION);
+        CaseDetails actual = classUnderTest.submitCase(caseData, TEST_AUTHORISATION);
 
         assertThat(actual).isEqualTo(expected);
 
-        verify(coreCaseDataApi).startForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE, CREATE_HWF_EVENT_ID);
-        verify(coreCaseDataApi).submitForCitizen(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
-            CASE_TYPE, true, caseDataContent);
+        verify(coreCaseDataApi).startForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, CREATE_HWF_EVENT_ID);
+        verify(coreCaseDataApi).submitForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, true, caseDataContent);
     }
 
     @Test
     public void whenSubmitBulkCase_thenProceedAsExpected() {
-        final Map<String, Object> caseData = ImmutableMap.of(HELP_WITH_FEES_FIELD, "NO");
+        final Map<String, Object> caseData = ImmutableMap.of(D_8_HELP_WITH_FEES_NEED_HELP, NO_VALUE);
 
         final StartEventResponse startEventResponse = StartEventResponse.builder()
             .eventId(CREATE_BULK_CASE_EVENT_ID)
-            .token(TOKEN)
+            .token(TEST_AUTH_TOKEN)
             .build();
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -174,18 +177,18 @@ public class CcdSubmissionServiceImplUTest {
             ).data(caseData)
             .build();
 
-        final User userDetails = new User(TOKEN, UserDetails.builder().id(USER_ID).build());
+        final User userDetails = new User(TEST_AUTH_TOKEN, UserDetails.builder().id(USER_ID).build());
         final CaseDetails expected = CaseDetails.builder().build();
 
-        when(userService.retrieveUser(BEARER_AUTHORISATION)).thenReturn(userDetails);
-        when(authTokenGenerator.generate()).thenReturn(SERVICE_TOKEN);
-        when(coreCaseDataApi.startForCaseworker(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
+        when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+        when(coreCaseDataApi.startForCaseworker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
             BULK_CASE_TYPE, CREATE_BULK_CASE_EVENT_ID)).thenReturn(startEventResponse);
 
-        when(coreCaseDataApi.submitForCaseworker(BEARER_AUTHORISATION, SERVICE_TOKEN, USER_ID, JURISDICTION_ID,
+        when(coreCaseDataApi.submitForCaseworker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
             BULK_CASE_TYPE, true, caseDataContent)).thenReturn(expected);
 
-        CaseDetails actual = classUnderTest.submitBulkCase(caseData, AUTHORISATION);
+        CaseDetails actual = classUnderTest.submitBulkCase(caseData, TEST_AUTHORISATION);
 
         assertThat(actual).isEqualTo(expected);
     }

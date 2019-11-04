@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseSubmissionNotificationHandlerUTest {
@@ -42,13 +43,12 @@ public class CaseSubmissionNotificationHandlerUTest {
         final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
         final CaseDetails caseDetails = CaseDetails.builder().build();
-        final String authToken = "someAuthToken";
         final Object source = new Object();
-        final CaseSubmittedEvent caseSubmittedEvent = new CaseSubmittedEvent(source, caseDetails, authToken);
+        final CaseSubmittedEvent caseSubmittedEvent = new CaseSubmittedEvent(source, caseDetails, TEST_AUTH_TOKEN);
 
         when(joinPoint.proceed()).thenReturn(caseDetails);
         when(joinPoint.getThis()).thenReturn(source);
-        when(joinPoint.getArgs()).thenReturn(new Object[]{authToken});
+        when(joinPoint.getArgs()).thenReturn(new Object[]{TEST_AUTH_TOKEN});
 
         Object actual = classUnderTest.notifyCaseSubmission(joinPoint);
 

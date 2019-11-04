@@ -34,6 +34,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_PAYMENT_EVENT_ID;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CASE_EVENT_ID;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = CaseMaintenanceServiceApplication.class)
@@ -47,9 +52,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class BulkCaseUpdateITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/bulk/updateCase";
-    private static final String EVENT_ID = "payment";
     private static final String CASE_ID = "2";
-    private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/base-case.json";
+    private static final String VALID_PAYLOAD_JSON_PATH = "ccd-submission-payload/base-case.json";
 
     private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY =
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
@@ -73,7 +77,7 @@ public class BulkCaseUpdateITest extends MockSupport {
     @Test
     public void givenCaseDataIsNull_whenUpdateCase_thenReturnBadRequest() throws Exception {
         webClient.perform(post(getApiUrl())
-            .header(HttpHeaders.AUTHORIZATION, "Some JWT Token")
+            .header(HttpHeaders.AUTHORIZATION, TEST_AUTH_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
@@ -82,7 +86,7 @@ public class BulkCaseUpdateITest extends MockSupport {
     @Test
     public void givenJWTTokenIsNull_whenUpdateCase_thenReturnBadRequest() throws Exception {
         webClient.perform(post(getApiUrl())
-            .content(ResourceLoader.loadJson(VALID_PAYLOAD_PATH))
+            .content(ResourceLoader.loadJson(VALID_PAYLOAD_JSON_PATH))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
@@ -94,7 +98,7 @@ public class BulkCaseUpdateITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.FORBIDDEN, new EqualToPattern(USER_TOKEN), message);
 
         webClient.perform(post(getApiUrl())
-            .content(ResourceLoader.loadJson(VALID_PAYLOAD_PATH))
+            .content(ResourceLoader.loadJson(VALID_PAYLOAD_JSON_PATH))
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -110,7 +114,7 @@ public class BulkCaseUpdateITest extends MockSupport {
         when(serviceTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
 
         webClient.perform(post(getApiUrl())
-            .content(ResourceLoader.loadJson(VALID_PAYLOAD_PATH))
+            .content(ResourceLoader.loadJson(VALID_PAYLOAD_JSON_PATH))
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -119,15 +123,12 @@ public class BulkCaseUpdateITest extends MockSupport {
 
     @Test
     public void givenAllGoesWell_whenUpdateCaseWithCaseworker_thenProceedAsExpected() throws Exception {
-        final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
+        final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_JSON_PATH);
         final String message = getCaseWorkerUserDetails();
-        final String serviceAuthToken = "serviceAuthToken";
 
-        final String eventId = "eventId";
-        final String token = "token";
         final StartEventResponse startEventResponse = StartEventResponse.builder()
-            .eventId(eventId)
-            .token(token)
+            .eventId(CASE_EVENT_ID)
+            .token(TEST_TOKEN)
             .build();
 
         final CaseDataContent caseDataContent = CaseDataContent.builder()
@@ -145,13 +146,13 @@ public class BulkCaseUpdateITest extends MockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(BEARER_CASE_WORKER_TOKEN), message);
 
-        when(serviceTokenGenerator.generate()).thenReturn(serviceAuthToken);
+        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startEventForCaseWorker(BEARER_CASE_WORKER_TOKEN, serviceAuthToken, CASE_WORKER_USER_ID,
-                jurisdictionId, caseType, CASE_ID, EVENT_ID))
+            .startEventForCaseWorker(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, CASE_WORKER_USER_ID,
+                jurisdictionId, caseType, CASE_ID, TEST_PAYMENT_EVENT_ID))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
-            .submitEventForCaseWorker(BEARER_CASE_WORKER_TOKEN, serviceAuthToken, CASE_WORKER_USER_ID,
+            .submitEventForCaseWorker(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, CASE_WORKER_USER_ID,
                 jurisdictionId, caseType, CASE_ID, true, caseDataContent))
             .thenReturn(caseDetails);
 
@@ -165,6 +166,6 @@ public class BulkCaseUpdateITest extends MockSupport {
     }
 
     private String getApiUrl() {
-        return API_URL + "/" + CASE_ID + "/" + EVENT_ID;
+        return API_URL + "/" + CASE_ID + "/" + TEST_PAYMENT_EVENT_ID;
     }
 }
