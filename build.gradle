@@ -178,10 +178,10 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version : versions.commonsLang3
     compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version: versions.reformHealth
     compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: versions.reformPropertiesVolume
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging', version: versions.reformsJavaLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-appinsights', version: versions.reformsJavaLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-spring', version: versions.reformsJavaLogging
-    compile group: 'uk.gov.hmcts.reform', name: 'java-logging-httpcomponents', version: versions.reformsJavaLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformsJavaLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformsJavaLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'logging-spring', version: versions.reformsJavaLogging
+    compile group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformsJavaLogging
     compile group: 'uk.gov.hmcts.reform', name: 'idam-client', version: versions.idamClient
     compile (group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator)
         {
