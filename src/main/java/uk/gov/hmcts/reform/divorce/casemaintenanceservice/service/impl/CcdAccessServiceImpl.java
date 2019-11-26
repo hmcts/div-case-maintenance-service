@@ -162,7 +162,7 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         }
         final String emailAddressAssignedToCase = (String) caseData.get(emailField);
 
-        if (emailAddressAssignedToCase == null) {
+        if (emailAddressAssignedToCase == null || emailAddressAssignedToCase.trim().isEmpty()) {
             log.info("Case {} has not been been assigned a {} yet.", caseId, respondentType);
             final String petitionerEmail = (String) caseData.get(D8_PETITIONER_EMAIL);
 
@@ -196,6 +196,10 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         final String respondentSolicitorCompany = (String) caseData.get(D8_RESPONDENT_SOLICITOR_COMPANY);
 
         return YES_VALUE.equalsIgnoreCase(respondentSolicitorRepresented)
-            || respondentSolicitorName != null && respondentSolicitorCompany != null;
+            || !isEmpty(respondentSolicitorName) && !isEmpty(respondentSolicitorCompany);
+    }
+
+    private boolean isEmpty(String value) {
+        return value == null || value.trim().isEmpty();
     }
 }
