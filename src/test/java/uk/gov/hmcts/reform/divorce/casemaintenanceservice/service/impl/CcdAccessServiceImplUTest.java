@@ -8,6 +8,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
@@ -50,6 +51,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_RESPONDENT_SOLICITOR_NAME;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_LETTER_HOLDER_ID_FIELD;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOLICITOR_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_SOL_REPRESENTED;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 
@@ -396,6 +398,52 @@ public class CcdAccessServiceImplUTest {
     }
 
     @Test
+    public void givenLetterHolderIdMatchesAndEmailEmptyString_whenLinkRespondent_thenGrantUserPermission() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                RESP_EMAIL_ADDRESS, ""
+            )).build();
+
+        mockCaseDetails(caseDetails);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(TEST_SERVICE_TOKEN),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER_ID),
+            any(CaseUser.class)
+        );
+    }
+
+    @Test
+    public void givenLetterHolderIdMatchesAndSolicitorEmailEmptyString_whenLinkRespondent_thenGrantUserPermission() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                RESP_EMAIL_ADDRESS, TEST_RESP_EMAIL,
+                RESP_SOLICITOR_EMAIL_ADDRESS, "",
+                RESP_SOL_REPRESENTED, YES_VALUE
+            )).build();
+
+        mockCaseDetails(caseDetails);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(TEST_SERVICE_TOKEN),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER_ID),
+            any(CaseUser.class)
+        );
+    }
+
+    @Test
     public void givenLetterHolderIdMatchesAndEmailMatched_whenLinkRespondent_thenGrantCorrectUserPermissions() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
@@ -484,11 +532,87 @@ public class CcdAccessServiceImplUTest {
     }
 
     @Test
+    public void givenLetterHolderIdMatchesRespondentLetterAndSolNameAndCompanyNull_whenLinkRespondent_thenRespondentTypeIsRespondent() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
+            )).build();
+
+        mockCaseDetails(caseDetails);
+
+        Set<String> expectedCaseRoles = new HashSet<>();
+        expectedCaseRoles.add(CmsConstants.CREATOR_ROLE);
+
+        CaseUser expectedCaseUser = new CaseUser(RESPONDENT_USER_ID, expectedCaseRoles);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(TEST_SERVICE_TOKEN),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER_ID),
+            eq(expectedCaseUser)
+        );
+    }
+
+    @Test
+    public void givenLetterHolderIdMatchesRespondentLetterAndSolNameAndCompanyEmptyString_whenLinkRespondent_thenRespondentTypeIsRespondent() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .id(Long.decode(CASE_ID))
+            .data(ImmutableMap.of(
+                RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                D8_RESPONDENT_SOLICITOR_NAME, "",
+                D8_RESPONDENT_SOLICITOR_COMPANY, ""
+            )).build();
+
+        mockCaseDetails(caseDetails);
+
+        Set<String> expectedCaseRoles = new HashSet<>();
+        expectedCaseRoles.add(CmsConstants.CREATOR_ROLE);
+
+        CaseUser expectedCaseUser = new CaseUser(RESPONDENT_USER_ID, expectedCaseRoles);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(TEST_SERVICE_TOKEN),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER_ID),
+            eq(expectedCaseUser)
+        );
+    }
+
+    @Test
     public void givenLetterHolderIdMatchedAndEmailNull_whenLinkCoRespondent_thenGrantUserPermission() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(1000L)
             .data(ImmutableMap.of(
                 CO_RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
+            )).build();
+
+        mockCaseDetails(caseDetails);
+
+        classUnderTest.linkRespondent(RESPONDENT_AUTHORISATION, CASE_ID, TEST_LETTER_HOLDER_ID_CODE);
+
+        verify(caseUserApi).updateCaseRolesForUser(
+            eq(CASEWORKER_AUTHORISATION),
+            eq(TEST_SERVICE_TOKEN),
+            eq(CASE_ID),
+            eq(RESPONDENT_USER_ID),
+            any(CaseUser.class)
+        );
+    }
+
+    @Test
+    public void givenLetterHolderIdMatchedAndEmailEmptyString_whenLinkCoRespondent_thenGrantUserPermission() {
+        CaseDetails caseDetails = CaseDetails.builder()
+            .id(1000L)
+            .data(ImmutableMap.of(
+                CO_RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE,
+                CO_RESP_EMAIL_ADDRESS, ""
             )).build();
 
         mockCaseDetails(caseDetails);
