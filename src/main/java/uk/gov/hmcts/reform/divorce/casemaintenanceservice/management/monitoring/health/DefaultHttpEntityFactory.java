@@ -12,7 +12,7 @@ public class DefaultHttpEntityFactory implements HttpEntityFactory {
     @Override
     public HttpEntity<Object> createRequestEntityForHealthCheck() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON_UTF8));
 
         return new HttpEntity<>(headers);
     }
