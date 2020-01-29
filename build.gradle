@@ -368,11 +368,10 @@ def sonarExclusions = [
 
 sonarqube {
     properties {
-        property "sonar.exclusions", sonarExclusions.join(", ")
-        property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/apiTest.exec"
-        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
         property "sonar.projectKey", "DivorceCaseMaintenanceService"
         property "sonar.projectName", "Divorce :: case-maintenance-service"
+        property "sonar.exclusions", sonarExclusions.join(", ")
+        property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
         property "sonar.pitest.mode", "reuseReport"
         property "sonar.pitest.reportsDirectory", "build/reports/pitest"
     }
@@ -386,13 +385,9 @@ jacocoTestReport {
     executionData(test)
 
     reports {
-        xml {
-            enabled true
-        }
-
-        html {
-            enabled true
-        }
+        xml.enabled = true
+        html.enabled = true
+        xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
@@ -405,6 +400,8 @@ jacocoTestCoverageVerification {
         }
     }
 }
+
+project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 def debug = System.getProperty("debug")
 run {
