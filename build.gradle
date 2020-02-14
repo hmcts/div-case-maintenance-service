@@ -12,7 +12,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath("net.serenity-bdd:serenity-gradle-plugin:2.1.5")
+        classpath("net.serenity-bdd:serenity-gradle-plugin:2.1.6")
     }
 }
 
@@ -82,7 +82,7 @@ distributions {
     }
 }
 
-checkstyle.toolVersion = '8.21'
+checkstyle.toolVersion = '8.29'
 checkstyle.configFile = new File(rootDir, "checkstyle.xml")
 
 // make build fail on Checkstyle issues (https://github.com/gradle/gradle/issues/881)
@@ -125,7 +125,7 @@ def versions = [
     junit: '4.12',
     lombok: '1.16.16',
     pitest: '1.4.10',
-    puppyCrawl: '8.25',
+    puppyCrawl: '8.29',
     reformHealth: '0.0.5',
     reformPropertiesVolume: '0.0.4',
     reformsJavaLogging: '5.1.1',
