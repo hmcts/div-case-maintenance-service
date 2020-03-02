@@ -22,11 +22,11 @@ idam:
     id: divorce
     secret: ${AUTH2_CLIENT_SECRET:dummysecret}
   api:
-    url: ${IDAM_API_BASEURL:http://localhost:4503}
-    redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
+    url: ${IDAM_API_BASEURL:http://localhost:5000}
+    redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:4502/authenticated}
   caseworker:
-    username: ${IDAM_CASEWORKER_USERNAME:dummycaseworker@test.com}
-    password: ${IDAM_CASEWORKER_PASSWORD:dummy}
+    username: ${IDAM_CASEWORKER_USERNAME:divorce_as_caseworker_superuser@mailinator.com}
+    password: ${IDAM_CASEWORKER_PASSWORD:Pa55word11}
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
     totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
@@ -59,7 +59,7 @@ draft:
     async: true
   store:
     api:
-      baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:4601}
+      baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:8800}
       document:
         type:
           divorceFormat: divorcedraft
@@ -79,8 +79,8 @@ case:
 
 auth2:
   client:
-    id: divorce
-    secret: ${AUTH2_CLIENT_SECRET:dummysecret}
+    id: ccd_gateway
+    secret: ${AUTH2_CLIENT_SECRET:ccd_gateway_secret}
 
 http:
   connect:
@@ -121,7 +121,16 @@ management:
 
 logging:
   level:
-    org.springframework.web: ERROR
+    org.springframework.web: DEBUG
     uk.gov.hmcts.reform.divorce.casemaintenanceservice: DEBUG
   pattern:
     console: "%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n"
+
+feign:
+  client:
+    config:
+     core-case-data-api:
+        connectTimeout: 10000
+        readTimeout: 10000
+        loggerLevel: full
+
