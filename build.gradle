@@ -269,7 +269,7 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-contexts'
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
-    integrationTestCompile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
+    integrationTestCompile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.3'
     integrationTestCompile group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
 }
 
