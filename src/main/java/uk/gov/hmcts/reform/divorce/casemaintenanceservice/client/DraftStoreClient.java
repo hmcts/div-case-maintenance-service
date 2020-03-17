@@ -1,8 +1,13 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,51 +25,41 @@ public interface DraftStoreClient {
     String SERVICE_AUTHORIZATION_HEADER_NAME = "ServiceAuthorization";
     String SECRET_HEADER_NAME = "Secret";
 
-    @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/drafts",
-        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
-    )
+    @ApiOperation("Return all draft cases")
+    @GetMapping(value = "/drafts",
+        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE)
     DraftList getAllDrafts(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
                            @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation,
                            @RequestHeader(SECRET_HEADER_NAME) String secret);
 
-    @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/drafts",
-        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
-    )
+    @ApiOperation("Return all draft cases")
+    @GetMapping(value = "/drafts",
+        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE)
     DraftList getAllDrafts(@RequestParam("after") String after,
                            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
                            @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation,
                            @RequestHeader(SECRET_HEADER_NAME) String secret);
 
-    @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/drafts",
-        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
-    )
+    @ApiOperation("Create single draft case")
+    @PostMapping(value = "/drafts",
+        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE)
     void createSingleDraft(@RequestBody CreateDraft draft,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
                                 @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation,
                                 @RequestHeader(SECRET_HEADER_NAME) String secret);
 
-    @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/drafts/{draftId}",
-        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
-    )
+    @ApiOperation("Update existing divorce session draft")
+    @PutMapping(value = "/drafts/{draftId}",
+        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE)
     void updateSingleDraft(@PathVariable("draftId") String draftId,
                                 @RequestBody UpdateDraft draft,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
                                 @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation,
                                 @RequestHeader(SECRET_HEADER_NAME) String secret);
 
-    @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/drafts",
-        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE
-    )
+    @ApiOperation("Delete all divorce session drafts")
+    @DeleteMapping(value = "/drafts",
+        headers = CONTENT_TYPE + "=" + APPLICATION_JSON_VALUE)
     void deleteAllDrafts(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorisation,
                          @RequestHeader(SERVICE_AUTHORIZATION_HEADER_NAME) String serviceAuthorisation);
 }
