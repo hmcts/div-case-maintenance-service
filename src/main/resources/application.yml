@@ -22,7 +22,7 @@ idam:
     id: divorce
     secret: ${AUTH2_CLIENT_SECRET:dummysecret}
   api:
-    url: ${IDAM_API_BASEURL:http://localhost:4501}
+    url: ${IDAM_API_BASEURL:http://localhost:5000}
     redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:4502/authenticated}
   caseworker:
     username: ${IDAM_CASEWORKER_USERNAME:divorce_as_caseworker_superuser@mailinator.com}
