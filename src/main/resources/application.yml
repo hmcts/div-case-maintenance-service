@@ -18,22 +18,22 @@ server:
 
 idam:
   client:
-    redirect_uri: ${IDAM_API_REDIRECT_URL:https://localhost:3000/authenticated}
+    redirect_uri: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
     id: divorce
     secret: ${AUTH2_CLIENT_SECRET:dummysecret}
   api:
-    url: ${IDAM_API_BASEURL:http://localhost:5000}
-    redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:4502/authenticated}
+    url: ${IDAM_API_BASEURL:http://localhost:4503}
+    redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
   caseworker:
-    username: ${IDAM_CASEWORKER_USERNAME:divorce_as_caseworker_superuser@mailinator.com}
-    password: ${IDAM_CASEWORKER_PASSWORD:Pa55word11}
+    username: ${IDAM_CASEWORKER_USERNAME:dummycaseworker@test.com}
+    password: ${IDAM_CASEWORKER_PASSWORD:dummy}
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
     totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
     url: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://localhost:4502}
     port: ${AUTH_PROVIDER_SERVICE_CLIENT_PORT:4502}
     health:
-        context-path: ${AUTH_PROVIDER_SERVICE_CLIENT_HEALTH_CONTEXT_PATH:/health}
+      context-path: ${AUTH_PROVIDER_SERVICE_CLIENT_HEALTH_CONTEXT_PATH:/health}
 
 ccd:
   jurisdictionid: DIVORCE
@@ -42,9 +42,9 @@ ccd:
     create: create
     createhwf: hwfCreate
   bulk:
-      casetype: DIVORCE_BulkAction
-      eventid:
-          create: scheduleCreate
+    casetype: DIVORCE_BulkAction
+    eventid:
+      create: scheduleCreate
   server:
     port: 4452
     health:
@@ -59,7 +59,7 @@ draft:
     async: true
   store:
     api:
-      baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:8800}
+      baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:4601}
       document:
         type:
           divorceFormat: divorcedraft
@@ -79,8 +79,8 @@ case:
 
 auth2:
   client:
-    id: ccd_gateway
-    secret: ${AUTH2_CLIENT_SECRET:ccd_gateway_secret}
+    id: divorce
+    secret: ${AUTH2_CLIENT_SECRET:dummysecret}
 
 http:
   connect:
@@ -89,12 +89,12 @@ http:
       timeout: 60000
 
 health:
-    check:
-        http:
-            connect:
-                timeout: 5000
-                request:
-                    timeout: 5000
+  check:
+    http:
+      connect:
+        timeout: 5000
+        request:
+          timeout: 5000
 
 documentation:
   swagger:
@@ -121,7 +121,7 @@ management:
 
 logging:
   level:
-    org.springframework.web: DEBUG
+    org.springframework.web: ERROR
     uk.gov.hmcts.reform.divorce.casemaintenanceservice: DEBUG
   pattern:
     console: "%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n"
