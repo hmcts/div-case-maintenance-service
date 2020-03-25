@@ -33,7 +33,7 @@ idam:
     url: ${AUTH_PROVIDER_SERVICE_CLIENT_BASEURL:http://localhost:4502}
     port: ${AUTH_PROVIDER_SERVICE_CLIENT_PORT:4502}
     health:
-        context-path: ${AUTH_PROVIDER_SERVICE_CLIENT_HEALTH_CONTEXT_PATH:/health}
+      context-path: ${AUTH_PROVIDER_SERVICE_CLIENT_HEALTH_CONTEXT_PATH:/health}
 
 ccd:
   jurisdictionid: DIVORCE
@@ -42,9 +42,9 @@ ccd:
     create: create
     createhwf: hwfCreate
   bulk:
-      casetype: DIVORCE_BulkAction
-      eventid:
-          create: scheduleCreate
+    casetype: DIVORCE_BulkAction
+    eventid:
+      create: scheduleCreate
   server:
     port: 4452
     health:
@@ -89,12 +89,12 @@ http:
       timeout: 60000
 
 health:
-    check:
-        http:
-            connect:
-                timeout: 5000
-                request:
-                    timeout: 5000
+  check:
+    http:
+      connect:
+        timeout: 5000
+        request:
+          timeout: 5000
 
 documentation:
   swagger:
@@ -125,3 +125,12 @@ logging:
     uk.gov.hmcts.reform.divorce.casemaintenanceservice: DEBUG
   pattern:
     console: "%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n"
+
+feign:
+  client:
+    config:
+     core-case-data-api:
+        connectTimeout: 10000
+        readTimeout: 10000
+        loggerLevel: full
+
