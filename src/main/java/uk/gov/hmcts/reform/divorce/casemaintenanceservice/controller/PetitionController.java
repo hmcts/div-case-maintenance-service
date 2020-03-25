@@ -28,7 +28,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionServic
 
 import java.util.Map;
 import java.util.Optional;
-
 import javax.validation.constraints.NotNull;
 
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.PETITIONER_CASE_STATE_GROUPING;
