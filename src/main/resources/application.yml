@@ -18,15 +18,15 @@ server:
 
 idam:
   client:
-    redirect_uri: ${IDAM_API_REDIRECT_URL:https://localhost:3000/authenticated}
+    redirect_uri: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
     id: divorce
     secret: ${AUTH2_CLIENT_SECRET:dummysecret}
   api:
-    url: ${IDAM_API_BASEURL:http://localhost:5000}
+    url: ${IDAM_API_BASEURL:http://localhost:4503}
     redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
   caseworker:
-    username: ${IDAM_CASEWORKER_USERNAME:divorce_as_caseworker_superuser@mailinator.com}
-    password: ${IDAM_CASEWORKER_PASSWORD:Pa55word11}
+    username: ${IDAM_CASEWORKER_USERNAME:dummycaseworker@test.com}
+    password: ${IDAM_CASEWORKER_PASSWORD:dummy}
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
     totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
@@ -59,7 +59,7 @@ draft:
     async: true
   store:
     api:
-      baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:8800}
+      baseurl: ${DRAFT_STORE_API_BASEURL:http://localhost:4601}
       document:
         type:
           divorceFormat: divorcedraft
