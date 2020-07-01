@@ -28,5 +28,8 @@ public interface PetitionService {
 
     Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException;
 
-    Map<String, Object> createAmendedPetitionDraftRefusal(String authorisation) throws DuplicateCaseException;
+    Map<String, Object> createAmendedPetitionDraftRefusalForDivorce(String authorisation) throws DuplicateCaseException;
+
+    Map<String, Object> createAmendedPetitionDraftRefusalForCCD(String authorisation, String caseId)
+        throws DuplicateCaseException;
 }

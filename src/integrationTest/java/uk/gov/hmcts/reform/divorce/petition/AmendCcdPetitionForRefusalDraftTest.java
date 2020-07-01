@@ -8,15 +8,15 @@ import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
 import static org.junit.Assert.assertEquals;
 
-public class AmendPetitionForRefusalDraftTest extends PetitionSupport {
+public class AmendCcdPetitionForRefusalDraftTest extends PetitionSupport {
 
     @Test
-    public void givenSingleCaseInCcd_whenAmendPetitionDraft_thenReturnTheDraft() throws Exception {
+    public void givenSingleCaseInCcd_whenCcdAmendPetitionDraft_thenReturnTheDraft() throws Exception {
         final UserDetails userDetails = getUserDetails();
 
         Long caseId = getCaseIdFromCompletedCase(userDetails);
 
-        Response cmsResponse = putAmendedPetitionDraftForRefusal(userDetails.getAuthToken());
+        Response cmsResponse = putCcdAmendedPetitionDraftForRefusal(userDetails.getAuthToken(), caseId);
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
         assertEquals(String.valueOf(caseId), cmsResponse.path("previousCaseId"));

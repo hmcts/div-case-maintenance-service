@@ -43,6 +43,7 @@ public class CcdController {
     @Autowired
     private CcdRetrievalService ccdRetrievalService;
 
+
     @PostMapping(path = "/submit", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Submits a divorce session to CCD")
     @ApiResponses(value = {

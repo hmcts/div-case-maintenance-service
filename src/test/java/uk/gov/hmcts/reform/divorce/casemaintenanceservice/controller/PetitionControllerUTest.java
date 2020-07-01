@@ -317,7 +317,7 @@ public class PetitionControllerUTest {
     @Test
     public void givenNoCaseFound_whenAmendToDraftPetitionForRefusal_thenReturn404() throws DuplicateCaseException {
 
-        when(petitionService.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN))
+        when(petitionService.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN))
             .thenReturn(null);
 
         ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
@@ -325,7 +325,7 @@ public class PetitionControllerUTest {
         assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
         assertNull(actual.getBody());
 
-        verify(petitionService).createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
+        verify(petitionService).createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
     }
 
     @Test
@@ -333,7 +333,7 @@ public class PetitionControllerUTest {
 
         final Map<String, Object> draftData = new HashMap<>();
 
-        when(petitionService.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN))
+        when(petitionService.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN))
             .thenReturn(draftData);
 
         ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
@@ -341,7 +341,7 @@ public class PetitionControllerUTest {
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertEquals(draftData, actual.getBody());
 
-        verify(petitionService).createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
+        verify(petitionService).createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
     }
 
     @Test
@@ -353,7 +353,7 @@ public class PetitionControllerUTest {
         draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.toPattern());
         draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
 
-        when(petitionService.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN))
+        when(petitionService.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN))
             .thenReturn(draftData);
 
         ResponseEntity<Map<String, Object>> actual = classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
@@ -361,6 +361,59 @@ public class PetitionControllerUTest {
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertEquals(draftData, actual.getBody());
 
-        verify(petitionService).createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
+        verify(petitionService).createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+    }
+
+    @Test
+    public void givenNoCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenReturn404() throws DuplicateCaseException {
+
+        when(petitionService.createAmendedPetitionDraftRefusalForCCD(TEST_AUTH_TOKEN, TEST_CASE_ID))
+            .thenReturn(null);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest
+            .createCcdAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN, TEST_CASE_ID);
+
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
+        assertNull(actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraftRefusalForCCD(TEST_AUTH_TOKEN, TEST_CASE_ID);
+    }
+
+    @Test
+    public void givenCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenReturnDraftData() throws DuplicateCaseException {
+
+        final Map<String, Object> draftData = new HashMap<>();
+
+        when(petitionService.createAmendedPetitionDraftRefusalForCCD(TEST_AUTH_TOKEN, TEST_CASE_ID))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest
+            .createCcdAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN, TEST_CASE_ID);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraftRefusalForCCD(TEST_AUTH_TOKEN, TEST_CASE_ID);
+    }
+
+    @Test
+    public void givenCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenSetDraftDataFromCase() throws DuplicateCaseException {
+        final Map<String, Object> draftData = new HashMap<>();
+        final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
+
+        draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        draftData.put(DivorceSessionProperties.CREATED_DATE, createdDate.toPattern());
+        draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
+
+        when(petitionService.createAmendedPetitionDraftRefusalForCCD(TEST_AUTH_TOKEN, TEST_CASE_ID))
+            .thenReturn(draftData);
+
+        ResponseEntity<Map<String, Object>> actual = classUnderTest
+            .createCcdAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN, TEST_CASE_ID);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(draftData, actual.getBody());
+
+        verify(petitionService).createAmendedPetitionDraftRefusalForCCD(TEST_AUTH_TOKEN, TEST_CASE_ID);
     }
 }
