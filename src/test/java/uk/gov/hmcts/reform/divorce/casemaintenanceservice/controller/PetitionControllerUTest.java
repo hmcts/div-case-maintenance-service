@@ -41,7 +41,7 @@ public class PetitionControllerUTest {
     private PetitionController classUnderTest;
 
     @Test
-    public void givenCaseFound_whenRetrievePetition_thenReturnCaseDetails() throws DuplicateCaseException {
+    public void givenCaseFound_whenRetrievePetition_thenReturnCaseDetails() {
 
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
@@ -57,7 +57,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenRetrieveCaseForRespondent_thenReturnCaseDetails() throws DuplicateCaseException {
+    public void givenCaseFound_whenRetrieveCaseForRespondent_thenReturnCaseDetails() {
 
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
@@ -72,7 +72,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenRetrieveCase_thenReturnCaseDetails() throws DuplicateCaseException {
+    public void givenCaseFound_whenRetrieveCase_thenReturnCaseDetails() {
 
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
@@ -88,7 +88,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenNoCaseFound_whenRetrieveCase_thenReturn204() throws DuplicateCaseException {
+    public void givenNoCaseFound_whenRetrieveCase_thenReturn204() {
 
         when(petitionService.retrievePetition(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING))
                 .thenReturn(null);
@@ -102,7 +102,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenDuplicateCase_whenRetrieveCase_thenReturnHttpStatus300() throws DuplicateCaseException {
+    public void givenDuplicateCase_whenRetrieveCase_thenReturnHttpStatus300() {
         when(petitionService.retrievePetition(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING))
                 .thenThrow(new DuplicateCaseException("Duplicate"));
 
@@ -114,7 +114,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenNoCaseFound_whenRetrieveCaseWithToken_thenReturn404() throws DuplicateCaseException {
+    public void givenNoCaseFound_whenRetrieveCaseWithToken_thenReturn404() {
 
         when(petitionService.retrievePetition(TEST_AUTH_TOKEN)).thenReturn(null);
 
@@ -127,7 +127,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenMultipleCaseCaseFound_whenRetrieveCaseWithToken_thenReturn300() throws DuplicateCaseException {
+    public void givenMultipleCaseCaseFound_whenRetrieveCaseWithToken_thenReturn300() {
 
         when(petitionService.retrievePetition(TEST_AUTH_TOKEN)).thenThrow(new DuplicateCaseException("Some Error"));
 
@@ -140,7 +140,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenSingleCaseCaseFound_whenRetrieveCaseWithToken_thenReturnCase() throws DuplicateCaseException {
+    public void givenSingleCaseCaseFound_whenRetrieveCaseWithToken_thenReturnCase() {
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
         when(petitionService.retrievePetition(TEST_AUTH_TOKEN)).thenReturn(caseDetails);
@@ -154,7 +154,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenRetrieveCaseById_thenReturnCase() throws DuplicateCaseException {
+    public void givenCaseFound_whenRetrieveCaseById_thenReturnCase() {
         final CaseDetails caseDetails = CaseDetails.builder().id(123456789L).build();
 
         when(petitionService.retrievePetitionByCaseId(TEST_AUTH_TOKEN, TEST_CASE_ID)).thenReturn(caseDetails);
@@ -168,7 +168,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseNotFound_whenRetrieveCaseById_thenNotFound() throws DuplicateCaseException {
+    public void givenCaseNotFound_whenRetrieveCaseById_thenNotFound() {
         when(petitionService.retrievePetitionByCaseId(TEST_AUTH_TOKEN, TEST_CASE_ID)).thenReturn(null);
 
         ResponseEntity<CaseDetails> actual = classUnderTest.retrieveCaseById(TEST_AUTH_TOKEN, TEST_CASE_ID);
@@ -262,7 +262,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenNoCaseFound_whenAmendToDraftPetition_thenReturn404() throws DuplicateCaseException {
+    public void givenNoCaseFound_whenAmendToDraftPetition_thenReturn404() {
 
         when(petitionService.createAmendedPetitionDraft(TEST_AUTH_TOKEN))
             .thenReturn(null);
@@ -276,7 +276,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenAmendToDraftPetition_thenReturnDraftData() throws DuplicateCaseException {
+    public void givenCaseFound_whenAmendToDraftPetition_thenReturnDraftData() {
 
         final Map<String, Object> draftData = new HashMap<>();
 
@@ -292,7 +292,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenAmendToDraftPetition_thenSetDraftDataFromCase() throws DuplicateCaseException {
+    public void givenCaseFound_whenAmendToDraftPetition_thenSetDraftDataFromCase() {
         final Map<String, Object> draftData = new HashMap<>();
         final List<String> previousReasons = new ArrayList<>();
         final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
@@ -315,7 +315,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenNoCaseFound_whenAmendToDraftPetitionForRefusal_thenReturn404() throws DuplicateCaseException {
+    public void givenNoCaseFound_whenAmendToDraftPetitionForRefusal_thenReturn404() {
 
         when(petitionService.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN))
             .thenReturn(null);
@@ -329,7 +329,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenAmendToDraftPetitionForRefusal_thenReturnDraftData() throws DuplicateCaseException {
+    public void givenCaseFound_whenAmendToDraftPetitionForRefusal_thenReturnDraftData() {
 
         final Map<String, Object> draftData = new HashMap<>();
 
@@ -345,7 +345,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenAmendToDraftPetitionForRefusal_thenSetDraftDataFromCase() throws DuplicateCaseException {
+    public void givenCaseFound_whenAmendToDraftPetitionForRefusal_thenSetDraftDataFromCase() {
         final Map<String, Object> draftData = new HashMap<>();
         final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
 
@@ -365,7 +365,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenNoCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenReturn404() throws DuplicateCaseException {
+    public void givenNoCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenReturn404() {
 
         when(petitionService.createAmendedPetitionDraftRefusalForCCD(TEST_AUTH_TOKEN, TEST_CASE_ID))
             .thenReturn(null);
@@ -380,7 +380,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenReturnDraftData() throws DuplicateCaseException {
+    public void givenCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenReturnDraftData() {
 
         final Map<String, Object> draftData = new HashMap<>();
 
@@ -397,7 +397,7 @@ public class PetitionControllerUTest {
     }
 
     @Test
-    public void givenCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenSetDraftDataFromCase() throws DuplicateCaseException {
+    public void givenCaseFound_whenCcdAmendToDraftPetitionForRefusal_thenSetDraftDataFromCase() {
         final Map<String, Object> draftData = new HashMap<>();
         final SimpleDateFormat createdDate = new SimpleDateFormat(CmsConstants.YEAR_DATE_FORMAT);
 

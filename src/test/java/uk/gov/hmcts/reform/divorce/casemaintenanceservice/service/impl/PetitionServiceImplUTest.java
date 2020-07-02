@@ -109,7 +109,7 @@ public class PetitionServiceImplUTest {
     private PetitionServiceImpl classUnderTest;
 
     @Test
-    public void givenCcdRetrievalServiceReturnsCase_whenRetrievePetition_thenProceedAsExpected() throws DuplicateCaseException {
+    public void givenCcdRetrievalServiceReturnsCase_whenRetrievePetition_thenProceedAsExpected() {
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(caseDetails);
@@ -121,7 +121,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCcdRetrievalServiceReturnsAmendCase_whenRetrievePetition_thenReturnCaseAsDraft() throws DuplicateCaseException {
+    public void givenCcdRetrievalServiceReturnsAmendCase_whenRetrievePetition_thenReturnCaseAsDraft() {
         final CaseDetails caseDetails = buildAdulteryCaseData();
 
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(caseDetails);
@@ -142,7 +142,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCcdRetrievalServiceReturnsAmendCaseWithStandardDraft_whenRetrievePetition_thenReturnCaseAsDraft() throws DuplicateCaseException {
+    public void givenCcdRetrievalServiceReturnsAmendCaseWithStandardDraft_whenRetrievePetition_thenReturnCaseAsDraft() {
         final CaseDetails caseDetails = buildAdulteryCaseData();
 
         final Draft draft = new Draft("1", Collections.singletonMap("test", "value"), null);
@@ -167,7 +167,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCcdRetrievalServiceReturnsAmendCaseWithAmendDraft_whenRetrievePetition_thenReturnAmendDraft() throws DuplicateCaseException {
+    public void givenCcdRetrievalServiceReturnsAmendCaseWithAmendDraft_whenRetrievePetition_thenReturnAmendDraft() {
         final CaseDetails caseDetails = CaseDetails.builder().state(CaseState.AMEND_PETITION.getValue()).build();
         Map<String, Object> amendedDraft = new HashMap<>();
         amendedDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
@@ -189,8 +189,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test(expected = DuplicateCaseException.class)
-    public void givenCcdRetrievalServiceThrowException_whenRetrievePetition_thenThrowException()
-        throws DuplicateCaseException {
+    public void givenCcdRetrievalServiceThrowException_whenRetrievePetition_thenThrowException() {
         final DuplicateCaseException duplicateCaseException = new DuplicateCaseException("Duplicate");
 
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER))
@@ -202,8 +201,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenNoDataInCcdOrDraft_whenRetrievePetition_thenReturnNull()
-        throws DuplicateCaseException {
+    public void givenNoDataInCcdOrDraft_whenRetrievePetition_thenReturnNull() {
 
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(null);
         when(draftService.getDraft(TEST_AUTH_TOKEN)).thenReturn(null);
@@ -215,8 +213,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCcdCaseIsNotFound_whenRetrievingPetitionForRespondent_thenReturnNull()
-        throws DuplicateCaseException {
+    public void givenCcdCaseIsNotFound_whenRetrievingPetitionForRespondent_thenReturnNull() {
         CaseDetails actualCaseDetails = classUnderTest.retrievePetitionForAos(TEST_AUTH_TOKEN);
 
         assertThat(actualCaseDetails, is(nullValue()));
@@ -224,7 +221,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenDnDraftedCase_whenRetrievePetitionForRespondent_thenReturnCase() throws DuplicateCaseException {
+    public void givenDnDraftedCase_whenRetrievePetitionForRespondent_thenReturnCase() {
         final CaseDetails caseDetails = CaseDetails.builder().state(CaseState.DN_DRAFTED.getValue()).build();
 
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, RESPONDENT_CASE_STATE_GROUPING, RESPONDENT))
@@ -236,7 +233,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenRetrievePetition_thenProceedAsExpected() throws DuplicateCaseException {
+    public void whenRetrievePetition_thenProceedAsExpected() {
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
@@ -301,7 +298,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraft_thenProceedAsExpected() throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraft_thenProceedAsExpected() {
         Date originalCaseIssueDate = new Date();
 
         final Map<String, Object> caseData = new HashMap<>();
@@ -332,7 +329,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCaseWasNotIssued_whenCreateAmendedPetitionDraft_thenProceedAsExpected() throws DuplicateCaseException {
+    public void givenCaseWasNotIssued_whenCreateAmendedPetitionDraft_thenProceedAsExpected() {
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_ID);
         caseData.put(D8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
@@ -358,7 +355,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCaseNotProgressed_whenCreateAmendedPetitionDraft_thenReturnNull() throws DuplicateCaseException {
+    public void givenCaseNotProgressed_whenCreateAmendedPetitionDraft_thenReturnNull() {
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
@@ -376,7 +373,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenNoUserExists_whenCreateAmendedPetitionDraft_thenReturnNull() throws DuplicateCaseException {
+    public void givenNoUserExists_whenCreateAmendedPetitionDraft_thenReturnNull() {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(null);
 
         assertNull(classUnderTest.createAmendedPetitionDraft(TEST_AUTH_TOKEN));
@@ -385,8 +382,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraft_whenCaseHasPreviousReasons_thenProceedAsExpected()
-        throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraft_whenCaseHasPreviousReasons_thenProceedAsExpected() {
 
         final Map<String, Object> caseData = new HashMap<>();
         final List<String> previousReasonsOld = new ArrayList<>();
@@ -416,8 +412,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraft_whenPetitionNotFound_thenProceedAsExpected()
-        throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraft_whenPetitionNotFound_thenProceedAsExpected() {
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
 
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(null);
@@ -446,7 +441,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraftForRefusal_thenProceedAsExpected() throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraftForRefusal_thenProceedAsExpected() {
         Date originalCaseIssueDate = new Date();
 
         final Map<String, Object> caseData = new HashMap<>();
@@ -477,7 +472,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraftForRefusalWithPreviousReasonsForDivorce_thenProceedAsExpected() throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraftForRefusalWithPreviousReasonsForDivorce_thenProceedAsExpected() {
         Date originalCaseIssueDate = new Date();
 
         final Map<String, Object> caseData = new HashMap<>();
@@ -515,7 +510,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCaseWasNotIssued_whenCreateAmendedPetitionDraftForRefusal_thenProceedAsExpected() throws DuplicateCaseException {
+    public void givenCaseWasNotIssued_whenCreateAmendedPetitionDraftForRefusal_thenProceedAsExpected() {
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_ID);
         caseData.put(D8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
@@ -541,7 +536,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenCaseNotProgressed_whenCreateAmendedPetitionDraftForRefusal_thenReturnNull() throws DuplicateCaseException {
+    public void givenCaseNotProgressed_whenCreateAmendedPetitionDraftForRefusal_thenReturnNull() {
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
@@ -558,7 +553,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void givenNoUserExists_whenCreateAmendedPetitionDraftForRefusal_thenReturnNull() throws DuplicateCaseException {
+    public void givenNoUserExists_whenCreateAmendedPetitionDraftForRefusal_thenReturnNull() {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(null);
 
         assertNull(classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN));
@@ -567,8 +562,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForNoJurisdiction_thenProceedAsExpected()
-        throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForNoJurisdiction_thenProceedAsExpected() {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
@@ -606,8 +600,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForNoCriteria_thenProceedAsExpected()
-        throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForNoCriteria_thenProceedAsExpected() {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
@@ -645,8 +638,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForInsufficientDetails_thenProceedAsExpected()
-        throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForInsufficientDetails_thenProceedAsExpected() {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
@@ -684,8 +676,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForAllReasons_thenProceedAsExpected()
-        throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForAllReasons_thenProceedAsExpected() {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
@@ -726,8 +717,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraftForRefusal_whenPetitionNotFound_thenProceedAsExpected()
-        throws DuplicateCaseException {
+    public void whenCreateAmendedPetitionDraftForRefusal_whenPetitionNotFound_thenProceedAsExpected() {
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
 
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(null);
@@ -739,8 +729,7 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateCcdAmendedPetitionDraftForRefusal_thenProceedAsExpectedAndKeepCcdFormatting()
-        throws DuplicateCaseException {
+    public void whenCreateCcdAmendedPetitionDraftForRefusal_thenProceedAsExpectedAndKeepCcdFormatting() {
         Date originalCaseIssueDate = new Date();
 
         final Map<String, Object> caseData = new HashMap<>();
