@@ -89,7 +89,7 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
 
     Map<String, Object> getHeaders(String userToken) {
         Map<String, Object> headers = new HashMap<>();
-        headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
+        headers.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         if (userToken != null) {
             headers.put(HttpHeaders.AUTHORIZATION, userToken);
