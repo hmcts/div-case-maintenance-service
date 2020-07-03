@@ -56,6 +56,22 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
 
     @Override
     public CaseDetails submitBulkCase(Map<String, Object> data, String authorisation) {
+        return submitCase(data, authorisation, bulkCaseType,
+            createBulkCaseEventId,
+            DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY,
+            DIVORCE_BULK_CASE_SUBMISSION_EVENT_DESCRIPTION);
+    }
+
+    @Override
+    public CaseDetails submitCaseForSolicitor(Map<String, Object> data, String authorisation) {
+        return submitCase(data, authorisation, caseType,
+            solicitorCreateEventId,
+            DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY,
+            DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION);
+    }
+
+    private CaseDetails submitCase(Map<String, Object> data, String authorisation, String caseType,
+                       String eventId, String eventSummary, String eventDescription) {
         User userDetails = getUser(authorisation);
 
         StartEventResponse startEventResponse = coreCaseDataApi.startForCaseworker(
@@ -63,16 +79,16 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
             getServiceAuthToken(),
             userDetails.getUserDetails().getId(),
             jurisdictionId,
-            bulkCaseType,
-            createBulkCaseEventId);
+            caseType,
+            eventId);
 
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())
             .event(
                 Event.builder()
                     .id(startEventResponse.getEventId())
-                    .summary(DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY)
-                    .description(DIVORCE_BULK_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .summary(eventSummary)
+                    .description(eventDescription)
                     .build()
             ).data(data)
             .build();
@@ -82,7 +98,7 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
             getServiceAuthToken(),
             userDetails.getUserDetails().getId(),
             jurisdictionId,
-            bulkCaseType,
+            caseType,
             true,
             caseDataContent);
     }
