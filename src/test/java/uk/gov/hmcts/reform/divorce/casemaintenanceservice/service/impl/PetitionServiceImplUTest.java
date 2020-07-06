@@ -754,7 +754,7 @@ public class PetitionServiceImplUTest {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
         when(userService.retrieveAnonymousCaseWorkerDetails()).thenReturn(caseworkerUser);
 
-        Map<String, Object> newCase = classUnderTest
+        final Map<String, Object> newCase = classUnderTest
             .createAmendedPetitionDraftRefusalFromCaseId(TEST_AUTH_TOKEN, TEST_CASE_ID);
 
         verify(ccdRetrievalService).retrieveCaseById(TEST_AUTHORISATION, TEST_CASE_ID);
