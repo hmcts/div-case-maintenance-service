@@ -28,9 +28,6 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     @Value("${case.maintenance.amend-petition-draft-refusal.context-path}")
     private String amendPetitionRefusalContextPath;
 
-    @Value("${case.maintenance.ccd-amend-petition-draft-refusal.context-path}")
-    private String ccdAmendPetitionRefusalContextPath;
-
     private String searchContextPath = "/casemaintenance/version/1/search";
 
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
@@ -123,10 +120,10 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
-    protected Response putCcdAmendedPetitionDraftForRefusal(String userToken, Long userId) {
+    protected Response putAmendedPetitionDraftForRefusalFromCaseId(String userToken, Long userId) {
         return
             RestUtil.putToRestService(
-                getGetCcdAmendPetitionRefusalContextPath(userId),
+                getGetAmendPetitionRefusalContextPathFromCaseId(userId),
                 getHeaders(userToken),
                 "",
                 Collections.emptyMap()
@@ -141,8 +138,8 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return serverUrl + amendPetitionRefusalContextPath;
     }
 
-    private String getGetCcdAmendPetitionRefusalContextPath(Long caseId) {
-        return serverUrl + ccdAmendPetitionRefusalContextPath + "/" + caseId;
+    private String getGetAmendPetitionRefusalContextPathFromCaseId(Long caseId) {
+        return serverUrl + amendPetitionRefusalContextPath + "/" + caseId;
     }
 
     protected String getRetrieveCaseRequestUrl() {

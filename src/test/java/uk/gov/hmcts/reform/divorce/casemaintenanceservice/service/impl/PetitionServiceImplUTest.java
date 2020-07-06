@@ -79,6 +79,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties.PREVIOUS_CASE_ID;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -461,7 +462,7 @@ public class PetitionServiceImplUTest {
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
 
-        classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+        classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
         verify(draftService).createDraft(TEST_AUTH_TOKEN, draftData, true);
@@ -499,7 +500,7 @@ public class PetitionServiceImplUTest {
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
 
-        classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+        classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
         verify(draftService).createDraft(TEST_AUTH_TOKEN, draftData, true);
@@ -527,7 +528,7 @@ public class PetitionServiceImplUTest {
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
 
-        classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+        classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
         verify(draftService).createDraft(TEST_AUTH_TOKEN, draftData, true);
@@ -547,7 +548,7 @@ public class PetitionServiceImplUTest {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
 
-        assertNull(classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN));
+        assertNull(classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN));
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
     }
@@ -556,7 +557,7 @@ public class PetitionServiceImplUTest {
     public void givenNoUserExists_whenCreateAmendedPetitionDraftForRefusal_thenReturnNull() {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(null);
 
-        assertNull(classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN));
+        assertNull(classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN));
 
         verify(userService).retrieveUser(TEST_AUTH_TOKEN);
     }
@@ -586,7 +587,7 @@ public class PetitionServiceImplUTest {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
 
-        classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+        classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
         verify(draftService).createDraft(TEST_AUTH_TOKEN, draftData, true);
@@ -624,7 +625,7 @@ public class PetitionServiceImplUTest {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
 
-        classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+        classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
         verify(draftService).createDraft(TEST_AUTH_TOKEN, draftData, true);
@@ -662,7 +663,7 @@ public class PetitionServiceImplUTest {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
 
-        classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+        classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
         verify(draftService).createDraft(TEST_AUTH_TOKEN, draftData, true);
@@ -703,7 +704,7 @@ public class PetitionServiceImplUTest {
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(caseDetails);
 
-        classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+        classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
         verify(draftService).createDraft(TEST_AUTH_TOKEN, draftData, true);
@@ -723,24 +724,25 @@ public class PetitionServiceImplUTest {
         when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER)).thenReturn(null);
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
 
-        classUnderTest.createAmendedPetitionDraftRefusalForDivorce(TEST_AUTH_TOKEN);
+        classUnderTest.createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
 
         verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER);
     }
 
     @Test
-    public void whenCreateCcdAmendedPetitionDraftForRefusal_thenProceedAsExpectedAndKeepCcdFormatting() {
-        Date originalCaseIssueDate = new Date();
+    public void whenCreateAmendedPetitionDraftForRefusalFromCaseId_thenProceedAsExpected() {
 
         final Map<String, Object> caseData = new HashMap<>();
-        caseData.put(D8_CASE_REFERENCE, TEST_FAMILY_MAN_REF);
-        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Arrays.asList("noJurisdiction", "insufficentDetails"));
+        caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
+        List<String> refusalRejectionReasons = ImmutableList.of(
+            REJECTION_NO_JURISDICTION, REJECTION_NO_CRITERIA, REJECTION_INSUFFICIENT_DETAILS
+        );
+        caseData.put(REFUSAL_ORDER_REJECTION_REASONS, refusalRejectionReasons);
         // Case Data to Keep
-        caseData.put(D8_PETITIONER_EMAIL, TEST_USER_EMAIL);
+        caseData.put(D_8_DIVORCE_WHO, TEST_RELATIONSHIP);
         // Case Data to be Removed
-        caseData.put(ISSUE_DATE, originalCaseIssueDate);
-        caseData.put(D8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
         caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, YES_VALUE);
+        caseData.put(D_8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
         caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
@@ -753,20 +755,20 @@ public class PetitionServiceImplUTest {
         when(userService.retrieveAnonymousCaseWorkerDetails()).thenReturn(caseworkerUser);
 
         Map<String, Object> newCase = classUnderTest
-            .createAmendedPetitionDraftRefusalForCCD(TEST_AUTH_TOKEN, TEST_CASE_ID);
+            .createAmendedPetitionDraftRefusalFromCaseId(TEST_AUTH_TOKEN, TEST_CASE_ID);
 
         verify(ccdRetrievalService).retrieveCaseById(TEST_AUTHORISATION, TEST_CASE_ID);
-        assertThat(newCase, hasEntry(PREVIOUS_ISSUE_DATE, originalCaseIssueDate));
-        assertThat(newCase, hasEntry(PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY)));
-        assertThat(newCase, allOf(
-            hasEntry(D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE),
-            hasEntry(D8_PETITIONER_EMAIL, TEST_USER_EMAIL),
-            not(hasKey(ISSUE_DATE)),
-            not(hasKey(D8_REASON_FOR_DIVORCE)),
+        verifyNoInteractions(draftService);
+        Map<String, Object> ccdCaseDataToBeTransformed = verifyCcdCaseDataToBeTransformed();
+        assertThat(ccdCaseDataToBeTransformed, allOf(
+            hasKey(D_8_DIVORCE_WHO),
             not(hasKey(D_8_HELP_WITH_FEES_NEED_HELP)),
+            not(hasKey(D_8_REASON_FOR_DIVORCE)),
             not(hasKey(D_8_CONNECTIONS))
         ));
-        verifyNoInteractions(formatterServiceClient);
+
+        assertThat(newCase, hasEntry(PREVIOUS_CASE_ID, TEST_CASE_ID));
+        assertThat(newCase, hasEntry(PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY)));
     }
 
     private Draft buildDraft(Map<String, Object> properties) {

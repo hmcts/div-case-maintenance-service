@@ -136,7 +136,7 @@ public class PetitionController {
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         try {
-            Map<String, Object> newCaseDraftData = petitionService.createAmendedPetitionDraftRefusalForDivorce(jwt);
+            Map<String, Object> newCaseDraftData = petitionService.createAmendedPetitionDraftRefusal(jwt);
 
             if (newCaseDraftData == null) {
                 return ResponseEntity.notFound().build();
@@ -148,21 +148,21 @@ public class PetitionController {
         }
     }
 
-    @PutMapping(path = "/ccd-amended-petition-draft-refusal/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/amended-petition-draft-refusal/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message =
             "A draft amendment case was created based on the users previously rejected petition"),
         @ApiResponse(code = 404, message = "When no case exists"),
         @ApiResponse(code = 300, message = "Multiple cases found")})
-    public ResponseEntity<Map<String, Object>> createCcdAmendedPetitionDraftRefusal(
+    public ResponseEntity<Map<String, Object>> createAmendedPetitionDraftRefusalFromCaseId(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
         @PathVariable @ApiParam(value = "caseId", required = true) String caseId
     ) {
         try {
             log.info("Creating a new CCD amended petition (for DN refusal) for Case id: {}", caseId);
-            Map<String, Object> newCase = petitionService.createAmendedPetitionDraftRefusalForCCD(jwt, caseId);
+            Map<String, Object> newCase = petitionService.createAmendedPetitionDraftRefusalFromCaseId(jwt, caseId);
 
             if (newCase == null) {
                 log.info("Amended case is null for Case id: {}", caseId);

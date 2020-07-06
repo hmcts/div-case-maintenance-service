@@ -27,7 +27,7 @@ public interface PetitionService {
 
     Map<String, Object> createAmendedPetitionDraft(String authorisation);
 
-    Map<String, Object> createAmendedPetitionDraftRefusalForDivorce(String authorisation);
+    Map<String, Object> createAmendedPetitionDraftRefusal(String authorisation);
 
-    Map<String, Object> createAmendedPetitionDraftRefusalForCCD(String authorisation, String caseId);
+    Map<String, Object> createAmendedPetitionDraftRefusalFromCaseId(String authorisation, String caseId);
 }

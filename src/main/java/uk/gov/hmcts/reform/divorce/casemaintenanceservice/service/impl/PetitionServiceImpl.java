@@ -134,7 +134,7 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @Override
-    public Map<String, Object> createAmendedPetitionDraftRefusalForDivorce(String authorisation) {
+    public Map<String, Object> createAmendedPetitionDraftRefusal(String authorisation) {
         CaseDetails oldCase = retrieveAndValidatePetitionCase(authorisation);
 
         if (oldCase == null) {
@@ -142,21 +142,21 @@ public class PetitionServiceImpl implements PetitionService,
         }
 
         final Map<String, Object> amendmentCaseDraft =
-            this.getDraftAmendmentCaseRefusal(oldCase, authorisation, true);
+            this.getDraftAmendmentCaseRefusal(oldCase, authorisation);
         recreateDraft(amendmentCaseDraft, authorisation);
 
         return amendmentCaseDraft;
     }
 
     @Override
-    public Map<String, Object> createAmendedPetitionDraftRefusalForCCD(String authorisation, String caseId) {
+    public Map<String, Object> createAmendedPetitionDraftRefusalFromCaseId(String authorisation, String caseId) {
         CaseDetails oldCase = retrieveByIdAndValidatePetitionCase(authorisation, caseId);
 
         if (oldCase == null) {
             return null;
         }
 
-        return this.getDraftAmendmentCaseRefusal(oldCase, authorisation, false);
+        return this.getDraftAmendmentCaseRefusal(oldCase, authorisation);
     }
 
     private CaseDetails retrieveAndValidatePetitionCase(String authorisation) {
@@ -226,8 +226,7 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @SuppressWarnings(value = "unchecked")
-    private Map<String, Object> getDraftAmendmentCaseRefusal(CaseDetails oldCase, String authorisation,
-                                                             boolean formatToDivorceFormat) {
+    private Map<String, Object> getDraftAmendmentCaseRefusal(CaseDetails oldCase, String authorisation) {
         Map<String, Object> caseData = oldCase.getData();
 
         final List<String> previousReasons = getPreviousReasonsForDivorce(oldCase);
@@ -254,9 +253,7 @@ public class PetitionServiceImpl implements PetitionService,
 
         Map<String, Object> amendmentCaseDraft = caseData;
 
-        if (formatToDivorceFormat) {
-            amendmentCaseDraft = formatterServiceClient.transformToDivorceFormat(caseData, authorisation);
-        }
+        amendmentCaseDraft = formatterServiceClient.transformToDivorceFormat(caseData, authorisation);
 
         amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, String.valueOf(oldCase.getId()));
         amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, previousReasons);

@@ -32,8 +32,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CASE_REF;
@@ -57,9 +60,10 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
 })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
-    private static final String API_URL = "/casemaintenance/version/1/ccd-amended-petition-draft-refusal";
+public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSupport {
+    private static final String API_URL = "/casemaintenance/version/1/amended-petition-draft-refusal";
     private static final String TEST_CASE_ID = "1234567891234567";
+    private static final String TRANSFORM_TO_DIVORCE_CONTEXT_PATH = "/caseformatter/version/1/to-divorce-format";
 
     @Autowired
     private MockMvc webClient;
@@ -74,7 +78,7 @@ public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
     private String caseType;
 
     @Test
-    public void givenJWTTokenIsNull_whenCcdAmendedPetitionDraftForRefusal_thenReturnBadRequest() throws Exception {
+    public void givenJWTTokenIsNull_whenAmendedPetitionDraftForRefusalFromCaseId_thenReturnBadRequest() throws Exception {
         webClient.perform(MockMvcRequestBuilders.put(API_URL + "/" + TEST_CASE_ID)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
@@ -82,7 +86,7 @@ public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
     }
 
     @Test
-    public void givenInvalidUserToken_whenCcdAmendedPetitionDraftForRefusal_thenReturnForbiddenError() throws Exception {
+    public void givenInvalidUserToken_whenAmendedPetitionDraftForRefusalFromCaseId_thenReturnForbiddenError() throws Exception {
         final String message = "some message";
         stubUserDetailsEndpoint(HttpStatus.FORBIDDEN, new EqualToPattern(USER_TOKEN), message);
         stubCaseWorkerAuthentication(HttpStatus.OK);
@@ -96,7 +100,7 @@ public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
     }
 
     @Test
-    public void givenCouldNotConnectToAuthService_whenCcdAmendedPetitionDraftForRefusal_thenReturnHttp503() throws Exception {
+    public void givenCouldNotConnectToAuthService_whenAmendedPetitionDraftForRefusalFromCaseId_thenReturnHttp503() throws Exception {
         final String solicitorUserDetails = getSolicitorUserDetails();
 
         when(serviceTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
@@ -112,7 +116,7 @@ public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
     }
 
     @Test
-    public void givenValidRequestToAmend_whenCcdAmendedPetitionDraftForRefusal_thenCreateAmendedPetitionDraft() throws Exception {
+    public void givenValidRequestToAmend_whenAmendedPetitionDraftForRefusalFromCaseId_thenCreateAmendedPetitionDraft() throws Exception {
         final String solicitorUserDetails = getSolicitorUserDetails();
 
         final Map<String, Object> caseData = new HashMap<>();
@@ -127,6 +131,16 @@ public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
         ));
         final CaseDetails oldCase = CaseDetails.builder().data(caseData)
             .id(Long.decode(TEST_CASE_ID)).build();
+
+        final Map<String, Object> caseDataFormatRequest = new HashMap<>();
+        caseDataFormatRequest.put(CcdCaseProperties.D8_CASE_REFERENCE, TEST_CASE_REF);
+        caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_WHO, TEST_RELATIONSHIP);
+        caseDataFormatRequest.put(CcdCaseProperties.D8_SCREEN_HAS_MARRIAGE_BROKEN, YES_VALUE);
+        caseDataFormatRequest.put(CcdCaseProperties.D8_PETITIONER_EMAIL, TEST_USER_EMAIL);
+        caseDataFormatRequest.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
+        caseDataFormatRequest.put(REFUSAL_ORDER_REJECTION_REASONS, ImmutableList.of(
+            REJECTION_NO_JURISDICTION, REJECTION_NO_CRITERIA, REJECTION_INSUFFICIENT_DETAILS
+        ));
 
         final Map<String, Object> draftData = new HashMap<>();
 
@@ -149,6 +163,7 @@ public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), solicitorUserDetails);
         stubCaseWorkerAuthentication(HttpStatus.OK);
+        stubToDivorceFormatEndpoint(caseDataFormatRequest, draftData);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL + "/" + TEST_CASE_ID)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -161,7 +176,7 @@ public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
     }
 
     @Test
-    public void givenInvalidRequestToAmend_whenCcdAmendedPetitionDraftForRefusal_thenReturn404() throws Exception {
+    public void givenInvalidRequestToAmend_whenAmendedPetitionDraftForRefusalFromCaseId_thenReturn404() throws Exception {
         final String solicitorUserDetails = getSolicitorUserDetails();
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList("other"));
@@ -214,5 +229,15 @@ public class CcdAmendedPetitionForRefusalDraftServiceITest extends MockSupport {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
+    }
+
+    private void stubToDivorceFormatEndpoint(Object request, Object response) {
+        caseFormatterServer.stubFor(post(TRANSFORM_TO_DIVORCE_CONTEXT_PATH)
+            .withRequestBody(equalToJson(ObjectMapperTestUtil.convertObjectToJsonString(request)))
+            .withHeader(HttpHeaders.AUTHORIZATION, new EqualToPattern(USER_TOKEN))
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .withBody(ObjectMapperTestUtil.convertObjectToJsonString(response))));
     }
 }
