@@ -56,7 +56,7 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
 
     @Override
     public CaseDetails submitBulkCase(Map<String, Object> data, String authorisation) {
-        return submitCase(data, authorisation, bulkCaseType,
+        return submitCaseOf(data, authorisation, bulkCaseType,
             createBulkCaseEventId,
             DIVORCE_BULK_CASE_SUBMISSION_EVENT_SUMMARY,
             DIVORCE_BULK_CASE_SUBMISSION_EVENT_DESCRIPTION);
@@ -64,13 +64,13 @@ public class CcdSubmissionServiceImpl extends BaseCcdCaseService implements CcdS
 
     @Override
     public CaseDetails submitCaseForSolicitor(Map<String, Object> data, String authorisation) {
-        return submitCase(data, authorisation, caseType,
+        return submitCaseOf(data, authorisation, caseType,
             solicitorCreateEventId,
             DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY,
             DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION);
     }
 
-    private CaseDetails submitCase(Map<String, Object> data, String authorisation, String caseType,
+    private CaseDetails submitCaseOf(Map<String, Object> data, String authorisation, String caseType,
                        String eventId, String eventSummary, String eventDescription) {
         User userDetails = getUser(authorisation);
 

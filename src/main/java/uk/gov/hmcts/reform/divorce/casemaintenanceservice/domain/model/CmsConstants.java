@@ -25,4 +25,5 @@ public class CmsConstants {
     public static final String CREATE_EVENT_ID = "createEventId";
     public static final String CREATE_HWF_EVENT_ID = "createHwfEventId";
     public static final String CREATE_BULK_CASE_EVENT_ID = "createBulkCaseEventId";
+    public static final String SOLICITOR_CREATE_EVENT_ID = "solicitorCreate";
 }

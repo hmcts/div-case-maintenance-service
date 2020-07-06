@@ -65,7 +65,7 @@ public class CcdController {
         @ApiResponse(code = 200,
             message = "Case Data was submitted to CCD. The body payload returns the complete case back",
             response = CaseDetails.class)
-    }
+        }
     )
     public ResponseEntity<CaseDetails> submitCaseForSolicitor(
         @RequestBody @ApiParam(value = "Case Data", required = true) Map<String, Object> data,

@@ -62,6 +62,19 @@ public class CcdControllerUTest {
     }
 
     @Test
+    public void whenSubmitCaseForSolicitor_thenProceedAsExpected() {
+        when(ccdSubmissionService.submitCaseForSolicitor(CASE_DATA_CONTENT, TEST_AUTH_TOKEN)).thenReturn(CASE_DETAILS);
+
+        ResponseEntity<CaseDetails> responseEntity =
+            classUnderTest.submitCaseForSolicitor(CASE_DATA_CONTENT, TEST_AUTH_TOKEN);
+
+        assertEquals(CASE_DETAILS, responseEntity.getBody());
+        assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
+
+        verify(ccdSubmissionService).submitCaseForSolicitor(CASE_DATA_CONTENT, TEST_AUTH_TOKEN);
+    }
+
+    @Test
     public void whenUpdateCase_thenProceedAsExpected() {
         when(ccdUpdateService.update(TEST_CASE_ID, CASE_DATA_CONTENT,  TEST_EVENT_ID, TEST_AUTH_TOKEN)).thenReturn(CASE_DETAILS);
 
