@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_USER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CASEWORKER_ROLE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
@@ -101,7 +101,7 @@ public abstract class MockSupport {
             .withHeader(AUTHORIZATION, authHeader)
             .willReturn(aResponse()
                 .withStatus(status.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                 .withBody(message)));
     }
 
@@ -113,7 +113,7 @@ public abstract class MockSupport {
                 .withRequestBody(new EqualToPattern(authorisedBody()))
                 .willReturn(aResponse()
                     .withStatus(status.value())
-                    .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
                     .withBody(ObjectMapperTestUtil.convertObjectToJsonString(new AuthenticateUserResponse(CASE_WORKER_AUTH_CODE)))
                 )
         );

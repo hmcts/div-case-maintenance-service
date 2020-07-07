@@ -12,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 public class AmendPetitionForRefusalDraftFromCaseIdTest extends PetitionSupport {
 
     @Test
-    @Ignore
     public void givenSingleCaseInCcd_whenAmendPetitionDraftFromCaseId_thenReturnTheDraft() throws Exception {
         final UserDetails userDetails = getUserDetails();
 
