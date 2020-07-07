@@ -97,8 +97,5 @@
     "D8InferredPetitionerGender":"female",
     "D8InferredRespondentGender":"male",
     "ReceivedAOSfromRespDate": "2018-10-22",
-    "ReceivedAOSfromResp": "YES",
-    "RefusalRejectionReason": [
-        "other"
-    ]
+    "ReceivedAOSfromResp": "YES"
 }
