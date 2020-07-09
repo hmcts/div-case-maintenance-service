@@ -120,12 +120,26 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
             );
     }
 
+    protected Response putAmendedPetitionDraftForRefusalFromCaseId(String userToken, Long userId) {
+        return
+            RestUtil.putToRestService(
+                getGetAmendPetitionRefusalContextPathFromCaseId(userId),
+                getHeaders(userToken),
+                "",
+                Collections.emptyMap()
+            );
+    }
+
     private String getGetAmendPetitionContextPath() {
         return serverUrl + amendPetitionContextPath;
     }
 
     private String getGetAmendPetitionRefusalContextPath() {
         return serverUrl + amendPetitionRefusalContextPath;
+    }
+
+    private String getGetAmendPetitionRefusalContextPathFromCaseId(Long caseId) {
+        return serverUrl + amendPetitionRefusalContextPath + "/" + caseId;
     }
 
     protected String getRetrieveCaseRequestUrl() {

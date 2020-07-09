@@ -29,12 +29,15 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.T
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CASE_TYPE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_JURISDICTION_ID;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_SERVICE_TOKEN;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_USER_EMAIL;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.BULK_CASE_TYPE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CREATE_BULK_CASE_EVENT_ID;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CREATE_EVENT_ID;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CREATE_HWF_EVENT_ID;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.D_8_HELP_WITH_FEES_NEED_HELP;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.NO_VALUE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.SOLICITOR_CREATE_EVENT_ID;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -72,6 +75,7 @@ public class CcdSubmissionServiceImplUTest {
         ReflectionTestUtils.setField(classUnderTest, "createEventId", CREATE_EVENT_ID);
         ReflectionTestUtils.setField(classUnderTest, "bulkCaseType", BULK_CASE_TYPE);
         ReflectionTestUtils.setField(classUnderTest, "createBulkCaseEventId", CREATE_BULK_CASE_EVENT_ID);
+        ReflectionTestUtils.setField(classUnderTest, "solicitorCreateEventId", SOLICITOR_CREATE_EVENT_ID);
     }
 
     @Test
@@ -189,6 +193,42 @@ public class CcdSubmissionServiceImplUTest {
             BULK_CASE_TYPE, true, caseDataContent)).thenReturn(expected);
 
         CaseDetails actual = classUnderTest.submitBulkCase(caseData, TEST_AUTHORISATION);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void whenSubmitCaseForSolicitor_thenProceedAsExpected() {
+        final Map<String, Object> caseData = ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL);
+
+        final StartEventResponse startEventResponse = StartEventResponse.builder()
+            .eventId(SOLICITOR_CREATE_EVENT_ID)
+            .token(TEST_AUTH_TOKEN)
+            .build();
+
+        final CaseDataContent caseDataContent = CaseDataContent.builder()
+            .eventToken(startEventResponse.getToken())
+            .event(
+                Event.builder()
+                    .id(startEventResponse.getEventId())
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseData)
+            .build();
+
+        final User userDetails = new User(TEST_AUTH_TOKEN, UserDetails.builder().id(USER_ID).build());
+        final CaseDetails expected = CaseDetails.builder().build();
+
+        when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(userDetails);
+        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+        when(coreCaseDataApi.startForCaseworker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, SOLICITOR_CREATE_EVENT_ID)).thenReturn(startEventResponse);
+
+        when(coreCaseDataApi.submitForCaseworker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, USER_ID, TEST_JURISDICTION_ID,
+            TEST_CASE_TYPE, true, caseDataContent)).thenReturn(expected);
+
+        CaseDetails actual = classUnderTest.submitCaseForSolicitor(caseData, TEST_AUTHORISATION);
 
         assertThat(actual).isEqualTo(expected);
     }

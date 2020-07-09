@@ -4,17 +4,16 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseStateGrouping;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 
 import java.util.List;
 import java.util.Map;
 
 public interface PetitionService {
-    CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping) throws DuplicateCaseException;
+    CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping);
 
-    CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException;
+    CaseDetails retrievePetition(String authorisation);
 
-    CaseDetails retrievePetitionForAos(String authorisation) throws DuplicateCaseException;
+    CaseDetails retrievePetitionForAos(String authorisation);
 
     CaseDetails retrievePetitionByCaseId(String authorisation, String caseId);
 
@@ -26,7 +25,9 @@ public interface PetitionService {
 
     void deleteDraft(String authorisation);
 
-    Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException;
+    Map<String, Object> createAmendedPetitionDraft(String authorisation);
 
-    Map<String, Object> createAmendedPetitionDraftRefusal(String authorisation) throws DuplicateCaseException;
+    Map<String, Object> createAmendedPetitionDraftRefusal(String authorisation);
+
+    Map<String, Object> createAmendedPetitionDraftRefusalFromCaseId(String authorisation, String caseId);
 }

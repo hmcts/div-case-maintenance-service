@@ -40,7 +40,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.text.IsEmptyString.isEmptyOrNullString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.text.IsEmptyString.emptyOrNullString;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
@@ -332,7 +333,7 @@ public class RetrieveAosCaseITest extends MockSupport {
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())
-            .andExpect(content().string(isEmptyOrNullString()));
+            .andExpect(content().string(is(emptyOrNullString())));
     }
 
     @Test
@@ -364,7 +365,7 @@ public class RetrieveAosCaseITest extends MockSupport {
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())
-            .andExpect(content().string(isEmptyOrNullString()));
+            .andExpect(content().string(is(emptyOrNullString())));
     }
 
     private void stubGetDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken, String message) {

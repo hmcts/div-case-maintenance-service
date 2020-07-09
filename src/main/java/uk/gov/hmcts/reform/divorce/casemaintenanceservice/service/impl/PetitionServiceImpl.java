@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSe
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.CaseSubmittedEvent;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.exception.DuplicateCaseException;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.CcdRetrievalService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.PetitionService;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.UserService;
@@ -57,7 +56,7 @@ public class PetitionServiceImpl implements PetitionService,
 
     @Override
     public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping
-    ) throws DuplicateCaseException {
+    ) {
 
         Draft draft = draftService.getDraft(authorisation);
 
@@ -81,12 +80,12 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @Override
-    public CaseDetails retrievePetition(String authorisation) throws DuplicateCaseException {
+    public CaseDetails retrievePetition(String authorisation) {
         return ccdRetrievalService.retrieveCase(authorisation, PETITIONER);
     }
 
     @Override
-    public CaseDetails retrievePetitionForAos(String authorisation) throws DuplicateCaseException {
+    public CaseDetails retrievePetitionForAos(String authorisation) {
         return ccdRetrievalService.retrieveCase(authorisation, RESPONDENT_CASE_STATE_GROUPING, RESPONDENT);
     }
 
@@ -121,7 +120,7 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @Override
-    public Map<String, Object> createAmendedPetitionDraft(String authorisation) throws DuplicateCaseException {
+    public Map<String, Object> createAmendedPetitionDraft(String authorisation) {
         CaseDetails oldCase = retrieveAndValidatePetitionCase(authorisation);
 
         if (oldCase == null) {
@@ -135,37 +134,62 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @Override
-    public Map<String, Object> createAmendedPetitionDraftRefusal(String authorisation) throws DuplicateCaseException {
+    public Map<String, Object> createAmendedPetitionDraftRefusal(String authorisation) {
         CaseDetails oldCase = retrieveAndValidatePetitionCase(authorisation);
 
         if (oldCase == null) {
             return null;
         }
 
-        final Map<String, Object> amendmentCaseDraft = this.getDraftAmendmentCaseRefusal(oldCase, authorisation);
+        final Map<String, Object> amendmentCaseDraft =
+            this.getDraftAmendmentCaseRefusal(oldCase, authorisation);
         recreateDraft(amendmentCaseDraft, authorisation);
 
         return amendmentCaseDraft;
     }
 
-    private CaseDetails retrieveAndValidatePetitionCase(String authorisation) throws DuplicateCaseException {
+    @Override
+    public Map<String, Object> createAmendedPetitionDraftRefusalFromCaseId(String authorisation, String caseId) {
+        CaseDetails oldCase = retrieveByIdAndValidatePetitionCase(authorisation, caseId);
+
+        if (oldCase == null) {
+            return null;
+        }
+
+        return this.getDraftAmendmentCaseRefusal(oldCase, authorisation);
+    }
+
+    private CaseDetails retrieveAndValidatePetitionCase(String authorisation) {
         User userDetails = userService.retrieveUser(authorisation);
         if (userDetails == null) {
             log.warn("No user found for token");
             return null;
         }
         final CaseDetails oldCase = this.retrievePetition(authorisation);
+        return caseAfterValidation(oldCase, userDetails);
+    }
 
-        if (oldCase == null) {
-            log.warn("No case found for the user [{}]", userDetails.getUserDetails().getId());
-            return null;
-        } else if (!oldCase.getData().containsKey(CcdCaseProperties.D8_CASE_REFERENCE)) {
-            log.warn("Case [{}] has not progressed to have a Family Man reference found for the user [{}]",
-                oldCase.getId(), userDetails.getUserDetails().getId());
+    private CaseDetails retrieveByIdAndValidatePetitionCase(String authorisation, String caseId) {
+        User userDetails = userService.retrieveUser(authorisation);
+        if (userDetails == null) {
+            log.warn("No user found for token");
             return null;
         }
+        User caseworkerUser = userService.retrieveAnonymousCaseWorkerDetails();
+        final CaseDetails oldCase = this.retrievePetitionByCaseId(caseworkerUser.getAuthToken(), caseId);
+        return caseAfterValidation(oldCase, userDetails);
+    }
 
-        return oldCase;
+    private CaseDetails caseAfterValidation(CaseDetails caseDetails, User userDetails) {
+        if (caseDetails == null) {
+            log.warn("No case found for the user [{}]", userDetails.getUserDetails().getId());
+            return null;
+        } else if (!caseDetails.getData().containsKey(CcdCaseProperties.D8_CASE_REFERENCE)) {
+            log.warn("Case [{}] has not progressed to have a Family Man reference found for the user [{}]",
+                caseDetails.getId(), userDetails.getUserDetails().getId());
+            return null;
+        }
+        return caseDetails;
     }
 
     @SuppressWarnings(value = "unchecked")
@@ -205,16 +229,7 @@ public class PetitionServiceImpl implements PetitionService,
     private Map<String, Object> getDraftAmendmentCaseRefusal(CaseDetails oldCase, String authorisation) {
         Map<String, Object> caseData = oldCase.getData();
 
-        List<String> previousReasons = (ArrayList<String>) caseData
-            .get(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE_REFUSAL);
-
-        if (previousReasons == null) {
-            previousReasons = new ArrayList<>();
-        } else {
-            // clone to avoid updating old case
-            previousReasons = new ArrayList<>(previousReasons);
-        }
-        previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
+        final List<String> previousReasons = getPreviousReasonsForDivorce(oldCase);
 
         Object issueDateFromOriginalCase = caseData.get(CcdCaseProperties.ISSUE_DATE);
         if (issueDateFromOriginalCase != null) {
@@ -236,13 +251,30 @@ public class PetitionServiceImpl implements PetitionService,
             Arrays.stream(AmendCaseRemovedProps.getPropertiesToRemoveForRejectionAboutDivorce()).forEach(caseData::remove);
         }
 
-        final Map<String, Object> amendmentCaseDraft = formatterServiceClient
-            .transformToDivorceFormat(caseData, authorisation);
+        Map<String, Object> amendmentCaseDraft = caseData;
+
+        amendmentCaseDraft = formatterServiceClient.transformToDivorceFormat(caseData, authorisation);
 
         amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, String.valueOf(oldCase.getId()));
         amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, previousReasons);
 
         return amendmentCaseDraft;
+    }
+
+    private List<String> getPreviousReasonsForDivorce(CaseDetails caseDetails) {
+        Map<String, Object> caseData = caseDetails.getData();
+        List<String> previousReasons = (ArrayList<String>) caseData
+            .get(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE_REFUSAL);
+
+        if (previousReasons == null) {
+            previousReasons = new ArrayList<>();
+        } else {
+            // clone to avoid updating old case
+            log.info("Previous reasons for divorce already exist for Case id: {}", caseDetails.getId());
+            previousReasons = new ArrayList<>(previousReasons);
+        }
+        previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
+        return previousReasons;
     }
 
     private void recreateDraft(Map<String, Object> amendmentCaseDraft, String authorisation) {
