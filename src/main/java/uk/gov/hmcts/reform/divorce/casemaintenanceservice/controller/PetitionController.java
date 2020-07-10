@@ -148,6 +148,34 @@ public class PetitionController {
         }
     }
 
+    @PutMapping(path = "/amended-petition-draft-refusal/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message =
+            "A draft amendment case was created based on the users previously rejected petition"),
+        @ApiResponse(code = 404, message = "When no case exists"),
+        @ApiResponse(code = 300, message = "Multiple cases found")})
+    public ResponseEntity<Map<String, Object>> createAmendedPetitionDraftRefusalFromCaseId(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @PathVariable @ApiParam(value = "caseId", required = true) String caseId
+    ) {
+        try {
+            log.info("Creating a new CCD amended petition (for DN refusal) for Case id: {}", caseId);
+            Map<String, Object> newCase = petitionService.createAmendedPetitionDraftRefusalFromCaseId(jwt, caseId);
+
+            if (newCase == null) {
+                log.info("Amended case is null for Case id: {}", caseId);
+                return ResponseEntity.notFound().build();
+            }
+            log.info("Amended case returned successfully for Case id: {}", caseId);
+            return ResponseEntity.ok(newCase);
+        } catch (DuplicateCaseException e) {
+            log.warn(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
+        }
+    }
+
     @PutMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Saves or updates a draft to draft store")
     @ApiResponses(value = {

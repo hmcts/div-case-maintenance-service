@@ -28,6 +28,9 @@ class BaseCcdCaseService {
     @Value("${ccd.eventid.createhwf}")
     String createHwfEventId;
 
+    @Value("${ccd.eventid.solicitorCreate}")
+    String solicitorCreateEventId;
+
     @Value("${ccd.bulk.casetype}")
     String bulkCaseType;
 

@@ -8,4 +8,6 @@ public interface CcdSubmissionService {
     CaseDetails submitCase(Map<String, Object> data, String authorisation);
 
     CaseDetails submitBulkCase(Map<String, Object> data, String authorisation);
+
+    CaseDetails submitCaseForSolicitor(Map<String, Object> data, String authorisation);
 }

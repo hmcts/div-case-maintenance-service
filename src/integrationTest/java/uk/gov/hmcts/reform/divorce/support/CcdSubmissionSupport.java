@@ -23,14 +23,22 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     @Value("${case.maintenance.submission.context-path}")
     private String contextPath;
 
+    @Value("${case.maintenance.solicitor.submission.context-path}")
+    private String contextSolicitorPath;
+
     @Value("${case.maintenance.bulk.submission.context-path}")
     private String contextBulkCasePath;
 
     @Value("${env}")
     private String testEnvironment;
 
-    protected void submitAndAssertSuccess(String fileName) throws Exception {
+    protected void submitAndAssertSuccess(String fileName) {
         Response cmsResponse = submitCase(fileName);
+        assertOkResponseAndCaseIdIsNotZero(cmsResponse);
+    }
+
+    protected void solicitorSubmitAndAssertSuccess(String fileName) {
+        Response cmsResponse = solicitorSubmitCase(fileName);
         assertOkResponseAndCaseIdIsNotZero(cmsResponse);
     }
 
@@ -38,8 +46,16 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
         return submitCase(fileName, getUserDetails());
     }
 
+    private Response solicitorSubmitCase(String fileName) {
+        return solicitorSubmitCase(fileName, getSolicitorUser());
+    }
+
     protected Response submitCase(String fileName, UserDetails userDetails) {
         return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(), getSubmissionRequestUrl());
+    }
+
+    protected Response solicitorSubmitCase(String fileName, UserDetails userDetails) {
+        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(), getSolicitorSubmissionRequestUrl());
     }
 
     protected Response submitCaseJson(String jsonCase, String userToken, String contextUrl) {
@@ -77,6 +93,10 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
 
     protected String getSubmissionRequestUrl() {
         return serverUrl + contextPath;
+    }
+
+    protected String getSolicitorSubmissionRequestUrl() {
+        return serverUrl + contextSolicitorPath;
     }
 
     protected String getBulkCaseSubmissionRequestUrl() {

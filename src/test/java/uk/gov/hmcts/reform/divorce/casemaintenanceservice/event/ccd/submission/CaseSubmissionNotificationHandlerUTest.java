@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_AUTH_TOKEN;
 
@@ -35,7 +35,7 @@ public class CaseSubmissionNotificationHandlerUTest {
 
         classUnderTest.notifyCaseSubmission(joinPoint);
 
-        verifyZeroInteractions(applicationEventPublisher);
+        verifyNoInteractions(applicationEventPublisher);
     }
 
     @Test

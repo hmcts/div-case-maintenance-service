@@ -41,6 +41,7 @@ ccd:
   eventid:
     create: create
     createhwf: hwfCreate
+    solicitorCreate: solicitorCreate
   bulk:
     casetype: DIVORCE_BulkAction
     eventid:
