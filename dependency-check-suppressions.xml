@@ -48,6 +48,12 @@
         <cve>CVE-2014-3488</cve>
         <cve>CVE-2015-2156</cve>
         <cve>CVE-2019-16869</cve>
+        <cve>CVE-2019-10782</cve>
+        <cve>CVE-2020-5398</cve>
+        <cve>CVE-2020-1938</cve>
+        <cve>CVE-2020-1935</cve>
+        <cve>CVE-2019-12418</cve>
+        <cve>CVE-2019-17563</cve>
     </suppress>
     <suppress>
         <notes>Upgrade log4j to 2.13.2 which supports this feature. Previous versions can set the system property mail.smtp.ssl.checkserveridentity to true to globally enable hostname verification for SMTPS connections.</notes>
