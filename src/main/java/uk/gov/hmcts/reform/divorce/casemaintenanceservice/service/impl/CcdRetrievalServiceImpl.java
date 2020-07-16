@@ -139,7 +139,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         return coreCaseDataApi.searchCases(
             getBearerToken(authorisation),
             getServiceAuthToken(),
-            caseType,
+            "FinancialRemedyMVP2",
             query
         );
     }
