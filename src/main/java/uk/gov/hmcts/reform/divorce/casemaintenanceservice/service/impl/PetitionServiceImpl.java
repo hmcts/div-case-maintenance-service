@@ -63,7 +63,7 @@ public class PetitionServiceImpl implements PetitionService,
         CaseDetails caseDetails = ccdRetrievalService.retrieveCase(authorisation, caseStateGrouping, PETITIONER);
 
         if (caseDetails != null && CaseState.AMEND_PETITION.getValue().equalsIgnoreCase(caseDetails.getState())) {
-            // If draft does not exist or is not an AmendPetition draft, return case as draft
+            // If draft does not exist or is not an AmendPetition case, return case as draft
             // Else assume AmendPetition draft already exists and ignore any retrieved case in AmendPetition state
             if (draft == null || !isAmendPetitionDraft(draft)) {
                 caseDetails = formatDraftCase(getDraftAmendmentCase(caseDetails, authorisation));

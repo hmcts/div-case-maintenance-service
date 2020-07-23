@@ -78,7 +78,6 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
         return
             RestUtil.postToRestService(
                 getSearchRequestUrl(),
-
                 getHeaders(userToken),
                 query
             );

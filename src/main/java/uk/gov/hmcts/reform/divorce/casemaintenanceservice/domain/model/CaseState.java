@@ -31,6 +31,7 @@ public enum CaseState {
     AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN",
         ApplicationStatus.AWAITING_CONSIDERATION_GENERAL_APPLICATION),
     AMEND_PETITION("AmendPetition", ApplicationStatus.AMEND_PETITION),
+    AWAITING_AMEND_CASE("AwaitingAmendCase", ApplicationStatus.AWAITING_AMEND_CASE),
     AWAITING_CLARIFICATION("AwaitingClarification", ApplicationStatus.AWAITING_CLARIFICATION),
     AWAITING_CONSIDERATION("AwaitingConsideration", ApplicationStatus.AWAITING_CONSIDERATION),
     DN_PRONOUNCED("DNPronounced", ApplicationStatus.DN_PRONOUNCED),
