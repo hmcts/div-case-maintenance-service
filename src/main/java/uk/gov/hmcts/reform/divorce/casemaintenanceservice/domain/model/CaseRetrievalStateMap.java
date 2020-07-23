@@ -50,7 +50,8 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_ADMIN_CLARIFICATION
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
-                CaseState.AMEND_PETITION
+                CaseState.AMEND_PETITION,
+                CaseState.AWAITING_AMEND_CASE
             )
         );
 

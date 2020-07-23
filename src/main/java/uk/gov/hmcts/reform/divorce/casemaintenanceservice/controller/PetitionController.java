@@ -42,7 +42,7 @@ public class PetitionController {
     private PetitionService petitionService;
 
     @GetMapping(path = "/retrieveCase", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Retrieves a divorce case from CCD of Draft store")
+    @ApiOperation(value = "Retrieves a divorce case from CCD or Draft store")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
         @ApiResponse(code = 204, message = "When there are no petition exists"),

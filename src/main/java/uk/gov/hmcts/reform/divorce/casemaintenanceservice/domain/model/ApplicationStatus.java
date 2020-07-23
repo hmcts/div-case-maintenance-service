@@ -26,6 +26,7 @@ public enum ApplicationStatus {
     DEFENDED_DIVORCE("DefendedDivorce"),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer"),
     AMEND_PETITION("AmendPetition"),
+    AWAITING_AMEND_CASE("AwaitingAmendCase"),
     AWAITING_CLARIFICATION("AwaitingClarification"),
     AWAITING_CONSIDERATION("AwaitingConsideration"),
     DN_PRONOUNCED("DNPronounced"),

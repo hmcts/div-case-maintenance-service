@@ -49,7 +49,8 @@ public class CaseRetrievalStateMapTest {
 
         assertThat(PETITIONER_CASE_STATE_GROUPING.get(CaseStateGrouping.AMEND))
             .contains(
-                CaseState.AMEND_PETITION
+                CaseState.AMEND_PETITION,
+                CaseState.AWAITING_AMEND_CASE
             );
     }
 
