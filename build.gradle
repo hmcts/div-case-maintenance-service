@@ -33,8 +33,8 @@ apply plugin: 'net.serenity-bdd.aggregator'
 
 group = 'uk.gov.hmcts.reform.divorce'
 version = '1.0.0'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 jar {
     manifest {
@@ -123,15 +123,15 @@ def versions = [
     jackson: '2.10.0',
     jsonAssert: '1.2.3',
     junit: '4.12',
-    lombok: '1.16.16',
+    lombok: '1.18.12',
     pitest: '1.4.10',
     puppyCrawl: '8.29',
     reformHealth: '0.0.5',
     reformPropertiesVolume: '0.0.4',
     reformsJavaLogging: '5.1.1',
-    restAssured: '3.0.3',
-    serenity: '2.0.81',
-    serenityCucumber: '1.9.46',
+    restAssured: '4.3.1',
+    serenity: '2.2.12',
+    serenityCucumber: '1.9.51',
     serviceTokenGenerator: '3.0.0',
     sonarPitest: '0.5',
     springCloudDependencies: '2.2.1.RELEASE',
@@ -235,6 +235,7 @@ dependencies {
     //integration test
     integrationTestCompile group: 'com.mashape.unirest', name: 'unirest-java', version: versions.unirest
     integrationTestCompile group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
+    integrationTestCompile group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
     integrationTestCompile group: 'junit', name: 'junit', version: versions.junit
     integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-cucumber', version: versions.serenityCucumber
