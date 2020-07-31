@@ -46,12 +46,12 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
         return submitCase(fileName, getUserDetails());
     }
 
-    private Response solicitorSubmitCase(String fileName) {
-        return solicitorSubmitCase(fileName, getSolicitorUser());
-    }
-
     protected Response submitCase(String fileName, UserDetails userDetails) {
         return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(), getSubmissionRequestUrl());
+    }
+
+    private Response solicitorSubmitCase(String fileName) {
+        return solicitorSubmitCase(fileName, getSolicitorUser());
     }
 
     protected Response solicitorSubmitCase(String fileName, UserDetails userDetails) {
