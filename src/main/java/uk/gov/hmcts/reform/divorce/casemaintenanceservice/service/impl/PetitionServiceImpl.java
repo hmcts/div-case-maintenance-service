@@ -25,8 +25,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 
+import static java.util.Collections.emptyList;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.REFUSAL_ORDER_REJECTION_REASONS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.REJECTION_INSUFFICIENT_DETAILS;
@@ -55,8 +57,7 @@ public class PetitionServiceImpl implements PetitionService,
     private UserService userService;
 
     @Override
-    public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping
-    ) {
+    public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping) {
 
         Draft draft = draftService.getDraft(authorisation);
 
@@ -141,8 +142,7 @@ public class PetitionServiceImpl implements PetitionService,
             return null;
         }
 
-        final Map<String, Object> amendmentCaseDraft =
-            this.getDraftAmendmentCaseRefusal(oldCase, authorisation);
+        final Map<String, Object> amendmentCaseDraft = this.getDraftAmendmentCaseRefusal(oldCase, authorisation);
         recreateDraft(amendmentCaseDraft, authorisation);
 
         return amendmentCaseDraft;
@@ -150,7 +150,7 @@ public class PetitionServiceImpl implements PetitionService,
 
     @Override
     public Map<String, Object> createAmendedPetitionDraftRefusalFromCaseId(String authorisation, String caseId) {
-        CaseDetails oldCase = retrieveByIdAndValidatePetitionCase(authorisation, caseId);
+        CaseDetails oldCase = retrieveAndValidatePetitionCase(authorisation, caseId);
 
         if (oldCase == null) {
             return null;
@@ -160,23 +160,24 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     private CaseDetails retrieveAndValidatePetitionCase(String authorisation) {
-        User userDetails = userService.retrieveUser(authorisation);
-        if (userDetails == null) {
-            log.warn("No user found for token");
-            return null;
-        }
-        final CaseDetails oldCase = this.retrievePetition(authorisation);
-        return caseAfterValidation(oldCase, userDetails);
+        return retrieveAndValidatePetitionCase(authorisation, null);
     }
 
-    private CaseDetails retrieveByIdAndValidatePetitionCase(String authorisation, String caseId) {
+    private CaseDetails retrieveAndValidatePetitionCase(String authorisation, String caseId) {
         User userDetails = userService.retrieveUser(authorisation);
         if (userDetails == null) {
             log.warn("No user found for token");
             return null;
         }
-        User caseworkerUser = userService.retrieveAnonymousCaseWorkerDetails();
-        final CaseDetails oldCase = this.retrievePetitionByCaseId(caseworkerUser.getAuthToken(), caseId);
+
+        final CaseDetails oldCase;
+        if (caseId != null) {
+            User caseworkerUser = userService.retrieveAnonymousCaseWorkerDetails();
+            oldCase = this.retrievePetitionByCaseId(caseworkerUser.getAuthToken(), caseId);
+        } else {
+            oldCase = this.retrievePetition(authorisation);
+        }
+
         return caseAfterValidation(oldCase, userDetails);
     }
 
@@ -192,88 +193,80 @@ public class PetitionServiceImpl implements PetitionService,
         return caseDetails;
     }
 
-    @SuppressWarnings(value = "unchecked")
+    private Map<String, Object> getDraftAmendmentCaseRefusal(CaseDetails oldCase, String authorisation) {
+        return getDraftAmendmentCase(oldCase, authorisation, true);
+    }
+
     private Map<String, Object> getDraftAmendmentCase(CaseDetails oldCase, String authorisation) {
-        Map<String, Object> caseData = oldCase.getData();
-        List<String> previousReasons = (ArrayList<String>) caseData
-            .get(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE);
+        return getDraftAmendmentCase(oldCase, authorisation, false);
+    }
 
-        if (previousReasons == null) {
-            previousReasons = new ArrayList<>();
+    private Map<String, Object> getDraftAmendmentCase(CaseDetails oldCase, String authorisation, boolean refusal) {
+        final List<?> previousReasonsForDivorce;
+        if (refusal) {
+            previousReasonsForDivorce = getPreviousReasonsForDivorce(oldCase, CcdCaseProperties.PREVIOUS_REASONS_DIVORCE_REFUSAL);
         } else {
-            // clone to avoid updating old case
-            previousReasons = new ArrayList<>(previousReasons);
+            previousReasonsForDivorce = getPreviousReasonsForDivorce(oldCase, CcdCaseProperties.PREVIOUS_REASONS_DIVORCE);
         }
-        previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
 
+        Map<String, Object> caseData = oldCase.getData();
         Object issueDateFromOriginalCase = caseData.get(CcdCaseProperties.ISSUE_DATE);
         if (issueDateFromOriginalCase != null) {
             caseData.put(CcdCaseProperties.PREVIOUS_ISSUE_DATE, issueDateFromOriginalCase);
         }
 
         // remove all props from old case we do not want in new draft case
-        Arrays.stream(AmendCaseRemovedProps.getPropertiesToRemove()).forEach(caseData::remove);
+        if (refusal) {
+            removePropertiesBasedOnListOfRejectionReasons(caseData);
+        } else {
+            Arrays.stream(AmendCaseRemovedProps.getPropertiesToRemove()).forEach(caseData::remove);
+        }
 
         caseData.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
 
-        final Map<String, Object> amendmentCaseDraft = formatterServiceClient
-            .transformToDivorceFormat(caseData, authorisation);
+        Map<String, Object> amendmentCaseDraft = formatterServiceClient.transformToDivorceFormat(caseData, authorisation);
 
+        if (refusal) {
+            amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, previousReasonsForDivorce);
+        } else {
+            amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasonsForDivorce);
+        }
         amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, String.valueOf(oldCase.getId()));
-        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasons);
 
         return amendmentCaseDraft;
     }
 
-    @SuppressWarnings(value = "unchecked")
-    private Map<String, Object> getDraftAmendmentCaseRefusal(CaseDetails oldCase, String authorisation) {
-        Map<String, Object> caseData = oldCase.getData();
+    private void removePropertiesBasedOnListOfRejectionReasons(Map<String, Object> caseData) {
+        List<?> rejectionReasons = Optional.ofNullable(caseData.get(REFUSAL_ORDER_REJECTION_REASONS))
+            .map(List.class::cast)
+            .orElse(emptyList());
 
-        final List<String> previousReasons = getPreviousReasonsForDivorce(oldCase);
-
-        Object issueDateFromOriginalCase = caseData.get(CcdCaseProperties.ISSUE_DATE);
-        if (issueDateFromOriginalCase != null) {
-            caseData.put(CcdCaseProperties.PREVIOUS_ISSUE_DATE, issueDateFromOriginalCase);
-        }
-
-        // remove all props from old case we do not want in new draft case
-        Arrays.stream(AmendCaseRemovedProps.getPropertiesToRemoveForRejection()).forEach(caseData::remove);
-
-        caseData.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
-
-        List<String> rejectionReasons = (List<String>) caseData.get(REFUSAL_ORDER_REJECTION_REASONS);
+        List<String> propertiesToRemove = new ArrayList<>(Arrays.asList(AmendCaseRemovedProps.getPropertiesToRemoveForRejection()));
 
         if (rejectionReasons.contains(REJECTION_NO_JURISDICTION)) {
-            Arrays.stream(AmendCaseRemovedProps.getPropertiesToRemoveForRejectionJurisdiction()).forEach(caseData::remove);
+            propertiesToRemove.addAll(Arrays.asList(AmendCaseRemovedProps.getPropertiesToRemoveForRejectionJurisdiction()));
         }
 
         if (rejectionReasons.contains(REJECTION_NO_CRITERIA) || rejectionReasons.contains(REJECTION_INSUFFICIENT_DETAILS)) {
-            Arrays.stream(AmendCaseRemovedProps.getPropertiesToRemoveForRejectionAboutDivorce()).forEach(caseData::remove);
+            propertiesToRemove.addAll(Arrays.asList(AmendCaseRemovedProps.getPropertiesToRemoveForRejectionAboutDivorce()));
         }
 
-        Map<String, Object> amendmentCaseDraft = caseData;
-
-        amendmentCaseDraft = formatterServiceClient.transformToDivorceFormat(caseData, authorisation);
-
-        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_CASE_ID, String.valueOf(oldCase.getId()));
-        amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, previousReasons);
-
-        return amendmentCaseDraft;
+        propertiesToRemove.forEach(caseData::remove);
     }
 
-    private List<String> getPreviousReasonsForDivorce(CaseDetails caseDetails) {
-        Map<String, Object> caseData = caseDetails.getData();
-        List<String> previousReasons = (ArrayList<String>) caseData
-            .get(CcdCaseProperties.PREVIOUS_REASONS_DIVORCE_REFUSAL);
+    private List<?> getPreviousReasonsForDivorce(CaseDetails caseDetails, String keyForPreviousDivorceReasons) {
+        Map<String, Object> caseData = new HashMap<>(caseDetails.getData());
 
-        if (previousReasons == null) {
-            previousReasons = new ArrayList<>();
-        } else {
-            // clone to avoid updating old case
+        List<? super Object> previousReasons = Optional.ofNullable(caseData.get(keyForPreviousDivorceReasons))
+            .map(List.class::cast)
+            .orElse(new ArrayList<>());
+
+        if (!previousReasons.isEmpty()) {
             log.info("Previous reasons for divorce already exist for Case id: {}", caseDetails.getId());
-            previousReasons = new ArrayList<>(previousReasons);
         }
-        previousReasons.add((String) caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
+
+        previousReasons.add(caseData.get(CcdCaseProperties.D8_REASON_FOR_DIVORCE));
+
         return previousReasons;
     }
 
