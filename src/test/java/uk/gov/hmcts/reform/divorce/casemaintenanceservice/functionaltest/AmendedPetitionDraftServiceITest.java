@@ -43,7 +43,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_CASE_REF;
@@ -227,7 +227,7 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
             .withHeader(HttpHeaders.AUTHORIZATION, new EqualToPattern(USER_TOKEN))
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .withBody(ObjectMapperTestUtil.convertObjectToJsonString(response))));
     }
 
@@ -239,7 +239,7 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
             .withHeader(DraftStoreClient.SECRET_HEADER_NAME, new EqualToPattern(ENCRYPTED_USER_ID))
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .withBody("{}")));
     }
 
@@ -249,7 +249,7 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
             .withHeader(DraftStoreClient.SERVICE_AUTHORIZATION_HEADER_NAME, serviceToken)
             .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
-                .withHeader(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE)
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .withBody("")));
     }
 }
