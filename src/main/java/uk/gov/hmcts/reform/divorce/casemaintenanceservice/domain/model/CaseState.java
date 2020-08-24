@@ -43,6 +43,7 @@ public enum CaseState {
     AOS_AWAITING_SOL("AosAwaitingSol", ApplicationStatus.AOS_AWAITING_SOL),
     CLARIFICATION_SUBMITTED("ClarificationSubmitted", ApplicationStatus.CLARIFICATION_SUBMITTED),
     AWAITING_ADMIN_CLARIFICATION("AwaitingAdminClarification", ApplicationStatus.AWAITING_ADMIN_CLARIFICATION),
+    SERVICE_APPLICATION_NOT_APPROVED("ServiceApplicationNotApproved", ApplicationStatus.SERVICE_APPLICATION_NOT_APPROVED),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;

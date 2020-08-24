@@ -44,7 +44,8 @@ public class CaseRetrievalStateMapTest {
                 CaseState.DN_IS_REFUSED,
                 CaseState.DECREE_ABSOLUTE_REQUESTED,
                 CaseState.CLARIFICATION_SUBMITTED,
-                CaseState.AWAITING_ADMIN_CLARIFICATION
+                CaseState.AWAITING_ADMIN_CLARIFICATION,
+                CaseState.SERVICE_APPLICATION_NOT_APPROVED
             );
 
         assertThat(PETITIONER_CASE_STATE_GROUPING.get(CaseStateGrouping.AMEND))
