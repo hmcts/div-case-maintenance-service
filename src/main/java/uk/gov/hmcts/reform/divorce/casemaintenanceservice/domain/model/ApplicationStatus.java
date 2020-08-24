@@ -38,6 +38,7 @@ public enum ApplicationStatus {
     AOS_AWAITING_SOL("AosAwaitingSol"),
     CLARIFICATION_SUBMITTED("ClarificationSubmitted"),
     AWAITING_ADMIN_CLARIFICATION("AwaitingAdminClarification"),
+    SERVICE_APPLICATION_NOT_APPROVED("ServiceApplicationNotApproved"),
     UNKNOWN("DNCompleted");
 
     private final String value;
