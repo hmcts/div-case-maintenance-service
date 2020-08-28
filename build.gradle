@@ -227,7 +227,6 @@ dependencies {
 
     //integration test
     integrationTestImplementation group: 'com.mashape.unirest', name: 'unirest-java', version: versions.unirest
-    integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
     integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
     integrationTestImplementation group: 'junit', name: 'junit', version: versions.junit
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
@@ -281,6 +280,9 @@ sourceSets {
 dependencyManagement {
     dependencies {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
+
+        //CVE-2017-18640
+        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.26'
 
         // solves CVE-2014-3488, CVE-2015-2156, CVE-2019-16869
         dependencySet(group: 'io.netty', version: '4.1.46.Final') {
