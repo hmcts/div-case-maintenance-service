@@ -134,7 +134,7 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
         Response cmsResponse = retrieveCase(userDetails.getAuthToken());
-        System.out.println(cmsResponse);
+
         assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
         assertEquals(submittedCaseResponse.getBody().jsonPath().getString("id"),
             cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
