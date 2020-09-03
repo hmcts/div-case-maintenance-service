@@ -227,7 +227,6 @@ dependencies {
 
     //integration test
     integrationTestImplementation group: 'com.mashape.unirest', name: 'unirest-java', version: versions.unirest
-    integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
     integrationTestImplementation group: 'junit', name: 'junit', version: versions.junit
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-cucumber', version: versions.serenityCucumber
