@@ -112,7 +112,7 @@ dependencyCheck {
 
 def versions = [
     bcpkixJdk15on: '1.64',
-    ccdStoreClient: '4.6.4',
+    ccdStoreClient: '4.7.3',
     commonsBeanUtils: '1.9.4',
     commonsIo: '2.6',
     commonsLang3: '3.7',
@@ -300,6 +300,9 @@ dependencyManagement {
             entry 'netty-resolver'
             entry 'netty-transport'
         }
+
+        //CVE-2017-18640
+        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.26'
 
         dependencySet(
             group: 'com.fasterxml.jackson.core',
