@@ -291,7 +291,7 @@ dependencyManagement {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
 
         // solves CVE-2014-3488, CVE-2015-2156, CVE-2019-16869
-        dependencySet(group: 'io.netty', version: '4.1.46.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.52.Final') {
             entry 'netty-buffer'
             entry 'netty-codec'
             entry 'netty-codec-http'
