@@ -7,7 +7,7 @@ Divorce system.
 
 **Prerequisites**
 
-- [JDK 8](https://www.oracle.com/java)
+- [JDK 11](https://openjdk.java.net/)
 - [Docker](https://www.docker.com)
 
 **Building**
@@ -84,7 +84,7 @@ API documentation is provided with Swagger:
  - `http://localhost:4010/swagger-ui.html` - UI to interact with the API resources
 
 The `documentation.swagger.enabled` property should be 'true' to enable Swagger.
- 
+
 **Versioning**
 
 We use [SemVer](http://semver.org/) for versioning.
