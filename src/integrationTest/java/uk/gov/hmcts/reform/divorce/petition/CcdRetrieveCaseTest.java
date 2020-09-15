@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.divorce.petition;
 
 import io.restassured.response.Response;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
@@ -12,9 +11,7 @@ import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RELATIONSHIP;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.UNFORMATTED_CASE_ID;
 
-@Slf4j
 public class CcdRetrieveCaseTest extends PetitionSupport {
 
     private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
@@ -43,11 +40,6 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         Response cmsResponse = retrieveCase(userDetails.getAuthToken());
 
         assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
-        log.info("---------------------------------------------------------------------");
-        log.info(createCaseResponse.toString());
-        log.info("---------------------------------------------------------------------");
-        log.info(cmsResponse.toString());
-        log.info("---------------------------------------------------------------------");
         assertEquals((Long)createCaseResponse.path("id"), cmsResponse.path("id"));
     }
 
@@ -141,7 +133,6 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails);
 
         Response cmsResponse = retrieveCase(userDetails.getAuthToken());
-        System.out.println(cmsResponse);
         assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
         assertEquals(submittedCaseResponse.getBody().jsonPath().getString("id"),
             cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
