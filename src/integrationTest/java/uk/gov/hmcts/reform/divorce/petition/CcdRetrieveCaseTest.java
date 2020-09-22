@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.TEST_RELATIONSHIP;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.UNFORMATTED_CASE_ID;
 
 public class CcdRetrieveCaseTest extends PetitionSupport {
 
@@ -128,13 +127,12 @@ public class CcdRetrieveCaseTest extends PetitionSupport {
         final UserDetails userDetails = getUserDetails();
         final String draftFileName = DIVORCE_FORMAT_DRAFT_CONTEXT_PATH + EXISTING_DRAFT_JSON_FILE_PATH;
 
-        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails);
-
         createDraft(userDetails.getAuthToken(), draftFileName,
             Collections.singletonMap(DIVORCE_FORMAT_KEY, true));
 
-        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
+        Response submittedCaseResponse = createACaseMakePaymentAndAmendTheCase(userDetails);
 
+        Response cmsResponse = retrieveCase(userDetails.getAuthToken());
         assertEquals("true", cmsResponse.getBody().jsonPath().getString("case_data.fetchedDraft"));
         assertEquals(submittedCaseResponse.getBody().jsonPath().getString("id"),
             cmsResponse.getBody().jsonPath().getString("case_data.previousCaseId"));
