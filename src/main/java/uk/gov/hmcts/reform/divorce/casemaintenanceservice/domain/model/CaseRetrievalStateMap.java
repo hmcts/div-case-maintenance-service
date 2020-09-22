@@ -86,7 +86,8 @@ public class CaseRetrievalStateMap {
                 CaseState.DECREE_ABSOLUTE_REQUESTED,
                 CaseState.AOS_AWAITING_SOL,
                 CaseState.CLARIFICATION_SUBMITTED,
-                CaseState.AWAITING_ADMIN_CLARIFICATION)
+                CaseState.AWAITING_ADMIN_CLARIFICATION,
+                CaseState.SERVICE_APPLICATION_NOT_APPROVED)
         );
 
 }

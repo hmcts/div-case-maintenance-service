@@ -87,7 +87,8 @@ public class CaseRetrievalStateMapTest {
                 CaseState.DECREE_ABSOLUTE_REQUESTED,
                 CaseState.DN_DRAFTED,
                 CaseState.CLARIFICATION_SUBMITTED,
-                CaseState.AWAITING_ADMIN_CLARIFICATION
+                CaseState.AWAITING_ADMIN_CLARIFICATION,
+                CaseState.SERVICE_APPLICATION_NOT_APPROVED
             );
     }
 }
