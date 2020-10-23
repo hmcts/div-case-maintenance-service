@@ -9,6 +9,7 @@ import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
 import org.junit.After;
@@ -20,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.ResourceUtils;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.DraftModelFactory;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.UpdateDraft;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,7 +32,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -40,21 +44,33 @@ import static org.junit.Assert.assertEquals;
 })
 public class DraftStoreClientConsumerTest {
 
+    public static final String DRAFT_ID = "12345";
     @Autowired
     private DraftStoreClient draftStoreClient;
+    @Autowired
+    private DraftModelFactory draftModelFactory;
+
     ObjectMapper objectMapper = new ObjectMapper();
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
-    public static final String SOME_SECRET = "Secret";
+    public static final String SOME_SECRET = "SecretThatIsOverSixteenChars";
+    public static final String SECRET_HEADER_NAME = "Secret";
     private static final String TOKEN = "someToken";
 
     public static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
     public static final String REGEX_DATE = "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
 
+    private Map draftMap;
+    private CreateDraft createDraft;
+    private UpdateDraft updateDraft;
+
     @BeforeEach
-    public void setUpEachTest() throws InterruptedException {
+    public void setUpEachTest() throws InterruptedException, IOException {
         Thread.sleep(2000);
+        this.draftMap = this.getDraftAsMap("base-case.json");
+        this.createDraft = draftModelFactory.createDraft(draftMap, true);
+        this.updateDraft = draftModelFactory.updateDraft(draftMap, true);
     }
 
     @After
@@ -63,31 +79,106 @@ public class DraftStoreClientConsumerTest {
     }
 
     @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact getAllDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException {
+    RequestResponsePact getAllDraftsForLoggedInUser(PactDslWithProvider builder) {
         // @formatter:off
-        Map<String, Object> draftMap = this.getDraftAsMap("base-case.json");
+
         return builder
             .given("A draft exists for a logged in user", draftMap)
             .uponReceiving("a request to retrieve those drafts")
             .path("/drafts")
             .method("GET")
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
-                SOME_SERVICE_AUTHORIZATION_TOKEN)
+                SOME_SERVICE_AUTHORIZATION_TOKEN, SECRET_HEADER_NAME, SOME_SECRET)
             .willRespondWith()
-            .status(200)
+            .matchHeader(org.springframework.http.HttpHeaders.CONTENT_TYPE,
+                "application\\/vnd\\.uk\\.gov\\.hmcts\\.draft\\-store\\.v3\\+json")
+            .status(HttpStatus.SC_OK)
             .body(buildDraftListsPactDsl())
             .toPact();
     }
 
+    @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
+    RequestResponsePact getAllDraftsForLoggedInUserAfterPage(PactDslWithProvider builder) throws IOException {
+        // @formatter:off
+        return builder
+            .given("A draft exists after a given page for a logged in user", draftMap)
+            .uponReceiving("a request to retrieve those drafts after a page")
+            .path("/drafts")
+            .method("GET")
+            .query("after=1")
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
+                SOME_SERVICE_AUTHORIZATION_TOKEN, SECRET_HEADER_NAME, SOME_SECRET)
+            .willRespondWith()
+            .matchHeader(org.springframework.http.HttpHeaders.CONTENT_TYPE,
+                "application\\/vnd\\.uk\\.gov\\.hmcts\\.draft\\-store\\.v3\\+json")
+            .status(HttpStatus.SC_OK)
+            .body(buildDraftListsPactDsl())
+            .toPact();
+    }
+
+
+    @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
+    RequestResponsePact createSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException {
+        // @formatter:off
+
+        String jsonObject = createJsonObject(createDraft);
+
+        return builder
+            .given("A logged in user requests to create a draft", draftMap)
+            .uponReceiving("a request to create a draft")
+            .path("/drafts")
+            .method("POST")
+            .body(jsonObject, "application/json")
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
+                SOME_SERVICE_AUTHORIZATION_TOKEN, SECRET_HEADER_NAME, SOME_SECRET)
+            .willRespondWith()
+            .status(HttpStatus.SC_CREATED)
+            .toPact();
+    }
+
+
+    @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
+    RequestResponsePact updateSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException {
+        // @formatter:off
+        String jsonObject = createJsonObject(updateDraft);
+
+        return builder
+            .given("A logged in user requests to update a draft", draftMap)
+            .uponReceiving("a request to update a draft")
+            .path("/drafts/" + DRAFT_ID)
+            .method("PUT")
+            .body(jsonObject, "application/json")
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
+                SOME_SERVICE_AUTHORIZATION_TOKEN, SECRET_HEADER_NAME, SOME_SECRET)
+            .willRespondWith()
+            .status(HttpStatus.SC_NO_CONTENT)
+            .toPact();
+    }
+
+    @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
+    RequestResponsePact deleteAllDraftsForLoggedInUser(PactDslWithProvider builder) {
+        // @formatter:off
+
+        return builder
+            .given("Drafts exists for a logged in user and delete is requested", draftMap)
+            .uponReceiving("a request to delete those drafts")
+            .path("/drafts")
+            .method("DELETE")
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
+                SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .willRespondWith()
+            .status(HttpStatus.SC_NO_CONTENT)
+            .toPact();
+    }
+
+
     private DslPart buildDraftListsPactDsl() {
         return newJsonBody((o) -> {
-            o.minArrayLike("data", 0, 1, d -> d
+            o.minArrayLike("data", 1, 1, d -> d
                 .stringType("id",
                     "123432")
                 .stringValue("type", "divorce")
                 .object("document", doc -> doc
-                    .stringType("id", "1547073120300616")
-                    .date("createdDate", "")
                     .stringMatcher("D8ScreenHasMarriageBroken", "YES|NO", "YES")
                     .stringMatcher("D8ScreenHasRespondentAddress", "YES|NO", "YES")
                     .stringMatcher("D8ScreenHasMarriageCert", "YES|NO", "YES")
@@ -188,7 +279,7 @@ public class DraftStoreClientConsumerTest {
                     .stringType("D8MarriageRespondentName", "Jenny Benny")
                     .stringType("D8DerivedRespondentSolicitorAddr", "90 Landor Road\nLondon\nSW9 9PE")
                     .stringType("D8DerivedLivingArrangementsLastLivedAddr", "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE")
-                    .minArrayLike("D8Connections", 0, 1, dc -> dc
+                    .object("D8Connections", dc -> dc
                         .stringType("A", "The Petitioner and the Respondent are habitually resident in England and Wales")
                     )
                     .stringMatcher("D8ReasonForDivorceHasMarriage", "YES|NO", "YES")
@@ -208,17 +299,52 @@ public class DraftStoreClientConsumerTest {
     public void verifyGetAllDraftsForLoggedInUserPact() throws IOException, JSONException {
         DraftList response = draftStoreClient.getAllDrafts(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, SOME_SECRET);
-        assertEquals(response.getData().get(0).getDocument().get("id"), "1547073120300616");
+        assertNotNull(response.getData().get(0).getDocument());
+
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "getAllDraftsForLoggedInUserAfterPage")
+    public void verifyGetAllDraftsForLoggedInUserAfterPagePact() throws IOException, JSONException {
+        DraftList response = draftStoreClient.getAllDrafts("1", SOME_AUTHORIZATION_TOKEN,
+            SOME_SERVICE_AUTHORIZATION_TOKEN, SOME_SECRET);
+        assertNotNull(response.getData().get(0).getDocument());
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "createSingleDraftsForLoggedInUser")
+    public void verifyCreateSingleDraftsForLoggedInUser() throws IOException, JSONException {
+        draftStoreClient.createSingleDraft(createDraft, SOME_AUTHORIZATION_TOKEN,
+            SOME_SERVICE_AUTHORIZATION_TOKEN, SOME_SECRET);
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "updateSingleDraftsForLoggedInUser")
+    public void verifyUpdateSingleDraftsForLoggedInUser() throws IOException, JSONException {
+        draftStoreClient.updateSingleDraft(DRAFT_ID, updateDraft, SOME_AUTHORIZATION_TOKEN,
+            SOME_SERVICE_AUTHORIZATION_TOKEN, SOME_SECRET);
+
+    }
+
+    @Test
+    @PactTestFor(pactMethod = "deleteAllDraftsForLoggedInUser")
+    public void verifyDeleteAllDraftsForLoggedInUserPact() throws IOException, JSONException {
+        draftStoreClient.deleteAllDrafts(SOME_AUTHORIZATION_TOKEN,
+            SOME_SERVICE_AUTHORIZATION_TOKEN);
 
     }
 
     protected Map getDraftAsMap(String fileName) throws JSONException, IOException {
         File file = getFile(fileName);
-        Map draft = objectMapper.readValue(file, Map.class);
-        return draft;
+        return objectMapper.readValue(file, Map.class);
     }
+
 
     private File getFile(String fileName) throws FileNotFoundException {
         return ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
+    }
+
+    protected String createJsonObject(Object obj) throws JSONException, IOException {
+        return objectMapper.writeValueAsString(obj);
     }
 }
