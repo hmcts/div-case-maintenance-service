@@ -45,6 +45,6 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.Rules = params.SecurityRules
     enableFullFunctionalTest()
-    //enableMutationTest()
-    //enableSecurityScan()
+    enableMutationTest()
+    enableSecurityScan()
 }
