@@ -19,7 +19,7 @@ plugins {
     id 'checkstyle'
     id 'com.github.ben-manes.versions' version '0.29.0'
     id 'com.jfrog.bintray' version '1.8.4'
-    id 'info.solidsoft.pitest' version '1.4.5'
+    id 'info.solidsoft.pitest' version '1.5.2'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'jacoco'
     id 'org.owasp.dependencycheck' version '6.0.2'
@@ -114,14 +114,14 @@ def versions = [
     commonsIo: '2.6',
     commonsLang3: '3.7',
     feignHttpClient: '10.2.0',
-    gradlePitest: '1.4.5',
+    gradlePitest: '1.5.2',
     guava: '28.1-jre',
     idamClient: '1.1.0',
     jackson: '2.10.0',
     jsonAssert: '1.2.3',
     junit: '4.12',
     lombok: '1.18.12',
-    pitest: '1.4.10',
+    pitest: '1.5.2',
     puppyCrawl: '8.29',
     reformHealth: '0.0.5',
     reformPropertiesVolume: '0.0.4',
