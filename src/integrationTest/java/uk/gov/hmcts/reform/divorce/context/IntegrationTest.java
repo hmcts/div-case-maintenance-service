@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
+import uk.gov.hmcts.reform.divorce.RetryRule;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.IdamTestSupport;
 
@@ -33,6 +34,9 @@ public abstract class IntegrationTest {
 
     @Rule
     public SpringIntegrationMethodRule springMethodIntegration;
+
+    @Rule
+    public RetryRule retryRule = new RetryRule(3);
 
     protected IntegrationTest() {
         this.springMethodIntegration = new SpringIntegrationMethodRule();
