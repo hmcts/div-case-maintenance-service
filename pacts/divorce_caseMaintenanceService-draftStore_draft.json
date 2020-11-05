@@ -1,0 +1,2745 @@
+{
+  "provider": {
+    "name": "draftStore_draft"
+  },
+  "consumer": {
+    "name": "divorce_caseMaintenanceService"
+  },
+  "interactions": [
+    {
+      "description": "a request to retrieve those drafts after a page",
+      "request": {
+        "method": "GET",
+        "path": "/drafts",
+        "headers": {
+          "Authorization": "Bearer UserAuthToken",
+          "Secret": "SecretThatIsOverSixteenChars",
+          "ServiceAuthorization": "ServiceToken"
+        },
+        "query": {
+          "after": [
+            "1"
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.uk.gov.hmcts.draft-store.v3+json"
+        },
+        "body": {
+          "data": [
+            {
+              "document": {
+                "D8DerivedRespondentHomeAddress": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+                "D8PetitionerNameChangedHow": [
+                  "marriageCertificate"
+                ],
+                "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+                "D8RespondentHomeAddress": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8ScreenHasRespondentAddress": "YES",
+                "D8LivingArrangementsLastLivedTogethAddr": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8DivorceCostsClaim": "YES",
+                "D8ScreenHasMarriageCert": "YES",
+                "D8PetitionerHomeAddress": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8ScreenHasMarriageBroken": "YES",
+                "D8DivorceClaimFrom": [
+                  "respondent"
+                ],
+                "D8InferredRespondentGender": "male",
+                "D8ReasonForDivorceEnableAdultery": "YES",
+                "D8ReasonForDivorceShowAdultery": "YES",
+                "D8LivingArrangementsLiveTogether": "YES",
+                "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+                "D8ReasonForDivorceHasMarriage": "YES",
+                "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+                "D8JurisdictionConfidentLegal": "YES",
+                "D8FinancialOrderFor": [
+                  "petitioner",
+                  "children"
+                ],
+                "D8Connections": {
+                  "A": "The Petitioner and the Respondent are habitually resident in England and Wales"
+                },
+                "D8PetitionerCorrespondenceAddress": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8PetitionerNameDifferentToMarriageCert": "YES",
+                "D8LegalProceedingsRelated": [
+                  "children"
+                ],
+                "D8JurisdictionConnection": [
+                  "A",
+                  "C"
+                ],
+                "D8LegalProceedingsDetails": "The legal proceeding details",
+                "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+                "D8PetitionerLastName": "Smith",
+                "D8ReasonForDivorceAdulteryIsNamed": "NO",
+                "D8PetitionerPhoneNumber": "01234567890",
+                "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+                "D8ClaimsCostsAppliedForFees": "YES",
+                "D8PetitionerCorrespondenceUseHomeAddress": "YES",
+                "D8RespondentLivesAtLastAddress": "YES",
+                "D8DerivedRespondentCurrentName": "Jamed",
+                "D8ReasonForDivorceLimitReasons": "YES",
+                "D8HelpWithFeesAppliedForFees": "NO",
+                "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+                "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+                "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+                "D8ReasonForDivorceClaiming5YearSeparatio": "YES",
+                "D8DivorceUnit": "eastMidlands",
+                "D8DerivedRespondentCorrespondenceAddr": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+                "D8ReasonForDivorceShowDesertion": "YES",
+                "D8MarriagePetitionerName": "John Doe",
+                "D8Cohort": "onlineSubmissionPrivateBeta",
+                "D8LivingArrangementsLastLivedTogether": "YES",
+                "D8FinancialOrder": "NO",
+                "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+                "D8MarriageDate": "2001-02-02",
+                "D8HelpWithFeesNeedHelp": "NO",
+                "D8JurisdictionRespondentResidence": "YES",
+                "D8DivorceWho": "husband",
+                "D8MarriageCanDivorce": "YES",
+                "D8ScreenHasPrinter": "YES",
+                "D8RespondentFirstName": "Jamed",
+                "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+                "D8DocumentsUploaded": [
+                  {
+                    "value": {
+                      "DocumentEmailContent": "string",
+                      "DocumentComment": "string",
+                      "DocumentFileName": "govuklogo.png",
+                      "DocumentDateAdded": "2001-02-02",
+                      "DocumentType": "other",
+                      "DocumentLink": {
+                        "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                      }
+                    }
+                  }
+                ],
+                "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+                "D8DerivedPetitionerCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+                "D8JurisdictionPetitionerResidence": "YES",
+                "D8ReasonForDivorceClaimingAdultery": "YES",
+                "D8PetitionerFirstName": "John",
+                "D8MarriageRespondentName": "Jenny Benny",
+                "D8PetitionerContactDetailsConfidential": "share",
+                "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+                "D8LegalProceedings": "YES",
+                "D8RespondentCorrespondenceAddress": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8ReasonForDivorce": "unreasonable-behaviour",
+                "D8DerivedPetitionerCurrentFullName": "John Smith",
+                "D8InferredPetitionerGender": "female"
+              },
+              "id": "123432",
+              "type": "divorce"
+            }
+          ]
+        },
+        "matchingRules": {
+          "header": {
+            "Content-Type": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application\\/vnd\\.uk\\.gov\\.hmcts\\.draft\\-store\\.v3\\+json"
+                }
+              ],
+              "combine": "AND"
+            }
+          },
+          "body": {
+            "$.data": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ScreenHasMarriageBroken": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ScreenHasRespondentAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ScreenHasMarriageCert": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ScreenHasPrinter": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DivorceWho": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "husband|wife"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8MarriageDate": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerNameDifferentToMarriageCert": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerEmail": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerPhoneNumber": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerFirstName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerLastName": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedPetitionerCurrentFullName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerNameChangedHow[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerContactDetailsConfidential": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerHomeAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerHomeAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerHomeAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedPetitionerHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerCorrespondenceAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerCorrespondenceAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerCorrespondenceAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedPetitionerCorrespondenceAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerCorrespondenceUseHomeAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentFirstName": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentCurrentName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentSolicitorDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentHomeAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentHomeAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentHomeAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentCorrespondenceAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentCorrespondenceAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentCorrespondenceAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentCorrespondenceAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentCorrespondenceUseHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentLivesAtLastAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLastLivedTogether": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLiveTogether": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLastLivedTogethAddr.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLastLivedTogethAddr.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLastLivedTogethAddr.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LegalProceedings": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LegalProceedingsRelated[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LegalProceedingsDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorce": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedStatementOfCase": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceBehaviourDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceAdulteryIsNamed": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8FinancialOrder": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8FinancialOrderFor[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8FinancialOrderFor[1]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8HelpWithFeesNeedHelp": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8HelpWithFeesAppliedForFees": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8HelpWithFeesReferenceNumber": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DivorceCostsClaim": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DivorceClaimFrom[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionConfidentLegal": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionConnection[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionConnection[1]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionPetitionerResidence": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionRespondentResidence": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentEmailContent": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentComment": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentFileName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentDateAdded": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentType": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentLink.document_url": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DivorceUnit": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowUnreasonableBehavi": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowTwoYearsSeparation": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowDesertion": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceLimitReasons": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceEnableAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ClaimsCostsAppliedForFees": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceClaimingAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8MarriageCanDivorce": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8MarriagePetitionerName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8MarriageRespondentName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentSolicitorAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedLivingArrangementsLastLivedAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8Connections.A": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceHasMarriage": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowFiveYearsSeparatio": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceClaiming5YearSeparatio": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8Cohort": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8InferredPetitionerGender": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "male|female"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8InferredRespondentGender": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "male|female"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        },
+        "generators": {
+          "body": {
+            "$.data[*].document.D8DivorceWho": {
+              "type": "Regex",
+              "regex": "husband|wife"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentEmailContent": {
+              "type": "RandomString",
+              "size": 20
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentComment": {
+              "type": "RandomString",
+              "size": 20
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A draft exists after a given page for a logged in user",
+          "params": {
+            "data": {
+              "outsideUKGrantCopies": 6,
+              "applicationType": "Personal",
+              "deceasedAddress": {
+                "AddressLine2": "Westeros",
+                "AddressLine1": "Winterfell",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedAnyOtherNames": "No",
+              "primaryApplicantAddressFound": "Yes",
+              "deceasedAnyChildren": "No",
+              "uploadDocumentUrl": "http://document-management/document/12345",
+              "deceasedDateOfBirth": "1930-01-01",
+              "type": "GrantOfRepresentation",
+              "deceasedMartialStatus": "divorcedCivilPartnership",
+              "primaryApplicantEmailAddress": "someEmailAddress.com",
+              "deceasedAddressFound": "Yes",
+              "primaryApplicantRelationshipToDeceased": "adoptedChild",
+              "deceasedDateOfDeath": "2018-01-01",
+              "primaryApplicantForenames": "Jon",
+              "deceasedHasAssetsOutsideUK": "Yes",
+              "primaryApplicantAddress": {
+                "AddressLine2": "St. Georges Hospital",
+                "AddressLine1": "Pret a Manger",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedDivorcedInEnglandOrWales": "No",
+              "primaryApplicantPhoneNumber": "123455678",
+              "ihtNetValue": "100000",
+              "ihtReferenceNumber": "GOT123456",
+              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
+              "childrenDied": "No",
+              "deceasedSurname": "Stark",
+              "deceasedAliasNameList": [
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                },
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                }
+              ],
+              "extraCopiesOfGrant": 3,
+              "deceasedOtherChildren": "Yes",
+              "deceasedForenames": "Ned",
+              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
+              "assetsOverseasNetValue": "10050",
+              "executorsApplying": [
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                },
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                }
+              ],
+              "grandChildrenSurvivedUnderEighteen": "No",
+              "ihtFormCompletedOnline": "No",
+              "ihtGrossValue": "100000",
+              "registryLocation": "Oxford",
+              "ihtFormId": "IHT205",
+              "primaryApplicantSurname": "Snow",
+              "declarationCheckbox": "No",
+              "childrenOverEighteenSurvived": "Yes"
+            },
+            "case_type": "GRANT_OF_REPRESENTATION",
+            "id": "654321",
+            "state": "Draft"
+          }
+        }
+      ]
+    },
+    {
+      "description": "a request to retrieve those drafts",
+      "request": {
+        "method": "GET",
+        "path": "/drafts",
+        "headers": {
+          "Authorization": "Bearer UserAuthToken",
+          "Secret": "SecretThatIsOverSixteenChars",
+          "ServiceAuthorization": "ServiceToken"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/vnd.uk.gov.hmcts.draft-store.v3+json"
+        },
+        "body": {
+          "data": [
+            {
+              "document": {
+                "D8DerivedRespondentHomeAddress": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+                "D8PetitionerNameChangedHow": [
+                  "marriageCertificate"
+                ],
+                "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+                "D8RespondentHomeAddress": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8ScreenHasRespondentAddress": "YES",
+                "D8LivingArrangementsLastLivedTogethAddr": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8DivorceCostsClaim": "YES",
+                "D8ScreenHasMarriageCert": "YES",
+                "D8PetitionerHomeAddress": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8ScreenHasMarriageBroken": "YES",
+                "D8DivorceClaimFrom": [
+                  "respondent"
+                ],
+                "D8InferredRespondentGender": "male",
+                "D8ReasonForDivorceEnableAdultery": "YES",
+                "D8ReasonForDivorceShowAdultery": "YES",
+                "D8LivingArrangementsLiveTogether": "YES",
+                "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+                "D8ReasonForDivorceHasMarriage": "YES",
+                "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+                "D8JurisdictionConfidentLegal": "YES",
+                "D8FinancialOrderFor": [
+                  "petitioner",
+                  "children"
+                ],
+                "D8Connections": {
+                  "A": "The Petitioner and the Respondent are habitually resident in England and Wales"
+                },
+                "D8PetitionerCorrespondenceAddress": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8PetitionerNameDifferentToMarriageCert": "YES",
+                "D8LegalProceedingsRelated": [
+                  "children"
+                ],
+                "D8JurisdictionConnection": [
+                  "A",
+                  "C"
+                ],
+                "D8LegalProceedingsDetails": "The legal proceeding details",
+                "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+                "D8PetitionerLastName": "Smith",
+                "D8ReasonForDivorceAdulteryIsNamed": "NO",
+                "D8PetitionerPhoneNumber": "01234567890",
+                "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+                "D8ClaimsCostsAppliedForFees": "YES",
+                "D8PetitionerCorrespondenceUseHomeAddress": "YES",
+                "D8RespondentLivesAtLastAddress": "YES",
+                "D8DerivedRespondentCurrentName": "Jamed",
+                "D8ReasonForDivorceLimitReasons": "YES",
+                "D8HelpWithFeesAppliedForFees": "NO",
+                "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+                "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+                "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+                "D8ReasonForDivorceClaiming5YearSeparatio": "YES",
+                "D8DivorceUnit": "eastMidlands",
+                "D8DerivedRespondentCorrespondenceAddr": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+                "D8ReasonForDivorceShowDesertion": "YES",
+                "D8MarriagePetitionerName": "John Doe",
+                "D8Cohort": "onlineSubmissionPrivateBeta",
+                "D8LivingArrangementsLastLivedTogether": "YES",
+                "D8FinancialOrder": "NO",
+                "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+                "D8MarriageDate": "2001-02-02",
+                "D8HelpWithFeesNeedHelp": "NO",
+                "D8JurisdictionRespondentResidence": "YES",
+                "D8DivorceWho": "wife",
+                "D8MarriageCanDivorce": "YES",
+                "D8ScreenHasPrinter": "YES",
+                "D8RespondentFirstName": "Jamed",
+                "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+                "D8DocumentsUploaded": [
+                  {
+                    "value": {
+                      "DocumentEmailContent": "string",
+                      "DocumentComment": "string",
+                      "DocumentFileName": "govuklogo.png",
+                      "DocumentDateAdded": "2001-02-02",
+                      "DocumentType": "other",
+                      "DocumentLink": {
+                        "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                      }
+                    }
+                  }
+                ],
+                "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+                "D8DerivedPetitionerCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+                "D8JurisdictionPetitionerResidence": "YES",
+                "D8ReasonForDivorceClaimingAdultery": "YES",
+                "D8PetitionerFirstName": "John",
+                "D8MarriageRespondentName": "Jenny Benny",
+                "D8PetitionerContactDetailsConfidential": "share",
+                "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+                "D8LegalProceedings": "YES",
+                "D8RespondentCorrespondenceAddress": {
+                  "AddressLine2": "London",
+                  "AddressLine1": "82 Landor Road",
+                  "PostCode": "SW9 9PE"
+                },
+                "D8ReasonForDivorce": "unreasonable-behaviour",
+                "D8DerivedPetitionerCurrentFullName": "John Smith",
+                "D8InferredPetitionerGender": "female"
+              },
+              "id": "123432",
+              "type": "divorce"
+            }
+          ]
+        },
+        "matchingRules": {
+          "header": {
+            "Content-Type": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application\\/vnd\\.uk\\.gov\\.hmcts\\.draft\\-store\\.v3\\+json"
+                }
+              ],
+              "combine": "AND"
+            }
+          },
+          "body": {
+            "$.data": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ScreenHasMarriageBroken": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ScreenHasRespondentAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ScreenHasMarriageCert": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ScreenHasPrinter": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DivorceWho": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "husband|wife"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8MarriageDate": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerNameDifferentToMarriageCert": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerEmail": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerPhoneNumber": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerFirstName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerLastName": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedPetitionerCurrentFullName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerNameChangedHow[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerContactDetailsConfidential": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerHomeAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerHomeAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerHomeAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedPetitionerHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerCorrespondenceAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerCorrespondenceAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerCorrespondenceAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedPetitionerCorrespondenceAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8PetitionerCorrespondenceUseHomeAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentFirstName": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentCurrentName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentSolicitorDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentHomeAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentHomeAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentHomeAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentCorrespondenceAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentCorrespondenceAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentCorrespondenceAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentCorrespondenceAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentCorrespondenceUseHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8RespondentLivesAtLastAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLastLivedTogether": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLiveTogether": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLastLivedTogethAddr.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLastLivedTogethAddr.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LivingArrangementsLastLivedTogethAddr.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LegalProceedings": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LegalProceedingsRelated[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8LegalProceedingsDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorce": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedStatementOfCase": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceBehaviourDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceAdulteryIsNamed": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8FinancialOrder": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8FinancialOrderFor[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8FinancialOrderFor[1]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8HelpWithFeesNeedHelp": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8HelpWithFeesAppliedForFees": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8HelpWithFeesReferenceNumber": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DivorceCostsClaim": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DivorceClaimFrom[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionConfidentLegal": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionConnection[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionConnection[1]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionPetitionerResidence": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8JurisdictionRespondentResidence": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 0
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentEmailContent": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentComment": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentFileName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentDateAdded": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentType": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentLink.document_url": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DivorceUnit": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowUnreasonableBehavi": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowTwoYearsSeparation": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowDesertion": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceLimitReasons": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceEnableAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ClaimsCostsAppliedForFees": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceClaimingAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8MarriageCanDivorce": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8MarriagePetitionerName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8MarriageRespondentName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedRespondentSolicitorAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8DerivedLivingArrangementsLastLivedAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8Connections.A": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceHasMarriage": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceShowFiveYearsSeparatio": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8ReasonForDivorceClaiming5YearSeparatio": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8Cohort": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8InferredPetitionerGender": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "male|female"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.data[*].document.D8InferredRespondentGender": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "male|female"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        },
+        "generators": {
+          "body": {
+            "$.data[*].document.D8DivorceWho": {
+              "type": "Regex",
+              "regex": "husband|wife"
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentEmailContent": {
+              "type": "RandomString",
+              "size": 20
+            },
+            "$.data[*].document.D8DocumentsUploaded[*].value.DocumentComment": {
+              "type": "RandomString",
+              "size": 20
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A draft exists for a logged in user",
+          "params": {
+            "data": {
+              "outsideUKGrantCopies": 6,
+              "applicationType": "Personal",
+              "deceasedAddress": {
+                "AddressLine2": "Westeros",
+                "AddressLine1": "Winterfell",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedAnyOtherNames": "No",
+              "primaryApplicantAddressFound": "Yes",
+              "deceasedAnyChildren": "No",
+              "uploadDocumentUrl": "http://document-management/document/12345",
+              "deceasedDateOfBirth": "1930-01-01",
+              "type": "GrantOfRepresentation",
+              "deceasedMartialStatus": "divorcedCivilPartnership",
+              "primaryApplicantEmailAddress": "someEmailAddress.com",
+              "deceasedAddressFound": "Yes",
+              "primaryApplicantRelationshipToDeceased": "adoptedChild",
+              "deceasedDateOfDeath": "2018-01-01",
+              "primaryApplicantForenames": "Jon",
+              "deceasedHasAssetsOutsideUK": "Yes",
+              "primaryApplicantAddress": {
+                "AddressLine2": "St. Georges Hospital",
+                "AddressLine1": "Pret a Manger",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedDivorcedInEnglandOrWales": "No",
+              "primaryApplicantPhoneNumber": "123455678",
+              "ihtNetValue": "100000",
+              "ihtReferenceNumber": "GOT123456",
+              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
+              "childrenDied": "No",
+              "deceasedSurname": "Stark",
+              "deceasedAliasNameList": [
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                },
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                }
+              ],
+              "extraCopiesOfGrant": 3,
+              "deceasedOtherChildren": "Yes",
+              "deceasedForenames": "Ned",
+              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
+              "assetsOverseasNetValue": "10050",
+              "executorsApplying": [
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                },
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                }
+              ],
+              "grandChildrenSurvivedUnderEighteen": "No",
+              "ihtFormCompletedOnline": "No",
+              "ihtGrossValue": "100000",
+              "registryLocation": "Oxford",
+              "ihtFormId": "IHT205",
+              "primaryApplicantSurname": "Snow",
+              "declarationCheckbox": "No",
+              "childrenOverEighteenSurvived": "Yes"
+            },
+            "case_type": "GRANT_OF_REPRESENTATION",
+            "id": "654321",
+            "state": "Draft"
+          }
+        }
+      ]
+    },
+    {
+      "description": "a request to create a draft",
+      "request": {
+        "method": "POST",
+        "path": "/drafts",
+        "headers": {
+          "Authorization": "Bearer UserAuthToken",
+          "Secret": "SecretThatIsOverSixteenChars",
+          "Content-Type": "application/json",
+          "ServiceAuthorization": "ServiceToken"
+        },
+        "body": {
+          "document": {
+            "data": {
+              "outsideUKGrantCopies": 6,
+              "applicationType": "Personal",
+              "deceasedAddress": {
+                "AddressLine2": "Westeros",
+                "AddressLine1": "Winterfell",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedAnyOtherNames": "No",
+              "primaryApplicantAddressFound": "Yes",
+              "deceasedAnyChildren": "No",
+              "uploadDocumentUrl": "http://document-management/document/12345",
+              "deceasedDateOfBirth": "1930-01-01",
+              "type": "GrantOfRepresentation",
+              "deceasedMartialStatus": "divorcedCivilPartnership",
+              "primaryApplicantEmailAddress": "someEmailAddress.com",
+              "deceasedAddressFound": "Yes",
+              "primaryApplicantRelationshipToDeceased": "adoptedChild",
+              "deceasedDateOfDeath": "2018-01-01",
+              "primaryApplicantForenames": "Jon",
+              "deceasedHasAssetsOutsideUK": "Yes",
+              "primaryApplicantAddress": {
+                "AddressLine2": "St. Georges Hospital",
+                "AddressLine1": "Pret a Manger",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedDivorcedInEnglandOrWales": "No",
+              "primaryApplicantPhoneNumber": "123455678",
+              "ihtNetValue": "100000",
+              "ihtReferenceNumber": "GOT123456",
+              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
+              "childrenDied": "No",
+              "deceasedSurname": "Stark",
+              "deceasedAliasNameList": [
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                },
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                }
+              ],
+              "extraCopiesOfGrant": 3,
+              "deceasedOtherChildren": "Yes",
+              "deceasedForenames": "Ned",
+              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
+              "assetsOverseasNetValue": "10050",
+              "executorsApplying": [
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                },
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                }
+              ],
+              "grandChildrenSurvivedUnderEighteen": "No",
+              "ihtFormCompletedOnline": "No",
+              "ihtGrossValue": "100000",
+              "registryLocation": "Oxford",
+              "ihtFormId": "IHT205",
+              "primaryApplicantSurname": "Snow",
+              "declarationCheckbox": "No",
+              "childrenOverEighteenSurvived": "Yes"
+            },
+            "case_type": "GRANT_OF_REPRESENTATION",
+            "id": "654321",
+            "state": "Draft"
+          },
+          "type": "divorcedraft",
+          "max_age": 150
+        }
+      },
+      "response": {
+        "status": 201
+      },
+      "providerStates": [
+        {
+          "name": "A logged in user requests to create a draft",
+          "params": {
+            "data": {
+              "outsideUKGrantCopies": 6,
+              "applicationType": "Personal",
+              "deceasedAddress": {
+                "AddressLine2": "Westeros",
+                "AddressLine1": "Winterfell",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedAnyOtherNames": "No",
+              "primaryApplicantAddressFound": "Yes",
+              "deceasedAnyChildren": "No",
+              "uploadDocumentUrl": "http://document-management/document/12345",
+              "deceasedDateOfBirth": "1930-01-01",
+              "type": "GrantOfRepresentation",
+              "deceasedMartialStatus": "divorcedCivilPartnership",
+              "primaryApplicantEmailAddress": "someEmailAddress.com",
+              "deceasedAddressFound": "Yes",
+              "primaryApplicantRelationshipToDeceased": "adoptedChild",
+              "deceasedDateOfDeath": "2018-01-01",
+              "primaryApplicantForenames": "Jon",
+              "deceasedHasAssetsOutsideUK": "Yes",
+              "primaryApplicantAddress": {
+                "AddressLine2": "St. Georges Hospital",
+                "AddressLine1": "Pret a Manger",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedDivorcedInEnglandOrWales": "No",
+              "primaryApplicantPhoneNumber": "123455678",
+              "ihtNetValue": "100000",
+              "ihtReferenceNumber": "GOT123456",
+              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
+              "childrenDied": "No",
+              "deceasedSurname": "Stark",
+              "deceasedAliasNameList": [
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                },
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                }
+              ],
+              "extraCopiesOfGrant": 3,
+              "deceasedOtherChildren": "Yes",
+              "deceasedForenames": "Ned",
+              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
+              "assetsOverseasNetValue": "10050",
+              "executorsApplying": [
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                },
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                }
+              ],
+              "grandChildrenSurvivedUnderEighteen": "No",
+              "ihtFormCompletedOnline": "No",
+              "ihtGrossValue": "100000",
+              "registryLocation": "Oxford",
+              "ihtFormId": "IHT205",
+              "primaryApplicantSurname": "Snow",
+              "declarationCheckbox": "No",
+              "childrenOverEighteenSurvived": "Yes"
+            },
+            "case_type": "GRANT_OF_REPRESENTATION",
+            "id": "654321",
+            "state": "Draft"
+          }
+        }
+      ]
+    },
+    {
+      "description": "a request to update a draft",
+      "request": {
+        "method": "PUT",
+        "path": "/drafts/12345",
+        "headers": {
+          "Authorization": "Bearer UserAuthToken",
+          "Secret": "SecretThatIsOverSixteenChars",
+          "Content-Type": "application/json",
+          "ServiceAuthorization": "ServiceToken"
+        },
+        "body": {
+          "document": {
+            "data": {
+              "outsideUKGrantCopies": 6,
+              "applicationType": "Personal",
+              "deceasedAddress": {
+                "AddressLine2": "Westeros",
+                "AddressLine1": "Winterfell",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedAnyOtherNames": "No",
+              "primaryApplicantAddressFound": "Yes",
+              "deceasedAnyChildren": "No",
+              "uploadDocumentUrl": "http://document-management/document/12345",
+              "deceasedDateOfBirth": "1930-01-01",
+              "type": "GrantOfRepresentation",
+              "deceasedMartialStatus": "divorcedCivilPartnership",
+              "primaryApplicantEmailAddress": "someEmailAddress.com",
+              "deceasedAddressFound": "Yes",
+              "primaryApplicantRelationshipToDeceased": "adoptedChild",
+              "deceasedDateOfDeath": "2018-01-01",
+              "primaryApplicantForenames": "Jon",
+              "deceasedHasAssetsOutsideUK": "Yes",
+              "primaryApplicantAddress": {
+                "AddressLine2": "St. Georges Hospital",
+                "AddressLine1": "Pret a Manger",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedDivorcedInEnglandOrWales": "No",
+              "primaryApplicantPhoneNumber": "123455678",
+              "ihtNetValue": "100000",
+              "ihtReferenceNumber": "GOT123456",
+              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
+              "childrenDied": "No",
+              "deceasedSurname": "Stark",
+              "deceasedAliasNameList": [
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                },
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                }
+              ],
+              "extraCopiesOfGrant": 3,
+              "deceasedOtherChildren": "Yes",
+              "deceasedForenames": "Ned",
+              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
+              "assetsOverseasNetValue": "10050",
+              "executorsApplying": [
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                },
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                }
+              ],
+              "grandChildrenSurvivedUnderEighteen": "No",
+              "ihtFormCompletedOnline": "No",
+              "ihtGrossValue": "100000",
+              "registryLocation": "Oxford",
+              "ihtFormId": "IHT205",
+              "primaryApplicantSurname": "Snow",
+              "declarationCheckbox": "No",
+              "childrenOverEighteenSurvived": "Yes"
+            },
+            "case_type": "GRANT_OF_REPRESENTATION",
+            "id": "654321",
+            "state": "Draft"
+          },
+          "type": "divorcedraft"
+        }
+      },
+      "response": {
+        "status": 204
+      },
+      "providerStates": [
+        {
+          "name": "A logged in user requests to update a draft",
+          "params": {
+            "data": {
+              "outsideUKGrantCopies": 6,
+              "applicationType": "Personal",
+              "deceasedAddress": {
+                "AddressLine2": "Westeros",
+                "AddressLine1": "Winterfell",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedAnyOtherNames": "No",
+              "primaryApplicantAddressFound": "Yes",
+              "deceasedAnyChildren": "No",
+              "uploadDocumentUrl": "http://document-management/document/12345",
+              "deceasedDateOfBirth": "1930-01-01",
+              "type": "GrantOfRepresentation",
+              "deceasedMartialStatus": "divorcedCivilPartnership",
+              "primaryApplicantEmailAddress": "someEmailAddress.com",
+              "deceasedAddressFound": "Yes",
+              "primaryApplicantRelationshipToDeceased": "adoptedChild",
+              "deceasedDateOfDeath": "2018-01-01",
+              "primaryApplicantForenames": "Jon",
+              "deceasedHasAssetsOutsideUK": "Yes",
+              "primaryApplicantAddress": {
+                "AddressLine2": "St. Georges Hospital",
+                "AddressLine1": "Pret a Manger",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedDivorcedInEnglandOrWales": "No",
+              "primaryApplicantPhoneNumber": "123455678",
+              "ihtNetValue": "100000",
+              "ihtReferenceNumber": "GOT123456",
+              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
+              "childrenDied": "No",
+              "deceasedSurname": "Stark",
+              "deceasedAliasNameList": [
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                },
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                }
+              ],
+              "extraCopiesOfGrant": 3,
+              "deceasedOtherChildren": "Yes",
+              "deceasedForenames": "Ned",
+              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
+              "assetsOverseasNetValue": "10050",
+              "executorsApplying": [
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                },
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                }
+              ],
+              "grandChildrenSurvivedUnderEighteen": "No",
+              "ihtFormCompletedOnline": "No",
+              "ihtGrossValue": "100000",
+              "registryLocation": "Oxford",
+              "ihtFormId": "IHT205",
+              "primaryApplicantSurname": "Snow",
+              "declarationCheckbox": "No",
+              "childrenOverEighteenSurvived": "Yes"
+            },
+            "case_type": "GRANT_OF_REPRESENTATION",
+            "id": "654321",
+            "state": "Draft"
+          }
+        }
+      ]
+    },
+    {
+      "description": "a request to delete those drafts",
+      "request": {
+        "method": "DELETE",
+        "path": "/drafts",
+        "headers": {
+          "Authorization": "Bearer UserAuthToken",
+          "ServiceAuthorization": "ServiceToken"
+        }
+      },
+      "response": {
+        "status": 204
+      },
+      "providerStates": [
+        {
+          "name": "Drafts exists for a logged in user and delete is requested",
+          "params": {
+            "data": {
+              "outsideUKGrantCopies": 6,
+              "applicationType": "Personal",
+              "deceasedAddress": {
+                "AddressLine2": "Westeros",
+                "AddressLine1": "Winterfell",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedAnyOtherNames": "No",
+              "primaryApplicantAddressFound": "Yes",
+              "deceasedAnyChildren": "No",
+              "uploadDocumentUrl": "http://document-management/document/12345",
+              "deceasedDateOfBirth": "1930-01-01",
+              "type": "GrantOfRepresentation",
+              "deceasedMartialStatus": "divorcedCivilPartnership",
+              "primaryApplicantEmailAddress": "someEmailAddress.com",
+              "deceasedAddressFound": "Yes",
+              "primaryApplicantRelationshipToDeceased": "adoptedChild",
+              "deceasedDateOfDeath": "2018-01-01",
+              "primaryApplicantForenames": "Jon",
+              "deceasedHasAssetsOutsideUK": "Yes",
+              "primaryApplicantAddress": {
+                "AddressLine2": "St. Georges Hospital",
+                "AddressLine1": "Pret a Manger",
+                "PostTown": "London",
+                "PostCode": "SW17 0QT"
+              },
+              "deceasedDivorcedInEnglandOrWales": "No",
+              "primaryApplicantPhoneNumber": "123455678",
+              "ihtNetValue": "100000",
+              "ihtReferenceNumber": "GOT123456",
+              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
+              "childrenDied": "No",
+              "deceasedSurname": "Stark",
+              "deceasedAliasNameList": [
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                },
+                {
+                  "value": {
+                    "Forenames": "King",
+                    "LastName": "North"
+                  }
+                }
+              ],
+              "extraCopiesOfGrant": 3,
+              "deceasedOtherChildren": "Yes",
+              "deceasedForenames": "Ned",
+              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
+              "assetsOverseasNetValue": "10050",
+              "executorsApplying": [
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                },
+                {
+                  "value": {
+                    "applyingExecutorLeadName": "Graham Garderner",
+                    "applyingExecutorOtherNames": "Graham Poll",
+                    "applyingExecutorPhoneNumber": "07981898999",
+                    "applyingExecutorAgreed": "Yes",
+                    "applyingExecutorAddress": {
+                      "AddressLine2": "Westeros",
+                      "AddressLine1": "Winterfell",
+                      "PostTown": "London",
+                      "PostCode": "SW17 0QT"
+                    },
+                    "applyingExecutorName": "Jon Snow",
+                    "applyingExecutorEmail": "address@email.com",
+                    "applyingExecutorInvitationId": "54321",
+                    "applyingExecutorOtherNamesReason": "Divorce"
+                  }
+                }
+              ],
+              "grandChildrenSurvivedUnderEighteen": "No",
+              "ihtFormCompletedOnline": "No",
+              "ihtGrossValue": "100000",
+              "registryLocation": "Oxford",
+              "ihtFormId": "IHT205",
+              "primaryApplicantSurname": "Snow",
+              "declarationCheckbox": "No",
+              "childrenOverEighteenSurvived": "Yes"
+            },
+            "case_type": "GRANT_OF_REPRESENTATION",
+            "id": "654321",
+            "state": "Draft"
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}
