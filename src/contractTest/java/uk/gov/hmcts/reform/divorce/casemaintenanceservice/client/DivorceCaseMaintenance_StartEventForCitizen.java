@@ -1,12 +1,9 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.notNull;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -18,14 +15,8 @@ import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
@@ -34,29 +25,21 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-import feign.FeignException;
-import org.apache.http.client.fluent.Executor;
-import org.hamcrest.Matchers;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ResourceLoader;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
+//import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
+//import au.com.dius.pact.core.model.RequestResponsePact;
+//import au.com.dius.pact.core.model.annotations.Pact;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -65,7 +48,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.mode
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenanceCcdIntegrationTests {
+public class DivorceCaseMaintenance_StartEventForCitizen {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -99,9 +82,9 @@ public class DivorceCaseMaintenanceCcdIntegrationTests {
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
     private CaseDataContent caseDataContent;
     private CaseDetails caseDetails;
+    private static final String  ALPHABETIC_REGEX = "[/^[A-Za-z]+$/]+";
 
-
-    @BeforeAll
+    @Before
     public void setUp() throws Exception {
 
         caseDetails = getCaseDetails("base-case.json");
@@ -111,11 +94,23 @@ public class DivorceCaseMaintenanceCcdIntegrationTests {
             .caseDetails(caseDetails)
             .eventId(createEventId)
             .build();
+
         caseDataContent = buildCaseDataContent(startEventResponse);
 
+        // final String caseData = ResourceLoader.loadJson("json/base-case.json");
+
+//        caseDataContent = CaseDataContent.builder()
+//            .eventToken(startEventResponse.getToken())
+//            .event(
+//                Event.builder()
+//                    .id(startEventResponse.getEventId())
+//                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+//                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+//                    .build()
+//            ).data(ObjectMapperTestUtil.convertStringToObject(caseData, Map.class))
+//            .build();
     }
 
-   //      startEventForCitizen
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
         // @formatter:off
@@ -137,10 +132,20 @@ public class DivorceCaseMaintenanceCcdIntegrationTests {
             .status(200)
             .body(newJsonBody((o) -> {
                 o.stringValue("event_id", createEventId)
-                    .stringType("token", "123234543456");
+                    .stringType("token", "123234543456")
+                    .object("case_details", (cd) ->{
+                        cd.numberValue("id", 2000L);
+                        cd.stringMatcher("jurisdiction",  ALPHABETIC_REGEX,"DIVORCE");
+                        cd.stringMatcher("callback_response_status", ALPHABETIC_REGEX,  "DONE");
+                        cd.stringMatcher("case_type", ALPHABETIC_REGEX,  "DIVORCE");
+                        // TODO build the Map<Object,Object> data in CaseDetails
+                    });
+
+                ;
             }).build())
             .toPact();
     }
+
 
 
     @Test
@@ -151,8 +156,26 @@ public class DivorceCaseMaintenanceCcdIntegrationTests {
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID.toString(), jurisdictionId,
             caseType, CASE_ID.toString(), createEventId);
         assertThat(startEventResponse.getEventId(), equalTo(createEventId));
+        assertThat(startEventResponse.getCaseDetails().getId(), is(2000L));
+        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("DIVORCE"));
+        assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
+        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("DIVORCE"));
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private File getFile(String fileName) throws FileNotFoundException {
         return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
@@ -211,16 +234,19 @@ public class DivorceCaseMaintenanceCcdIntegrationTests {
         SearchResult searchResult = objectMapper.readValue(file, SearchResult.class);
         return searchResult;
     }
-    protected SearchResult getSearchResult() throws IOException{
-        CaseDetails caseDetail1 = createCaseDetails(1L, CitizenCaseState.ISSUED.getValue());
-        CaseDetails caseDetail2 = createCaseDetails(2L, CitizenCaseState.AWAITING_DECREE_NISI.getValue());
 
-        List<CaseDetails> caseDetailsList = new ArrayList<CaseDetails>();
-        caseDetailsList.add(caseDetail1);
-        caseDetailsList.add(caseDetail2);
+//    protected SearchResult getSearchResult() throws IOException{
+//        CaseDetails caseDetail1 = createCaseDetails(1L, CitizenCaseState.ISSUED.getValue());
+//        CaseDetails caseDetail2 = createCaseDetails(2L, CitizenCaseState.AWAITING_DECREE_NISI.getValue());
+//
+//        List<CaseDetails> caseDetailsList = new ArrayList<CaseDetails>();
+//        caseDetailsList.add(caseDetail1);
+//        caseDetailsList.add(caseDetail2);
+//
+//        return  SearchResult.builder().total(0).cases(null).build();
+//    }
 
-        return  SearchResult.builder().total(0).cases(null).build();
-    }
+
 
     private CaseDetails createCaseDetails(Long id, String state) {
         return CaseDetails.builder()
@@ -236,8 +262,8 @@ public class DivorceCaseMaintenanceCcdIntegrationTests {
         return searchResult;
     }
 
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
-    }
+    //    @After
+    //    void teardown() {
+    //        Executor.closeIdleConnections();
+    //    }
 }

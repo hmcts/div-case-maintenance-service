@@ -1,12 +1,7 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.notNull;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -14,18 +9,15 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
@@ -34,29 +26,21 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-import feign.FeignException;
 import org.apache.http.client.fluent.Executor;
 import org.hamcrest.Matchers;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ResourceLoader;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -65,7 +49,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.mode
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenanceCcdIntegrationTests {
+public class DivorceCaseMaintenance_SearchCases {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -111,46 +95,65 @@ public class DivorceCaseMaintenanceCcdIntegrationTests {
             .caseDetails(caseDetails)
             .eventId(createEventId)
             .build();
+
         caseDataContent = buildCaseDataContent(startEventResponse);
 
+        // final String caseData = ResourceLoader.loadJson("json/base-case.json");
+
+//        caseDataContent = CaseDataContent.builder()
+//            .eventToken(startEventResponse.getToken())
+//            .event(
+//                Event.builder()
+//                    .id(startEventResponse.getEventId())
+//                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+//                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+//                    .build()
+//            ).data(ObjectMapperTestUtil.convertStringToObject(caseData, Map.class))
+//            .build();
     }
 
-   //      startEventForCitizen
+
+    //  search Cases for Citizen
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
+    public RequestResponsePact searchCasesForCitizen(PactDslWithProvider builder) throws Exception {
         // @formatter:off
         return builder
-            .given("A start request for citizen is requested")
-            .uponReceiving("a request for a valid start event")
-            .path("/citizens/" + USER_ID + "/jurisdictions/"
-                + jurisdictionId + "/case-types/"
-                + caseType
-                + "/cases/" + CASE_ID
-                + "/event-triggers/"
-                + createEventId
-                + "/token")
-            .method("GET")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
-                SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .given("Search Cases for Citizen is requested")
+            .uponReceiving("a request for a valid search case for citizen")
+            .path("/searchCases")
+            .query("ctid=DIVORCE")
+            .method("POST")
+            .headers(HttpHeaders.AUTHORIZATION,SERVICE_AUTHORIZATION)
+            .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .body("searchString")
             .willRespondWith()
-            .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
+            //.matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body(newJsonBody((o) -> {
-                o.stringValue("event_id", createEventId)
-                    .stringType("token", "123234543456");
-            }).build())
+            //.body(createJsonObject(getSearchResult()))
+            .body(createJsonObject(getSampleJson()))
             .toPact();
+//            .body(newJsonBody((o) -> {
+//                    o.stringValue("total", "5")
+//                   .array("caseDetails", (cd) -> {
+//                       newJsonBody( cc -> {
+//                           cc.stringValue("id", "100");
+//                           cc.stringValue("jurisdiction", "UK");
+//                           cc.stringValue("caseTypeId", "DIVORCE");
+//                       });
+//                    });
+//            }).build())
+
     }
 
-
     @Test
-    @PactTestFor(pactMethod = "startEventForCitizen")
-    public void verifyStartEventForCitizen() throws IOException, JSONException {
+    @PactTestFor(pactMethod = "searchCasesForCitizen")
+    public void verifySearchCasesForCitizen() throws IOException, JSONException {
 
-        StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID.toString(), jurisdictionId,
-            caseType, CASE_ID.toString(), createEventId);
-        assertThat(startEventResponse.getEventId(), equalTo(createEventId));
+        SearchResult searchResult = coreCaseDataApi.searchCases(SOME_AUTHORIZATION_TOKEN,
+            SOME_SERVICE_AUTHORIZATION_TOKEN, "DIVORCE", "searchString");
+
+        assertThat(searchResult , notNull());
+        assertThat(searchResult.getTotal() , Matchers.is(2));
 
     }
 
@@ -221,6 +224,8 @@ public class DivorceCaseMaintenanceCcdIntegrationTests {
 
         return  SearchResult.builder().total(0).cases(null).build();
     }
+
+
 
     private CaseDetails createCaseDetails(Long id, String state) {
         return CaseDetails.builder()
