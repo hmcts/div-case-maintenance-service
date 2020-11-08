@@ -4,6 +4,8 @@ import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailList;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -11,6 +13,7 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 
 import java.io.IOException;
+import java.util.Map;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
@@ -42,10 +45,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenance_StartForCaseWorkder {
+public class DivorceCaseMaintenance_StartForCaseWorker {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
+    public static final String REGEX_DATE = "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
 
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
@@ -94,17 +98,7 @@ public class DivorceCaseMaintenance_StartForCaseWorkder {
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body(newJsonBody((o) -> {o.
-                  stringValue("event_id", createEventId)
-                 .stringType("token", "123234543456")
-                 .object("case_details", (cd) ->{
-                     cd.numberValue("id", 2000L);
-                     cd.stringMatcher("jurisdiction",  ALPHABETIC_REGEX,"DIVORCE");
-                     cd.stringMatcher("callback_response_status", ALPHABETIC_REGEX,  "DONE");
-                     cd.stringMatcher("case_type", ALPHABETIC_REGEX,  "DIVORCE");
-                     // TODO build the Map<Object,Object> data in CaseDetails
-                 });
-            }).build())
+            .body(buildStartEventReponse(createEventId , "token","someemailaddress.com", false,false))
             .toPact();
     }
 
@@ -117,10 +111,18 @@ public class DivorceCaseMaintenance_StartForCaseWorkder {
             caseType,createEventId);
 
         assertThat(startEventResponse.getEventId(), equalTo(createEventId));
-        assertThat(startEventResponse.getCaseDetails().getId(), is(2000L));
-        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("DIVORCE"));
-        assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
-        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("DIVORCE"));
+        assertThat(startEventResponse.getToken(), is("token"));
+
+        final Map<String,Object> caseData = startEventResponse.getCaseDetails().getData();
+
+        assertThat(caseData.get("outsideUKGrantCopies"), is(6));
+        // applicationType
+        assertThat(caseData.get("applicationType"), is("Personal"));
+
+
+//        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("DIVORCE"));
+//        assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
+//        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("DIVORCE"));
 
     }
 }

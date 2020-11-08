@@ -87,29 +87,13 @@ public class DivorceCaseMaintenance_SearchCases {
 
     @BeforeAll
     public void setUp() throws Exception {
-
         caseDetails = getCaseDetails("base-case.json");
-
         StartEventResponse startEventResponse = StartEventResponse.builder()
             .token(TOKEN)
             .caseDetails(caseDetails)
             .eventId(createEventId)
             .build();
-
         caseDataContent = buildCaseDataContent(startEventResponse);
-
-        // final String caseData = ResourceLoader.loadJson("json/base-case.json");
-
-//        caseDataContent = CaseDataContent.builder()
-//            .eventToken(startEventResponse.getToken())
-//            .event(
-//                Event.builder()
-//                    .id(startEventResponse.getEventId())
-//                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
-//                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
-//                    .build()
-//            ).data(ObjectMapperTestUtil.convertStringToObject(caseData, Map.class))
-//            .build();
     }
 
 

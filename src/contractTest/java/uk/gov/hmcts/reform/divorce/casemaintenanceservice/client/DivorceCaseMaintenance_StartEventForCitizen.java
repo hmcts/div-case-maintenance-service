@@ -25,8 +25,10 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -87,28 +89,6 @@ public class DivorceCaseMaintenance_StartEventForCitizen {
     @Before
     public void setUp() throws Exception {
 
-        caseDetails = getCaseDetails("base-case.json");
-
-        StartEventResponse startEventResponse = StartEventResponse.builder()
-            .token(TOKEN)
-            .caseDetails(caseDetails)
-            .eventId(createEventId)
-            .build();
-
-        caseDataContent = buildCaseDataContent(startEventResponse);
-
-        // final String caseData = ResourceLoader.loadJson("json/base-case.json");
-
-//        caseDataContent = CaseDataContent.builder()
-//            .eventToken(startEventResponse.getToken())
-//            .event(
-//                Event.builder()
-//                    .id(startEventResponse.getEventId())
-//                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
-//                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
-//                    .build()
-//            ).data(ObjectMapperTestUtil.convertStringToObject(caseData, Map.class))
-//            .build();
     }
 
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
@@ -146,8 +126,6 @@ public class DivorceCaseMaintenance_StartEventForCitizen {
             .toPact();
     }
 
-
-
     @Test
     @PactTestFor(pactMethod = "startEventForCitizen")
     public void verifyStartEventForCitizen() throws IOException, JSONException {
@@ -163,107 +141,8 @@ public class DivorceCaseMaintenance_StartEventForCitizen {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private File getFile(String fileName) throws FileNotFoundException {
-        return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
+    @After
+    void teardown() {
+            Executor.closeIdleConnections();
     }
-
-    private CaseDataContent createCaseDataContent(String eventId, StartEventResponse startEventResponse) {
-        return CaseDataContent.builder()
-            .event(createEvent(eventId))
-            .eventToken(startEventResponse.getToken())
-            .data(createEventId)
-            .build();
-    }
-
-    private Event createEvent(String eventId) {
-        return Event.builder()
-            .id(this.createEventId)
-            .description("Divorce Application")
-            .summary("Divorce Application")
-            .build();
-    }
-
-    private CaseDataContent buildCaseDataContent(StartEventResponse startEventResponse) {
-
-        // TODO EMpty for now , may need to Fill it up ?/ TBD
-
-        final Map<String, Object> CASE_DATA_CONTENT = new HashMap<>();
-        CASE_DATA_CONTENT.put("eventToken", "token");
-        CASE_DATA_CONTENT.put("caseReference","case_reference");
-
-        return CaseDataContent.builder()
-            .eventToken(startEventResponse.getToken())
-            .event(
-                Event.builder()
-                    .id(startEventResponse.getEventId())
-                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
-                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
-                    .build()
-            ).data(CASE_DATA_CONTENT)
-            .build();
-    }
-
-
-    protected JSONObject createJsonObject(Object obj) throws JSONException, IOException {
-        String json = objectMapper.writeValueAsString(obj);
-        return new JSONObject(json);
-    }
-
-    protected CaseDetails getCaseDetails(String fileName) throws JSONException, IOException {
-        File file = getFile(fileName);
-        CaseDetails caseDetails = objectMapper.readValue(file, CaseDetails.class);
-        return caseDetails;
-    }
-
-    protected SearchResult getSearchResultsSample(String fileName) throws JSONException, IOException {
-        File file = getFile(fileName);
-        SearchResult searchResult = objectMapper.readValue(file, SearchResult.class);
-        return searchResult;
-    }
-
-//    protected SearchResult getSearchResult() throws IOException{
-//        CaseDetails caseDetail1 = createCaseDetails(1L, CitizenCaseState.ISSUED.getValue());
-//        CaseDetails caseDetail2 = createCaseDetails(2L, CitizenCaseState.AWAITING_DECREE_NISI.getValue());
-//
-//        List<CaseDetails> caseDetailsList = new ArrayList<CaseDetails>();
-//        caseDetailsList.add(caseDetail1);
-//        caseDetailsList.add(caseDetail2);
-//
-//        return  SearchResult.builder().total(0).cases(null).build();
-//    }
-
-
-
-    private CaseDetails createCaseDetails(Long id, String state) {
-        return CaseDetails.builder()
-            .id(id)
-            .state(state)
-            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
-            .build();
-    }
-
-    private  SearchResult getSampleJson() throws Exception {
-        File file = getFile("sample.json");
-        SearchResult searchResult = objectMapper.readValue(file, SearchResult.class);
-        return searchResult;
-    }
-
-    //    @After
-    //    void teardown() {
-    //        Executor.closeIdleConnections();
-    //    }
 }
