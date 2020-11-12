@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailList;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetails;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetails;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -103,7 +105,7 @@ public class DivorceCaseMaintenance_searchForCitizen {
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body( buildCaseDetailList(100L,"somemailaddress@gmail.com",false,false))
+            .body( buildCaseDetails(Long.valueOf(CASE_ID),"somemailaddress@gmail.com",false,false))
             //.body( new PactDslJsonArray())
             .toPact();
 

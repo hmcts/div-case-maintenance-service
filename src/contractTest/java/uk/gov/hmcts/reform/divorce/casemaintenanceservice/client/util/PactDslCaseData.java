@@ -8,12 +8,17 @@ import io.pactfoundation.consumer.dsl.LambdaDsl;
 public class PactDslCaseData {
     public static final String REGEX_DATE = "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
 
-    public static DslPart buildCaseDetails(Long CASE_ID, String emailAddress, boolean withExecutors, boolean withPayments) {
+    public static DslPart buildCaseDataContent(Long CASE_ID, String emailAddress, boolean withExecutors, boolean withPayments) {
         return newJsonBody((o) -> {
 
-            o.stringType("id", CASE_ID.toString())
-                .stringMatcher("state", "Draft|PaAppCreated|CaseCreated", "CaseCreated")
-                .stringValue("case_type", "AwaitingDecreeNisi")
+            o.stringType("eventToken", CASE_ID.toString())
+                .stringType("case_reference", "caseReference")
+                .stringType("security_classification","PUBLIC")
+//                .object("event",(ee) ->{
+//                    ee.stringType("id","eventId");
+//                    ee.stringType("summary", "eventSummary");
+//                    ee.stringType("description", "eventDescription");
+//                })
                 .object("data", (cd) -> {
                     cd.numberType("outsideUKGrantCopies", 6)
                         .stringValue("applicationType", "Personal")
@@ -156,4 +161,6 @@ public class PactDslCaseData {
 
         }).build();
     }
+
+
 }

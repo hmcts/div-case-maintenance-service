@@ -26,7 +26,7 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslCaseData.buildCaseDetails;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetails;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
