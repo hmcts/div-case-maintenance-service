@@ -9,6 +9,7 @@ import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetails;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -56,9 +57,9 @@ public class DivorceCaseMaintenance_ReadForCaseWorker {
     private static final Long CASE_ID = 2000l;
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
 
-    @Before
-    public void setUp() throws Exception {
-
+    @BeforeEach
+    public void setUpEachTest() throws InterruptedException {
+        Thread.sleep(2000);
     }
 
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
@@ -81,7 +82,7 @@ public class DivorceCaseMaintenance_ReadForCaseWorker {
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body(buildCaseDetails(CASE_ID, "emailAddress@email.com",false, false))
+            .body(buildCaseDetailsDsl(CASE_ID, "emailAddress@email.com",false, false))
             .toPact();
     }
 

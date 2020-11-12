@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -89,6 +90,11 @@ public class DivorceCaseMaintenance_StartEventForCitizen {
     @Before
     public void setUp() throws Exception {
 
+    }
+
+    @BeforeEach
+    public void setUpEachTest() throws InterruptedException {
+        Thread.sleep(2000);
     }
 
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")

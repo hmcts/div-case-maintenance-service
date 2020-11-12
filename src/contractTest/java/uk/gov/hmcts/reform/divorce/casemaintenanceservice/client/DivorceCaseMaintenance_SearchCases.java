@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -94,6 +95,11 @@ public class DivorceCaseMaintenance_SearchCases {
             .eventId(createEventId)
             .build();
         caseDataContent = buildCaseDataContent(startEventResponse);
+    }
+
+    @BeforeEach
+    public void setUpEachTest() throws InterruptedException {
+        Thread.sleep(2000);
     }
 
 

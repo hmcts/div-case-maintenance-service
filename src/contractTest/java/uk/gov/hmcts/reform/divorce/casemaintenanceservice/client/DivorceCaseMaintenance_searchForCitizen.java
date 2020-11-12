@@ -1,17 +1,13 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailList;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetails;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetails;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -19,20 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import au.com.dius.pact.consumer.dsl.DslPart;
-import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
-import com.google.errorprone.annotations.Immutable;
-import io.pactfoundation.consumer.dsl.LambdaDslJsonBody;
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,6 +75,10 @@ public class DivorceCaseMaintenance_searchForCitizen {
 
     }
 
+    @BeforeEach
+    public void setUpEachTest() throws InterruptedException {
+        Thread.sleep(2000);
+    }
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact searchForCitizen(PactDslWithProvider builder) {
         params  = Collections.emptyMap();
@@ -105,7 +100,7 @@ public class DivorceCaseMaintenance_searchForCitizen {
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body( buildCaseDetails(Long.valueOf(CASE_ID),"somemailaddress@gmail.com",false,false))
+            .body( buildCaseDetailsDsl(Long.valueOf(CASE_ID),"somemailaddress@gmail.com",false,false))
             //.body( new PactDslJsonArray())
             .toPact();
 

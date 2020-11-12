@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
+import static java.lang.String.valueOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
@@ -19,6 +20,7 @@ import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,6 +70,11 @@ public class DivorceCaseMaintenance_StartEventForCaseWorker {
 
     }
 
+    @BeforeEach
+    public void setUpEachTest() throws InterruptedException {
+        Thread.sleep(2000);
+    }
+
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startEventForCaseWorker(PactDslWithProvider builder) {
         // @formatter:off
@@ -102,7 +109,7 @@ public class DivorceCaseMaintenance_StartEventForCaseWorker {
         assertThat(startEventResponse.getEventId(), is("100"));
         assertThat(startEventResponse.getToken(), is("testServiceToken"));
 
-        assertThat(startEventResponse.getCaseDetails().getId(), is(Long.valueOf(2000)));
+        assertThat(startEventResponse.getCaseDetails().getId(), is(valueOf(2000)));
         assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("PROBATE"));
         assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
         assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("PROBATE"));

@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static java.lang.String.valueOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -59,7 +61,7 @@ public class DivorceCaseMaintenance_ReadForCitizen {
     String createEventId;
 
     private static final String USER_ID ="123456";
-    private static final String CASE_ID = "2000";
+    private static final Long CASE_ID = 2000L;
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
     private CaseDataContent caseDataContent;
     private CaseDetails caseDetails;
@@ -90,12 +92,7 @@ public class DivorceCaseMaintenance_ReadForCitizen {
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body(newJsonBody((caseDetailObject) -> {
-                caseDetailObject.stringMatcher("id", "[0-9]+", "2000");
-                caseDetailObject.stringType("jurisdiction",  "DIVORCE");
-                caseDetailObject.stringMatcher("case_type", ALPHABETIC_REGEX, "Caveat");
-                     // TODO build the Map<Object,Object> data in CaseDetails
-            }).build())
+            .body(buildCaseDetailsDsl(CASE_ID, "emailAddress@email.com",false, false))
             .toPact();
     }
 
@@ -105,10 +102,16 @@ public class DivorceCaseMaintenance_ReadForCitizen {
 
         CaseDetails caseDetailsReponse = coreCaseDataApi.readForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,CASE_ID);
+            caseType,valueOf(CASE_ID));
+
         assertThat(caseDetailsReponse.getId(), equalTo(2000L));
         assertThat(caseDetailsReponse.getJurisdiction(), is("DIVORCE"));
-        assertThat(caseDetailsReponse.getCaseTypeId(), is("Caveat"));
+
+        assertThat(caseDetailsReponse.getData().get("applicationType"), equalTo("Personal"));
+        assertThat(caseDetailsReponse.getData().get("primaryApplicantForenames"), equalTo("Jon"));
+        assertThat(caseDetailsReponse.getData().get("primaryApplicantSurname"), equalTo("Snow"));
+
+
 
     }
 }
