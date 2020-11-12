@@ -175,16 +175,14 @@ public final class PactDslBuilderForCaseDetailsList {
 
     public static DslPart buildStartEventReponse(String eventId , String token , String emailAddress, boolean withExecutors, boolean withPayments) {
         return newJsonBody((o) -> {
-            o.   stringType("event_id", eventId)
-                .stringType("token", token)
-               // .stringMatcher("state", "Draft|PaAppCreated|CaseCreated", "CaseCreated")
-               // .stringValue("case_type", "AwaitingDecreeNisi")
-                .object("case_details", (cd) ->{
-                    cd.numberType("id", 200);
-                    cd.stringMatcher("jurisdiction",  ALPHABETIC_REGEX,"DIVORCE");
+                o.stringType("event_id", eventId)
+                 .stringType("token", token)
+                 .object("case_details", (cd) ->{
+                    cd.numberType("id", 2000);
+                    cd.stringMatcher("jurisdiction",  ALPHABETIC_REGEX,"PROBATE");
                     cd.stringMatcher("callback_response_status", ALPHABETIC_REGEX,  "DONE");
-                    cd.stringMatcher("case_type", ALPHABETIC_REGEX,  "DIVORCE");
-                    // the below is the  Map<Object,Object> data property  of the  CaseDetails object.
+                    cd.stringMatcher("case_type", ALPHABETIC_REGEX,  "PROBATE");
+                    // below is the  Map<Object,Object> data property  of  CaseDetails object.
                     cd.object("data", (dataMap) -> {
                         dataMap.numberType("outsideUKGrantCopies", 6)
                             .stringValue("applicationType", "Personal")

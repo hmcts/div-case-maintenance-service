@@ -121,13 +121,9 @@ public class DivorceCaseMaintenance_searchForCitizen {
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
             caseType,searchCriteria);
 
-        // Top LEVEL element of CaseDetails[0]
         assertThat(caseDetailsList.get(0).getId(), equalTo(100L));
         assertThat(caseDetailsList.get(0).getCaseTypeId(), equalTo("AwaitingDecreeNisi"));
         assertThat(caseDetailsList.get(0).getState(), equalTo("CaseCreated"));
-
-        // CaseDetails[0].data  which is a Map<String,Object> . See the base-case.json to get a
-        // key,value pair of all the info that will be populated in this Map .
 
         Map<String,Object>  dataMap = caseDetailsList.get(0).getData() ;
         assertThat(dataMap.get("outsideUKGrantCopies"), is(6));

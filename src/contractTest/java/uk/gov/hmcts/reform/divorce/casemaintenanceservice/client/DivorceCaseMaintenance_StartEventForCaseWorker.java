@@ -1,9 +1,8 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -77,30 +76,19 @@ public class DivorceCaseMaintenance_StartEventForCaseWorker {
             .uponReceiving("a request for a valid start event for caseworker")
             .path("/caseworkers/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"
-                + caseType // caseTypeId
+                + caseType
                 + "/cases/"
                 +  CASE_ID
                 + "/event-triggers/"
                 + createEventId
                 + "/token")
             .method("GET")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
-                SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body(newJsonBody((o) -> {
-                o.stringValue("event_id", createEventId)
-                 .stringType("token", "123234543456")
-                    .object("case_details", (cd) ->{
-                        cd.numberValue("id", 2000L);
-                        cd.stringMatcher("jurisdiction",  ALPHABETIC_REGEX,"DIVORCE");
-                        cd.stringMatcher("callback_response_status", ALPHABETIC_REGEX,  "DONE");
-                        cd.stringMatcher("case_type", ALPHABETIC_REGEX,  "DIVORCE");
-                        // TODO build the Map<Object,Object> data in CaseDetails
-                    });
-            }).build())
+            .body(buildStartEventReponse("100", "testServiceToken" , "emailAddress@email.com", true, true))
             .toPact();
     }
 
@@ -108,14 +96,15 @@ public class DivorceCaseMaintenance_StartEventForCaseWorker {
     @PactTestFor(pactMethod = "startEventForCaseWorker")
     public void verifyStartEventForCaseworker() throws IOException, JSONException {
 
-        StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,CASE_ID,createEventId);
+        final StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
+            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,caseType,CASE_ID,createEventId);
 
-        assertThat(startEventResponse.getEventId(), equalTo(createEventId));
-        assertThat(startEventResponse.getCaseDetails().getId(), is(2000L));
-        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("DIVORCE"));
+        assertThat(startEventResponse.getEventId(), is("100"));
+        assertThat(startEventResponse.getToken(), is("testServiceToken"));
+
+        assertThat(startEventResponse.getCaseDetails().getId(), is(Long.valueOf(2000)));
+        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("PROBATE"));
         assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
-        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("DIVORCE"));
+        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("PROBATE"));
     }
 }
