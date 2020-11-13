@@ -110,17 +110,19 @@ public class DivorceCaseMaintenance_SearchCases {
         return builder
             .given("Search Cases for Citizen is requested")
             .uponReceiving("a request for a valid search case for citizen")
-            .path("/searchCases")
-            .query("ctid=DIVORCE")
+            .path("/searchCases/citizens?ctid=DIVORCE")
+            //.query("ctid=DIVORCE")
+            //.path("/citizens?ctid=DIVORCE")
             .method("POST")
             .headers(HttpHeaders.AUTHORIZATION,SERVICE_AUTHORIZATION)
-            .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .headers(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
+            //.matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .body("searchString")
             .willRespondWith()
             //.matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
             //.body(createJsonObject(getSearchResult()))
-            .body(createJsonObject(getSampleJson()))
+            .body("")
             .toPact();
 //            .body(newJsonBody((o) -> {
 //                    o.stringValue("total", "5")

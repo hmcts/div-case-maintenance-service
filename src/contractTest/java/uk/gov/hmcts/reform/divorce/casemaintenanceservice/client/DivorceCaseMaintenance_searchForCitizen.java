@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildListOfCaseDetailsDsl;
+
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
@@ -15,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
+import au.com.dius.pact.consumer.dsl.PactDslJsonRootValue;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -82,6 +87,7 @@ public class DivorceCaseMaintenance_searchForCitizen {
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact searchForCitizen(PactDslWithProvider builder) {
         params  = Collections.emptyMap();
+
         // @formatter:off
         return builder
             .given("A Search For Citizen requested",params)
@@ -100,8 +106,7 @@ public class DivorceCaseMaintenance_searchForCitizen {
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body( buildCaseDetailsDsl(Long.valueOf(CASE_ID),"somemailaddress@gmail.com",false,false))
-            //.body( new PactDslJsonArray())
+            .body( buildListOfCaseDetailsDsl(Long.valueOf(CASE_ID),"somemailaddress@gmail.com",false,false))
             .toPact();
 
     }
@@ -116,13 +121,26 @@ public class DivorceCaseMaintenance_searchForCitizen {
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
             caseType,searchCriteria);
 
-        assertThat(caseDetailsList.get(0).getId(), equalTo(100L));
-        assertThat(caseDetailsList.get(0).getCaseTypeId(), equalTo("AwaitingDecreeNisi"));
-        assertThat(caseDetailsList.get(0).getState(), equalTo("CaseCreated"));
+        assertThat(caseDetailsList.size(), is(2));
 
-        Map<String,Object>  dataMap = caseDetailsList.get(0).getData() ;
-        assertThat(dataMap.get("outsideUKGrantCopies"), is(6));
-        assertThat(dataMap.get("primaryApplicantForenames"), is("Jon"));
+        Map<String,Object> data1 = caseDetailsList.get(0).getData();
+        Map<String,Object> data2 = caseDetailsList.get(1).getData();
+
+        assertThat(data1.get("applicationType"), equalTo("Personal"));
+        assertThat(data1.get("primaryApplicantForenames"), equalTo("Jon"));
+
+        assertThat(data2.get("applicationType"), equalTo("Personal"));
+        assertThat(data2.get("primaryApplicantForenames"), equalTo("Jon"));
+
+
+
+//        assertThat(caseDetailsList.get(0).getId(), equalTo(100L));
+//        assertThat(caseDetailsList.get(0).getCaseTypeId(), equalTo("AwaitingDecreeNisi"));
+//        assertThat(caseDetailsList.get(0).getState(), equalTo("CaseCreated"));
+//
+//        Map<String,Object>  dataMap = caseDetailsList.get(0).getData() ;
+//        assertThat(dataMap.get("outsideUKGrantCopies"), is(6));
+//        assertThat(dataMap.get("primaryApplicantForenames"), is("Jon"));
 
     }
 }
