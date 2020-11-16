@@ -8,14 +8,13 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
@@ -47,13 +46,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenance_SearchCases {
+public class DivorceCaseMaintenanceSearchCases {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
     private static final String TOKEN = "someToken";
-    private static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY = "DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY";
-    private static final String DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION = "DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION";
 
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
@@ -85,7 +82,7 @@ public class DivorceCaseMaintenance_SearchCases {
             .caseDetails(caseDetails)
             .eventId(createEventId)
             .build();
-        caseDataContent = buildCaseDataContent(startEventResponse);
+        caseDataContent = PactDslFixtureHelper.getCaseDataContent();
     }
 
     @BeforeEach
@@ -93,12 +90,12 @@ public class DivorceCaseMaintenance_SearchCases {
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
+    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_caseworker")
     public RequestResponsePact searchCasesForCitizen(PactDslWithProvider builder) throws Exception {
         // @formatter:off
         return builder
-            .given("Search Cases for Citizen is requested")
-            .uponReceiving("a request for a valid search case for citizen")
+            .given("SearchCases for Citizen is requested")
+            .uponReceiving("Search Cases Request is requested for citizen")
             .path("/searchCases")
             .query("ctid=DIVORCE")
             .method("POST")
@@ -132,26 +129,6 @@ public class DivorceCaseMaintenance_SearchCases {
 
     private File getFile(String fileName) throws FileNotFoundException {
         return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
-    }
-
-    private CaseDataContent buildCaseDataContent(StartEventResponse startEventResponse) {
-
-        // TODO EMpty for now , may need to Fill it up ?/ TBD
-
-        final Map<String, Object> CASE_DATA_CONTENT = new HashMap<>();
-        CASE_DATA_CONTENT.put("eventToken", "token");
-        CASE_DATA_CONTENT.put("caseReference","case_reference");
-
-        return CaseDataContent.builder()
-            .eventToken(startEventResponse.getToken())
-            .event(
-                Event.builder()
-                    .id(startEventResponse.getEventId())
-                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
-                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
-                    .build()
-            ).data(CASE_DATA_CONTENT)
-            .build();
     }
 
     protected CaseDetails getCaseDetails(String fileName) throws JSONException, IOException {

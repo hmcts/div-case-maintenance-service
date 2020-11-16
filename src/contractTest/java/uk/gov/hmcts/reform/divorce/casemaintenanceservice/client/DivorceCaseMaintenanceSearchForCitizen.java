@@ -1,16 +1,18 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static java.lang.String.valueOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
+import static org.hamcrest.core.Is.is;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildListOfCaseDetailsDsl;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
@@ -18,6 +20,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,10 +41,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenance_StartEventForCaseWorker {
 
+public class DivorceCaseMaintenanceSearchForCitizen {
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
+
 
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
@@ -55,15 +59,13 @@ public class DivorceCaseMaintenance_StartEventForCaseWorker {
     @Value("${ccd.casetype}")
     String caseType;
 
-    @Value("${ccd.eventid.create}")
-    String createEventId;
-
-    private static final String USER_ID ="123456";
+    private static final String USER_ID = "123456";
     private static final String CASE_ID = "2000";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
     private CaseDataContent caseDataContent;
     private CaseDetails caseDetails;
-    private static final String  ALPHABETIC_REGEX = "[/^[A-Za-z]+$/]+";
+    private static final String ALPHABETIC_REGEX = "[/^[A-Za-z]+$/]+";
+    Map<String, Object> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     @Before
     public void setUp() throws Exception {
@@ -75,43 +77,52 @@ public class DivorceCaseMaintenance_StartEventForCaseWorker {
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact startEventForCaseWorker(PactDslWithProvider builder) {
+    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_citizen")
+    RequestResponsePact searchForCitizen(PactDslWithProvider builder) {
+        params = Collections.emptyMap();
+
         // @formatter:off
         return builder
-            .given("A start event for caseworkder is  requested")
-            .uponReceiving("a request for a valid start event for caseworker")
-            .path("/caseworkers/" + USER_ID + "/jurisdictions/"
-                + jurisdictionId + "/case-types/"
+            .given("A Search For Citizen requested", params)
+            .uponReceiving("A request for search For Citizen")
+            .path("/citizens/"
+                + USER_ID +
+                "/jurisdictions/" + jurisdictionId
+                + "/case-types/"
                 + caseType
-                + "/cases/"
-                +  CASE_ID
-                + "/event-triggers/"
-                + createEventId
-                + "/token")
+                + "/cases")
             .method("GET")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .query("")
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
+                SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body(buildStartEventReponse("100", "testServiceToken" , "emailAddress@email.com", true, true))
+            .body(buildListOfCaseDetailsDsl(Long.valueOf(CASE_ID), "somemailaddress@gmail.com", false, false))
             .toPact();
+
     }
 
     @Test
-    @PactTestFor(pactMethod = "startEventForCaseWorker")
-    public void verifyStartEventForCaseworker() throws IOException, JSONException {
+    @PactTestFor(pactMethod = "searchForCitizen")
+    public void searchForCitizen() throws IOException, JSONException {
 
-        final StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,caseType,CASE_ID,createEventId);
+        final Map<String, String> searchCriteria = Collections.EMPTY_MAP;
 
-        assertThat(startEventResponse.getEventId(), is("100"));
-        assertThat(startEventResponse.getToken(), is("testServiceToken"));
+        List<CaseDetails> caseDetailsList = coreCaseDataApi.searchForCitizen(SOME_AUTHORIZATION_TOKEN,
+            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
+            caseType, searchCriteria);
 
-        assertThat(startEventResponse.getCaseDetails().getId(), is(valueOf(2000)));
-        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("PROBATE"));
-        assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
-        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("PROBATE"));
+        assertThat(caseDetailsList.size(), is(2));
+
+        Map<String, Object> data1 = caseDetailsList.get(0).getData();
+        Map<String, Object> data2 = caseDetailsList.get(1).getData();
+
+        assertThat(data1.get("applicationType"), CoreMatchers.equalTo("Personal"));
+        assertThat(data1.get("primaryApplicantForenames"), CoreMatchers.equalTo("Jon"));
+
+        assertThat(data2.get("applicationType"), CoreMatchers.equalTo("Personal"));
+        assertThat(data2.get("primaryApplicantForenames"), CoreMatchers.equalTo("Jon"));
     }
 }

@@ -19,7 +19,7 @@ import io.pactfoundation.consumer.dsl.LambdaDslObject;
 public final class PactDslBuilderForCaseDetailsList {
 
     public static final String REGEX_DATE = "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
-    private static final String  ALPHABETIC_REGEX = "[/^[A-Za-z]+$/]+";
+    private static final String  ALPHABETIC_REGEX = "[/^[A-Za-z_]+$/]+";
 
     /**
      * TODO Important :
@@ -183,10 +183,10 @@ public final class PactDslBuilderForCaseDetailsList {
                  .stringType("token", token)
                  .object("case_details", (cd) ->{
                     cd.numberType("id", 2000);
-                    cd.stringMatcher("jurisdiction",  ALPHABETIC_REGEX,"PROBATE");
+                    cd.stringMatcher("jurisdiction",  ALPHABETIC_REGEX,"DIVORCE");
                     cd.stringMatcher("callback_response_status", ALPHABETIC_REGEX,  "DONE");
-                    cd.stringMatcher("case_type", ALPHABETIC_REGEX,  "PROBATE");
-                    // below is the  Map<Object,Object> data property  of  CaseDetails object.
+                    cd.stringMatcher("case_type", ALPHABETIC_REGEX,  "GRANT_OF_REPRESENTATION");
+                    //Map<Object,Object> data property  of  CaseDetails object.
                     cd.object("data", (dataMap) -> {
                         getCaseData(emailAddress, withExecutors, withPayments, cd, dataMap);
                     });
@@ -335,7 +335,7 @@ public final class PactDslBuilderForCaseDetailsList {
 
     public static DslPart buildCaseDetailsDsl(Long CASE_ID, String emailAddress, boolean withExecutors, boolean withPayments) {
         return newJsonBody((o) -> {
-            o.numberType("id", 2000L)
+            o.numberType("id", CASE_ID)
                 .stringType("jurisdiction", "DIVORCE")
                 .stringMatcher("state", "Draft|PaAppCreated|CaseCreated", "CaseCreated")
                 .stringValue("case_type", "AwaitingDecreeNisi")

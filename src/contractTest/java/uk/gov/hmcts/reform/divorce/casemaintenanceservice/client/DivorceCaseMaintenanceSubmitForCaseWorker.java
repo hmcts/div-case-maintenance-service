@@ -4,13 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContent;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.Event;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ResourceLoader;
 
 import java.util.Map;
 
@@ -20,7 +18,8 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.fluent.Executor;
+import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -40,7 +39,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenance_SubmitForCaseWorker {
+public class DivorceCaseMaintenanceSubmitForCaseWorker {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -48,9 +47,6 @@ public class DivorceCaseMaintenance_SubmitForCaseWorker {
 
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
-
-    @Autowired
-    ObjectMapper objectMapper;
 
     CaseDataContent caseDataContent;
 
@@ -71,12 +67,17 @@ public class DivorceCaseMaintenance_SubmitForCaseWorker {
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
+    @After
+    void teardown() {
+        Executor.closeIdleConnections();
+    }
+
+    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_caseworker")
     RequestResponsePact submitCaseWorkerDetails(PactDslWithProvider builder) throws Exception {
         // @formatter:off
         return builder
-            .given("A Caseworker details submission is posted")
-            .uponReceiving("A Submit For Caseworker.")
+            .given("Submit for caseworker is triggered")
+            .uponReceiving("A Submit For Caseworker ")
             .path("/caseworkers/"
                 + USER_ID +
                 "/jurisdictions/" + jurisdictionId
@@ -107,37 +108,11 @@ public class DivorceCaseMaintenance_SubmitForCaseWorker {
 
         assertNotNull(caseDetailsReponse);
         assertNotNull(caseDetailsReponse.getCaseTypeId());
-        assertEquals(caseDetailsReponse.getJurisdiction(),"probate");
-
+        assertEquals(caseDetailsReponse.getJurisdiction(),"DIVORCE");
 
         Map<String,Object> dataMap = caseDetailsReponse.getData() ;
         assertEquals(dataMap.get("applicationType"),"Personal");
-        //primaryApplicantAddressFound
         assertEquals(dataMap.get("primaryApplicantAddressFound"),"Yes");
 
-        // TODO More asserts - if needed.
-    }
-
-    private CaseDataContent getCaseDataContent() throws Exception {
-
-        final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
-
-        final StartEventResponse startEventResponse = StartEventResponse.builder()
-            .eventId(createEventId)
-            .token(SOME_AUTHORIZATION_TOKEN)
-            .build();
-
-        final CaseDataContent caseDataContent = CaseDataContent.builder()
-            .eventToken(startEventResponse.getToken())
-            .event(
-                Event.builder()
-                    .id(startEventResponse.getEventId())
-                    .summary("divSummary")
-                    .description("div")
-                    .build()
-            ).data(convertObjectToJsonString(caseData))
-            .build();
-
-        return caseDataContent;
     }
 }

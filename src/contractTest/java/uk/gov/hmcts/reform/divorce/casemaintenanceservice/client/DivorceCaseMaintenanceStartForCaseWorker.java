@@ -1,18 +1,15 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-import static java.lang.String.valueOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
 
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 
 import java.io.IOException;
+import java.util.Map;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
@@ -20,9 +17,9 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenance_ReadForCitizen {
+public class DivorceCaseMaintenanceStartForCaseWorker {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -61,30 +58,31 @@ public class DivorceCaseMaintenance_ReadForCitizen {
     String createEventId;
 
     private static final String USER_ID ="123456";
-    private static final Long CASE_ID = 2000L;
+    private static final String CASE_ID = "654321";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
-    private CaseDataContent caseDataContent;
-    private CaseDetails caseDetails;
-    private static final String  ALPHABETIC_REGEX = "[/^[A-Za-z]+$/]+";
 
     @Before
     public void setUp() throws Exception {
 
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact readForCitizen(PactDslWithProvider builder) {
+    @BeforeEach
+    public void setUpEachTest() throws InterruptedException {
+        Thread.sleep(2000);
+    }
+
+    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_caseworker")
+    RequestResponsePact startForCaseWorker(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Read For Citizen is  requested")
-            .uponReceiving("A Read For Citizen is requested")
-            .path("/citizens/"
-                + USER_ID +
-                "/jurisdictions/" + jurisdictionId
-                + "/case-types/"
+            .given("A Start for Caseworker is requested")
+            .uponReceiving("A StartForCaseworker  is requested")
+            .path("/caseworkers/" + USER_ID + "/jurisdictions/"
+                + jurisdictionId + "/case-types/"
                 + caseType
-                + "/cases/"
-                +  CASE_ID)
+                + "/event-triggers/"
+                + createEventId
+                + "/token")
             .method("GET")
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
                 SOME_SERVICE_AUTHORIZATION_TOKEN)
@@ -92,26 +90,24 @@ public class DivorceCaseMaintenance_ReadForCitizen {
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .status(200)
-            .body(buildCaseDetailsDsl(CASE_ID, "emailAddress@email.com",false, false))
+            .body(buildStartEventReponse(createEventId , "token","someemailaddress.com", false,false))
             .toPact();
     }
 
     @Test
-    @PactTestFor(pactMethod = "readForCitizen")
-    public void verifyReadForCitizen() throws IOException, JSONException {
+    @PactTestFor(pactMethod = "startForCaseWorker")
+    public void verifyStartEventForCitizen() throws IOException, JSONException {
 
-        CaseDetails caseDetailsReponse = coreCaseDataApi.readForCitizen(SOME_AUTHORIZATION_TOKEN,
+        StartEventResponse startEventResponse = coreCaseDataApi.startForCaseworker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,valueOf(CASE_ID));
+            caseType,createEventId);
 
-        assertThat(caseDetailsReponse.getId(), equalTo(2000L));
-        assertThat(caseDetailsReponse.getJurisdiction(), is("DIVORCE"));
+        assertThat(startEventResponse.getEventId(), equalTo(createEventId));
+        assertThat(startEventResponse.getToken(), is("token"));
 
-        assertThat(caseDetailsReponse.getData().get("applicationType"), equalTo("Personal"));
-        assertThat(caseDetailsReponse.getData().get("primaryApplicantForenames"), equalTo("Jon"));
-        assertThat(caseDetailsReponse.getData().get("primaryApplicantSurname"), equalTo("Snow"));
+        final Map<String,Object> caseData = startEventResponse.getCaseDetails().getData();
 
-
-
+        assertThat(caseData.get("outsideUKGrantCopies"), is(6));
+        assertThat(caseData.get("applicationType"), is("Personal"));
     }
 }

@@ -1,13 +1,31 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildListOfCaseDetailsDsl;
+
+import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.fluent.Executor;
+import org.hamcrest.core.Is;
 import org.json.JSONException;
+import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -18,22 +36,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.bind.annotation.*;
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.Event;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ResourceLoader;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -43,20 +45,15 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenance_SubmitEventForCitizen {
+public class DivorceCaseMaintenanceSubmitEventForCitizen {
 
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
     private static final Long CASE_ID = 2000l;
-    private static final String VALID_PAYLOAD_PATH = "json/base-case.json";
-
 
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
-
-    @Autowired
-    ObjectMapper objectMapper;
 
     @Value("${ccd.jurisdictionid}")
     String jurisdictionId;
@@ -72,17 +69,25 @@ public class DivorceCaseMaintenance_SubmitEventForCitizen {
     private static final String USER_ID ="123456";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
 
+    Map<String, Object> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
+    @After
+    public void teardown() {
+        Executor.closeIdleConnections();
+    }
+
+    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_citizen")
     RequestResponsePact submitEventForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Read For Caseworker is  requested")
-            .uponReceiving("A Read For CaseWorker is requested")
+            .given("A SubmitEvent for a Citizen is triggered")
+            .uponReceiving("A SubmitEvent for a Citizen is triggered")
             .path("/citizens/"
                 + USER_ID +
                 "/jurisdictions/" + jurisdictionId
@@ -107,7 +112,7 @@ public class DivorceCaseMaintenance_SubmitEventForCitizen {
     @PactTestFor(pactMethod = "submitEventForCitizen")
     public void verifySubmitEventForCitizen() throws Exception {
 
-        caseDataContent = getCaseDataContent();
+        caseDataContent = PactDslFixtureHelper.getCaseDataContent();
 
         CaseDetails caseDetailsReponse = coreCaseDataApi.submitEventForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
@@ -116,29 +121,5 @@ public class DivorceCaseMaintenance_SubmitEventForCitizen {
         assertThat(dataMap.get("outsideUKGrantCopies"), is(6));
         assertThat(dataMap.get("primaryApplicantForenames"), is("Jon"));
     }
-
-    private CaseDataContent getCaseDataContent() throws Exception {
-
-        final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
-
-        final StartEventResponse startEventResponse = StartEventResponse.builder()
-            .eventId(createEventId)
-            .token(SOME_AUTHORIZATION_TOKEN)
-            .build();
-
-        final CaseDataContent caseDataContent = CaseDataContent.builder()
-            .eventToken(startEventResponse.getToken())
-            .event(
-                Event.builder()
-                    .id(startEventResponse.getEventId())
-                    .summary("divSummary")
-                    .description("div")
-                    .build()
-            ).data(convertObjectToJsonString(caseData))
-            .build();
-
-        return caseDataContent;
-    }
-
 
 }
