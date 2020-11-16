@@ -527,4 +527,65 @@ public final class PactDslBuilderForCaseDetailsList {
 
     }
 
+
+    public static DslPart buildSearchResultDsl(Long CASE_ID, String emailAddress, boolean withExecutors, boolean withPayments) {
+        return newJsonBody((o) -> {
+                o.numberType("total",123)
+                    .minArrayLike("cases", 2, (cd) ->{
+                            cd.numberType("id", 200);
+                            cd.stringType("jurisdiction", "divorce");
+                            cd.stringType("callback_response_status",  "DONE");
+                            cd.stringType("case_type",  "DIVORCE");
+                            cd.object("data", (dataMap) -> {
+                            getCaseData(emailAddress, withExecutors, withPayments, cd, dataMap);
+                        });
+            });
+        }).build();
+
+
+//        return PactDslJsonArray
+//            .arrayEachLike(2)
+//            .stringValue("case_type", "AwaitingDecreeNisi")
+//            .stringValue("jurisdiction","divorce")
+//            .object("case_data")
+//            .numberType("outsideUKGrantCopies", 6)
+//            .stringValue("applicationType", "Personal")
+//            .stringMatcher("applicationSubmittedDate", REGEX_DATE, "2018-05-17")
+//            .stringType("primaryApplicantForenames", "Jon")
+//            .stringType("primaryApplicantSurname", "Snow")
+//            .stringMatcher("primaryApplicantAddressFound",
+//                "Yes|No", "Yes")
+//            .stringMatcher("primaryApplicantPhoneNumber", "[0-9]+", "123455678")
+//            .stringMatcher("primaryApplicantRelationshipToDeceased", "partner|child|sibling|partner|parent|adoptedChild|other", "adoptedChild")
+//            .stringMatcher("primaryApplicantAdoptionInEnglandOrWales", "(Yes|No)", "Yes")
+//            .stringValue("primaryApplicantEmailAddress", "someEmail....")
+//
+//            .object("primaryApplicantAddress")
+//            .stringType("AddressLine1", "Pret a Manger")
+//            .stringType("AddressLine2", "St. Georges Hospital")
+//            .stringType("PostTown", "London")
+//            .stringType("PostCode", "SW17 0QT")
+//            .closeObject()
+//            .object("")
+//            .stringType("deceasedForenames", "Ned")
+//            .stringType("deceasedSurname", "Stark")
+//            .stringMatcher("deceasedDateOfBirth", REGEX_DATE, "1930-01-01")
+//            .stringMatcher("deceasedDateOfDeath", REGEX_DATE, "2018-01-01")
+//            .closeObject()
+//
+//            .object("deceasedAddress")
+//            .stringType("AddressLine1", "Winterfell")
+//            .stringType("AddressLine2", "Westeros")
+//            .stringType("PostTown", "London")
+//            .stringType("PostCode", "SW17 0QT")
+//            .closeObject()
+//            //TODO Not able to add String types after this , only .object ... closeObject() types.
+//
+//            .closeObject();
+
+
+    }
+
+
+
 }
