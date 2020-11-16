@@ -1,19 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
-
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.Event;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ResourceLoader;
-
-import java.util.Map;
-
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -21,6 +7,7 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -31,6 +18,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
+import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ResourceLoader;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
@@ -40,11 +43,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public class DivorceCaseMaintenance_SubmitForCaseWorker {
+public class DivorceCaseMaintenance_SubmitEventForCitizen {
+
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
+    private static final Long CASE_ID = 2000l;
     private static final String VALID_PAYLOAD_PATH = "json/base-case.json";
+
 
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
@@ -52,13 +58,13 @@ public class DivorceCaseMaintenance_SubmitForCaseWorker {
     @Autowired
     ObjectMapper objectMapper;
 
-    CaseDataContent caseDataContent;
-
     @Value("${ccd.jurisdictionid}")
     String jurisdictionId;
 
     @Value("${ccd.casetype}")
     String caseType;
+
+    CaseDataContent caseDataContent;
 
     @Value("${ccd.bulk.eventid.create}")
     private String createEventId;
@@ -72,50 +78,43 @@ public class DivorceCaseMaintenance_SubmitForCaseWorker {
     }
 
     @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact submitCaseWorkerDetails(PactDslWithProvider builder) throws Exception {
+    RequestResponsePact submitEventForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Caseworker details submission is posted")
-            .uponReceiving("A Submit For Caseworker.")
-            .path("/caseworkers/"
+            .given("A Read For Caseworker is  requested")
+            .uponReceiving("A Read For CaseWorker is requested")
+            .path("/citizens/"
                 + USER_ID +
                 "/jurisdictions/" + jurisdictionId
                 + "/case-types/"
                 + caseType
-                + "/cases")
+                + "/cases/"
+                +  CASE_ID
+                + "/events")
             .query("ignore-warning=true")
             .method("POST")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
-            .body(convertObjectToJsonString(getCaseDataContent()))
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
+                SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
-            .status(200)
-            .body(buildCaseDetailsDsl(100L,"someemailaddress.com", false,false))
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
+            .status(200)
+            .body(buildCaseDetailsDsl(CASE_ID, "emailAddress@email.com",false, false))
             .toPact();
     }
 
     @Test
-    @PactTestFor(pactMethod = "submitCaseWorkerDetails")
-    public void submitForCaseWorker() throws Exception  {
+    @PactTestFor(pactMethod = "submitEventForCitizen")
+    public void verifySubmitEventForCitizen() throws Exception {
 
         caseDataContent = getCaseDataContent();
 
-        CaseDetails caseDetailsReponse = coreCaseDataApi.submitForCaseworker(SOME_AUTHORIZATION_TOKEN,
+        CaseDetails caseDetailsReponse = coreCaseDataApi.submitEventForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,true,caseDataContent);
-
-        assertNotNull(caseDetailsReponse);
-        assertNotNull(caseDetailsReponse.getCaseTypeId());
-        assertEquals(caseDetailsReponse.getJurisdiction(),"probate");
-
-
+            caseType,CASE_ID.toString(),true,caseDataContent);
         Map<String,Object> dataMap = caseDetailsReponse.getData() ;
-        assertEquals(dataMap.get("applicationType"),"Personal");
-        //primaryApplicantAddressFound
-        assertEquals(dataMap.get("primaryApplicantAddressFound"),"Yes");
-
-        // TODO More asserts - if needed.
+        assertThat(dataMap.get("outsideUKGrantCopies"), is(6));
+        assertThat(dataMap.get("primaryApplicantForenames"), is("Jon"));
     }
 
     private CaseDataContent getCaseDataContent() throws Exception {
@@ -140,4 +139,6 @@ public class DivorceCaseMaintenance_SubmitForCaseWorker {
 
         return caseDataContent;
     }
+
+
 }
