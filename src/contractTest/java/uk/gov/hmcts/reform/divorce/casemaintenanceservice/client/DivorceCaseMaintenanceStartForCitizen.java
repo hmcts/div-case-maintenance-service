@@ -1,17 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
-
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-
-import java.io.IOException;
-
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
@@ -25,10 +13,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 
+import java.io.IOException;
 
-public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaintenancePact {
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
+
+public class DivorceCaseMaintenanceStartForCitizen extends DivorceCaseMaintenancePact {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -60,8 +58,8 @@ public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaint
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_citizen")
-    RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
+    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_for_citizen")
+    RequestResponsePact startForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder
             .given("A StartEvent for citizen is received")
@@ -84,8 +82,8 @@ public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaint
     }
 
     @Test
-    @PactTestFor(pactMethod = "startEventForCitizen")
-    public void verifyStartEventForCitizen() throws IOException, JSONException {
+    @PactTestFor(pactMethod = "startForCitizen")
+    public void verifyStartForCitizen() throws IOException, JSONException {
 
         StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID.toString(), jurisdictionId,
@@ -100,6 +98,7 @@ public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaint
 
     @AfterEach
     void teardown() {
-            Executor.closeIdleConnections();
+        Executor.closeIdleConnections();
     }
+
 }
