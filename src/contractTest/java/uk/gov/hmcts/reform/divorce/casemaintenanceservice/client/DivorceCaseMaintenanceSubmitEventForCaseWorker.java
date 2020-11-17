@@ -1,30 +1,44 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
+import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
+import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
+import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.RequestResponsePact;
+import au.com.dius.pact.core.model.annotations.Pact;
+import au.com.dius.pact.core.model.annotations.PactFolder;
+import org.apache.http.client.fluent.Executor;
+import org.junit.After;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContent;
 
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-
-import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.RequestResponsePact;
-import au.com.dius.pact.core.model.annotations.Pact;
-import org.apache.http.client.fluent.Executor;
-import org.junit.After;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
-
-public class DivorceCaseMaintenanceSubmitEventForCaseWorker extends DivorceCaseMaintenancePact {
+@ExtendWith(PactConsumerTestExt.class)
+@ExtendWith(SpringExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@PactTestFor(providerName = "ccd", port = "8891")
+@PactFolder("pacts")
+@SpringBootTest({
+    "core_case_data.api.url : localhost:8891"
+})
+public class DivorceCaseMaintenanceSubmitEventForCaseWorker  {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -52,7 +66,7 @@ public class DivorceCaseMaintenanceSubmitEventForCaseWorker extends DivorceCaseM
     }
 
     @After
-    void teardown() {
+    public void teardown() {
         Executor.closeIdleConnections();
     }
 
@@ -63,7 +77,7 @@ public class DivorceCaseMaintenanceSubmitEventForCaseWorker extends DivorceCaseM
         return builder
             .given("A SubmitEvent for Caseworkder is triggered")
             .uponReceiving("A SubmitEvent For Case worker is received.")
-            .path("/caseworkers/"+ USER_ID
+            .path("/caseworkers/"   + USER_ID
                 + "/jurisdictions/" + jurisdictionId
                 + "/case-types/"    + caseType
                 + "/cases/"         + CASE_ID
@@ -85,7 +99,7 @@ public class DivorceCaseMaintenanceSubmitEventForCaseWorker extends DivorceCaseM
     @PactTestFor(pactMethod = "submitEventForCaseWorker")
     public void verifyStartEventForCaseworker() throws Exception {
 
-        caseDataContent = getCaseDataContent();
+        caseDataContent = PactDslFixtureHelper.getCaseDataContent();
 
         final CaseDetails caseDetails = coreCaseDataApi.submitEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId, caseType, CASE_ID,true,caseDataContent);

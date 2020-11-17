@@ -1,14 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
-
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-
-import java.io.IOException;
-
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
@@ -21,9 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 
-public class DivorceCaseMaintenanceStartEventForCaseWorker extends DivorceCaseMaintenancePact {
+import java.io.IOException;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
+
+public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseMaintenancePact {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -40,7 +39,7 @@ public class DivorceCaseMaintenanceStartEventForCaseWorker extends DivorceCaseMa
     @Value("${ccd.eventid.create}")
     String createEventId;
 
-    private static final String USER_ID ="123456";
+    private static final String USER_ID = "123456";
     private static final String CASE_ID = "2000";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
 

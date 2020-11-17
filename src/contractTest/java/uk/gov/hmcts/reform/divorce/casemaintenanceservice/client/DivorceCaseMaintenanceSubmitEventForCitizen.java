@@ -1,18 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
-
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper;
-
-import java.util.Map;
-import java.util.TreeMap;
-
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
@@ -25,13 +12,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper;
+
+import java.util.Map;
+import java.util.TreeMap;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
 public class DivorceCaseMaintenanceSubmitEventForCitizen extends DivorceCaseMaintenancePact {
 
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
-    private static final Long CASE_ID = 2000l;
+    private static final Long CASE_ID = 2000L;
 
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
@@ -47,7 +46,7 @@ public class DivorceCaseMaintenanceSubmitEventForCitizen extends DivorceCaseMain
     @Value("${ccd.bulk.eventid.create}")
     private String createEventId;
 
-    private static final String USER_ID ="123456";
+    private static final String USER_ID = "123456";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
 
     Map<String, Object> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -70,8 +69,9 @@ public class DivorceCaseMaintenanceSubmitEventForCitizen extends DivorceCaseMain
             .given("A SubmitEvent for a Citizen is triggered")
             .uponReceiving("A SubmitEvent for a Citizen is triggered")
             .path("/citizens/"
-                + USER_ID +
-                "/jurisdictions/" + jurisdictionId
+                + USER_ID
+                + "/jurisdictions/"
+                + jurisdictionId
                 + "/case-types/"
                 + caseType
                 + "/cases/"

@@ -1,17 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContent;
-
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-
-import java.util.Map;
-
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
@@ -24,7 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
+
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContent;
 
 public class DivorceCaseMaintenanceSubmitForCaseWorker extends DivorceCaseMaintenancePact {
 
@@ -46,7 +45,7 @@ public class DivorceCaseMaintenanceSubmitForCaseWorker extends DivorceCaseMainte
     @Value("${ccd.bulk.eventid.create}")
     private String createEventId;
 
-    private static final String USER_ID ="123456";
+    private static final String USER_ID = "123456";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
 
     @BeforeEach
@@ -64,10 +63,11 @@ public class DivorceCaseMaintenanceSubmitForCaseWorker extends DivorceCaseMainte
         // @formatter:off
         return builder
             .given("Submit for caseworker is triggered")
-            .uponReceiving("A Submit For Caseworker ")
+            .uponReceiving("A Submit For Caseworker")
             .path("/caseworkers/"
-                + USER_ID +
-                "/jurisdictions/" + jurisdictionId
+                + USER_ID
+                + "/jurisdictions/"
+                + jurisdictionId
                 + "/case-types/"
                 + caseType
                 + "/cases")
@@ -78,28 +78,28 @@ public class DivorceCaseMaintenanceSubmitForCaseWorker extends DivorceCaseMainte
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
             .status(200)
-            .body(buildCaseDetailsDsl(100L,"someemailaddress.com", false,false))
+            .body(buildCaseDetailsDsl(100L, "someemailaddress.com", false, false))
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .toPact();
     }
 
     @Test
     @PactTestFor(pactMethod = "submitCaseWorkerDetails")
-    public void submitForCaseWorker() throws Exception  {
+    public void submitForCaseWorker() throws Exception {
 
         caseDataContent = getCaseDataContent();
 
         CaseDetails caseDetailsReponse = coreCaseDataApi.submitForCaseworker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,true,caseDataContent);
+            caseType, true, caseDataContent);
 
         assertNotNull(caseDetailsReponse);
         assertNotNull(caseDetailsReponse.getCaseTypeId());
-        assertEquals(caseDetailsReponse.getJurisdiction(),"DIVORCE");
+        assertEquals(caseDetailsReponse.getJurisdiction(), "DIVORCE");
 
-        Map<String,Object> dataMap = caseDetailsReponse.getData() ;
-        assertEquals(dataMap.get("applicationType"),"Personal");
-        assertEquals(dataMap.get("primaryApplicantAddressFound"),"Yes");
+        Map<String, Object> dataMap = caseDetailsReponse.getData();
+        assertEquals(dataMap.get("applicationType"), "Personal");
+        assertEquals(dataMap.get("primaryApplicantAddressFound"), "Yes");
 
     }
 }

@@ -1,12 +1,11 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util;
 
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
-
+import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 
-import org.springframework.beans.factory.annotation.Value;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
 
 public  class PactDslFixtureHelper {
 

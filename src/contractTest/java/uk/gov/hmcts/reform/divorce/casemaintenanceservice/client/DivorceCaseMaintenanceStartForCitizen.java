@@ -46,7 +46,7 @@ public class DivorceCaseMaintenanceStartForCitizen extends DivorceCaseMaintenanc
     @Value("${ccd.eventid.create}")
     String createEventId;
 
-    private static final String USER_ID ="123456";
+    private static final String USER_ID = "123456";
     private static final String CASE_ID = "654321";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
     private CaseDataContent caseDataContent;

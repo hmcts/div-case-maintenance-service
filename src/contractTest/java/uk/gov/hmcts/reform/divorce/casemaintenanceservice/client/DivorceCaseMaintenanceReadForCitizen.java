@@ -1,21 +1,11 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
-import static java.lang.String.valueOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
-
-import au.com.dius.pact.consumer.junit5.PactTestFor;
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-
-import java.io.IOException;
-
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
+import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.apache.http.client.fluent.Executor;
+import org.hamcrest.core.Is;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
+
+import java.io.IOException;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
+
 
 public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenancePact {
 
@@ -43,7 +42,7 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
     @Value("${ccd.eventid.create}")
     String createEventId;
 
-    private static final String USER_ID ="123456";
+    private static final String USER_ID = "123456";
     private static final Long CASE_ID = 2000L;
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
 
@@ -64,8 +63,9 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
             .given("A Read For Citizen is  requested")
             .uponReceiving("A Read For Citizen is requested")
             .path("/citizens/"
-                + USER_ID +
-                "/jurisdictions/" + jurisdictionId
+                + USER_ID
+                + "/jurisdictions/"
+                + jurisdictionId
                 + "/case-types/"
                 + caseType
                 + "/cases/"
@@ -87,10 +87,10 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
 
         CaseDetails caseDetailsReponse = coreCaseDataApi.readForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,valueOf(CASE_ID));
+            caseType,String.valueOf(CASE_ID));
 
-        assertThat(caseDetailsReponse.getId(), equalTo(2000L));
-        assertThat(caseDetailsReponse.getJurisdiction(), is("DIVORCE"));
+        assertThat(caseDetailsReponse.getId(), Is.is(2000L));
+        assertThat(caseDetailsReponse.getJurisdiction(), Is.is("DIVORCE"));
 
         assertThat(caseDetailsReponse.getData().get("applicationType"), equalTo("Personal"));
         assertThat(caseDetailsReponse.getData().get("primaryApplicantForenames"), equalTo("Jon"));

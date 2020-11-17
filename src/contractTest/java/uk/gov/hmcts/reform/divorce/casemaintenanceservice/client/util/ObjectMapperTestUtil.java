@@ -1,9 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util;
 
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.Event;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ObjectMapperTestUtil {
