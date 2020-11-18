@@ -77,7 +77,7 @@ public class DivorceCaseMaintenanceSearchCases extends DivorceCaseMaintenancePac
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_caseworker")
+    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     public RequestResponsePact searchCasesForCitizen(PactDslWithProvider builder) throws Exception {
         // @formatter:off
         return builder

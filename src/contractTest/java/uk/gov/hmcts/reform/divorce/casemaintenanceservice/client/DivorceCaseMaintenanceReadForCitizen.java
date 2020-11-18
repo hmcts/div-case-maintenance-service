@@ -56,7 +56,7 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_citizen")
+    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact readForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder

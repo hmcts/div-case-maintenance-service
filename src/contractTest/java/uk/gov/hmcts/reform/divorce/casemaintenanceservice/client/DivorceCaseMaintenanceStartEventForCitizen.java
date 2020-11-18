@@ -58,7 +58,7 @@ public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaint
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_citizen")
+    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder

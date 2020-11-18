@@ -53,11 +53,11 @@ public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseM
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_caseworker")
+    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startEventForCaseWorker(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A StartEvent for Caseworkder is  requested")
+            .given("A StartEvent for Caseworker is  requested")
             .uponReceiving("A StartEvent for a caseworker is received.")
             .path("/caseworkers/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"

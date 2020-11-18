@@ -52,7 +52,7 @@ public class DivorceCaseMaintenanceReadForCaseWorker  extends DivorceCaseMainten
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_caseworker")
+    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact readForCaseDetails(PactDslWithProvider builder) {
         // @formatter:off
         return builder

@@ -64,7 +64,7 @@ public class DivorceCaseMaintenanceSearchForCitizen  extends DivorceCaseMaintena
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_citizen")
+    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact searchForCitizen(PactDslWithProvider builder) {
         params = Collections.emptyMap();
 
