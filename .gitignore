@@ -17,6 +17,7 @@ out
 
 bin/
 target/
+pacts/
 
 src/main/resources/version
 java-rpm-packaging/
