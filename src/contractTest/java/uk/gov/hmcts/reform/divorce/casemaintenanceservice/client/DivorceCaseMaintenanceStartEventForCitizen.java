@@ -28,35 +28,10 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 
 public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaintenancePact {
 
-    public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
-    public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
-
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Value("${ccd.jurisdictionid}")
-    String jurisdictionId;
-
-    @Value("${ccd.casetype}")
-    String caseType;
-
-    @Value("${ccd.eventid.create}")
-    String createEventId;
-
-    private static final String USER_ID = "123456";
-    private static final String CASE_ID = "654321";
-    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
     private CaseDataContent caseDataContent;
     private CaseDetails caseDetails;
     private static final String  ALPHABETIC_REGEX = "[/^[A-Za-z_]+$/]+";
 
-    @BeforeEach
-    public void setUpEachTest() throws InterruptedException {
-        Thread.sleep(2000);
-    }
 
     @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
@@ -96,8 +71,4 @@ public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaint
 
     }
 
-    @AfterEach
-    void teardown() {
-        Executor.closeIdleConnections();
-    }
 }

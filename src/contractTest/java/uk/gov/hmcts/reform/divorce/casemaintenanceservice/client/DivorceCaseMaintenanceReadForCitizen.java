@@ -8,6 +8,7 @@ import org.apache.http.client.fluent.Executor;
 import org.hamcrest.core.Is;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -27,40 +31,29 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 
 public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenancePact {
 
-    public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
-    public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
+    private Map<String, Object> caseDetailsMap;
+    private CaseDataContent caseDataContent;
 
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
-
-    @Value("${ccd.jurisdictionid}")
-    String jurisdictionId;
-
-    @Value("${ccd.casetype}")
-    String caseType;
-
-    @Value("${ccd.eventid.create}")
-    String createEventId;
-
-    private static final String USER_ID = "123456";
-    private static final Long CASE_ID = 2000L;
-    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
-
-    @BeforeEach
+    @BeforeAll
     public void setUp() throws Exception {
-
-    }
-
-    @AfterEach
-    void teardown() {
-        Executor.closeIdleConnections();
+        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
+        caseDataContent = CaseDataContent.builder()
+            .eventToken("someEventToken")
+            .event(
+                Event.builder()
+                    .id(createEventId)
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseDetailsMap.get("case_data"))
+            .build();
     }
 
     @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact readForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Read For Citizen is  requested")
+            .given("A Read For Citizen is  requested", getCaseDataContentAsMap(caseDataContent))
             .uponReceiving("A Read For Citizen is requested")
             .path("/citizens/"
                 + USER_ID
@@ -75,7 +68,7 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
                 SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
-            .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
+            .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .status(200)
             .body(buildCaseDetailsDsl(CASE_ID, "emailAddress@email.com",false, false))
             .toPact();
@@ -89,7 +82,7 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
             caseType,String.valueOf(CASE_ID));
 
-        assertThat(caseDetailsReponse.getId(), Is.is(2000L));
+        assertThat(caseDetailsReponse.getId(), Is.is(CASE_ID));
         assertThat(caseDetailsReponse.getJurisdiction(), Is.is("DIVORCE"));
 
         assertThat(caseDetailsReponse.getData().get("applicationType"), equalTo("Personal"));
