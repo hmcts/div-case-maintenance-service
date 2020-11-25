@@ -22,8 +22,8 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCas
 import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
 
 public class DivorceCaseMaintenanceStartForCitizen extends DivorceCaseMaintenancePact {
@@ -88,11 +88,11 @@ public class DivorceCaseMaintenanceStartForCitizen extends DivorceCaseMaintenanc
         StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID.toString(), jurisdictionId,
             caseType, CASE_ID.toString(), createEventId);
+
         assertThat(startEventResponse.getEventId(), equalTo(createEventId));
-        assertThat(startEventResponse.getCaseDetails().getId(), is(2000L));
-        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("DIVORCE"));
-        assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
-        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("GRANT_OF_REPRESENTATION"));
+
+        CaseDetails caseDetails = startEventResponse.getCaseDetails();
+        assertCaseDetails(caseDetails);
 
     }
 

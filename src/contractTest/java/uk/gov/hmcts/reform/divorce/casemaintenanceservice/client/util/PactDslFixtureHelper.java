@@ -1,13 +1,20 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-public  class PactDslFixtureHelper {
+
+public final  class PactDslFixtureHelper {
 
     @Value("${ccd.jurisdictionid}")
     String jurisdictionId;
@@ -18,11 +25,12 @@ public  class PactDslFixtureHelper {
     @Value("${ccd.eventid.create}")
     static String createEventId;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
-
-
-    private static final String VALID_PAYLOAD_PATH = "json/base-case.json";
+    private static final String VALID_PAYLOAD_PATH = "json/divorce-map.json";
 
     public static CaseDataContent getCaseDataContent() throws Exception {
 
@@ -41,9 +49,19 @@ public  class PactDslFixtureHelper {
                     .summary("divSummary")
                     .description("div")
                     .build()
-            ).data(convertObjectToJsonString(caseData))
+            ).data(caseData)
             .build();
 
         return caseDataContent;
     }
+
+    private File getFile(String fileName) throws FileNotFoundException {
+        return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
+    }
+
+    protected CaseDetails getCaseDetails(String fileName) throws JSONException, IOException {
+        File file = getFile(fileName);
+        return  objectMapper.readValue(file, CaseDetails.class);
+    }
+
 }

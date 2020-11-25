@@ -4,26 +4,18 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 
-import java.io.IOException;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
 
 public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaintenancePact {
@@ -58,16 +50,18 @@ public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaint
 
     @Test
     @PactTestFor(pactMethod = "startEventForCitizen")
-    public void verifyStartEventForCitizen() throws IOException, JSONException {
+    public void verifyStartEventForCitizen() throws JSONException {
 
         StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID.toString(), jurisdictionId,
             caseType, CASE_ID.toString(), createEventId);
+
         assertThat(startEventResponse.getEventId(), equalTo(createEventId));
         assertThat(startEventResponse.getCaseDetails().getId(), is(2000L));
-        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("DIVORCE"));
-        assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
-        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("GRANT_OF_REPRESENTATION"));
+
+        assertCaseDetails(startEventResponse.getCaseDetails());
+
+
 
     }
 

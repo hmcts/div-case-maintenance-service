@@ -5,7 +5,6 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.json.JSONException;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,9 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 
-import java.io.IOException;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
 
 public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseMaintenancePact {
@@ -42,11 +40,6 @@ public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseM
     private static final String USER_ID = "123456";
     private static final String CASE_ID = "2000";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
-
-    @Before
-    public void setUp() throws Exception {
-
-    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -79,7 +72,7 @@ public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseM
 
     @Test
     @PactTestFor(pactMethod = "startEventForCaseWorker")
-    public void verifyStartEventForCaseworker() throws IOException, JSONException {
+    public void verifyStartEventForCaseworker() throws JSONException {
 
         final StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,caseType,CASE_ID,createEventId);
@@ -87,9 +80,6 @@ public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseM
         assertThat(startEventResponse.getEventId(), is("100"));
         assertThat(startEventResponse.getToken(), is("testServiceToken"));
 
-        assertThat(startEventResponse.getCaseDetails().getId(), is((2000L)));
-        assertThat(startEventResponse.getCaseDetails().getJurisdiction(), is("DIVORCE"));
-        assertThat(startEventResponse.getCaseDetails().getCallbackResponseStatus(), is("DONE"));
-        assertThat(startEventResponse.getCaseDetails().getCaseTypeId(), is("GRANT_OF_REPRESENTATION"));
+        assertCaseDetails(startEventResponse.getCaseDetails());
     }
 }

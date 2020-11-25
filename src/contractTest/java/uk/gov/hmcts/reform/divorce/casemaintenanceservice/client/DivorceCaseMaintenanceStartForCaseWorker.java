@@ -18,11 +18,11 @@ import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
 
 public class DivorceCaseMaintenanceStartForCaseWorker extends DivorceCaseMaintenancePact {
@@ -93,9 +93,8 @@ public class DivorceCaseMaintenanceStartForCaseWorker extends DivorceCaseMainten
         assertThat(startEventResponse.getEventId(), equalTo(createEventId));
         assertThat(startEventResponse.getToken(), is("token"));
 
-        final Map<String,Object> caseData = startEventResponse.getCaseDetails().getData();
+        assertCaseDetails(startEventResponse.getCaseDetails());
 
-        assertThat(caseData.get("outsideUKGrantCopies"), is(6));
-        assertThat(caseData.get("applicationType"), is("Personal"));
+
     }
 }

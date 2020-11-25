@@ -18,6 +18,9 @@ public class ObjectMapperTestUtil {
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
         } catch (Exception e) {
+            System.out.println( " Error message is +++++ " +  e.getLocalizedMessage());
+            e.printStackTrace();
+
             throw new RuntimeException(e);
         }
     }

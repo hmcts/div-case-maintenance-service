@@ -1,23 +1,17 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.model.annotations.PactFolder;
 import org.apache.http.client.fluent.Executor;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -26,19 +20,12 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFix
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContent;
 
-@ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "ccd", port = "8891")
-@PactFolder("pacts")
-@SpringBootTest({
-    "core_case_data.api.url : localhost:8891"
-})
-public class DivorceCaseMaintenanceSubmitEventForCaseWorker  {
+public class DivorceCaseMaintenanceSubmitEventForCaseWorker  extends DivorceCaseMaintenancePact  {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -55,10 +42,11 @@ public class DivorceCaseMaintenanceSubmitEventForCaseWorker  {
     @Value("${ccd.eventid.create}")
     String createEventId;
 
-    private static final String USER_ID = "123456";
     private static final String CASE_ID = "2000";
-    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
     private CaseDataContent caseDataContent;
+    private static final String USER_ID = "123456";
+    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
+
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -75,8 +63,8 @@ public class DivorceCaseMaintenanceSubmitEventForCaseWorker  {
     RequestResponsePact submitEventForCaseWorker(PactDslWithProvider builder) throws Exception {
         // @formatter:off
         return builder
-            .given("A SubmitEvent for Caseworkder is triggered")
-            .uponReceiving("A SubmitEvent For Case worker is received.")
+            .given("A SubmitEvent for Caseworker is triggered")
+            .uponReceiving("A SubmitEvent For Caseworker is received.")
             .path("/caseworkers/"   + USER_ID
                 + "/jurisdictions/" + jurisdictionId
                 + "/case-types/"    + caseType
@@ -90,7 +78,7 @@ public class DivorceCaseMaintenanceSubmitEventForCaseWorker  {
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
             .status(200)
-            .body(buildCaseDetailsDsl(2000L, "someemailaddress.com", false, false))
+            .body(buildCaseDetailsDsl(100L, "someemailaddress.com", false, false))
             .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
             .toPact();
     }
@@ -104,14 +92,8 @@ public class DivorceCaseMaintenanceSubmitEventForCaseWorker  {
         final CaseDetails caseDetails = coreCaseDataApi.submitEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId, caseType, CASE_ID,true,caseDataContent);
 
-        assertThat(caseDetails.getId(), is(2000L));
+        assertThat(caseDetails.getId(), is(100L));
         assertThat(caseDetails.getJurisdiction(), is("DIVORCE"));
-        assertThat(caseDetails.getState(), is("CaseCreated"));
-
-        assertThat(caseDetails.getData().get("applicationType"), is("Personal"));
-        assertThat(caseDetails.getData().get("primaryApplicantForenames"), is("Jon"));
-        assertThat(caseDetails.getData().get("primaryApplicantSurname"), is("Snow"));
-
+        assertCaseDetails(caseDetails);
     }
-
 }

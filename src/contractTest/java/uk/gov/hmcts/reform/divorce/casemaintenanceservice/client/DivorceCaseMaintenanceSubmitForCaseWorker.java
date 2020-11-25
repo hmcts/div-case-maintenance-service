@@ -17,10 +17,9 @@ import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContent;
@@ -29,7 +28,6 @@ public class DivorceCaseMaintenanceSubmitForCaseWorker extends DivorceCaseMainte
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
-    private static final String VALID_PAYLOAD_PATH = "json/base-case.json";
 
     @Autowired
     private CoreCaseDataApi coreCaseDataApi;
@@ -97,9 +95,7 @@ public class DivorceCaseMaintenanceSubmitForCaseWorker extends DivorceCaseMainte
         assertNotNull(caseDetailsReponse.getCaseTypeId());
         assertEquals(caseDetailsReponse.getJurisdiction(), "DIVORCE");
 
-        Map<String, Object> dataMap = caseDetailsReponse.getData();
-        assertEquals(dataMap.get("applicationType"), "Personal");
-        assertEquals(dataMap.get("primaryApplicantAddressFound"), "Yes");
+        assertCaseDetails(caseDetailsReponse);
 
     }
 }

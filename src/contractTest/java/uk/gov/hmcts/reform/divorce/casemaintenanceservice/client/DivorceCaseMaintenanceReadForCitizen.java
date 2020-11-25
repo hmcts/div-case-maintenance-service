@@ -4,18 +4,12 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import org.apache.http.client.fluent.Executor;
 import org.hamcrest.core.Is;
 import org.json.JSONException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
@@ -25,7 +19,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
 
@@ -85,8 +79,7 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
         assertThat(caseDetailsReponse.getId(), Is.is(CASE_ID));
         assertThat(caseDetailsReponse.getJurisdiction(), Is.is("DIVORCE"));
 
-        assertThat(caseDetailsReponse.getData().get("applicationType"), equalTo("Personal"));
-        assertThat(caseDetailsReponse.getData().get("primaryApplicantForenames"), equalTo("Jon"));
-        assertThat(caseDetailsReponse.getData().get("primaryApplicantSurname"), equalTo("Snow"));
+        assertCaseDetails(caseDetailsReponse);
+
     }
 }

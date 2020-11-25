@@ -6,7 +6,6 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.fluent.Executor;
-import org.hamcrest.core.Is;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,10 +26,9 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFix
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildSearchResultDsl;
 
@@ -108,10 +106,8 @@ public class DivorceCaseMaintenanceSearchCases extends DivorceCaseMaintenancePac
         assertEquals(searchResult.getTotal() , 123);
         assertEquals(searchResult.getCases().size() ,2 ) ;
 
-        Map<String,Object> dataMap = searchResult.getCases().get(0).getData();
-        assertThat(dataMap.get("primaryApplicantForenames"), Is.is("Jon"));
-        assertThat(dataMap.get("primaryApplicantSurname"), Is.is("Snow"));
-
+        assertCaseDetails(searchResult.getCases().get(0)); // CaseDetail-1
+        assertCaseDetails(searchResult.getCases().get(1)); // CaseDetail-2
     }
 
     private File getFile(String fileName) throws FileNotFoundException {
