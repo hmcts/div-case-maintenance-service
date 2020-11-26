@@ -34,8 +34,9 @@ import java.util.Map;
 })
 public abstract class DivorceCaseMaintenancePact {
 
+    public static final String JURISDICTION = "jurisdictionId";
     public static final String CASEWORKER_USERNAME = "caseworkerUsername";
-    public static final String CASEWOKER_PASSWORD = "casewokerPassword";
+    public static final String CASEWORKER_PASSWORD = "caseworkerPassword";
     public static final String CASE_DATA_CONTENT = "caseDataContent";
     @Autowired
     protected CoreCaseDataApi coreCaseDataApi;
@@ -98,8 +99,9 @@ public abstract class DivorceCaseMaintenancePact {
     protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
         Map<String, Object> caseDataContentMap = objectMapper.convertValue(caseDataContent, Map.class);
         Map<String, Object> map = new HashMap<>();
+        map.put(JURISDICTION, jurisdictionId);
         map.put(CASEWORKER_USERNAME, caseworkerUsername);
-        map.put(CASEWOKER_PASSWORD, caseworkerPwd);
+        map.put(CASEWORKER_PASSWORD, caseworkerPwd);
         map.put(CASE_DATA_CONTENT, caseDataContentMap);
         return map;
     }

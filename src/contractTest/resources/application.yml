@@ -25,8 +25,8 @@ idam:
     url: ${IDAM_API_BASEURL:http://localhost:4503}
     redirect-url: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
   caseworker:
-    username: ${IDAM_CASEWORKER_USERNAME:dummycaseworker@test.com}
-    password: ${IDAM_CASEWORKER_PASSWORD:dummy}
+    username: ${IDAM_CASEWORKER_USERNAME:divorce_as_caseworker_solicitor@mailinator.com}
+    password: ${IDAM_CASEWORKER_PASSWORD:Pa55word11}
   s2s-auth:
     microservice: ${AUTH_PROVIDER_SERVICE_CLIENT_MICROSERVICE:divorce_ccd_submission}
     totp_secret: ${AUTH_PROVIDER_SERVICE_CLIENT_KEY:AZBYCXDWEVFUGTHS}
