@@ -35,9 +35,14 @@ import java.util.Map;
 public abstract class DivorceCaseMaintenancePact {
 
     public static final String JURISDICTION = "jurisdictionId";
+    public static final String CASE_TYPE = " caseType";
     public static final String CASEWORKER_USERNAME = "caseworkerUsername";
     public static final String CASEWORKER_PASSWORD = "caseworkerPassword";
     public static final String CASE_DATA_CONTENT = "caseDataContent";
+    public static final String EVENT_ID = "eventId";
+    public static final String TOKEN = "someToken";
+    public static final String CREATE_EVENT = "create";
+
     @Autowired
     protected CoreCaseDataApi coreCaseDataApi;
 
@@ -100,6 +105,7 @@ public abstract class DivorceCaseMaintenancePact {
         Map<String, Object> caseDataContentMap = objectMapper.convertValue(caseDataContent, Map.class);
         Map<String, Object> map = new HashMap<>();
         map.put(JURISDICTION, jurisdictionId);
+        map.put(CASE_TYPE, caseType);
         map.put(CASEWORKER_USERNAME, caseworkerUsername);
         map.put(CASEWORKER_PASSWORD, caseworkerPwd);
         map.put(CASE_DATA_CONTENT, caseDataContentMap);

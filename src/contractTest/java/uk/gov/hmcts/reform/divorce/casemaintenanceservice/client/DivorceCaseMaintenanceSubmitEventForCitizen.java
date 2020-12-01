@@ -5,7 +5,9 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.apache.http.client.fluent.Executor;
+import org.json.JSONException;
 import org.junit.After;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,15 @@ import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper;
 
 import java.util.Map;
 import java.util.TreeMap;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
@@ -30,28 +35,25 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 public class DivorceCaseMaintenanceSubmitEventForCitizen extends DivorceCaseMaintenancePact {
 
 
-    public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
-    public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
-    private static final Long CASE_ID = 2000L;
+    public static final String HWF_APPLICATION_ACCEPTED = "hwfApplicationAccepted";
+    private Map<String, Object> caseDetailsMap;
+    private CaseDataContent caseDataContent;
 
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
+    @BeforeAll
+    public void setUp() throws Exception {
 
-    @Value("${ccd.jurisdictionid}")
-    String jurisdictionId;
-
-    @Value("${ccd.casetype}")
-    String caseType;
-
-    CaseDataContent caseDataContent;
-
-    @Value("${ccd.bulk.eventid.create}")
-    private String createEventId;
-
-    private static final String USER_ID = "123456";
-    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
-
-    Map<String, Object> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
+        caseDataContent = CaseDataContent.builder()
+            .eventToken("someEventToken")
+            .event(
+                Event.builder()
+                    .id(createEventId)
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseDetailsMap.get("case_data"))
+            .build();
+    }
 
 
     @BeforeEach
@@ -64,11 +66,11 @@ public class DivorceCaseMaintenanceSubmitEventForCitizen extends DivorceCaseMain
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_citizen")
+    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact submitEventForCitizen(PactDslWithProvider builder) throws Exception {
         // @formatter:off
         return builder
-            .given("A SubmitEvent for a Citizen is triggered")
+            .given("A SubmitEvent for a Citizen is triggered", getCaseDataContentAsMap(caseDataContent))
             .uponReceiving("A SubmitEvent for a Citizen is triggered")
             .path("/citizens/"
                 + USER_ID
@@ -81,14 +83,14 @@ public class DivorceCaseMaintenanceSubmitEventForCitizen extends DivorceCaseMain
                 + "/events")
             .query("ignore-warning=true")
             .method("POST")
-            .body(convertObjectToJsonString(getCaseDataContent()))
+            .body(convertObjectToJsonString(getCaseDataContent(HWF_APPLICATION_ACCEPTED)))
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
                 SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
-            .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
-            .status(200)
-            .body(buildCaseDetailsDsl(CASE_ID, "emailAddress@email.com",false, false))
+            .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .status(201)
+            .body(buildCaseDetailsDsl(CASE_ID))
             .toPact();
     }
 
@@ -96,14 +98,22 @@ public class DivorceCaseMaintenanceSubmitEventForCitizen extends DivorceCaseMain
     @PactTestFor(pactMethod = "submitEventForCitizen")
     public void verifySubmitEventForCitizen() throws Exception {
 
-        caseDataContent = PactDslFixtureHelper.getCaseDataContent();
+        caseDataContent = PactDslFixtureHelper.getCaseDataContent(HWF_APPLICATION_ACCEPTED);
 
-        CaseDetails caseDetailsReponse = coreCaseDataApi.submitEventForCitizen(SOME_AUTHORIZATION_TOKEN,
+        CaseDetails caseDetails = coreCaseDataApi.submitEventForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
             caseType,CASE_ID.toString(),true,caseDataContent);
-        Map<String,Object> dataMap = caseDetailsReponse.getData() ;
 
-        assertCaseDetails(caseDetailsReponse);
+        assertThat(caseDetails.getId(), is(CASE_ID));
+        assertThat(caseDetails.getJurisdiction(), is("DIVORCE"));
+        assertCaseDetails(caseDetails);
+    }
+
+    @Override
+    protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
+        Map<String, Object> caseDataContentMap = super.getCaseDataContentAsMap(caseDataContent);
+        caseDataContentMap.put(EVENT_ID, caseDataContent.getEvent().getId());
+        return caseDataContentMap;
     }
 
 }

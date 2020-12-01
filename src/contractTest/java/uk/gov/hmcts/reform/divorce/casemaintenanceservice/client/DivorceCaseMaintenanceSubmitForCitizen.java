@@ -4,8 +4,11 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Executor;
+import org.json.JSONException;
 import org.junit.After;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,35 +18,39 @@ import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper;
+
+import java.util.Map;
 
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ObjectMapperTestUtil.convertObjectToJsonString;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContent;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContentWithPath;
 
 
 public class DivorceCaseMaintenanceSubmitForCitizen extends DivorceCaseMaintenancePact {
 
+    private CaseDataContent caseDataContent;
 
-    public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
-    public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
-    private static final Long CASE_ID = 2000L;
+    private static final String VALID_PAYLOAD_PATH = "json/divorce-submit.json";
 
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
+    @BeforeAll
+    public void setUp() throws Exception {
 
-    @Value("${ccd.jurisdictionid}")
-    String jurisdictionId;
-
-    @Value("${ccd.casetype}")
-    String caseType;
-
-    CaseDataContent caseDataContent;
-
-    private static final String USER_ID = "123456";
-    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
+        caseDataContent = CaseDataContent.builder()
+            .eventToken("someEventToken")
+            .event(
+                Event.builder()
+                    .id(createEventId)
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            )
+            .build();
+    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -55,11 +62,11 @@ public class DivorceCaseMaintenanceSubmitForCitizen extends DivorceCaseMaintenan
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "ccd", consumer = "divorce_caseMaintenanceService_citizen")
+    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact submitForCitizen(PactDslWithProvider builder) throws Exception  {
         // @formatter:off
         return builder
-            .given("A Submit For Citizen is triggered")
+            .given("A Submit For Citizen is triggered", getCaseDataContentAsMap(caseDataContent))
             .uponReceiving("A Submit For Citizen is triggered")
             .path("/citizens/"
                 + USER_ID
@@ -73,18 +80,18 @@ public class DivorceCaseMaintenanceSubmitForCitizen extends DivorceCaseMaintenan
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
                 SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .body(convertObjectToJsonString(getCaseDataContentWithPath(createEventId, VALID_PAYLOAD_PATH)))
             .willRespondWith()
-            .body(convertObjectToJsonString(getCaseDataContent()))
-            .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
-            .status(200)
-            .body(buildCaseDetailsDsl(CASE_ID, "emailAddress@email.com",false, false))
+            .status(HttpStatus.SC_CREATED)
+            .body(buildCaseDetailsDsl(CASE_ID))
+            .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .toPact();
     }
 
     @Test
     @PactTestFor(pactMethod = "submitForCitizen")
     public void verifySubmitEventForCitizen() throws Exception {
-        caseDataContent = PactDslFixtureHelper.getCaseDataContent();
+        caseDataContent = getCaseDataContentWithPath(createEventId, VALID_PAYLOAD_PATH);
 
         CaseDetails caseDetailsReponse = coreCaseDataApi.submitForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
@@ -92,4 +99,12 @@ public class DivorceCaseMaintenanceSubmitForCitizen extends DivorceCaseMaintenan
 
         assertCaseDetails(caseDetailsReponse);
     }
+
+    @Override
+    protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
+        Map<String, Object> caseDataContentMap = super.getCaseDataContentAsMap(caseDataContent);
+        caseDataContentMap.put(EVENT_ID, createEventId);
+        return caseDataContentMap;
+    }
+
 }

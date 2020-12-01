@@ -105,7 +105,7 @@ public class CcdController {
         @PathVariable("eventId") @ApiParam(value = "Update Event Type Id", required = true) String eventId,
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
-        return ResponseEntity.ok(ccdUpdateService.update(caseId, data, eventId, jwt));
+        return ResponseEntity.ok(ccdUpdateService. update(caseId, data, eventId, jwt));
     }
 
     @PostMapping(path = "/bulk/updateCase/{caseId}/{eventId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)

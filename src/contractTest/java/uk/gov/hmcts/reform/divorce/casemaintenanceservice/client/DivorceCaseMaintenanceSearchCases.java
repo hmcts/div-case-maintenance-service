@@ -18,14 +18,17 @@ import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ResourceLoader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
@@ -34,90 +37,68 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 
 public class DivorceCaseMaintenanceSearchCases extends DivorceCaseMaintenancePact {
 
-    public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
-    public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
-    private static final String TOKEN = "someToken";
 
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Value("${ccd.jurisdictionid}")
-    private String jurisdictionId;
-
-    @Value("${ccd.casetype}")
-    private String caseType;
-
-    @Value("${ccd.eventid.create}")
-    private String createEventId;
-
-    private static final String CASE_ID = "654321";
-    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
+    private Map<String, Object> caseDetailsMap;
     private CaseDataContent caseDataContent;
-    private CaseDetails caseDetails;
+    private static final String VALID_QUERY = "json/esQuery.json";
+    private String queryString;
 
 
     @BeforeAll
     public void setUp() throws Exception {
-        caseDetails = getCaseDetails("base-case.json");
-        StartEventResponse startEventResponse = StartEventResponse.builder()
-            .token(TOKEN)
-            .caseDetails(caseDetails)
-            .eventId(createEventId)
+        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
+        caseDataContent = CaseDataContent.builder()
+            .eventToken("someEventToken")
+            .event(
+                Event.builder()
+                    .id(createEventId)
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseDetailsMap.get("case_data"))
             .build();
-        caseDataContent = PactDslFixtureHelper.getCaseDataContent();
     }
 
     @BeforeEach
-    public void setUpEachTest() throws InterruptedException {
+    public void setUpEachTest() throws Exception {
         Thread.sleep(2000);
+         queryString = ResourceLoader.loadJson(VALID_QUERY);
     }
 
     @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
     public RequestResponsePact searchCasesForCitizen(PactDslWithProvider builder) throws Exception {
         // @formatter:off
         return builder
-            .given("SearchCases for Citizen is requested")
+            .given("SearchCases for Citizen is requested", getCaseDataContentAsMap(caseDataContent))
             .uponReceiving("Search Cases Request is requested for citizen")
             .path("/searchCases")
             .query("ctid=DIVORCE")
             .method("POST")
-            .body(convertObjectToJsonString("searchString"))
+            .body( queryString)
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
                 SOME_SERVICE_AUTHORIZATION_TOKEN)
             .headers(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
-            .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
+            .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .status(200)
-            .body(buildSearchResultDsl(Long.valueOf(CASE_ID),"somemailaddress@gmail.com",false,false))
+            .body(buildSearchResultDsl())
             .toPact();
     }
 
     @Test
     @PactTestFor(pactMethod = "searchCasesForCitizen")
-    public void verifySearchCasesForCitizen() throws IOException, JSONException {
+    public void verifySearchCasesForCitizen() throws JSONException {
 
         SearchResult searchResult = coreCaseDataApi.searchCases(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, "DIVORCE", convertObjectToJsonString("searchString"));
+            SOME_SERVICE_AUTHORIZATION_TOKEN, "DIVORCE", queryString);
 
         assertEquals(searchResult.getTotal() , 123);
-        assertEquals(searchResult.getCases().size() ,2 ) ;
+        assertEquals(searchResult.getCases().size() ,1) ;
 
         assertCaseDetails(searchResult.getCases().get(0)); // CaseDetail-1
-        assertCaseDetails(searchResult.getCases().get(1)); // CaseDetail-2
     }
 
-    private File getFile(String fileName) throws FileNotFoundException {
-        return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
-    }
-
-    protected CaseDetails getCaseDetails(String fileName) throws JSONException, IOException {
-        File file = getFile(fileName);
-        return  objectMapper.readValue(file, CaseDetails.class);
-    }
 
     @After
     void teardown() {

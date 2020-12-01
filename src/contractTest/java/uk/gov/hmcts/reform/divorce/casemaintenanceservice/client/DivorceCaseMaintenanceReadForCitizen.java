@@ -64,7 +64,7 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .status(200)
-            .body(buildCaseDetailsDsl(CASE_ID, "emailAddress@email.com",false, false))
+            .body(buildCaseDetailsDsl(CASE_ID))
             .toPact();
     }
 

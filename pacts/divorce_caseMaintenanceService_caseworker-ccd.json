@@ -7,6 +7,2715 @@
   },
   "interactions": [
     {
+      "description": "A StartForCaseworker  is requested",
+      "request": {
+        "method": "GET",
+        "path": "/caseworkers/123456/jurisdictions/DIVORCE/case-types/DIVORCE/event-triggers/create/token",
+        "headers": {
+          "Authorization": "Bearer UserAuthToken",
+          "ServiceAuthorization": "ServiceToken",
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "header": {
+            "Content-Type": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "event_id": "create",
+          "case_details": {
+            "case_data": {
+              "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+              "D8PetitionerNameChangedHow": [
+                "marriageCertificate"
+              ],
+              "D8DerivedPetitionerHomeAddress": "\"82 Landor Road\nLondon\nSW9 9PE",
+              "D8RespondentHomeAddress": {
+                "PostCode": "SM1 2JE"
+              },
+              "D8ScreenHasRespondentAddress": "YES",
+              "D8LivingArrangementsLastLivedTogethAddr": {
+                "PostCode": "SM1 2JE"
+              },
+              "D8DivorceCostsClaim": "YES",
+              "D8ScreenHasMarriageCert": "YES",
+              "D8PetitionerHomeAddress": {
+                "PostCode": "SW17 0QT"
+              },
+              "D8ScreenHasMarriageBroken": "YES",
+              "D8DivorceClaimFrom": [
+                "respondent"
+              ],
+              "D8InferredRespondentGender": "male",
+              "D8ReasonForDivorceEnableAdultery": "YES",
+              "D8ReasonForDivorceShowAdultery": "YES",
+              "D8LivingArrangementsLiveTogether": "NO",
+              "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+              "D8ReasonForDivorceHasMarriage": "YES",
+              "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+              "D8JurisdictionConfidentLegal": "YES",
+              "D8FinancialOrderFor": [
+                "petitioner",
+                "petitioner"
+              ],
+              "D8Connections": {
+                "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+                "C": "The Respondent is habitually resident in England and Wales"
+              },
+              "D8PetitionerCorrespondenceAddress": {
+                "PostCode": "SM1 2JE"
+              },
+              "D8PetitionerNameDifferentToMarriageCert": "NO",
+              "D8RespondentLastName": "Jamed",
+              "D8LegalProceedingsRelated": [
+                "children"
+              ],
+              "D8JurisdictionConnection": [
+                "A",
+                "C"
+              ],
+              "D8LegalProceedingsDetails": "The legal proceeding details",
+              "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+              "D8PetitionerLastName": "Smith",
+              "D8PetitionerPhoneNumber": "01234567890",
+              "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+              "D8ClaimsCostsAppliedForFees": "YES",
+              "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+              "D8RespondentLivesAtLastAddress": "NO",
+              "D8DerivedRespondentCurrentName": "Jane Jamed",
+              "D8ReasonForDivorceLimitReasons": "NO",
+              "D8HelpWithFeesAppliedForFees": "YES",
+              "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+              "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+              "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+              "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+              "D8DivorceUnit": "eastMidlands",
+              "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+              "D8ReasonForDivorceShowDesertion": "YES",
+              "D8MarriagePetitionerName": "John Doe",
+              "D8Cohort": "onlineSubmissionPrivateBeta",
+              "D8MarriageIsSameSexCouple": "NO",
+              "D8LivingArrangementsLastLivedTogether": "NO",
+              "D8FinancialOrder": "YES",
+              "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+              "D8MarriageDate": "2018-05-17",
+              "D8HelpWithFeesNeedHelp": "YES",
+              "D8JurisdictionRespondentResidence": "YES",
+              "D8DivorceWho": "husband",
+              "D8MarriageCanDivorce": "YES",
+              "D8ScreenHasPrinter": "YES",
+              "D8RespondentFirstName": "Jane",
+              "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+              "D8DocumentsUploaded": [
+                {
+                  "id": "059dadb4-04c1-44f9-9828-6194bfc9893c",
+                  "value": {
+                    "DocumentEmailContent": "",
+                    "DocumentComment": "",
+                    "DocumentFileName": "govuklogo.png",
+                    "DocumentDateAdded": "2017-12-11",
+                    "DocumentType": "other",
+                    "DocumentLink": {
+                      "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                    }
+                  }
+                },
+                {
+                  "id": "059dadb4-04c1-44f9-9828-6194bfc9893c",
+                  "value": {
+                    "DocumentEmailContent": "",
+                    "DocumentComment": "",
+                    "DocumentFileName": "govuklogo.png",
+                    "DocumentDateAdded": "2017-12-11",
+                    "DocumentType": "other",
+                    "DocumentLink": {
+                      "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                    }
+                  }
+                }
+              ],
+              "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+              "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+              "D8JurisdictionPetitionerResidence": "YES",
+              "D8ReasonForDivorceClaimingAdultery": "NO",
+              "D8PetitionerFirstName": "John",
+              "D8MarriageRespondentName": "Jenny Benny",
+              "D8PetitionerContactDetailsConfidential": "share",
+              "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+              "D8LegalProceedings": "YES",
+              "D8RespondentCorrespondenceAddress": {
+                "PostCode": "SM1 2JE"
+              },
+              "D8ReasonForDivorce": "unreasonable-behaviour",
+              "D8DerivedPetitionerCurrentFullName": "John Smith",
+              "D8InferredPetitionerGender": "female"
+            },
+            "jurisdiction": "DIVORCE",
+            "id": 2000
+          }
+        },
+        "matchingRules": {
+          "header": {
+            "Content-Type": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json"
+                }
+              ],
+              "combine": "AND"
+            }
+          },
+          "body": {
+            "$.event_id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.token": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.id": {
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.jurisdiction": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "[/^[A-Za-z_]+$/]+"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.callback_response_status": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.createdDate": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ScreenHasMarriageBroken": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ScreenHasRespondentAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ScreenHasMarriageCert": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ScreenHasPrinter": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DivorceWho": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8MarriageIsSameSexCouple": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8MarriageDate": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerNameDifferentToMarriageCert": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerFirstName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerLastName": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedPetitionerCurrentFullName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerNameChangedHow": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerNameChangedHow[*]": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "marriageCertificate|certificateTODO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerContactDetailsConfidential": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerHomeAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerHomeAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerHomeAddress.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerHomeAddress.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerHomeAddress.County": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerHomeAddress.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerHomeAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedPetitionerHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerCorrespondenceAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerCorrespondenceAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerCorrespondenceAddress.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerCorrespondenceAddress.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerCorrespondenceAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerCorrespondenceAddress.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8PetitionerCorrespondenceUseHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedPetitionerCorrespondenceAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentFirstName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentLastName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedRespondentCurrentName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedRespondentSolicitorDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentHomeAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentHomeAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentHomeAddress.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentHomeAddress.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentHomeAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentHomeAddress.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentCorrespondenceUseHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedRespondentHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentCorrespondenceAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentCorrespondenceAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentCorrespondenceAddress.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentCorrespondenceAddress.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentCorrespondenceAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentCorrespondenceAddress.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedRespondentCorrespondenceAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8RespondentLivesAtLastAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LivingArrangementsLastLivedTogether": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LivingArrangementsLiveTogether": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LivingArrangementsLastLivedTogethAddr.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LivingArrangementsLastLivedTogethAddr.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LivingArrangementsLastLivedTogethAddr.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LivingArrangementsLastLivedTogethAddr.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LivingArrangementsLastLivedTogethAddr.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LivingArrangementsLastLivedTogethAddr.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LegalProceedings": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LegalProceedingsRelated[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8LegalProceedingsDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorce": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedStatementOfCase": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceBehaviourDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8FinancialOrder": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8FinancialOrderFor": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8FinancialOrderFor[*]": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "petitioner|children"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8HelpWithFeesNeedHelp": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "(Yes|No|YES|NO)"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8HelpWithFeesAppliedForFees": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "(Yes|No|YES|NO)"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8HelpWithFeesReferenceNumber": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DivorceCostsClaim": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DivorceClaimFrom[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8JurisdictionConfidentLegal": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8JurisdictionConnection[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8JurisdictionConnection[1]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8JurisdictionPetitionerResidence": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8JurisdictionRespondentResidence": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DocumentsUploaded": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 2
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DocumentsUploaded[*].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DocumentsUploaded[*].value.DocumentEmailContent": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DocumentsUploaded[*].value.DocumentComment": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DocumentsUploaded[*].value.DocumentFileName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DocumentsUploaded[*].value.DocumentDateAdded": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DocumentsUploaded[*].value.DocumentType": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DocumentsUploaded[*].value.DocumentLink.document_url": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DivorceUnit": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceShowAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceShowUnreasonableBehavi": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceShowTwoYearsSeparation": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceShowDesertion": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceLimitReasons": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceEnableAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ClaimsCostsAppliedForFees": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceClaimingAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8MarriageCanDivorce": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8MarriagePetitionerName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8MarriageRespondentName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedRespondentSolicitorAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8DerivedLivingArrangementsLastLivedAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8Connections.A": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8Connections.B": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8Connections.C": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8Connections.D": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8Connections.E": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8Connections.F": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8Connections.G": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceHasMarriage": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceShowFiveYearsSeparatio": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8ReasonForDivorceClaiming5YearSeparatio": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8Cohort": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8InferredPetitionerGender": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_details.case_data.D8InferredRespondentGender": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A Start for Caseworker is requested",
+          "params": {
+            "eventId": "create",
+            "caseDataContent": {
+              "event": {
+                "id": "create",
+                "summary": "Divorce case submission event",
+                "description": "Submitting Divorce Case"
+              },
+              "data": {
+                "createdDate": null,
+                "D8ScreenHasMarriageBroken": "YES",
+                "D8ScreenHasRespondentAddress": "YES",
+                "D8ScreenHasMarriageCert": "YES",
+                "D8ScreenHasPrinter": "YES",
+                "D8DivorceWho": "husband",
+                "D8MarriageIsSameSexCouple": "NO",
+                "D8MarriageDate": "2001-02-02",
+                "D8PetitionerNameDifferentToMarriageCert": "YES",
+                "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+                "D8PetitionerPhoneNumber": "01234567890",
+                "D8PetitionerFirstName": "John",
+                "D8PetitionerLastName": "Smith",
+                "D8DerivedPetitionerCurrentFullName": "John Smith",
+                "D8PetitionerNameChangedHow": [
+                  "marriageCertificate"
+                ],
+                "D8PetitionerContactDetailsConfidential": "share",
+                "D8PetitionerHomeAddress": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "SW9 9PE",
+                  "County": null
+                },
+                "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+                "D8PetitionerCorrespondenceAddress": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "AB24 232",
+                  "County": null
+                },
+                "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+                "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+                "D8RespondentFirstName": "Jane",
+                "D8RespondentLastName": "Jamed",
+                "D8DerivedRespondentCurrentName": "Jane Jamed",
+                "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+                "D8RespondentHomeAddress": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "SS SSS",
+                  "County": null
+                },
+                "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+                "D8RespondentCorrespondenceAddress": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "SW9 9PE",
+                  "County": null
+                },
+                "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+                "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+                "D8RespondentLivesAtLastAddress": "NO",
+                "D8LivingArrangementsLastLivedTogether": "NO",
+                "D8LivingArrangementsLiveTogether": "NO",
+                "D8LivingArrangementsLastLivedTogethAddr": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "AB22 222",
+                  "County": null
+                },
+                "D8LegalProceedings": "YES",
+                "D8LegalProceedingsRelated": [
+                  "children"
+                ],
+                "D8LegalProceedingsDetails": "The legal proceeding details",
+                "D8ReasonForDivorce": "unreasonable-behaviour",
+                "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+                "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+                "D8ReasonForDivorceAdulteryIsNamed": "NO",
+                "D8FinancialOrder": "YES",
+                "D8FinancialOrderFor": [
+                  "petitioner",
+                  "children"
+                ],
+                "D8HelpWithFeesNeedHelp": "YES",
+                "D8HelpWithFeesAppliedForFees": "YES",
+                "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+                "D8DivorceCostsClaim": "YES",
+                "D8DivorceClaimFrom": [
+                  "respondent"
+                ],
+                "D8JurisdictionConfidentLegal": "YES",
+                "D8JurisdictionConnection": [
+                  "A",
+                  "C"
+                ],
+                "D8JurisdictionPetitionerResidence": "YES",
+                "D8JurisdictionRespondentResidence": "YES",
+                "D8DocumentsUploaded": [
+                  {
+                    "id": null,
+                    "value": {
+                      "DocumentEmailContent": "",
+                      "DocumentComment": "",
+                      "DocumentFileName": "govuklogo.png",
+                      "DocumentDateAdded": "2017-12-11",
+                      "DocumentType": "other",
+                      "DocumentLink": {
+                        "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                      }
+                    }
+                  },
+                  {
+                    "id": null,
+                    "value": {
+                      "DocumentEmailContent": "",
+                      "DocumentComment": "",
+                      "DocumentFileName": "d8-eng.pdf",
+                      "DocumentDateAdded": "2017-12-11",
+                      "DocumentType": "other",
+                      "DocumentLink": {
+                        "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/560f4bd1-fcf2-4dc5-80d1-d7e00d861683"
+                      }
+                    }
+                  }
+                ],
+                "D8DivorceUnit": "eastMidlands",
+                "D8ReasonForDivorceShowAdultery": "YES",
+                "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+                "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+                "D8ReasonForDivorceShowDesertion": "YES",
+                "D8ReasonForDivorceLimitReasons": "NO",
+                "D8ReasonForDivorceEnableAdultery": "YES",
+                "D8ClaimsCostsAppliedForFees": "YES",
+                "D8ReasonForDivorceClaimingAdultery": "NO",
+                "D8MarriageCanDivorce": "YES",
+                "D8MarriagePetitionerName": "John Doe",
+                "D8MarriageRespondentName": "Jenny Benny",
+                "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+                "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+                "D8Connections": {
+                  "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+                  "B": null,
+                  "C": "The Respondent is habitually resident in England and Wales",
+                  "D": null,
+                  "E": null,
+                  "F": null,
+                  "G": null
+                },
+                "D8ReasonForDivorceHasMarriage": "YES",
+                "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+                "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+                "D8Cohort": "onlineSubmissionPrivateBeta",
+                "D8InferredPetitionerGender": "female",
+                "D8InferredRespondentGender": "male"
+              },
+              "security_classification": null,
+              "event_token": "someEventToken",
+              "ignore_warning": false,
+              "case_reference": null
+            },
+            "caseworkerUsername": "divorce_as_caseworker_solicitor@mailinator.com",
+            "jurisdictionId": "DIVORCE",
+            "caseworkerPassword": "Pa55word11",
+            " caseType": "DIVORCE"
+          }
+        }
+      ]
+    },
+    {
+      "description": "A SubmitEvent For Caseworker is received.",
+      "request": {
+        "method": "POST",
+        "path": "/caseworkers/123456/jurisdictions/DIVORCE/case-types/DIVORCE/cases/1593694526480034/events",
+        "headers": {
+          "Authorization": "Bearer UserAuthToken",
+          "ServiceAuthorization": "ServiceToken",
+          "Content-Type": "application/json"
+        },
+        "query": {
+          "ignore-warning": [
+            "true"
+          ]
+        },
+        "body": {
+          "event": {
+            "id": null,
+            "summary": "divSummary",
+            "description": "div"
+          },
+          "data": "{\n  \"data\": {\n    \"createdDate\": null,\n    \"D8ScreenHasMarriageBroken\": \"YES\",\n    \"D8ScreenHasRespondentAddress\": \"YES\",\n    \"D8ScreenHasMarriageCert\": \"YES\",\n    \"D8ScreenHasPrinter\": \"YES\",\n    \"D8DivorceWho\": \"husband\",\n    \"D8MarriageIsSameSexCouple\": \"NO\",\n    \"D8MarriageDate\": \"2001-02-02\",\n    \"D8PetitionerNameDifferentToMarriageCert\": \"YES\",\n    \"D8PetitionerEmail\": \"simulate-delivered@notifications.service.gov.uk\",\n    \"D8PetitionerPhoneNumber\": \"01234567890\",\n    \"D8PetitionerFirstName\": \"John\",\n    \"D8PetitionerLastName\": \"Smith\",\n    \"D8DerivedPetitionerCurrentFullName\": \"John Smith\",\n    \"D8PetitionerNameChangedHow\": [\n      \"marriageCertificate\"\n    ],\n    \"D8PetitionerContactDetailsConfidential\": \"share\",\n    \"D8PetitionerHomeAddress\": {\n      \"AddressLine3\": null,\n      \"AddressLine2\": null,\n      \"AddressLine1\": null,\n      \"Country\": null,\n      \"PostTown\": null,\n      \"PostCode\": \"SW9 9PE\",\n      \"County\": null\n    },\n    \"D8DerivedPetitionerHomeAddress\": \"82 Landor Road\\nLondon\\nSW9 9PE\",\n    \"D8PetitionerCorrespondenceAddress\": {\n      \"AddressLine3\": null,\n      \"AddressLine2\": null,\n      \"AddressLine1\": null,\n      \"Country\": null,\n      \"PostTown\": null,\n      \"PostCode\": \"AB24 232\",\n      \"County\": null\n    },\n    \"D8DerivedPetitionerCorrespondenceAddr\": \"84 Landor Road\\nLondon\\nSW9 9PE\",\n    \"D8PetitionerCorrespondenceUseHomeAddress\": \"NO\",\n    \"D8RespondentFirstName\": \"Jane\",\n    \"D8RespondentLastName\": \"Jamed\",\n    \"D8DerivedRespondentCurrentName\": \"Jane Jamed\",\n    \"D8DerivedRespondentSolicitorDetails\": \"Justin\\nCase\\n90 Landor Road\\nLondon\\nSW9 9PE\",\n    \"D8RespondentHomeAddress\": {\n      \"AddressLine3\": null,\n      \"AddressLine2\": null,\n      \"AddressLine1\": null,\n      \"Country\": null,\n      \"PostTown\": null,\n      \"PostCode\": \"SS SSS\",\n      \"County\": null\n    },\n    \"D8DerivedRespondentHomeAddress\": \"88 Landor Road\\nLondon\\nSW9 9PE\",\n    \"D8RespondentCorrespondenceAddress\": {\n      \"AddressLine3\": null,\n      \"AddressLine2\": null,\n      \"AddressLine1\": null,\n      \"Country\": null,\n      \"PostTown\": null,\n      \"PostCode\": \"SW9 9PE\",\n      \"County\": null\n    },\n    \"D8DerivedRespondentCorrespondenceAddr\": \"82 Landor Road\\nLondon\\nSW9 9PE\",\n    \"D8RespondentCorrespondenceUseHomeAddress\": \"Solicitor\",\n    \"D8RespondentLivesAtLastAddress\": \"NO\",\n    \"D8LivingArrangementsLastLivedTogether\": \"NO\",\n    \"D8LivingArrangementsLiveTogether\": \"NO\",\n    \"D8LivingArrangementsLastLivedTogethAddr\": {\n      \"AddressLine3\": null,\n      \"AddressLine2\": null,\n      \"AddressLine1\": null,\n      \"Country\": null,\n      \"PostTown\": null,\n      \"PostCode\": \"AB22 222\",\n      \"County\": null\n    },\n    \"D8LegalProceedings\": \"YES\",\n    \"D8LegalProceedingsRelated\": [\n      \"children\"\n    ],\n    \"D8LegalProceedingsDetails\": \"The legal proceeding details\",\n    \"D8ReasonForDivorce\": \"unreasonable-behaviour\",\n    \"D8DerivedStatementOfCase\": \"My wife is having an affair this week.\",\n    \"D8ReasonForDivorceBehaviourDetails\": \"My wife is having an affair this week.\",\n    \"D8ReasonForDivorceAdulteryIsNamed\": \"NO\",\n    \"D8FinancialOrder\": \"YES\",\n    \"D8FinancialOrderFor\": [\n      \"petitioner\",\n      \"children\"\n    ],\n    \"D8HelpWithFeesNeedHelp\": \"YES\",\n    \"D8HelpWithFeesAppliedForFees\": \"YES\",\n    \"D8HelpWithFeesReferenceNumber\": \"HWF-123-456\",\n    \"D8DivorceCostsClaim\": \"YES\",\n    \"D8DivorceClaimFrom\": [\n      \"respondent\"\n    ],\n    \"D8JurisdictionConfidentLegal\": \"YES\",\n    \"D8JurisdictionConnection\": [\n      \"A\",\n      \"C\"\n    ],\n    \"D8JurisdictionPetitionerResidence\": \"YES\",\n    \"D8JurisdictionRespondentResidence\": \"YES\",\n    \"D8DocumentsUploaded\": [\n      {\n        \"id\": null,\n        \"value\": {\n          \"DocumentEmailContent\": \"\",\n          \"DocumentComment\": \"\",\n          \"DocumentFileName\": \"govuklogo.png\",\n          \"DocumentDateAdded\": \"2017-12-11\",\n          \"DocumentType\": \"other\",\n          \"DocumentLink\": {\n            \"document_url\": \"http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936\"\n          }\n        }\n      },\n      {\n        \"id\": null,\n        \"value\": {\n          \"DocumentEmailContent\": \"\",\n          \"DocumentComment\": \"\",\n          \"DocumentFileName\": \"d8-eng.pdf\",\n          \"DocumentDateAdded\": \"2017-12-11\",\n          \"DocumentType\": \"other\",\n          \"DocumentLink\": {\n            \"document_url\": \"http://dm-store-aat.service.core-compute-aat.internal/documents/560f4bd1-fcf2-4dc5-80d1-d7e00d861683\"\n          }\n        }\n      }\n    ],\n    \"D8DivorceUnit\": \"eastMidlands\",\n    \"D8ReasonForDivorceShowAdultery\": \"YES\",\n    \"D8ReasonForDivorceShowUnreasonableBehavi\": \"YES\",\n    \"D8ReasonForDivorceShowTwoYearsSeparation\": \"YES\",\n    \"D8ReasonForDivorceShowDesertion\": \"YES\",\n    \"D8ReasonForDivorceLimitReasons\": \"NO\",\n    \"D8ReasonForDivorceEnableAdultery\": \"YES\",\n    \"D8ClaimsCostsAppliedForFees\": \"YES\",\n    \"D8ReasonForDivorceClaimingAdultery\": \"NO\",\n    \"D8MarriageCanDivorce\": \"YES\",\n    \"D8MarriagePetitionerName\": \"John Doe\",\n    \"D8MarriageRespondentName\": \"Jenny Benny\",\n    \"D8DerivedRespondentSolicitorAddr\": \"90 Landor Road\\nLondon\\nSW9 9PE\",\n    \"D8DerivedLivingArrangementsLastLivedAddr\": \"Flat A-B\\n86 Landor Road\\nLondon\\nSW9 9PE\",\n    \"D8Connections\": {\n      \"A\": \"The Petitioner and the Respondent are habitually resident in England and Wales\",\n      \"B\": null,\n      \"C\": \"The Respondent is habitually resident in England and Wales\",\n      \"D\": null,\n      \"E\": null,\n      \"F\": null,\n      \"G\": null\n    },\n    \"D8ReasonForDivorceHasMarriage\": \"YES\",\n    \"D8ReasonForDivorceShowFiveYearsSeparatio\": \"YES\",\n    \"D8ReasonForDivorceClaiming5YearSeparatio\": \"NO\",\n    \"D8Cohort\": \"onlineSubmissionPrivateBeta\",\n    \"D8InferredPetitionerGender\": \"female\",\n    \"D8InferredRespondentGender\": \"male\"\n  },\n  \"case_type\": \"DIVORCE\",\n  \"state\": \"Draft\"\n}\n",
+          "security_classification": null,
+          "event_token": "Bearer UserAuthToken",
+          "ignore_warning": false,
+          "case_reference": null
+        },
+        "matchingRules": {
+          "header": {
+            "Content-Type": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "case_data": {
+            "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerNameChangedHow": [
+              "marriageCertificate"
+            ],
+            "D8DerivedPetitionerHomeAddress": "\"82 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentHomeAddress": {
+              "PostCode": "SM1 2JE"
+            },
+            "D8ScreenHasRespondentAddress": "YES",
+            "D8LivingArrangementsLastLivedTogethAddr": {
+              "PostCode": "SM1 2JE"
+            },
+            "D8DivorceCostsClaim": "YES",
+            "D8ScreenHasMarriageCert": "YES",
+            "D8PetitionerHomeAddress": {
+              "PostCode": "SW17 0QT"
+            },
+            "D8ScreenHasMarriageBroken": "YES",
+            "D8DivorceClaimFrom": [
+              "respondent"
+            ],
+            "D8InferredRespondentGender": "male",
+            "D8ReasonForDivorceEnableAdultery": "YES",
+            "D8ReasonForDivorceShowAdultery": "YES",
+            "D8LivingArrangementsLiveTogether": "NO",
+            "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+            "D8ReasonForDivorceHasMarriage": "YES",
+            "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+            "D8JurisdictionConfidentLegal": "YES",
+            "D8FinancialOrderFor": [
+              "petitioner",
+              "petitioner"
+            ],
+            "D8Connections": {
+              "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+              "C": "The Respondent is habitually resident in England and Wales"
+            },
+            "D8PetitionerCorrespondenceAddress": {
+              "PostCode": "SM1 2JE"
+            },
+            "D8PetitionerNameDifferentToMarriageCert": "NO",
+            "D8RespondentLastName": "Jamed",
+            "D8LegalProceedingsRelated": [
+              "children"
+            ],
+            "D8JurisdictionConnection": [
+              "A",
+              "C"
+            ],
+            "D8LegalProceedingsDetails": "The legal proceeding details",
+            "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerLastName": "Smith",
+            "D8PetitionerPhoneNumber": "01234567890",
+            "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+            "D8ClaimsCostsAppliedForFees": "YES",
+            "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+            "D8RespondentLivesAtLastAddress": "NO",
+            "D8DerivedRespondentCurrentName": "Jane Jamed",
+            "D8ReasonForDivorceLimitReasons": "NO",
+            "D8HelpWithFeesAppliedForFees": "YES",
+            "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+            "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+            "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+            "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+            "D8DivorceUnit": "eastMidlands",
+            "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8ReasonForDivorceShowDesertion": "YES",
+            "D8MarriagePetitionerName": "John Doe",
+            "D8Cohort": "onlineSubmissionPrivateBeta",
+            "D8MarriageIsSameSexCouple": "NO",
+            "D8LivingArrangementsLastLivedTogether": "NO",
+            "D8FinancialOrder": "YES",
+            "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+            "D8MarriageDate": "2018-05-17",
+            "D8HelpWithFeesNeedHelp": "YES",
+            "D8JurisdictionRespondentResidence": "YES",
+            "D8DivorceWho": "husband",
+            "D8MarriageCanDivorce": "YES",
+            "D8ScreenHasPrinter": "YES",
+            "D8RespondentFirstName": "Jane",
+            "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+            "D8DocumentsUploaded": [
+              {
+                "id": "059dadb4-04c1-44f9-9828-6194bfc9893c",
+                "value": {
+                  "DocumentEmailContent": "",
+                  "DocumentComment": "",
+                  "DocumentFileName": "govuklogo.png",
+                  "DocumentDateAdded": "2017-12-11",
+                  "DocumentType": "other",
+                  "DocumentLink": {
+                    "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                  }
+                }
+              },
+              {
+                "id": "059dadb4-04c1-44f9-9828-6194bfc9893c",
+                "value": {
+                  "DocumentEmailContent": "",
+                  "DocumentComment": "",
+                  "DocumentFileName": "govuklogo.png",
+                  "DocumentDateAdded": "2017-12-11",
+                  "DocumentType": "other",
+                  "DocumentLink": {
+                    "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                  }
+                }
+              }
+            ],
+            "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+            "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+            "D8JurisdictionPetitionerResidence": "YES",
+            "D8ReasonForDivorceClaimingAdultery": "NO",
+            "D8PetitionerFirstName": "John",
+            "D8MarriageRespondentName": "Jenny Benny",
+            "D8PetitionerContactDetailsConfidential": "share",
+            "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+            "D8LegalProceedings": "YES",
+            "D8RespondentCorrespondenceAddress": {
+              "PostCode": "SM1 2JE"
+            },
+            "D8ReasonForDivorce": "unreasonable-behaviour",
+            "D8DerivedPetitionerCurrentFullName": "John Smith",
+            "D8InferredPetitionerGender": "female"
+          },
+          "jurisdiction": "DIVORCE",
+          "id": 1593694526480034,
+          "state": "AwaitingPayment",
+          "case_type_id": "DIVORCE"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.jurisdiction": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.state": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Draft|AwaitingPayment|CaseCreated"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.createdDate": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ScreenHasMarriageBroken": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ScreenHasRespondentAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ScreenHasMarriageCert": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ScreenHasPrinter": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DivorceWho": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8MarriageIsSameSexCouple": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8MarriageDate": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerNameDifferentToMarriageCert": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerFirstName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerLastName": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedPetitionerCurrentFullName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerNameChangedHow": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerNameChangedHow[*]": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "marriageCertificate|certificateTODO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerContactDetailsConfidential": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerHomeAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerHomeAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerHomeAddress.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerHomeAddress.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerHomeAddress.County": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerHomeAddress.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerHomeAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedPetitionerHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerCorrespondenceAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerCorrespondenceAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerCorrespondenceAddress.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerCorrespondenceAddress.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerCorrespondenceAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerCorrespondenceAddress.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8PetitionerCorrespondenceUseHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedPetitionerCorrespondenceAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentFirstName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentLastName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedRespondentCurrentName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedRespondentSolicitorDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentHomeAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentHomeAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentHomeAddress.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentHomeAddress.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentHomeAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentHomeAddress.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentCorrespondenceUseHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedRespondentHomeAddress": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentCorrespondenceAddress.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentCorrespondenceAddress.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentCorrespondenceAddress.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentCorrespondenceAddress.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentCorrespondenceAddress.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentCorrespondenceAddress.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedRespondentCorrespondenceAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8RespondentLivesAtLastAddress": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LivingArrangementsLastLivedTogether": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LivingArrangementsLiveTogether": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LivingArrangementsLastLivedTogethAddr.AddressLine1": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LivingArrangementsLastLivedTogethAddr.AddressLine2": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LivingArrangementsLastLivedTogethAddr.AddressLine3": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LivingArrangementsLastLivedTogethAddr.Country": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LivingArrangementsLastLivedTogethAddr.PostCode": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LivingArrangementsLastLivedTogethAddr.PostTown": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LegalProceedings": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LegalProceedingsRelated[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8LegalProceedingsDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorce": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedStatementOfCase": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceBehaviourDetails": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8FinancialOrder": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8FinancialOrderFor": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8FinancialOrderFor[*]": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "petitioner|children"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8HelpWithFeesNeedHelp": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "(Yes|No|YES|NO)"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8HelpWithFeesAppliedForFees": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "(Yes|No|YES|NO)"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8HelpWithFeesReferenceNumber": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DivorceCostsClaim": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DivorceClaimFrom[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8JurisdictionConfidentLegal": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8JurisdictionConnection[0]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8JurisdictionConnection[1]": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8JurisdictionPetitionerResidence": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8JurisdictionRespondentResidence": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DocumentsUploaded": {
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 2
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DocumentsUploaded[*].id": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DocumentsUploaded[*].value.DocumentEmailContent": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DocumentsUploaded[*].value.DocumentComment": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DocumentsUploaded[*].value.DocumentFileName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DocumentsUploaded[*].value.DocumentDateAdded": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DocumentsUploaded[*].value.DocumentType": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DocumentsUploaded[*].value.DocumentLink.document_url": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DivorceUnit": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceShowAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceShowUnreasonableBehavi": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceShowTwoYearsSeparation": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceShowDesertion": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceLimitReasons": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceEnableAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ClaimsCostsAppliedForFees": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceClaimingAdultery": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8MarriageCanDivorce": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8MarriagePetitionerName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8MarriageRespondentName": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedRespondentSolicitorAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8DerivedLivingArrangementsLastLivedAddr": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8Connections.A": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8Connections.B": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8Connections.C": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8Connections.D": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8Connections.E": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8Connections.F": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8Connections.G": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceHasMarriage": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceShowFiveYearsSeparatio": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8ReasonForDivorceClaiming5YearSeparatio": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Yes|No|YES|NO"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8Cohort": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8InferredPetitionerGender": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            },
+            "$.case_data.D8InferredRespondentGender": {
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ],
+              "combine": "AND"
+            }
+          },
+          "header": {
+            "Content-Type": {
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json"
+                }
+              ],
+              "combine": "AND"
+            }
+          }
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A SubmitEvent for Caseworker is triggered",
+          "params": {
+            "caseDataContent": {
+              "event": {
+                "id": "create",
+                "summary": "Divorce case submission event",
+                "description": "Submitting Divorce Case"
+              },
+              "data": {
+                "createdDate": null,
+                "D8ScreenHasMarriageBroken": "YES",
+                "D8ScreenHasRespondentAddress": "YES",
+                "D8ScreenHasMarriageCert": "YES",
+                "D8ScreenHasPrinter": "YES",
+                "D8DivorceWho": "husband",
+                "D8MarriageIsSameSexCouple": "NO",
+                "D8MarriageDate": "2001-02-02",
+                "D8PetitionerNameDifferentToMarriageCert": "YES",
+                "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+                "D8PetitionerPhoneNumber": "01234567890",
+                "D8PetitionerFirstName": "John",
+                "D8PetitionerLastName": "Smith",
+                "D8DerivedPetitionerCurrentFullName": "John Smith",
+                "D8PetitionerNameChangedHow": [
+                  "marriageCertificate"
+                ],
+                "D8PetitionerContactDetailsConfidential": "share",
+                "D8PetitionerHomeAddress": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "SW9 9PE",
+                  "County": null
+                },
+                "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+                "D8PetitionerCorrespondenceAddress": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "AB24 232",
+                  "County": null
+                },
+                "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+                "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+                "D8RespondentFirstName": "Jane",
+                "D8RespondentLastName": "Jamed",
+                "D8DerivedRespondentCurrentName": "Jane Jamed",
+                "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+                "D8RespondentHomeAddress": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "SS SSS",
+                  "County": null
+                },
+                "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+                "D8RespondentCorrespondenceAddress": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "SW9 9PE",
+                  "County": null
+                },
+                "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+                "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+                "D8RespondentLivesAtLastAddress": "NO",
+                "D8LivingArrangementsLastLivedTogether": "NO",
+                "D8LivingArrangementsLiveTogether": "NO",
+                "D8LivingArrangementsLastLivedTogethAddr": {
+                  "AddressLine3": null,
+                  "AddressLine2": null,
+                  "AddressLine1": null,
+                  "Country": null,
+                  "PostTown": null,
+                  "PostCode": "AB22 222",
+                  "County": null
+                },
+                "D8LegalProceedings": "YES",
+                "D8LegalProceedingsRelated": [
+                  "children"
+                ],
+                "D8LegalProceedingsDetails": "The legal proceeding details",
+                "D8ReasonForDivorce": "unreasonable-behaviour",
+                "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+                "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+                "D8ReasonForDivorceAdulteryIsNamed": "NO",
+                "D8FinancialOrder": "YES",
+                "D8FinancialOrderFor": [
+                  "petitioner",
+                  "children"
+                ],
+                "D8HelpWithFeesNeedHelp": "YES",
+                "D8HelpWithFeesAppliedForFees": "YES",
+                "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+                "D8DivorceCostsClaim": "YES",
+                "D8DivorceClaimFrom": [
+                  "respondent"
+                ],
+                "D8JurisdictionConfidentLegal": "YES",
+                "D8JurisdictionConnection": [
+                  "A",
+                  "C"
+                ],
+                "D8JurisdictionPetitionerResidence": "YES",
+                "D8JurisdictionRespondentResidence": "YES",
+                "D8DocumentsUploaded": [
+                  {
+                    "id": null,
+                    "value": {
+                      "DocumentEmailContent": "",
+                      "DocumentComment": "",
+                      "DocumentFileName": "govuklogo.png",
+                      "DocumentDateAdded": "2017-12-11",
+                      "DocumentType": "other",
+                      "DocumentLink": {
+                        "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"
+                      }
+                    }
+                  },
+                  {
+                    "id": null,
+                    "value": {
+                      "DocumentEmailContent": "",
+                      "DocumentComment": "",
+                      "DocumentFileName": "d8-eng.pdf",
+                      "DocumentDateAdded": "2017-12-11",
+                      "DocumentType": "other",
+                      "DocumentLink": {
+                        "document_url": "http://dm-store-aat.service.core-compute-aat.internal/documents/560f4bd1-fcf2-4dc5-80d1-d7e00d861683"
+                      }
+                    }
+                  }
+                ],
+                "D8DivorceUnit": "eastMidlands",
+                "D8ReasonForDivorceShowAdultery": "YES",
+                "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+                "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+                "D8ReasonForDivorceShowDesertion": "YES",
+                "D8ReasonForDivorceLimitReasons": "NO",
+                "D8ReasonForDivorceEnableAdultery": "YES",
+                "D8ClaimsCostsAppliedForFees": "YES",
+                "D8ReasonForDivorceClaimingAdultery": "NO",
+                "D8MarriageCanDivorce": "YES",
+                "D8MarriagePetitionerName": "John Doe",
+                "D8MarriageRespondentName": "Jenny Benny",
+                "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+                "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+                "D8Connections": {
+                  "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+                  "B": null,
+                  "C": "The Respondent is habitually resident in England and Wales",
+                  "D": null,
+                  "E": null,
+                  "F": null,
+                  "G": null
+                },
+                "D8ReasonForDivorceHasMarriage": "YES",
+                "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+                "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+                "D8Cohort": "onlineSubmissionPrivateBeta",
+                "D8InferredPetitionerGender": "female",
+                "D8InferredRespondentGender": "male"
+              },
+              "security_classification": null,
+              "event_token": "someEventToken",
+              "ignore_warning": false,
+              "case_reference": null
+            },
+            "caseworkerUsername": "divorce_as_caseworker_solicitor@mailinator.com",
+            "jurisdictionId": "DIVORCE",
+            "caseworkerPassword": "Pa55word11",
+            " caseType": "DIVORCE"
+          }
+        }
+      ]
+    },
+    {
       "description": "A Read For CaseWorker is received.",
       "request": {
         "method": "GET",

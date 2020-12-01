@@ -5,6 +5,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.json.JSONException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,24 +28,26 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 
 public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseMaintenancePact {
 
-    public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
-    public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
+    public static final String HWF_APPLICATION_ACCEPTED = "hwfApplicationAccepted";
 
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
+    private Map<String, Object> caseDetailsMap;
+    private CaseDataContent caseDataContent;
 
-    @Value("${ccd.jurisdictionid}")
-    String jurisdictionId;
 
-    @Value("${ccd.casetype}")
-    String caseType;
-
-    @Value("${ccd.eventid.create}")
-    String createEventId;
-
-    private static final String USER_ID = "123456";
-    private static final String CASE_ID = "2000";
-    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
+    @BeforeAll
+    public void setUp() throws Exception {
+        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
+        caseDataContent = CaseDataContent.builder()
+            .eventToken("someEventToken")
+            .event(
+                Event.builder()
+                    .id(createEventId)
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseDetailsMap.get("case_data"))
+            .build();
+    }
 
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
@@ -50,7 +58,7 @@ public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseM
     RequestResponsePact startEventForCaseWorker(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A StartEvent for Caseworker is  requested")
+            .given("A StartEvent for Caseworker is  requested",getCaseDataContentAsMap(caseDataContent))
             .uponReceiving("A StartEvent for a caseworker is received.")
             .path("/caseworkers/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"
@@ -58,15 +66,15 @@ public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseM
                 + "/cases/"
                 +  CASE_ID
                 + "/event-triggers/"
-                + createEventId
+                + HWF_APPLICATION_ACCEPTED
                 + "/token")
             .method("GET")
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
-            .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
+            .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .status(200)
-            .body(buildStartEventReponse("100", "testServiceToken" , "emailAddress@email.com", true, true))
+            .body(buildStartEventReponse(HWF_APPLICATION_ACCEPTED))
             .toPact();
     }
 
@@ -75,11 +83,17 @@ public class DivorceCaseMaintenanceStartEventForCaseWorker  extends DivorceCaseM
     public void verifyStartEventForCaseworker() throws JSONException {
 
         final StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,caseType,CASE_ID,createEventId);
+            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,caseType,CASE_ID.toString(),HWF_APPLICATION_ACCEPTED);
 
-        assertThat(startEventResponse.getEventId(), is("100"));
-        assertThat(startEventResponse.getToken(), is("testServiceToken"));
-
+        assertThat(startEventResponse.getEventId(), is(HWF_APPLICATION_ACCEPTED));
         assertCaseDetails(startEventResponse.getCaseDetails());
     }
+
+    @Override
+    protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
+        Map<String, Object> caseDataContentMap = super.getCaseDataContentAsMap(caseDataContent);
+        caseDataContentMap.put(EVENT_ID, HWF_APPLICATION_ACCEPTED);
+        return caseDataContentMap;
+    }
+
 }

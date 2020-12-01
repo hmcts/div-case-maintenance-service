@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
 
+import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
 
 import java.io.IOException;
@@ -31,33 +34,27 @@ import static org.junit.Assert.assertNotNull;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildNewListOfCaseDetailsDsl;
 
 public class DivorceCaseMaintenanceSearchForCitizen  extends DivorceCaseMaintenancePact {
-    public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
-    public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
 
-
-    @Autowired
-    private CoreCaseDataApi coreCaseDataApi;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Value("${ccd.jurisdictionid}")
-    String jurisdictionId;
-
-    @Value("${ccd.casetype}")
-    String caseType;
 
     private static final String USER_ID = "123456";
-    private static final String CASE_ID = "2000";
-    private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
+    private Map<String, Object> caseDetailsMap;
     private CaseDataContent caseDataContent;
     private CaseDetails caseDetails;
-    private static final String ALPHABETIC_REGEX = "[/^[A-Za-z]+$/]+";
     Map<String, Object> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    @Before
+    @BeforeAll
     public void setUp() throws Exception {
-
+        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
+        caseDataContent = CaseDataContent.builder()
+            .eventToken("someEventToken")
+            .event(
+                Event.builder()
+                    .id(createEventId)
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseDetailsMap.get("case_data"))
+            .build();
     }
 
     @BeforeEach
@@ -71,7 +68,7 @@ public class DivorceCaseMaintenanceSearchForCitizen  extends DivorceCaseMaintena
 
         // @formatter:off
         return builder
-            .given("A Search For Citizen requested", params)
+            .given("A Search For Citizen requested",getCaseDataContentAsMap(caseDataContent))
             .uponReceiving("A request for search For Citizen")
             .path("/citizens/"
                 + USER_ID
@@ -86,9 +83,10 @@ public class DivorceCaseMaintenanceSearchForCitizen  extends DivorceCaseMaintena
                 SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
-            .matchHeader(HttpHeaders.CONTENT_TYPE, "\\w+\\/[-+.\\w]+;charset=(utf|UTF)-8")
+            .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .status(200)
-            .body(buildNewListOfCaseDetailsDsl(Long.valueOf(CASE_ID), "memailaddress@gmail.com", false, false))
+            .body(
+                buildNewListOfCaseDetailsDsl(20000000L))
             .toPact();
     }
 
@@ -102,7 +100,6 @@ public class DivorceCaseMaintenanceSearchForCitizen  extends DivorceCaseMaintena
             caseType, searchCriteria);
 
         assertNotNull(caseDetailsList);
-        //TODO - more checks needed.
-        //assertThat(caseDetailsList.size(), is(2));
+
     }
 }
