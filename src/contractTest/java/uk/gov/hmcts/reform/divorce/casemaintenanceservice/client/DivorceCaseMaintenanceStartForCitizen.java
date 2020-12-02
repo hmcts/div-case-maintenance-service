@@ -48,12 +48,12 @@ public class DivorceCaseMaintenanceStartForCitizen extends DivorceCaseMaintenanc
             .build();
     }
 
-    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
+    @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Start for Citizen is received", getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("A Start for a citizen is requested")
+            .given("A Start for a Citizen is requested", getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Start for a Citizen")
             .path("/citizens/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"
                 + caseType

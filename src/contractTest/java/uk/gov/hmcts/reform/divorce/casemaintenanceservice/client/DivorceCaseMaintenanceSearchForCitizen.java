@@ -44,6 +44,7 @@ public class DivorceCaseMaintenanceSearchForCitizen  extends DivorceCaseMaintena
 
     @BeforeAll
     public void setUp() throws Exception {
+        Thread.sleep(2000);
         caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
@@ -62,14 +63,14 @@ public class DivorceCaseMaintenanceSearchForCitizen  extends DivorceCaseMaintena
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
+    @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact searchForCitizen(PactDslWithProvider builder) {
         params = Collections.emptyMap();
 
         // @formatter:off
         return builder
-            .given("A Search For Citizen requested",getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("A request for search For Citizen")
+            .given("A Search cases for a Citizen is requested",getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Search Cases for a Citizen")
             .path("/citizens/"
                 + USER_ID
                 + "/jurisdictions/"

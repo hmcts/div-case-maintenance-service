@@ -25,8 +25,6 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 
 public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaintenancePact {
 
-
-
     public static final String PAYMENT_REFERENCE_GENERATED = "paymentReferenceGenerated";
 
     private Map<String, Object> caseDetailsMap;
@@ -35,6 +33,7 @@ public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaint
 
     @BeforeAll
     public void setUp() throws Exception {
+        Thread.sleep(2000);
         caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
@@ -49,12 +48,12 @@ public class DivorceCaseMaintenanceStartEventForCitizen extends DivorceCaseMaint
     }
 
 
-    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
+    @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A StartEvent for citizen is received", getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("A StartEvent a citizen is requested")
+            .given("A Start Event for a Citizen is requested", getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Start Event a Citizen")
             .path("/citizens/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"
                 + caseType

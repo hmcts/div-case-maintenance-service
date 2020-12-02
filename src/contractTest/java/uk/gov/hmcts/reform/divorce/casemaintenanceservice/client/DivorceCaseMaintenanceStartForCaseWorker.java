@@ -35,6 +35,7 @@ public class DivorceCaseMaintenanceStartForCaseWorker extends DivorceCaseMainten
 
     @BeforeAll
     public void setUp() throws Exception {
+        Thread.sleep(2000);
         caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
@@ -53,12 +54,12 @@ public class DivorceCaseMaintenanceStartForCaseWorker extends DivorceCaseMainten
         Thread.sleep(2000);
     }
 
-    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
+    @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startForCaseWorker(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Start for Caseworker is requested", getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("A Start for Caseworker is requested")
+            .given("A Start for a Caseworker is requested", getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Start for a Caseworker")
             .path("/caseworkers/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"
                 + caseType

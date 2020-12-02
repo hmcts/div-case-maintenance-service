@@ -4,8 +4,10 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import org.apache.http.client.fluent.Executor;
 import org.hamcrest.core.Is;
 import org.json.JSONException;
+import org.junit.After;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,7 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
 
     @BeforeAll
     public void setUp() throws Exception {
+        Thread.sleep(2000);
         caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
@@ -43,12 +46,12 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
             .build();
     }
 
-    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
+    @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact readForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Read For Citizen is  requested", getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("A Read For Citizen is requested")
+            .given("A Read for a Citizen is requested", getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Read For a Citizen")
             .path("/citizens/"
                 + USER_ID
                 + "/jurisdictions/"
@@ -81,5 +84,10 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
 
         assertCaseDetails(caseDetailsReponse);
 
+    }
+
+    @After
+    void teardown() {
+        Executor.closeIdleConnections();
     }
 }

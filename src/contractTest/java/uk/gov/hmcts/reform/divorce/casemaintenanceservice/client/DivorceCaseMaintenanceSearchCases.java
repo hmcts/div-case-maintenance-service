@@ -46,6 +46,7 @@ public class DivorceCaseMaintenanceSearchCases extends DivorceCaseMaintenancePac
 
     @BeforeAll
     public void setUp() throws Exception {
+        Thread.sleep(2000);
         caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
@@ -65,12 +66,12 @@ public class DivorceCaseMaintenanceSearchCases extends DivorceCaseMaintenancePac
          queryString = ResourceLoader.loadJson(VALID_QUERY);
     }
 
-    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
-    public RequestResponsePact searchCasesForCitizen(PactDslWithProvider builder) throws Exception {
+    @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
+    public RequestResponsePact searchCases(PactDslWithProvider builder) throws Exception {
         // @formatter:off
         return builder
-            .given("SearchCases for Citizen is requested", getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("Search Cases Request is requested for citizen")
+            .given("A Search for cases is requested", getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Search Cases request")
             .path("/searchCases")
             .query("ctid=DIVORCE")
             .method("POST")
@@ -87,8 +88,8 @@ public class DivorceCaseMaintenanceSearchCases extends DivorceCaseMaintenancePac
     }
 
     @Test
-    @PactTestFor(pactMethod = "searchCasesForCitizen")
-    public void verifySearchCasesForCitizen() throws JSONException {
+    @PactTestFor(pactMethod = "searchCases")
+    public void verifySearchCases() throws JSONException {
 
         SearchResult searchResult = coreCaseDataApi.searchCases(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, "DIVORCE", queryString);
@@ -99,9 +100,4 @@ public class DivorceCaseMaintenanceSearchCases extends DivorceCaseMaintenancePac
         assertCaseDetails(searchResult.getCases().get(0)); // CaseDetail-1
     }
 
-
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
-    }
 }

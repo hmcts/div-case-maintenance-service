@@ -6,6 +6,7 @@ import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
+import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
@@ -40,8 +41,6 @@ public abstract class DivorceCaseMaintenancePact {
     public static final String CASEWORKER_PASSWORD = "caseworkerPassword";
     public static final String CASE_DATA_CONTENT = "caseDataContent";
     public static final String EVENT_ID = "eventId";
-    public static final String TOKEN = "someToken";
-    public static final String CREATE_EVENT = "create";
 
     @Autowired
     protected CoreCaseDataApi coreCaseDataApi;
@@ -74,10 +73,6 @@ public abstract class DivorceCaseMaintenancePact {
     protected static final String DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY = "Divorce case submission event";
     protected static final String DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION = "Submitting Divorce Case";
 
-    @BeforeEach
-    public void setUp() throws Exception {
-
-    }
 
     @AfterEach
     void teardown() {
@@ -87,11 +82,6 @@ public abstract class DivorceCaseMaintenancePact {
 
     private File getFile(String fileName) throws FileNotFoundException {
         return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
-    }
-
-    protected CaseDetails getCaseDetails(String fileName) throws JSONException, IOException {
-        File file = getFile(fileName);
-        return  objectMapper.readValue(file, CaseDetails.class);
     }
 
     protected Map<String, Object> getCaseDetailsAsMap(String fileName) throws JSONException, IOException {
@@ -111,4 +101,6 @@ public abstract class DivorceCaseMaintenancePact {
         map.put(CASE_DATA_CONTENT, caseDataContentMap);
         return map;
     }
+
+
 }

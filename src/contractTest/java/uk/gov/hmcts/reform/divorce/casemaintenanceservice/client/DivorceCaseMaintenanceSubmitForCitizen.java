@@ -39,7 +39,7 @@ public class DivorceCaseMaintenanceSubmitForCitizen extends DivorceCaseMaintenan
 
     @BeforeAll
     public void setUp() throws Exception {
-
+        Thread.sleep(2000);
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
             .event(
@@ -52,22 +52,17 @@ public class DivorceCaseMaintenanceSubmitForCitizen extends DivorceCaseMaintenan
             .build();
     }
 
-    @BeforeEach
-    public void setUpEachTest() throws InterruptedException {
-        Thread.sleep(2000);
-    }
-
     @After
     public void teardown() {
         Executor.closeIdleConnections();
     }
 
-    @Pact(provider = "ccdDataStoreAPI_CaseController", consumer = "divorce_caseMaintenanceService")
+    @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact submitForCitizen(PactDslWithProvider builder) throws Exception  {
         // @formatter:off
         return builder
-            .given("A Submit For Citizen is triggered", getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("A Submit For Citizen is triggered")
+            .given("A Submit for a Citizen is requested", getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Submit For a Citizen")
             .path("/citizens/"
                 + USER_ID
                 + "/jurisdictions/"
