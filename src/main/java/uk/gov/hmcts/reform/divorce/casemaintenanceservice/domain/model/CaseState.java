@@ -44,6 +44,9 @@ public enum CaseState {
     CLARIFICATION_SUBMITTED("ClarificationSubmitted", ApplicationStatus.CLARIFICATION_SUBMITTED),
     AWAITING_ADMIN_CLARIFICATION("AwaitingAdminClarification", ApplicationStatus.AWAITING_ADMIN_CLARIFICATION),
     SERVICE_APPLICATION_NOT_APPROVED("ServiceApplicationNotApproved", ApplicationStatus.SERVICE_APPLICATION_NOT_APPROVED),
+    AWAITING_ALTERNATIVE_SERVICE("AwaitingAlternativeService", ApplicationStatus.AWAITING_ALTERNATIVE_SERVICE),
+    AWAITING_PROCESS_SERVER_SERVICE("AwaitingProcessServerService", ApplicationStatus.AWAITING_PROCESS_SERVER_SERVICE),
+    AWAITING_DWP_RESPONSE("AwaitingDWPResponse", ApplicationStatus.AWAITING_DWP_RESPONSE),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;
