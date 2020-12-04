@@ -39,6 +39,9 @@ public enum ApplicationStatus {
     CLARIFICATION_SUBMITTED("ClarificationSubmitted"),
     AWAITING_ADMIN_CLARIFICATION("AwaitingAdminClarification"),
     SERVICE_APPLICATION_NOT_APPROVED("ServiceApplicationNotApproved"),
+    AWAITING_ALTERNATIVE_SERVICE("AwaitingAlternativeService"),
+    AWAITING_PROCESS_SERVER_SERVICE("AwaitingProcessServerService"),
+    AWAITING_DWP_RESPONSE("AwaitingDWPResponse"),
     UNKNOWN("DNCompleted");
 
     private final String value;
