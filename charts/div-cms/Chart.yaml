@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "1.0"
 description: Divorce - Case Maintenance Service
 name: div-cms
-version: 1.2.3
+version: 1.2.4
