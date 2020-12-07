@@ -368,7 +368,6 @@ public final class PactDslBuilderForCaseDetailsList {
                     cd.numberType("id", 200);
                     cd.stringType("jurisdiction", "divorce");
                     cd.stringType("callback_response_status", null);
-                    // cd.stringType("case_type",  "DIVORCE");
                     cd.object("case_data", (dataMap) -> {
                         getCaseData(dataMap);
                     });
@@ -376,8 +375,6 @@ public final class PactDslBuilderForCaseDetailsList {
         }).build();
     }
 
-
-    //TODO : this returns a Array of Array , rather than an Array . Needs to be fixed.
     public static DslPart buildNewListOfCaseDetailsDsl(Long caseId) {
         return newJsonArray((rootArray) -> {
             rootArray.object((dataMap) ->

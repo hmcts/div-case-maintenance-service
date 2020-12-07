@@ -33,7 +33,7 @@ import java.util.Map;
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
 })
-public abstract class DivorceCaseMaintenancePact {
+public abstract class CcdConsumerTestBase {
 
     public static final String JURISDICTION = "jurisdictionId";
     public static final String CASE_TYPE = " caseType";

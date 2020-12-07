@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.ccd;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.CcdConsumerTestBase;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.ResourceLoader;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildSearchResultDsl;
 
-public class DivorceCaseMaintenanceSearchCases extends DivorceCaseMaintenancePact {
+public class SearchCasesConsumerTest extends CcdConsumerTestBase {
 
 
     private Map<String, Object> caseDetailsMap;

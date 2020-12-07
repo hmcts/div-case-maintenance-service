@@ -1,19 +1,21 @@
-package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.ccd;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.CcdConsumerTestBase;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,11 +23,9 @@ import java.util.Map;
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventReponse;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventResponseWithEmptyCaseDetails;
 
-public class DivorceCaseMaintenanceStartForCaseWorker extends DivorceCaseMaintenancePact {
+public class StartForCitizenConsumerTest extends CcdConsumerTestBase {
 
     public static final String EVENT_ID = "eventId";
 
@@ -35,7 +35,6 @@ public class DivorceCaseMaintenanceStartForCaseWorker extends DivorceCaseMainten
 
     @BeforeAll
     public void setUp() throws Exception {
-        Thread.sleep(2000);
         caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
@@ -49,18 +48,13 @@ public class DivorceCaseMaintenanceStartForCaseWorker extends DivorceCaseMainten
             .build();
     }
 
-    @BeforeEach
-    public void setUpEachTest() throws InterruptedException {
-        Thread.sleep(2000);
-    }
-
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact startForCaseWorker(PactDslWithProvider builder) {
+    RequestResponsePact startForCitizen(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Start for a Caseworker is requested", getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("A Start for a Caseworker")
-            .path("/caseworkers/" + USER_ID + "/jurisdictions/"
+            .given("A Start for a Citizen is requested", getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Start for a Citizen")
+            .path("/citizens/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"
                 + caseType
                 + "/event-triggers/"
@@ -78,24 +72,32 @@ public class DivorceCaseMaintenanceStartForCaseWorker extends DivorceCaseMainten
     }
 
     @Test
-    @PactTestFor(pactMethod = "startForCaseWorker")
-    public void verifyStartEventForCaseworker() throws IOException, JSONException {
+    @PactTestFor(pactMethod = "startForCitizen")
+    public void verifyStartForCitizen() throws IOException, JSONException {
 
-        StartEventResponse startEventResponse = coreCaseDataApi.startForCaseworker(SOME_AUTHORIZATION_TOKEN,
+        StartEventResponse startEventResponse = coreCaseDataApi.startForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
             caseType, createEventId);
 
         assertThat(startEventResponse.getEventId(), equalTo(createEventId));
 
+        CaseDetails caseDetails = startEventResponse.getCaseDetails();
+
         assertNotNull(startEventResponse.getCaseDetails());
 
     }
+
 
     @Override
     protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
         Map<String, Object> caseDataContentMap = super.getCaseDataContentAsMap(caseDataContent);
         caseDataContentMap.put(EVENT_ID, createEventId);
         return caseDataContentMap;
+    }
+
+    @AfterEach
+    void teardown() {
+        Executor.closeIdleConnections();
     }
 
 }

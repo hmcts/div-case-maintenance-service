@@ -1,11 +1,10 @@
-package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client;
+package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.ccd;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.apache.http.client.fluent.Executor;
-import org.hamcrest.core.Is;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,17 +14,15 @@ import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.DivorceCaseMaintenancePact;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.CcdConsumerTestBase;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
-
-public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenancePact {
+public class ReadForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
     private Map<String, Object> caseDetailsMap;
     private CaseDataContent caseDataContent;
@@ -47,12 +44,12 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
     }
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact readForCitizen(PactDslWithProvider builder) {
+    RequestResponsePact readForCaseDetails(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Read for a Citizen is requested", getCaseDataContentAsMap(caseDataContent))
-            .uponReceiving("A Read For a Citizen")
-            .path("/citizens/"
+            .given("A Read for a Caseworker is requested", getCaseDataContentAsMap(caseDataContent))
+            .uponReceiving("A Read For a Caseworker")
+            .path("/caseworkers/"
                 + USER_ID
                 + "/jurisdictions/"
                 + jurisdictionId
@@ -72,15 +69,12 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
     }
 
     @Test
-    @PactTestFor(pactMethod = "readForCitizen")
-    public void verifyReadForCitizen() throws IOException, JSONException {
+    @PactTestFor(pactMethod = "readForCaseDetails")
+    public void verifyReadForCaseDetails() throws IOException, JSONException {
 
-        CaseDetails caseDetailsReponse = coreCaseDataApi.readForCitizen(SOME_AUTHORIZATION_TOKEN,
+        CaseDetails caseDetailsReponse = coreCaseDataApi.readForCaseWorker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,String.valueOf(CASE_ID));
-
-        assertThat(caseDetailsReponse.getId(), Is.is(CASE_ID));
-        assertThat(caseDetailsReponse.getJurisdiction(), Is.is("DIVORCE"));
+            caseType,CASE_ID.toString());
 
         assertCaseDetails(caseDetailsReponse);
 
@@ -90,4 +84,5 @@ public class DivorceCaseMaintenanceReadForCitizen extends DivorceCaseMaintenance
     void teardown() {
         Executor.closeIdleConnections();
     }
+
 }

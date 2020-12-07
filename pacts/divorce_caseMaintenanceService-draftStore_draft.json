@@ -113,7 +113,7 @@
                 "D8MarriageDate": "2001-02-02",
                 "D8HelpWithFeesNeedHelp": "NO",
                 "D8JurisdictionRespondentResidence": "YES",
-                "D8DivorceWho": "wife",
+                "D8DivorceWho": "husband",
                 "D8MarriageCanDivorce": "YES",
                 "D8ScreenHasPrinter": "YES",
                 "D8RespondentFirstName": "Jamed",
@@ -965,110 +965,101 @@
         {
           "name": "A draft exists after a given page for a logged in user",
           "params": {
-            "data": {
-              "outsideUKGrantCopies": 6,
-              "applicationType": "Personal",
-              "deceasedAddress": {
-                "AddressLine2": "Westeros",
-                "AddressLine1": "Winterfell",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedAnyOtherNames": "No",
-              "primaryApplicantAddressFound": "Yes",
-              "deceasedAnyChildren": "No",
-              "uploadDocumentUrl": "http://document-management/document/12345",
-              "deceasedDateOfBirth": "1930-01-01",
-              "type": "GrantOfRepresentation",
-              "deceasedMartialStatus": "divorcedCivilPartnership",
-              "primaryApplicantEmailAddress": "someEmailAddress.com",
-              "deceasedAddressFound": "Yes",
-              "primaryApplicantRelationshipToDeceased": "adoptedChild",
-              "deceasedDateOfDeath": "2018-01-01",
-              "primaryApplicantForenames": "Jon",
-              "deceasedHasAssetsOutsideUK": "Yes",
-              "primaryApplicantAddress": {
-                "AddressLine2": "St. Georges Hospital",
-                "AddressLine1": "Pret a Manger",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedDivorcedInEnglandOrWales": "No",
-              "primaryApplicantPhoneNumber": "123455678",
-              "ihtNetValue": "100000",
-              "ihtReferenceNumber": "GOT123456",
-              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
-              "childrenDied": "No",
-              "deceasedSurname": "Stark",
-              "deceasedAliasNameList": [
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                },
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                }
-              ],
-              "extraCopiesOfGrant": 3,
-              "deceasedOtherChildren": "Yes",
-              "deceasedForenames": "Ned",
-              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
-              "assetsOverseasNetValue": "10050",
-              "executorsApplying": [
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                },
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                }
-              ],
-              "grandChildrenSurvivedUnderEighteen": "No",
-              "ihtFormCompletedOnline": "No",
-              "ihtGrossValue": "100000",
-              "registryLocation": "Oxford",
-              "ihtFormId": "IHT205",
-              "primaryApplicantSurname": "Snow",
-              "declarationCheckbox": "No",
-              "childrenOverEighteenSurvived": "Yes"
+            "createdDate": "2018-06-07",
+            "D8ScreenHasMarriageBroken": "YES",
+            "D8ScreenHasRespondentAddress": "YES",
+            "D8ScreenHasMarriageCert": "YES",
+            "D8ScreenHasPrinter": "YES",
+            "D8DivorceWho": "husband",
+            "D8MarriageIsSameSexCouple": "NO",
+            "D8MarriageDate": "2001-02-02",
+            "D8PetitionerNameDifferentToMarriageCert": "YES",
+            "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+            "D8PetitionerPhoneNumber": "01234567890",
+            "D8PetitionerFirstName": "John",
+            "D8PetitionerLastName": "Smith",
+            "D8DerivedPetitionerCurrentFullName": "John Smith",
+            "D8PetitionerNameChangedHow": [
+              "marriageCertificate"
+            ],
+            "D8PetitionerContactDetailsConfidential": "share",
+            "D8PetitionerHomeAddress": {
+              "PostCode": "SW9 9PE"
             },
-            "case_type": "GRANT_OF_REPRESENTATION",
-            "id": "654321",
-            "state": "Draft"
+            "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceAddress": {
+              "PostCode": "AB24 232"
+            },
+            "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+            "D8RespondentFirstName": "Jane",
+            "D8RespondentLastName": "Jamed",
+            "D8DerivedRespondentCurrentName": "Jane Jamed",
+            "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentHomeAddress": {
+              "PostCode": "SS SSS"
+            },
+            "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceAddress": {
+              "PostCode": "SW9 9PE"
+            },
+            "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+            "D8RespondentLivesAtLastAddress": "NO",
+            "D8LivingArrangementsLastLivedTogether": "NO",
+            "D8LivingArrangementsLiveTogether": "NO",
+            "D8LegalProceedings": "YES",
+            "D8LegalProceedingsRelated": [
+              "children"
+            ],
+            "D8LegalProceedingsDetails": "The legal proceeding details",
+            "D8ReasonForDivorce": "unreasonable-behaviour",
+            "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+            "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+            "D8ReasonForDivorceAdulteryIsNamed": "NO",
+            "D8FinancialOrder": "YES",
+            "D8FinancialOrderFor": [
+              "petitioner",
+              "children"
+            ],
+            "D8HelpWithFeesNeedHelp": "YES",
+            "D8HelpWithFeesAppliedForFees": "YES",
+            "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+            "D8DivorceCostsClaim": "YES",
+            "D8DivorceClaimFrom": [
+              "respondent"
+            ],
+            "D8JurisdictionConfidentLegal": "YES",
+            "D8JurisdictionConnection": [
+              "A",
+              "C"
+            ],
+            "D8JurisdictionPetitionerResidence": "YES",
+            "D8JurisdictionRespondentResidence": "YES",
+            "D8DivorceUnit": "eastMidlands",
+            "D8ReasonForDivorceShowAdultery": "YES",
+            "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+            "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+            "D8ReasonForDivorceShowDesertion": "YES",
+            "D8ReasonForDivorceLimitReasons": "NO",
+            "D8ReasonForDivorceEnableAdultery": "YES",
+            "D8ClaimsCostsAppliedForFees": "YES",
+            "D8ReasonForDivorceClaimingAdultery": "NO",
+            "D8MarriageCanDivorce": "YES",
+            "D8MarriagePetitionerName": "John Doe",
+            "D8MarriageRespondentName": "Jenny Benny",
+            "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+            "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+            "D8Connections": {
+              "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+              "C": "The Respondent is habitually resident in England and Wales"
+            },
+            "D8ReasonForDivorceHasMarriage": "YES",
+            "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+            "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+            "D8Cohort": "onlineSubmissionPrivateBeta",
+            "D8InferredPetitionerGender": "female",
+            "D8InferredRespondentGender": "male"
           }
         }
       ]
@@ -1175,7 +1166,7 @@
                 "D8MarriageDate": "2001-02-02",
                 "D8HelpWithFeesNeedHelp": "NO",
                 "D8JurisdictionRespondentResidence": "YES",
-                "D8DivorceWho": "wife",
+                "D8DivorceWho": "husband",
                 "D8MarriageCanDivorce": "YES",
                 "D8ScreenHasPrinter": "YES",
                 "D8RespondentFirstName": "Jamed",
@@ -2027,110 +2018,101 @@
         {
           "name": "A draft exists for a logged in user",
           "params": {
-            "data": {
-              "outsideUKGrantCopies": 6,
-              "applicationType": "Personal",
-              "deceasedAddress": {
-                "AddressLine2": "Westeros",
-                "AddressLine1": "Winterfell",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedAnyOtherNames": "No",
-              "primaryApplicantAddressFound": "Yes",
-              "deceasedAnyChildren": "No",
-              "uploadDocumentUrl": "http://document-management/document/12345",
-              "deceasedDateOfBirth": "1930-01-01",
-              "type": "GrantOfRepresentation",
-              "deceasedMartialStatus": "divorcedCivilPartnership",
-              "primaryApplicantEmailAddress": "someEmailAddress.com",
-              "deceasedAddressFound": "Yes",
-              "primaryApplicantRelationshipToDeceased": "adoptedChild",
-              "deceasedDateOfDeath": "2018-01-01",
-              "primaryApplicantForenames": "Jon",
-              "deceasedHasAssetsOutsideUK": "Yes",
-              "primaryApplicantAddress": {
-                "AddressLine2": "St. Georges Hospital",
-                "AddressLine1": "Pret a Manger",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedDivorcedInEnglandOrWales": "No",
-              "primaryApplicantPhoneNumber": "123455678",
-              "ihtNetValue": "100000",
-              "ihtReferenceNumber": "GOT123456",
-              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
-              "childrenDied": "No",
-              "deceasedSurname": "Stark",
-              "deceasedAliasNameList": [
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                },
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                }
-              ],
-              "extraCopiesOfGrant": 3,
-              "deceasedOtherChildren": "Yes",
-              "deceasedForenames": "Ned",
-              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
-              "assetsOverseasNetValue": "10050",
-              "executorsApplying": [
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                },
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                }
-              ],
-              "grandChildrenSurvivedUnderEighteen": "No",
-              "ihtFormCompletedOnline": "No",
-              "ihtGrossValue": "100000",
-              "registryLocation": "Oxford",
-              "ihtFormId": "IHT205",
-              "primaryApplicantSurname": "Snow",
-              "declarationCheckbox": "No",
-              "childrenOverEighteenSurvived": "Yes"
+            "createdDate": "2018-06-07",
+            "D8ScreenHasMarriageBroken": "YES",
+            "D8ScreenHasRespondentAddress": "YES",
+            "D8ScreenHasMarriageCert": "YES",
+            "D8ScreenHasPrinter": "YES",
+            "D8DivorceWho": "husband",
+            "D8MarriageIsSameSexCouple": "NO",
+            "D8MarriageDate": "2001-02-02",
+            "D8PetitionerNameDifferentToMarriageCert": "YES",
+            "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+            "D8PetitionerPhoneNumber": "01234567890",
+            "D8PetitionerFirstName": "John",
+            "D8PetitionerLastName": "Smith",
+            "D8DerivedPetitionerCurrentFullName": "John Smith",
+            "D8PetitionerNameChangedHow": [
+              "marriageCertificate"
+            ],
+            "D8PetitionerContactDetailsConfidential": "share",
+            "D8PetitionerHomeAddress": {
+              "PostCode": "SW9 9PE"
             },
-            "case_type": "GRANT_OF_REPRESENTATION",
-            "id": "654321",
-            "state": "Draft"
+            "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceAddress": {
+              "PostCode": "AB24 232"
+            },
+            "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+            "D8RespondentFirstName": "Jane",
+            "D8RespondentLastName": "Jamed",
+            "D8DerivedRespondentCurrentName": "Jane Jamed",
+            "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentHomeAddress": {
+              "PostCode": "SS SSS"
+            },
+            "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceAddress": {
+              "PostCode": "SW9 9PE"
+            },
+            "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+            "D8RespondentLivesAtLastAddress": "NO",
+            "D8LivingArrangementsLastLivedTogether": "NO",
+            "D8LivingArrangementsLiveTogether": "NO",
+            "D8LegalProceedings": "YES",
+            "D8LegalProceedingsRelated": [
+              "children"
+            ],
+            "D8LegalProceedingsDetails": "The legal proceeding details",
+            "D8ReasonForDivorce": "unreasonable-behaviour",
+            "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+            "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+            "D8ReasonForDivorceAdulteryIsNamed": "NO",
+            "D8FinancialOrder": "YES",
+            "D8FinancialOrderFor": [
+              "petitioner",
+              "children"
+            ],
+            "D8HelpWithFeesNeedHelp": "YES",
+            "D8HelpWithFeesAppliedForFees": "YES",
+            "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+            "D8DivorceCostsClaim": "YES",
+            "D8DivorceClaimFrom": [
+              "respondent"
+            ],
+            "D8JurisdictionConfidentLegal": "YES",
+            "D8JurisdictionConnection": [
+              "A",
+              "C"
+            ],
+            "D8JurisdictionPetitionerResidence": "YES",
+            "D8JurisdictionRespondentResidence": "YES",
+            "D8DivorceUnit": "eastMidlands",
+            "D8ReasonForDivorceShowAdultery": "YES",
+            "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+            "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+            "D8ReasonForDivorceShowDesertion": "YES",
+            "D8ReasonForDivorceLimitReasons": "NO",
+            "D8ReasonForDivorceEnableAdultery": "YES",
+            "D8ClaimsCostsAppliedForFees": "YES",
+            "D8ReasonForDivorceClaimingAdultery": "NO",
+            "D8MarriageCanDivorce": "YES",
+            "D8MarriagePetitionerName": "John Doe",
+            "D8MarriageRespondentName": "Jenny Benny",
+            "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+            "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+            "D8Connections": {
+              "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+              "C": "The Respondent is habitually resident in England and Wales"
+            },
+            "D8ReasonForDivorceHasMarriage": "YES",
+            "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+            "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+            "D8Cohort": "onlineSubmissionPrivateBeta",
+            "D8InferredPetitionerGender": "female",
+            "D8InferredRespondentGender": "male"
           }
         }
       ]
@@ -2148,110 +2130,101 @@
         },
         "body": {
           "document": {
-            "data": {
-              "outsideUKGrantCopies": 6,
-              "applicationType": "Personal",
-              "deceasedAddress": {
-                "AddressLine2": "Westeros",
-                "AddressLine1": "Winterfell",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedAnyOtherNames": "No",
-              "primaryApplicantAddressFound": "Yes",
-              "deceasedAnyChildren": "No",
-              "uploadDocumentUrl": "http://document-management/document/12345",
-              "deceasedDateOfBirth": "1930-01-01",
-              "type": "GrantOfRepresentation",
-              "deceasedMartialStatus": "divorcedCivilPartnership",
-              "primaryApplicantEmailAddress": "someEmailAddress.com",
-              "deceasedAddressFound": "Yes",
-              "primaryApplicantRelationshipToDeceased": "adoptedChild",
-              "deceasedDateOfDeath": "2018-01-01",
-              "primaryApplicantForenames": "Jon",
-              "deceasedHasAssetsOutsideUK": "Yes",
-              "primaryApplicantAddress": {
-                "AddressLine2": "St. Georges Hospital",
-                "AddressLine1": "Pret a Manger",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedDivorcedInEnglandOrWales": "No",
-              "primaryApplicantPhoneNumber": "123455678",
-              "ihtNetValue": "100000",
-              "ihtReferenceNumber": "GOT123456",
-              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
-              "childrenDied": "No",
-              "deceasedSurname": "Stark",
-              "deceasedAliasNameList": [
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                },
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                }
-              ],
-              "extraCopiesOfGrant": 3,
-              "deceasedOtherChildren": "Yes",
-              "deceasedForenames": "Ned",
-              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
-              "assetsOverseasNetValue": "10050",
-              "executorsApplying": [
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                },
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                }
-              ],
-              "grandChildrenSurvivedUnderEighteen": "No",
-              "ihtFormCompletedOnline": "No",
-              "ihtGrossValue": "100000",
-              "registryLocation": "Oxford",
-              "ihtFormId": "IHT205",
-              "primaryApplicantSurname": "Snow",
-              "declarationCheckbox": "No",
-              "childrenOverEighteenSurvived": "Yes"
+            "createdDate": "2018-06-07",
+            "D8ScreenHasMarriageBroken": "YES",
+            "D8ScreenHasRespondentAddress": "YES",
+            "D8ScreenHasMarriageCert": "YES",
+            "D8ScreenHasPrinter": "YES",
+            "D8DivorceWho": "husband",
+            "D8MarriageIsSameSexCouple": "NO",
+            "D8MarriageDate": "2001-02-02",
+            "D8PetitionerNameDifferentToMarriageCert": "YES",
+            "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+            "D8PetitionerPhoneNumber": "01234567890",
+            "D8PetitionerFirstName": "John",
+            "D8PetitionerLastName": "Smith",
+            "D8DerivedPetitionerCurrentFullName": "John Smith",
+            "D8PetitionerNameChangedHow": [
+              "marriageCertificate"
+            ],
+            "D8PetitionerContactDetailsConfidential": "share",
+            "D8PetitionerHomeAddress": {
+              "PostCode": "SW9 9PE"
             },
-            "case_type": "GRANT_OF_REPRESENTATION",
-            "id": "654321",
-            "state": "Draft"
+            "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceAddress": {
+              "PostCode": "AB24 232"
+            },
+            "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+            "D8RespondentFirstName": "Jane",
+            "D8RespondentLastName": "Jamed",
+            "D8DerivedRespondentCurrentName": "Jane Jamed",
+            "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentHomeAddress": {
+              "PostCode": "SS SSS"
+            },
+            "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceAddress": {
+              "PostCode": "SW9 9PE"
+            },
+            "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+            "D8RespondentLivesAtLastAddress": "NO",
+            "D8LivingArrangementsLastLivedTogether": "NO",
+            "D8LivingArrangementsLiveTogether": "NO",
+            "D8LegalProceedings": "YES",
+            "D8LegalProceedingsRelated": [
+              "children"
+            ],
+            "D8LegalProceedingsDetails": "The legal proceeding details",
+            "D8ReasonForDivorce": "unreasonable-behaviour",
+            "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+            "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+            "D8ReasonForDivorceAdulteryIsNamed": "NO",
+            "D8FinancialOrder": "YES",
+            "D8FinancialOrderFor": [
+              "petitioner",
+              "children"
+            ],
+            "D8HelpWithFeesNeedHelp": "YES",
+            "D8HelpWithFeesAppliedForFees": "YES",
+            "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+            "D8DivorceCostsClaim": "YES",
+            "D8DivorceClaimFrom": [
+              "respondent"
+            ],
+            "D8JurisdictionConfidentLegal": "YES",
+            "D8JurisdictionConnection": [
+              "A",
+              "C"
+            ],
+            "D8JurisdictionPetitionerResidence": "YES",
+            "D8JurisdictionRespondentResidence": "YES",
+            "D8DivorceUnit": "eastMidlands",
+            "D8ReasonForDivorceShowAdultery": "YES",
+            "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+            "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+            "D8ReasonForDivorceShowDesertion": "YES",
+            "D8ReasonForDivorceLimitReasons": "NO",
+            "D8ReasonForDivorceEnableAdultery": "YES",
+            "D8ClaimsCostsAppliedForFees": "YES",
+            "D8ReasonForDivorceClaimingAdultery": "NO",
+            "D8MarriageCanDivorce": "YES",
+            "D8MarriagePetitionerName": "John Doe",
+            "D8MarriageRespondentName": "Jenny Benny",
+            "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+            "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+            "D8Connections": {
+              "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+              "C": "The Respondent is habitually resident in England and Wales"
+            },
+            "D8ReasonForDivorceHasMarriage": "YES",
+            "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+            "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+            "D8Cohort": "onlineSubmissionPrivateBeta",
+            "D8InferredPetitionerGender": "female",
+            "D8InferredRespondentGender": "male"
           },
           "type": "divorcedraft",
           "max_age": 150
@@ -2264,110 +2237,101 @@
         {
           "name": "A logged in user requests to create a draft",
           "params": {
-            "data": {
-              "outsideUKGrantCopies": 6,
-              "applicationType": "Personal",
-              "deceasedAddress": {
-                "AddressLine2": "Westeros",
-                "AddressLine1": "Winterfell",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedAnyOtherNames": "No",
-              "primaryApplicantAddressFound": "Yes",
-              "deceasedAnyChildren": "No",
-              "uploadDocumentUrl": "http://document-management/document/12345",
-              "deceasedDateOfBirth": "1930-01-01",
-              "type": "GrantOfRepresentation",
-              "deceasedMartialStatus": "divorcedCivilPartnership",
-              "primaryApplicantEmailAddress": "someEmailAddress.com",
-              "deceasedAddressFound": "Yes",
-              "primaryApplicantRelationshipToDeceased": "adoptedChild",
-              "deceasedDateOfDeath": "2018-01-01",
-              "primaryApplicantForenames": "Jon",
-              "deceasedHasAssetsOutsideUK": "Yes",
-              "primaryApplicantAddress": {
-                "AddressLine2": "St. Georges Hospital",
-                "AddressLine1": "Pret a Manger",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedDivorcedInEnglandOrWales": "No",
-              "primaryApplicantPhoneNumber": "123455678",
-              "ihtNetValue": "100000",
-              "ihtReferenceNumber": "GOT123456",
-              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
-              "childrenDied": "No",
-              "deceasedSurname": "Stark",
-              "deceasedAliasNameList": [
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                },
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                }
-              ],
-              "extraCopiesOfGrant": 3,
-              "deceasedOtherChildren": "Yes",
-              "deceasedForenames": "Ned",
-              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
-              "assetsOverseasNetValue": "10050",
-              "executorsApplying": [
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                },
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                }
-              ],
-              "grandChildrenSurvivedUnderEighteen": "No",
-              "ihtFormCompletedOnline": "No",
-              "ihtGrossValue": "100000",
-              "registryLocation": "Oxford",
-              "ihtFormId": "IHT205",
-              "primaryApplicantSurname": "Snow",
-              "declarationCheckbox": "No",
-              "childrenOverEighteenSurvived": "Yes"
+            "createdDate": "2018-06-07",
+            "D8ScreenHasMarriageBroken": "YES",
+            "D8ScreenHasRespondentAddress": "YES",
+            "D8ScreenHasMarriageCert": "YES",
+            "D8ScreenHasPrinter": "YES",
+            "D8DivorceWho": "husband",
+            "D8MarriageIsSameSexCouple": "NO",
+            "D8MarriageDate": "2001-02-02",
+            "D8PetitionerNameDifferentToMarriageCert": "YES",
+            "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+            "D8PetitionerPhoneNumber": "01234567890",
+            "D8PetitionerFirstName": "John",
+            "D8PetitionerLastName": "Smith",
+            "D8DerivedPetitionerCurrentFullName": "John Smith",
+            "D8PetitionerNameChangedHow": [
+              "marriageCertificate"
+            ],
+            "D8PetitionerContactDetailsConfidential": "share",
+            "D8PetitionerHomeAddress": {
+              "PostCode": "SW9 9PE"
             },
-            "case_type": "GRANT_OF_REPRESENTATION",
-            "id": "654321",
-            "state": "Draft"
+            "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceAddress": {
+              "PostCode": "AB24 232"
+            },
+            "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+            "D8RespondentFirstName": "Jane",
+            "D8RespondentLastName": "Jamed",
+            "D8DerivedRespondentCurrentName": "Jane Jamed",
+            "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentHomeAddress": {
+              "PostCode": "SS SSS"
+            },
+            "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceAddress": {
+              "PostCode": "SW9 9PE"
+            },
+            "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+            "D8RespondentLivesAtLastAddress": "NO",
+            "D8LivingArrangementsLastLivedTogether": "NO",
+            "D8LivingArrangementsLiveTogether": "NO",
+            "D8LegalProceedings": "YES",
+            "D8LegalProceedingsRelated": [
+              "children"
+            ],
+            "D8LegalProceedingsDetails": "The legal proceeding details",
+            "D8ReasonForDivorce": "unreasonable-behaviour",
+            "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+            "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+            "D8ReasonForDivorceAdulteryIsNamed": "NO",
+            "D8FinancialOrder": "YES",
+            "D8FinancialOrderFor": [
+              "petitioner",
+              "children"
+            ],
+            "D8HelpWithFeesNeedHelp": "YES",
+            "D8HelpWithFeesAppliedForFees": "YES",
+            "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+            "D8DivorceCostsClaim": "YES",
+            "D8DivorceClaimFrom": [
+              "respondent"
+            ],
+            "D8JurisdictionConfidentLegal": "YES",
+            "D8JurisdictionConnection": [
+              "A",
+              "C"
+            ],
+            "D8JurisdictionPetitionerResidence": "YES",
+            "D8JurisdictionRespondentResidence": "YES",
+            "D8DivorceUnit": "eastMidlands",
+            "D8ReasonForDivorceShowAdultery": "YES",
+            "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+            "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+            "D8ReasonForDivorceShowDesertion": "YES",
+            "D8ReasonForDivorceLimitReasons": "NO",
+            "D8ReasonForDivorceEnableAdultery": "YES",
+            "D8ClaimsCostsAppliedForFees": "YES",
+            "D8ReasonForDivorceClaimingAdultery": "NO",
+            "D8MarriageCanDivorce": "YES",
+            "D8MarriagePetitionerName": "John Doe",
+            "D8MarriageRespondentName": "Jenny Benny",
+            "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+            "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+            "D8Connections": {
+              "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+              "C": "The Respondent is habitually resident in England and Wales"
+            },
+            "D8ReasonForDivorceHasMarriage": "YES",
+            "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+            "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+            "D8Cohort": "onlineSubmissionPrivateBeta",
+            "D8InferredPetitionerGender": "female",
+            "D8InferredRespondentGender": "male"
           }
         }
       ]
@@ -2385,110 +2349,101 @@
         },
         "body": {
           "document": {
-            "data": {
-              "outsideUKGrantCopies": 6,
-              "applicationType": "Personal",
-              "deceasedAddress": {
-                "AddressLine2": "Westeros",
-                "AddressLine1": "Winterfell",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedAnyOtherNames": "No",
-              "primaryApplicantAddressFound": "Yes",
-              "deceasedAnyChildren": "No",
-              "uploadDocumentUrl": "http://document-management/document/12345",
-              "deceasedDateOfBirth": "1930-01-01",
-              "type": "GrantOfRepresentation",
-              "deceasedMartialStatus": "divorcedCivilPartnership",
-              "primaryApplicantEmailAddress": "someEmailAddress.com",
-              "deceasedAddressFound": "Yes",
-              "primaryApplicantRelationshipToDeceased": "adoptedChild",
-              "deceasedDateOfDeath": "2018-01-01",
-              "primaryApplicantForenames": "Jon",
-              "deceasedHasAssetsOutsideUK": "Yes",
-              "primaryApplicantAddress": {
-                "AddressLine2": "St. Georges Hospital",
-                "AddressLine1": "Pret a Manger",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedDivorcedInEnglandOrWales": "No",
-              "primaryApplicantPhoneNumber": "123455678",
-              "ihtNetValue": "100000",
-              "ihtReferenceNumber": "GOT123456",
-              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
-              "childrenDied": "No",
-              "deceasedSurname": "Stark",
-              "deceasedAliasNameList": [
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                },
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                }
-              ],
-              "extraCopiesOfGrant": 3,
-              "deceasedOtherChildren": "Yes",
-              "deceasedForenames": "Ned",
-              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
-              "assetsOverseasNetValue": "10050",
-              "executorsApplying": [
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                },
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                }
-              ],
-              "grandChildrenSurvivedUnderEighteen": "No",
-              "ihtFormCompletedOnline": "No",
-              "ihtGrossValue": "100000",
-              "registryLocation": "Oxford",
-              "ihtFormId": "IHT205",
-              "primaryApplicantSurname": "Snow",
-              "declarationCheckbox": "No",
-              "childrenOverEighteenSurvived": "Yes"
+            "createdDate": "2018-06-07",
+            "D8ScreenHasMarriageBroken": "YES",
+            "D8ScreenHasRespondentAddress": "YES",
+            "D8ScreenHasMarriageCert": "YES",
+            "D8ScreenHasPrinter": "YES",
+            "D8DivorceWho": "husband",
+            "D8MarriageIsSameSexCouple": "NO",
+            "D8MarriageDate": "2001-02-02",
+            "D8PetitionerNameDifferentToMarriageCert": "YES",
+            "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+            "D8PetitionerPhoneNumber": "01234567890",
+            "D8PetitionerFirstName": "John",
+            "D8PetitionerLastName": "Smith",
+            "D8DerivedPetitionerCurrentFullName": "John Smith",
+            "D8PetitionerNameChangedHow": [
+              "marriageCertificate"
+            ],
+            "D8PetitionerContactDetailsConfidential": "share",
+            "D8PetitionerHomeAddress": {
+              "PostCode": "SW9 9PE"
             },
-            "case_type": "GRANT_OF_REPRESENTATION",
-            "id": "654321",
-            "state": "Draft"
+            "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceAddress": {
+              "PostCode": "AB24 232"
+            },
+            "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+            "D8RespondentFirstName": "Jane",
+            "D8RespondentLastName": "Jamed",
+            "D8DerivedRespondentCurrentName": "Jane Jamed",
+            "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentHomeAddress": {
+              "PostCode": "SS SSS"
+            },
+            "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceAddress": {
+              "PostCode": "SW9 9PE"
+            },
+            "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+            "D8RespondentLivesAtLastAddress": "NO",
+            "D8LivingArrangementsLastLivedTogether": "NO",
+            "D8LivingArrangementsLiveTogether": "NO",
+            "D8LegalProceedings": "YES",
+            "D8LegalProceedingsRelated": [
+              "children"
+            ],
+            "D8LegalProceedingsDetails": "The legal proceeding details",
+            "D8ReasonForDivorce": "unreasonable-behaviour",
+            "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+            "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+            "D8ReasonForDivorceAdulteryIsNamed": "NO",
+            "D8FinancialOrder": "YES",
+            "D8FinancialOrderFor": [
+              "petitioner",
+              "children"
+            ],
+            "D8HelpWithFeesNeedHelp": "YES",
+            "D8HelpWithFeesAppliedForFees": "YES",
+            "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+            "D8DivorceCostsClaim": "YES",
+            "D8DivorceClaimFrom": [
+              "respondent"
+            ],
+            "D8JurisdictionConfidentLegal": "YES",
+            "D8JurisdictionConnection": [
+              "A",
+              "C"
+            ],
+            "D8JurisdictionPetitionerResidence": "YES",
+            "D8JurisdictionRespondentResidence": "YES",
+            "D8DivorceUnit": "eastMidlands",
+            "D8ReasonForDivorceShowAdultery": "YES",
+            "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+            "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+            "D8ReasonForDivorceShowDesertion": "YES",
+            "D8ReasonForDivorceLimitReasons": "NO",
+            "D8ReasonForDivorceEnableAdultery": "YES",
+            "D8ClaimsCostsAppliedForFees": "YES",
+            "D8ReasonForDivorceClaimingAdultery": "NO",
+            "D8MarriageCanDivorce": "YES",
+            "D8MarriagePetitionerName": "John Doe",
+            "D8MarriageRespondentName": "Jenny Benny",
+            "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+            "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+            "D8Connections": {
+              "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+              "C": "The Respondent is habitually resident in England and Wales"
+            },
+            "D8ReasonForDivorceHasMarriage": "YES",
+            "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+            "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+            "D8Cohort": "onlineSubmissionPrivateBeta",
+            "D8InferredPetitionerGender": "female",
+            "D8InferredRespondentGender": "male"
           },
           "type": "divorcedraft"
         }
@@ -2500,110 +2455,101 @@
         {
           "name": "A logged in user requests to update a draft",
           "params": {
-            "data": {
-              "outsideUKGrantCopies": 6,
-              "applicationType": "Personal",
-              "deceasedAddress": {
-                "AddressLine2": "Westeros",
-                "AddressLine1": "Winterfell",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedAnyOtherNames": "No",
-              "primaryApplicantAddressFound": "Yes",
-              "deceasedAnyChildren": "No",
-              "uploadDocumentUrl": "http://document-management/document/12345",
-              "deceasedDateOfBirth": "1930-01-01",
-              "type": "GrantOfRepresentation",
-              "deceasedMartialStatus": "divorcedCivilPartnership",
-              "primaryApplicantEmailAddress": "someEmailAddress.com",
-              "deceasedAddressFound": "Yes",
-              "primaryApplicantRelationshipToDeceased": "adoptedChild",
-              "deceasedDateOfDeath": "2018-01-01",
-              "primaryApplicantForenames": "Jon",
-              "deceasedHasAssetsOutsideUK": "Yes",
-              "primaryApplicantAddress": {
-                "AddressLine2": "St. Georges Hospital",
-                "AddressLine1": "Pret a Manger",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedDivorcedInEnglandOrWales": "No",
-              "primaryApplicantPhoneNumber": "123455678",
-              "ihtNetValue": "100000",
-              "ihtReferenceNumber": "GOT123456",
-              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
-              "childrenDied": "No",
-              "deceasedSurname": "Stark",
-              "deceasedAliasNameList": [
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                },
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                }
-              ],
-              "extraCopiesOfGrant": 3,
-              "deceasedOtherChildren": "Yes",
-              "deceasedForenames": "Ned",
-              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
-              "assetsOverseasNetValue": "10050",
-              "executorsApplying": [
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                },
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                }
-              ],
-              "grandChildrenSurvivedUnderEighteen": "No",
-              "ihtFormCompletedOnline": "No",
-              "ihtGrossValue": "100000",
-              "registryLocation": "Oxford",
-              "ihtFormId": "IHT205",
-              "primaryApplicantSurname": "Snow",
-              "declarationCheckbox": "No",
-              "childrenOverEighteenSurvived": "Yes"
+            "createdDate": "2018-06-07",
+            "D8ScreenHasMarriageBroken": "YES",
+            "D8ScreenHasRespondentAddress": "YES",
+            "D8ScreenHasMarriageCert": "YES",
+            "D8ScreenHasPrinter": "YES",
+            "D8DivorceWho": "husband",
+            "D8MarriageIsSameSexCouple": "NO",
+            "D8MarriageDate": "2001-02-02",
+            "D8PetitionerNameDifferentToMarriageCert": "YES",
+            "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+            "D8PetitionerPhoneNumber": "01234567890",
+            "D8PetitionerFirstName": "John",
+            "D8PetitionerLastName": "Smith",
+            "D8DerivedPetitionerCurrentFullName": "John Smith",
+            "D8PetitionerNameChangedHow": [
+              "marriageCertificate"
+            ],
+            "D8PetitionerContactDetailsConfidential": "share",
+            "D8PetitionerHomeAddress": {
+              "PostCode": "SW9 9PE"
             },
-            "case_type": "GRANT_OF_REPRESENTATION",
-            "id": "654321",
-            "state": "Draft"
+            "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceAddress": {
+              "PostCode": "AB24 232"
+            },
+            "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+            "D8RespondentFirstName": "Jane",
+            "D8RespondentLastName": "Jamed",
+            "D8DerivedRespondentCurrentName": "Jane Jamed",
+            "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentHomeAddress": {
+              "PostCode": "SS SSS"
+            },
+            "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceAddress": {
+              "PostCode": "SW9 9PE"
+            },
+            "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+            "D8RespondentLivesAtLastAddress": "NO",
+            "D8LivingArrangementsLastLivedTogether": "NO",
+            "D8LivingArrangementsLiveTogether": "NO",
+            "D8LegalProceedings": "YES",
+            "D8LegalProceedingsRelated": [
+              "children"
+            ],
+            "D8LegalProceedingsDetails": "The legal proceeding details",
+            "D8ReasonForDivorce": "unreasonable-behaviour",
+            "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+            "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+            "D8ReasonForDivorceAdulteryIsNamed": "NO",
+            "D8FinancialOrder": "YES",
+            "D8FinancialOrderFor": [
+              "petitioner",
+              "children"
+            ],
+            "D8HelpWithFeesNeedHelp": "YES",
+            "D8HelpWithFeesAppliedForFees": "YES",
+            "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+            "D8DivorceCostsClaim": "YES",
+            "D8DivorceClaimFrom": [
+              "respondent"
+            ],
+            "D8JurisdictionConfidentLegal": "YES",
+            "D8JurisdictionConnection": [
+              "A",
+              "C"
+            ],
+            "D8JurisdictionPetitionerResidence": "YES",
+            "D8JurisdictionRespondentResidence": "YES",
+            "D8DivorceUnit": "eastMidlands",
+            "D8ReasonForDivorceShowAdultery": "YES",
+            "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+            "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+            "D8ReasonForDivorceShowDesertion": "YES",
+            "D8ReasonForDivorceLimitReasons": "NO",
+            "D8ReasonForDivorceEnableAdultery": "YES",
+            "D8ClaimsCostsAppliedForFees": "YES",
+            "D8ReasonForDivorceClaimingAdultery": "NO",
+            "D8MarriageCanDivorce": "YES",
+            "D8MarriagePetitionerName": "John Doe",
+            "D8MarriageRespondentName": "Jenny Benny",
+            "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+            "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+            "D8Connections": {
+              "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+              "C": "The Respondent is habitually resident in England and Wales"
+            },
+            "D8ReasonForDivorceHasMarriage": "YES",
+            "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+            "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+            "D8Cohort": "onlineSubmissionPrivateBeta",
+            "D8InferredPetitionerGender": "female",
+            "D8InferredRespondentGender": "male"
           }
         }
       ]
@@ -2625,110 +2571,101 @@
         {
           "name": "Drafts exists for a logged in user and delete is requested",
           "params": {
-            "data": {
-              "outsideUKGrantCopies": 6,
-              "applicationType": "Personal",
-              "deceasedAddress": {
-                "AddressLine2": "Westeros",
-                "AddressLine1": "Winterfell",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedAnyOtherNames": "No",
-              "primaryApplicantAddressFound": "Yes",
-              "deceasedAnyChildren": "No",
-              "uploadDocumentUrl": "http://document-management/document/12345",
-              "deceasedDateOfBirth": "1930-01-01",
-              "type": "GrantOfRepresentation",
-              "deceasedMartialStatus": "divorcedCivilPartnership",
-              "primaryApplicantEmailAddress": "someEmailAddress.com",
-              "deceasedAddressFound": "Yes",
-              "primaryApplicantRelationshipToDeceased": "adoptedChild",
-              "deceasedDateOfDeath": "2018-01-01",
-              "primaryApplicantForenames": "Jon",
-              "deceasedHasAssetsOutsideUK": "Yes",
-              "primaryApplicantAddress": {
-                "AddressLine2": "St. Georges Hospital",
-                "AddressLine1": "Pret a Manger",
-                "PostTown": "London",
-                "PostCode": "SW17 0QT"
-              },
-              "deceasedDivorcedInEnglandOrWales": "No",
-              "primaryApplicantPhoneNumber": "123455678",
-              "ihtNetValue": "100000",
-              "ihtReferenceNumber": "GOT123456",
-              "deceasedSpouseNotApplyingReason": "mentallyIncapable",
-              "childrenDied": "No",
-              "deceasedSurname": "Stark",
-              "deceasedAliasNameList": [
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                },
-                {
-                  "value": {
-                    "Forenames": "King",
-                    "LastName": "North"
-                  }
-                }
-              ],
-              "extraCopiesOfGrant": 3,
-              "deceasedOtherChildren": "Yes",
-              "deceasedForenames": "Ned",
-              "primaryApplicantAdoptionInEnglandOrWales": "Yes",
-              "assetsOverseasNetValue": "10050",
-              "executorsApplying": [
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                },
-                {
-                  "value": {
-                    "applyingExecutorLeadName": "Graham Garderner",
-                    "applyingExecutorOtherNames": "Graham Poll",
-                    "applyingExecutorPhoneNumber": "07981898999",
-                    "applyingExecutorAgreed": "Yes",
-                    "applyingExecutorAddress": {
-                      "AddressLine2": "Westeros",
-                      "AddressLine1": "Winterfell",
-                      "PostTown": "London",
-                      "PostCode": "SW17 0QT"
-                    },
-                    "applyingExecutorName": "Jon Snow",
-                    "applyingExecutorEmail": "address@email.com",
-                    "applyingExecutorInvitationId": "54321",
-                    "applyingExecutorOtherNamesReason": "Divorce"
-                  }
-                }
-              ],
-              "grandChildrenSurvivedUnderEighteen": "No",
-              "ihtFormCompletedOnline": "No",
-              "ihtGrossValue": "100000",
-              "registryLocation": "Oxford",
-              "ihtFormId": "IHT205",
-              "primaryApplicantSurname": "Snow",
-              "declarationCheckbox": "No",
-              "childrenOverEighteenSurvived": "Yes"
+            "createdDate": "2018-06-07",
+            "D8ScreenHasMarriageBroken": "YES",
+            "D8ScreenHasRespondentAddress": "YES",
+            "D8ScreenHasMarriageCert": "YES",
+            "D8ScreenHasPrinter": "YES",
+            "D8DivorceWho": "husband",
+            "D8MarriageIsSameSexCouple": "NO",
+            "D8MarriageDate": "2001-02-02",
+            "D8PetitionerNameDifferentToMarriageCert": "YES",
+            "D8PetitionerEmail": "simulate-delivered@notifications.service.gov.uk",
+            "D8PetitionerPhoneNumber": "01234567890",
+            "D8PetitionerFirstName": "John",
+            "D8PetitionerLastName": "Smith",
+            "D8DerivedPetitionerCurrentFullName": "John Smith",
+            "D8PetitionerNameChangedHow": [
+              "marriageCertificate"
+            ],
+            "D8PetitionerContactDetailsConfidential": "share",
+            "D8PetitionerHomeAddress": {
+              "PostCode": "SW9 9PE"
             },
-            "case_type": "GRANT_OF_REPRESENTATION",
-            "id": "654321",
-            "state": "Draft"
+            "D8DerivedPetitionerHomeAddress": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceAddress": {
+              "PostCode": "AB24 232"
+            },
+            "D8DerivedPetitionerCorrespondenceAddr": "84 Landor Road\nLondon\nSW9 9PE",
+            "D8PetitionerCorrespondenceUseHomeAddress": "NO",
+            "D8RespondentFirstName": "Jane",
+            "D8RespondentLastName": "Jamed",
+            "D8DerivedRespondentCurrentName": "Jane Jamed",
+            "D8DerivedRespondentSolicitorDetails": "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentHomeAddress": {
+              "PostCode": "SS SSS"
+            },
+            "D8DerivedRespondentHomeAddress": "88 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceAddress": {
+              "PostCode": "SW9 9PE"
+            },
+            "D8DerivedRespondentCorrespondenceAddr": "82 Landor Road\nLondon\nSW9 9PE",
+            "D8RespondentCorrespondenceUseHomeAddress": "Solicitor",
+            "D8RespondentLivesAtLastAddress": "NO",
+            "D8LivingArrangementsLastLivedTogether": "NO",
+            "D8LivingArrangementsLiveTogether": "NO",
+            "D8LegalProceedings": "YES",
+            "D8LegalProceedingsRelated": [
+              "children"
+            ],
+            "D8LegalProceedingsDetails": "The legal proceeding details",
+            "D8ReasonForDivorce": "unreasonable-behaviour",
+            "D8DerivedStatementOfCase": "My wife is having an affair this week.",
+            "D8ReasonForDivorceBehaviourDetails": "My wife is having an affair this week.",
+            "D8ReasonForDivorceAdulteryIsNamed": "NO",
+            "D8FinancialOrder": "YES",
+            "D8FinancialOrderFor": [
+              "petitioner",
+              "children"
+            ],
+            "D8HelpWithFeesNeedHelp": "YES",
+            "D8HelpWithFeesAppliedForFees": "YES",
+            "D8HelpWithFeesReferenceNumber": "HWF-123-456",
+            "D8DivorceCostsClaim": "YES",
+            "D8DivorceClaimFrom": [
+              "respondent"
+            ],
+            "D8JurisdictionConfidentLegal": "YES",
+            "D8JurisdictionConnection": [
+              "A",
+              "C"
+            ],
+            "D8JurisdictionPetitionerResidence": "YES",
+            "D8JurisdictionRespondentResidence": "YES",
+            "D8DivorceUnit": "eastMidlands",
+            "D8ReasonForDivorceShowAdultery": "YES",
+            "D8ReasonForDivorceShowUnreasonableBehavi": "YES",
+            "D8ReasonForDivorceShowTwoYearsSeparation": "YES",
+            "D8ReasonForDivorceShowDesertion": "YES",
+            "D8ReasonForDivorceLimitReasons": "NO",
+            "D8ReasonForDivorceEnableAdultery": "YES",
+            "D8ClaimsCostsAppliedForFees": "YES",
+            "D8ReasonForDivorceClaimingAdultery": "NO",
+            "D8MarriageCanDivorce": "YES",
+            "D8MarriagePetitionerName": "John Doe",
+            "D8MarriageRespondentName": "Jenny Benny",
+            "D8DerivedRespondentSolicitorAddr": "90 Landor Road\nLondon\nSW9 9PE",
+            "D8DerivedLivingArrangementsLastLivedAddr": "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE",
+            "D8Connections": {
+              "A": "The Petitioner and the Respondent are habitually resident in England and Wales",
+              "C": "The Respondent is habitually resident in England and Wales"
+            },
+            "D8ReasonForDivorceHasMarriage": "YES",
+            "D8ReasonForDivorceShowFiveYearsSeparatio": "YES",
+            "D8ReasonForDivorceClaiming5YearSeparatio": "NO",
+            "D8Cohort": "onlineSubmissionPrivateBeta",
+            "D8InferredPetitionerGender": "female",
+            "D8InferredRespondentGender": "male"
           }
         }
       ]
