@@ -62,7 +62,10 @@ public class CaseRetrievalStateMapTest {
     public void respondentCaseStateGroupingStateTest() {
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.INCOMPLETE))
             .contains(
-                CaseState.AOS_STARTED
+                CaseState.AOS_STARTED,
+                CaseState.AWAITING_ALTERNATIVE_SERVICE,
+                CaseState.AWAITING_PROCESS_SERVER_SERVICE,
+                CaseState.AWAITING_DWP_RESPONSE
             );
 
         assertThat(RESPONDENT_CASE_STATE_GROUPING.get(CaseStateGrouping.COMPLETE))
