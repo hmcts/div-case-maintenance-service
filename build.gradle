@@ -120,7 +120,6 @@ def versions = [
     gradlePitest: '1.5.2',
     guava: '28.1-jre',
     idamClient: '1.1.0',
-    jackson: '2.10.0',
     jsonAssert: '1.2.3',
     junit: '4.12',
     lombok: '1.18.12',
@@ -168,7 +167,7 @@ dependencies {
         }
 
     implementation group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
-    implementation (group: 'com.fasterxml.jackson.core', name:'jackson-databind', version: versions.jackson) {
+    implementation (group: 'com.fasterxml.jackson.core', name:'jackson-databind', version: versions.jacksonDatabind) {
         force = true
     }
 
