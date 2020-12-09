@@ -26,9 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
-@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "ccd", port = "8891")
+@PactTestFor(providerName = "ccdDataStoreAPI_Cases", port = "8891")
 @PactFolder("pacts")
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
