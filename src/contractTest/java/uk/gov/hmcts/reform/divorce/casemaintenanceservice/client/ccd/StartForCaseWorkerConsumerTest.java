@@ -5,13 +5,10 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.json.JSONException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.CcdConsumerTestBase;
 
@@ -27,36 +24,11 @@ public class StartForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
     public static final String EVENT_ID = "eventId";
 
-    private Map<String, Object> caseDetailsMap;
-    private CaseDataContent caseDataContent;
-
-
-    @BeforeAll
-    public void setUp() throws Exception {
-        Thread.sleep(2000);
-        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
-        caseDataContent = CaseDataContent.builder()
-            .eventToken("someEventToken")
-            .event(
-                Event.builder()
-                    .id(createEventId)
-                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
-                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
-                    .build()
-            ).data(caseDetailsMap.get("case_data"))
-            .build();
-    }
-
-    @BeforeEach
-    public void setUpEachTest() throws InterruptedException {
-        Thread.sleep(2000);
-    }
-
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact startForCaseWorker(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Start for a Caseworker is requested", getCaseDataContentAsMap(caseDataContent))
+            .given("A Start for a Caseworker is requested", setUpStateMapForProviderWithoutCaseData())
             .uponReceiving("A Start for a Caseworker")
             .path("/caseworkers/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"
@@ -90,8 +62,8 @@ public class StartForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     }
 
     @Override
-    protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
-        Map<String, Object> caseDataContentMap = super.getCaseDataContentAsMap(caseDataContent);
+    protected Map<String, Object> setUpStateMapForProviderWithoutCaseData() throws JSONException {
+        Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithoutCaseData();
         caseDataContentMap.put(EVENT_ID, createEventId);
         return caseDataContentMap;
     }

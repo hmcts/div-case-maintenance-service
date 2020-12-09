@@ -1,26 +1,12 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.Event;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Map;
 
 
-public final  class PactDslFixtureHelper {
-
-
-    public static final String CREATE_EVENT = "create";
-    @Autowired
-    private ObjectMapper objectMapper;
+public final class PactDslFixtureHelper {
 
     public static final String SOME_AUTHORIZATION_TOKEN = "Bearer UserAuthToken";
     public static final String SOME_SERVICE_AUTHORIZATION_TOKEN = "ServiceToken";
@@ -39,16 +25,11 @@ public final  class PactDslFixtureHelper {
 
         final String caseData = ResourceLoader.loadJson(payloadPath);
 
-        final StartEventResponse startEventResponse = StartEventResponse.builder()
-            .eventId(eventId)
-            .token(SOME_AUTHORIZATION_TOKEN)
-            .build();
-
         final CaseDataContent caseDataContent = CaseDataContent.builder()
-            .eventToken(startEventResponse.getToken())
+            .eventToken(SOME_AUTHORIZATION_TOKEN)
             .event(
                 Event.builder()
-                    .id(startEventResponse.getEventId())
+                    .id(eventId)
                     .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
                     .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
                     .build()
@@ -56,14 +37,4 @@ public final  class PactDslFixtureHelper {
             .build();
         return caseDataContent;
     }
-
-    private File getFile(String fileName) throws FileNotFoundException {
-        return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
-    }
-
-    protected CaseDetails getCaseDetails(String fileName) throws JSONException, IOException {
-        File file = getFile(fileName);
-        return  objectMapper.readValue(file, CaseDetails.class);
-    }
-
 }

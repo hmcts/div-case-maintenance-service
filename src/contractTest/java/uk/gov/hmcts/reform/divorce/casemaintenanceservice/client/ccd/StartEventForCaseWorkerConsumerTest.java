@@ -5,13 +5,11 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.json.JSONException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.CcdConsumerTestBase;
 
@@ -26,26 +24,6 @@ public class StartEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
     public static final String HWF_APPLICATION_ACCEPTED = "hwfApplicationAccepted";
 
-    private Map<String, Object> caseDetailsMap;
-    private CaseDataContent caseDataContent;
-
-
-    @BeforeAll
-    public void setUp() throws Exception {
-        Thread.sleep(2000);
-        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
-        caseDataContent = CaseDataContent.builder()
-            .eventToken("someEventToken")
-            .event(
-                Event.builder()
-                    .id(createEventId)
-                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
-                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
-                    .build()
-            ).data(caseDetailsMap.get("case_data"))
-            .build();
-    }
-
     @BeforeEach
     public void setUpEachTest() throws InterruptedException {
         Thread.sleep(2000);
@@ -55,7 +33,7 @@ public class StartEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     RequestResponsePact startEventForCaseWorker(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Start Event for a Caseworker is  requested",getCaseDataContentAsMap(caseDataContent))
+            .given("A Start Event for a Caseworker is  requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Start Event for a Caseworker")
             .path("/caseworkers/" + USER_ID + "/jurisdictions/"
                 + jurisdictionId + "/case-types/"
@@ -87,8 +65,8 @@ public class StartEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     }
 
     @Override
-    protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
-        Map<String, Object> caseDataContentMap = super.getCaseDataContentAsMap(caseDataContent);
+    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) throws JSONException {
+        Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithCaseData(caseDataContent);
         caseDataContentMap.put(EVENT_ID, HWF_APPLICATION_ACCEPTED);
         return caseDataContentMap;
     }

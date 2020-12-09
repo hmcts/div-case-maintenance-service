@@ -5,9 +5,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
-import org.junit.After;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +25,9 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 
 public class SubmitForCitizenConsumerTest extends CcdConsumerTestBase {
 
-    private CaseDataContent caseDataContent;
-
     private static final String VALID_PAYLOAD_PATH = "json/divorce-submit.json";
 
+    @Override
     @BeforeAll
     public void setUp() throws Exception {
         Thread.sleep(2000);
@@ -46,16 +43,11 @@ public class SubmitForCitizenConsumerTest extends CcdConsumerTestBase {
             .build();
     }
 
-    @After
-    public void teardown() {
-        Executor.closeIdleConnections();
-    }
-
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact submitForCitizen(PactDslWithProvider builder) throws Exception  {
         // @formatter:off
         return builder
-            .given("A Submit for a Citizen is requested", getCaseDataContentAsMap(caseDataContent))
+            .given("A Submit for a Citizen is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Submit For a Citizen")
             .path("/citizens/"
                 + USER_ID
@@ -90,8 +82,8 @@ public class SubmitForCitizenConsumerTest extends CcdConsumerTestBase {
     }
 
     @Override
-    protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
-        Map<String, Object> caseDataContentMap = super.getCaseDataContentAsMap(caseDataContent);
+    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) throws JSONException {
+        Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithCaseData(caseDataContent);
         caseDataContentMap.put(EVENT_ID, createEventId);
         return caseDataContentMap;
     }

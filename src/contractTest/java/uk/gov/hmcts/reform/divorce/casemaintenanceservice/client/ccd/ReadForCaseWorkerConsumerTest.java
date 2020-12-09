@@ -4,50 +4,23 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
-import org.junit.After;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.Event;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.CcdConsumerTestBase;
-
-import java.io.IOException;
-import java.util.Map;
 
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.AssertionHelper.assertCaseDetails;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 
 public class ReadForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
-    private Map<String, Object> caseDetailsMap;
-    private CaseDataContent caseDataContent;
-
-    @BeforeAll
-    public void setUp() throws Exception {
-        Thread.sleep(2000);
-        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
-        caseDataContent = CaseDataContent.builder()
-            .eventToken("someEventToken")
-            .event(
-                Event.builder()
-                    .id(createEventId)
-                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
-                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
-                    .build()
-            ).data(caseDetailsMap.get("case_data"))
-            .build();
-    }
-
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     RequestResponsePact readForCaseDetails(PactDslWithProvider builder) {
         // @formatter:off
         return builder
-            .given("A Read for a Caseworker is requested", getCaseDataContentAsMap(caseDataContent))
+            .given("A Read for a Caseworker is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Read For a Caseworker")
             .path("/caseworkers/"
                 + USER_ID
@@ -70,7 +43,7 @@ public class ReadForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
     @Test
     @PactTestFor(pactMethod = "readForCaseDetails")
-    public void verifyReadForCaseDetails() throws IOException, JSONException {
+    public void verifyReadForCaseDetails() throws JSONException {
 
         CaseDetails caseDetailsReponse = coreCaseDataApi.readForCaseWorker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
@@ -78,11 +51,6 @@ public class ReadForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
         assertCaseDetails(caseDetailsReponse);
 
-    }
-
-    @After
-    void teardown() {
-        Executor.closeIdleConnections();
     }
 
 }

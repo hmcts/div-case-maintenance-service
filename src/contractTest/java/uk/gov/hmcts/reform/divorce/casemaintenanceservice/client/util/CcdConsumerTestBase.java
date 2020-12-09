@@ -6,9 +6,8 @@ import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
-import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.Event;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,11 +36,12 @@ import java.util.Map;
 public abstract class CcdConsumerTestBase {
 
     public static final String JURISDICTION = "jurisdictionId";
-    public static final String CASE_TYPE = " caseType";
+    public static final String CASE_TYPE = "caseType";
     public static final String CASEWORKER_USERNAME = "caseworkerUsername";
     public static final String CASEWORKER_PASSWORD = "caseworkerPassword";
     public static final String CASE_DATA_CONTENT = "caseDataContent";
     public static final String EVENT_ID = "eventId";
+    public static final String HWF_APPLICATION_ACCEPTED = "hwfApplicationAccepted";
 
     @Autowired
     protected CoreCaseDataApi coreCaseDataApi;
@@ -60,6 +61,9 @@ public abstract class CcdConsumerTestBase {
     @Value("${idam.caseworker.password}")
     protected String caseworkerPwd;
 
+    protected Map<String, Object> caseDetailsMap;
+    protected CaseDataContent caseDataContent;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -74,33 +78,53 @@ public abstract class CcdConsumerTestBase {
     protected static final String DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION = "Submitting Divorce Case";
 
 
+    @BeforeAll
+    public void setUp() throws Exception {
+        Thread.sleep(2000);
+        caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
+        caseDataContent = CaseDataContent.builder()
+            .eventToken("someEventToken")
+            .event(
+                Event.builder()
+                    .id(createEventId)
+                    .summary(DIVORCE_CASE_SUBMISSION_EVENT_SUMMARY)
+                    .description(DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION)
+                    .build()
+            ).data(caseDetailsMap.get("case_data"))
+            .build();
+    }
+
     @AfterEach
     void teardown() {
         Executor.closeIdleConnections();
     }
 
 
-    private File getFile(String fileName) throws FileNotFoundException {
-        return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
-    }
-
     protected Map<String, Object> getCaseDetailsAsMap(String fileName) throws JSONException, IOException {
         File file = getFile(fileName);
-        CaseDetails caseDetails =   objectMapper.readValue(file, CaseDetails.class);
+        CaseDetails caseDetails = objectMapper.readValue(file, CaseDetails.class);
         Map<String, Object> map = objectMapper.convertValue(caseDetails, Map.class);
         return map;
     }
 
-    protected Map<String, Object> getCaseDataContentAsMap(CaseDataContent caseDataContent) throws JSONException {
+    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) throws JSONException {
+        Map<String, Object> map = this.setUpStateMapForProviderWithoutCaseData();
         Map<String, Object> caseDataContentMap = objectMapper.convertValue(caseDataContent, Map.class);
+        map.put(CASE_DATA_CONTENT, caseDataContentMap);
+        return map;
+    }
+
+    protected Map<String, Object> setUpStateMapForProviderWithoutCaseData() {
         Map<String, Object> map = new HashMap<>();
         map.put(JURISDICTION, jurisdictionId);
         map.put(CASE_TYPE, caseType);
         map.put(CASEWORKER_USERNAME, caseworkerUsername);
         map.put(CASEWORKER_PASSWORD, caseworkerPwd);
-        map.put(CASE_DATA_CONTENT, caseDataContentMap);
         return map;
     }
 
+    private File getFile(String fileName) throws FileNotFoundException {
+        return org.springframework.util.ResourceUtils.getFile(this.getClass().getResource("/json/" + fileName));
+    }
 
 }
