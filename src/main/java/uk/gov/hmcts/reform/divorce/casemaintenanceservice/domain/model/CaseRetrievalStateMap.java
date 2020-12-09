@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +47,10 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_AWAITING_SOL,
                 CaseState.CLARIFICATION_SUBMITTED,
                 CaseState.AWAITING_ADMIN_CLARIFICATION,
-                CaseState.SERVICE_APPLICATION_NOT_APPROVED
+                CaseState.SERVICE_APPLICATION_NOT_APPROVED,
+                CaseState.AWAITING_ALTERNATIVE_SERVICE,
+                CaseState.AWAITING_PROCESS_SERVER_SERVICE,
+                CaseState.AWAITING_DWP_RESPONSE
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
                 CaseState.AMEND_PETITION,
@@ -58,7 +60,12 @@ public class CaseRetrievalStateMap {
 
     public static final Map<CaseStateGrouping, List<CaseState>> RESPONDENT_CASE_STATE_GROUPING =
         ImmutableMap.of(
-            CaseStateGrouping.INCOMPLETE, Collections.singletonList(CaseState.AOS_STARTED),
+            CaseStateGrouping.INCOMPLETE, Arrays.asList(
+                CaseState.AOS_STARTED,
+                CaseState.AWAITING_ALTERNATIVE_SERVICE,
+                CaseState.AWAITING_PROCESS_SERVER_SERVICE,
+                CaseState.AWAITING_DWP_RESPONSE
+            ),
             CaseStateGrouping.COMPLETE, Arrays.asList(
                 CaseState.SUBMITTED,
                 CaseState.ISSUED,
