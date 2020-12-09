@@ -120,6 +120,7 @@ def versions = [
     gradlePitest: '1.5.2',
     guava: '28.1-jre',
     idamClient: '1.1.0',
+    jackson: '2.11.0',
     jsonAssert: '1.2.3',
     junit: '4.12',
     lombok: '1.18.12',
@@ -138,7 +139,6 @@ def versions = [
     springSecurityCrypto: '5.2.4.RELEASE',
     springSecurityRsa: '1.0.8.RELEASE',
     tomcat: '9.0.40',
-    jacksonDatabind: '2.11.0',
     unirest: '1.4.9',
     wiremockVersion: '2.8.0',
     pact_version: '4.1.7',
@@ -167,7 +167,7 @@ dependencies {
         }
 
     implementation group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
-    implementation (group: 'com.fasterxml.jackson.core', name:'jackson-databind', version: versions.jacksonDatabind) {
+    implementation (group: 'com.fasterxml.jackson.core', name:'jackson-databind', version: versions.jackson) {
         force = true
     }
 
@@ -347,11 +347,11 @@ dependencies {
     contractTestCompile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: versions.httpComponents
 
     contractTestCompile group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
-    contractTestCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksonDatabind
+    contractTestCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
     contractTestCompile group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
     contractTestRuntime group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
     contractTestRuntime group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
-    contractTestRuntime group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksonDatabind
+    contractTestRuntime group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
 
     contractTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
     contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.3.2")
