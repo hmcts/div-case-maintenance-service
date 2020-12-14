@@ -48,7 +48,9 @@ public class CaseRetrievalStateMapTest {
                 CaseState.SERVICE_APPLICATION_NOT_APPROVED,
                 CaseState.AWAITING_ALTERNATIVE_SERVICE,
                 CaseState.AWAITING_PROCESS_SERVER_SERVICE,
-                CaseState.AWAITING_DWP_RESPONSE
+                CaseState.AWAITING_DWP_RESPONSE,
+                CaseState.AWAITING_GENERAL_REFERRAL_PAYMENT,
+                CaseState.GENERAL_CONSIDERATION_COMPLETE
             );
 
         assertThat(PETITIONER_CASE_STATE_GROUPING.get(CaseStateGrouping.AMEND))
@@ -94,7 +96,9 @@ public class CaseRetrievalStateMapTest {
                 CaseState.DN_DRAFTED,
                 CaseState.CLARIFICATION_SUBMITTED,
                 CaseState.AWAITING_ADMIN_CLARIFICATION,
-                CaseState.SERVICE_APPLICATION_NOT_APPROVED
+                CaseState.SERVICE_APPLICATION_NOT_APPROVED,
+                CaseState.AWAITING_GENERAL_REFERRAL_PAYMENT,
+                CaseState.GENERAL_CONSIDERATION_COMPLETE
             );
     }
 }
