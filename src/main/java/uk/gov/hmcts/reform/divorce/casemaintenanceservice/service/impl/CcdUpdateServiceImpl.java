@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -16,6 +18,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil.getBearerToken;
 
+@Slf4j
 @Service
 public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {
 
@@ -25,30 +28,40 @@ public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdat
         List<String> userRoles = Optional.ofNullable(
             userDetails.getUserDetails().getRoles()).orElse(Collections.emptyList()
         );
-
+        String call = "TEST VALUE";
         if (userRoles.contains(CASEWORKER_ROLE) && !userRoles.contains(CITIZEN_ROLE)) {
-            StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(
-                getBearerToken(authorisation),
-                getServiceAuthToken(),
-                userDetails.getUserDetails().getId(),
-                jurisdictionId,
-                caseType,
-                caseId,
-                eventId);
+            try {
+                call = "startEventForCaseWorker";
+                log.info("Calling coreCaseDataApi.{} event: {} - CaseID: {}",call , eventId, caseId);
+                StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(
+                    getBearerToken(authorisation),
+                    getServiceAuthToken(),
+                    userDetails.getUserDetails().getId(),
+                    jurisdictionId,
+                    caseType,
+                    caseId,
+                    eventId);
 
-            CaseDataContent caseDataContent = buildCaseDataContent(startEventResponse, data);
+                CaseDataContent caseDataContent = buildCaseDataContent(startEventResponse, data);
 
-            return coreCaseDataApi.submitEventForCaseWorker(
-                getBearerToken(authorisation),
-                getServiceAuthToken(),
-                userDetails.getUserDetails().getId(),
-                jurisdictionId,
-                caseType,
-                caseId,
-                true,
-                caseDataContent
-            );
+                log.info("Calling coreCaseDataApi.{} event: {} - CaseID: {}", call, eventId, caseId);
+                call = "submitEventForCaseWorker";
+                return coreCaseDataApi.submitEventForCaseWorker(
+                    getBearerToken(authorisation),
+                    getServiceAuthToken(),
+                    userDetails.getUserDetails().getId(),
+                    jurisdictionId,
+                    caseType,
+                    caseId,
+                    true,
+                    caseDataContent
+                );
+            } catch (FeignException exception) {
+                log.error("Call for coreCaseDataApi.{} failed. event: {} - CaseID: {} - Error: {}", call, eventId, caseId, exception.getMessage());
+            }
         }
+
+        log.error("TEST EXECUTE FOR CITIZEN");
 
         StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(
             getBearerToken(authorisation),
