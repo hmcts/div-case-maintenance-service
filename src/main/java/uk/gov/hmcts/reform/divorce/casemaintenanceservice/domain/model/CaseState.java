@@ -47,6 +47,8 @@ public enum CaseState {
     AWAITING_ALTERNATIVE_SERVICE("AwaitingAlternativeService", ApplicationStatus.AWAITING_ALTERNATIVE_SERVICE),
     AWAITING_PROCESS_SERVER_SERVICE("AwaitingProcessServerService", ApplicationStatus.AWAITING_PROCESS_SERVER_SERVICE),
     AWAITING_DWP_RESPONSE("AwaitingDWPResponse", ApplicationStatus.AWAITING_DWP_RESPONSE),
+    AWAITING_GENERAL_REFERRAL_PAYMENT("AwaitingGeneralReferralPayment", ApplicationStatus.AWAITING_GENERAL_REFERRAL_PAYMENT),
+    GENERAL_CONSIDERATION_COMPLETE("GeneralConsiderationComplete", ApplicationStatus.GENERAL_CONSIDERATION_COMPLETE),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;
