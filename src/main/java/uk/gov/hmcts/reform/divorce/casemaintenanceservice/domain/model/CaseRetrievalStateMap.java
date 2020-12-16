@@ -50,7 +50,9 @@ public class CaseRetrievalStateMap {
                 CaseState.SERVICE_APPLICATION_NOT_APPROVED,
                 CaseState.AWAITING_ALTERNATIVE_SERVICE,
                 CaseState.AWAITING_PROCESS_SERVER_SERVICE,
-                CaseState.AWAITING_DWP_RESPONSE
+                CaseState.AWAITING_DWP_RESPONSE,
+                CaseState.AWAITING_GENERAL_REFERRAL_PAYMENT,
+                CaseState.GENERAL_CONSIDERATION_COMPLETE
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
                 CaseState.AMEND_PETITION,
@@ -94,7 +96,9 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_AWAITING_SOL,
                 CaseState.CLARIFICATION_SUBMITTED,
                 CaseState.AWAITING_ADMIN_CLARIFICATION,
-                CaseState.SERVICE_APPLICATION_NOT_APPROVED)
+                CaseState.SERVICE_APPLICATION_NOT_APPROVED,
+                CaseState.AWAITING_GENERAL_REFERRAL_PAYMENT,
+                CaseState.GENERAL_CONSIDERATION_COMPLETE)
         );
 
 }
