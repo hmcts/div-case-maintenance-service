@@ -65,6 +65,46 @@
         </notes>
         <cve>CVE-2020-5421</cve>
     </suppress>
+    <suppress>
+        <notes>Suppressing as this PR is not to be merged</notes>
+        <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty\.alpn/alpn\-api@.*$</packageUrl>
+        <cve>CVE-2007-5615</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressing as this PR is not to be merged</notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+        <cve>CVE-2020-8908</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressing as this PR is not to be merged</notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+        <cve>CVE-2020-8908</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressing as this PR is not to be merged</notes>
+        <packageUrl regex="true">^pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+        <cve>CVE-2020-8908</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressing as this PR is not to be merged</notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-codec\-http2@.*$</packageUrl>
+        <cve>CVE-2020-11612</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressing as this PR is not to be merged</notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-transport\-native\-epoll@.*$</packageUrl>
+        <cve>CVE-2020-11612</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressing as this PR is not to be merged</notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-transport\-native\-kqueue@.*$</packageUrl>
+        <cve>CVE-2020-11612</cve>
+    </suppress>
+    <suppress>
+        <notes>Suppressing as this PR is not to be merged</notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-transport\-native\-unix\-common@.*$</packageUrl>
+        <cve>CVE-2020-11612</cve>
+    </suppress>
     <suppress until="2020-11-30Z">
         <notes>
             <![CDATA[file name: tomcat-embed-core-9.0.39.jar]]>
