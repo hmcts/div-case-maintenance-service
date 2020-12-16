@@ -61,7 +61,7 @@ public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdat
             }
         }
 
-        log.error("TEST EXECUTE FOR CITIZEN");
+        log.info("TEST EXECUTE FOR CITIZEN");
 
         StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(
             getBearerToken(authorisation),
