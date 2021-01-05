@@ -53,7 +53,9 @@ public class CaseStateTest {
                 {"Unknown", "DNCompleted"},
                 {"DaRequested", "DARequested"},
                 {"ClarificationSubmitted", "ClarificationSubmitted"},
-                {"AwaitingAdminClarification", "AwaitingAdminClarification"}
+                {"AwaitingAdminClarification", "AwaitingAdminClarification"},
+                {"AwaitingGeneralReferralPayment", "AwaitingGeneralReferralPayment"},
+                {"GeneralConsiderationComplete", "GeneralConsiderationComplete"}
         });
     }
 

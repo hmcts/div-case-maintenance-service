@@ -42,6 +42,8 @@ public enum ApplicationStatus {
     AWAITING_ALTERNATIVE_SERVICE("AwaitingAlternativeService"),
     AWAITING_PROCESS_SERVER_SERVICE("AwaitingProcessServerService"),
     AWAITING_DWP_RESPONSE("AwaitingDWPResponse"),
+    AWAITING_GENERAL_REFERRAL_PAYMENT("AwaitingGeneralReferralPayment"),
+    GENERAL_CONSIDERATION_COMPLETE("GeneralConsiderationComplete"),
     UNKNOWN("DNCompleted");
 
     private final String value;

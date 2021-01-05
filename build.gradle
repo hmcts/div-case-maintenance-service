@@ -118,7 +118,7 @@ def versions = [
     commonsLang3: '3.7',
     feignHttpClient: '10.2.0',
     gradlePitest: '1.5.2',
-    guava: '28.1-jre',
+    guava: '30.1-jre',
     idamClient: '1.1.0',
     jackson: '2.11.0',
     jsonAssert: '1.2.3',
