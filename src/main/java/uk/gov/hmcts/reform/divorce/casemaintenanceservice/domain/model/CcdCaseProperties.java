@@ -38,4 +38,6 @@ public class CcdCaseProperties {
     public static final String REJECTION_NO_JURISDICTION = "noJurisdiction";
     public static final String REJECTION_NO_CRITERIA = "noCriteria";
     public static final String REJECTION_INSUFFICIENT_DETAILS = "insufficentDetails";
+
+    public static final String DECREE_NISI_GRANTED = "DecreeNisiGranted";
 }

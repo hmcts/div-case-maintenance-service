@@ -70,6 +70,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.D_8_DIVORCE_WHO;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.D_8_HELP_WITH_FEES_NEED_HELP;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.D_8_REASON_FOR_DIVORCE;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.NO_VALUE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.YES_VALUE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
@@ -126,6 +127,27 @@ public class PetitionServiceImplUTest {
         expectedCaseData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
         expectedCaseData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE,
             singletonList(TEST_REASON_ADULTERY));
+        CaseDetails expected = CaseDetails.builder()
+            .data(expectedCaseData)
+            .build();
+
+        CaseDetails actual = classUnderTest.retrievePetition(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING);
+        assertEquals(expected, actual);
+        verifyCcdCaseDataToBeTransformed();
+        verify(ccdRetrievalService).retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
+    }
+
+    @Test
+    public void givenCcdRetrievalServiceReturnsDnRefusedAmendCase_whenRetrievePetition_thenReturnCaseAsDraft() {
+        final CaseDetails caseDetails = buildAdulteryCaseData();
+        caseDetails.getData().put(CcdCaseProperties.DECREE_NISI_GRANTED, NO_VALUE);
+
+        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(caseDetails);
+
+        Map<String, Object> expectedCaseData = new HashMap<>();
+        expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
+        expectedCaseData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
+        expectedCaseData.put(PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, singletonList(TEST_REASON_ADULTERY));
         CaseDetails expected = CaseDetails.builder()
             .data(expectedCaseData)
             .build();

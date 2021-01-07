@@ -36,6 +36,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.REJECTION_NO_JURISDICTION;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
+import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.CaseDataUtil.isDnRefused;
 
 @Service
 @Slf4j
@@ -67,7 +68,11 @@ public class PetitionServiceImpl implements PetitionService,
             // If draft does not exist or is not an AmendPetition case, return case as draft
             // Else assume AmendPetition draft already exists and ignore any retrieved case in AmendPetition state
             if (draft == null || !isAmendPetitionDraft(draft)) {
-                caseDetails = formatDraftCase(getDraftAmendmentCase(caseDetails, authorisation));
+                if (isDnRefused(caseDetails.getData())) {
+                    caseDetails = formatDraftCase(getDraftAmendmentCaseRefusal(caseDetails, authorisation));
+                } else {
+                    caseDetails = formatDraftCase(getDraftAmendmentCase(caseDetails, authorisation));
+                }
             } else {
                 caseDetails = null;
             }
