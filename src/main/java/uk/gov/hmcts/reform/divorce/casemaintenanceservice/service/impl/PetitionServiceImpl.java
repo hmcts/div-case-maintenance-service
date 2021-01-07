@@ -63,22 +63,33 @@ public class PetitionServiceImpl implements PetitionService,
         Draft draft = draftService.getDraft(authorisation);
 
         CaseDetails caseDetails = ccdRetrievalService.retrieveCase(authorisation, caseStateGrouping, PETITIONER);
+        log.info("Casedetails: {}", caseDetails);
+        Long caseId = new Long(123);
+        if (caseDetails != null) {
+            caseId = caseDetails.getId();
+        }
 
         if (caseDetails != null && CaseState.AMEND_PETITION.getValue().equalsIgnoreCase(caseDetails.getState())) {
+            log.info("Entering if statement 1: {}", caseId);
             // If draft does not exist or is not an AmendPetition case, return case as draft
             // Else assume AmendPetition draft already exists and ignore any retrieved case in AmendPetition state
             if (draft == null || !isAmendPetitionDraft(draft)) {
+                log.info("Entering if statement 2: {}", caseId);
                 if (isDnRefused(caseDetails.getData())) {
+                    log.info("Dn is refused: {}", caseId);
                     caseDetails = formatDraftCase(getDraftAmendmentCaseRefusal(caseDetails, authorisation));
                 } else {
+                    log.info("DN not refused: {}", caseId);
                     caseDetails = formatDraftCase(getDraftAmendmentCase(caseDetails, authorisation));
                 }
             } else {
+                log.info("return null: {}", caseId);
                 caseDetails = null;
             }
         }
 
         if (caseDetails == null && draft != null) {
+            log.info("Casedetails is null: {}", caseId);
             caseDetails = formatDraftCase(getFormattedPetition(draft, authorisation));
         }
 
