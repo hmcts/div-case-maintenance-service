@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: "1.0"
 description: Divorce - Case Maintenance Service
 name: div-cms
-version: 2.0.0
+version: 2.0.1
 dependencies:
     - name: java
       version: ~3.4.4
