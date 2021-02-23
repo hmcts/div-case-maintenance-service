@@ -103,7 +103,7 @@ public class CcdAccessServiceImplUTest {
     @Rule
     public ExpectedException expectedException = none();
 
-    @Mock
+    @Mock(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
     @Mock

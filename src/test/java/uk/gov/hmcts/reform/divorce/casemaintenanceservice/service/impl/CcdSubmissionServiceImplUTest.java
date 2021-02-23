@@ -55,7 +55,7 @@ public class CcdSubmissionServiceImplUTest {
 
     private static final String USER_ID = "someUserId";
 
-    @Mock
+    @Mock(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
     @Mock

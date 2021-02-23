@@ -116,7 +116,6 @@ def versions = [
     commonsBeanUtils: '1.9.4',
     commonsIo: '2.6',
     commonsLang3: '3.7',
-    feignHttpClient: '10.2.0',
     gradlePitest: '1.5.2',
     guava: '30.1-jre',
     idamClient: '1.1.0',
@@ -166,7 +165,6 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
 
-    implementation group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
     implementation (group: 'com.fasterxml.jackson.core', name:'jackson-databind', version: versions.jackson) {
         force = true
     }
@@ -271,7 +269,6 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
     integrationTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
-    integrationTestImplementation group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
 
     contractTestImplementation group: 'org.springframework', name: 'spring-context-support'
     contractTestImplementation (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')
@@ -282,7 +279,6 @@ dependencies {
                 exclude group: 'io.reactivex', module: 'rxnetty-servo'
             }
     contractTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
-    contractTestImplementation group: 'io.github.openfeign', name: 'feign-httpclient', version: versions.feignHttpClient
 
 }
 
