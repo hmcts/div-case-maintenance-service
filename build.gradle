@@ -313,7 +313,7 @@ dependencyManagement {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
 
         //CVE-2017-18640
-        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.26'
+        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.28'
 
         // solves CVE-2014-3488, CVE-2015-2156, CVE-2019-16869
         dependencySet(group: 'io.netty', version: '4.1.46.Final') {
@@ -327,7 +327,7 @@ dependencyManagement {
         }
 
         //CVE-2017-18640
-        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.26'
+        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.28'
 
         dependencySet(
             group: 'com.fasterxml.jackson.core',
