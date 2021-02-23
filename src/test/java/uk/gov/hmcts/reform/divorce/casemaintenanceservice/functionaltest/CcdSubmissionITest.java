@@ -84,7 +84,7 @@ public class CcdSubmissionITest extends MockSupport {
     private MockMvc webClient;
 
 
-    @MockBean
+    @MockBean(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
     @Test

@@ -70,7 +70,7 @@ public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSu
     @Autowired
     private MockMvc webClient;
 
-    @MockBean
+    @MockBean(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
     @Value("${ccd.jurisdictionid}")

@@ -46,7 +46,7 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
     @Value("${ccd.casetype}")
     private String caseType;
 
-    @MockBean
+    @MockBean(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
     @Autowired
