@@ -14,6 +14,7 @@ public enum ApplicationStatus {
     AOS_STARTED("AosStarted"),
     AOS_OVERDUE("AosOverdue"),
     AOS_COMPLETED("AosCompleted"),
+    AOS_DRAFTED("AosDrafted"),
     AWAITING_REISSUE("AwaitingReissue"),
     AWAITING_DECREE_NISI("AwaitingDecreeNisi"),
     DN_DRAFTED("DNDrafted"),

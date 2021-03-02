@@ -30,6 +30,7 @@ public class CaseRetrievalStateMapTest {
                 CaseState.AOS_STARTED,
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
+                CaseState.AOS_DRAFTED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AWAITING_CONSIDERATION_DN,
                 CaseState.AOS_COMPLETED,
