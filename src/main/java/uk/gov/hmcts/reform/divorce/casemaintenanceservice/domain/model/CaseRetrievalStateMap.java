@@ -30,6 +30,7 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_STARTED,
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
+                CaseState.AOS_DRAFTED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AOS_COMPLETED,
                 CaseState.AWAITING_DECREE_NISI,

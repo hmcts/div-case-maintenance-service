@@ -18,6 +18,7 @@ public enum CaseState {
     AOS_AWAITING("AosAwaiting", ApplicationStatus.AOS_AWAITING),
     AOS_STARTED("AosStarted", ApplicationStatus.AOS_STARTED),
     AOS_OVERDUE("AosOverdue", ApplicationStatus.AOS_OVERDUE),
+    AOS_DRAFTED("AosDrafted", ApplicationStatus.AOS_DRAFTED),
     AWAITING_REISSUE("AwaitingReissue", ApplicationStatus.AWAITING_REISSUE),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer", ApplicationStatus.AOS_SUBMITTED_AWAITING_ANSWER),
     AOS_COMPLETED("AosCompleted", ApplicationStatus.AOS_COMPLETED),
