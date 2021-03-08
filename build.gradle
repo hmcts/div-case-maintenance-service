@@ -136,7 +136,7 @@ def versions = [
     springfoxSwagger: '2.9.2',
     springSecurityCrypto: '5.4.5',
     springSecurityRsa: '1.0.8.RELEASE',
-    tomcat: '9.0.40',
+    tomcat: '9.0.43',
     unirest: '1.4.9',
     wiremockVersion: '2.8.0',
     pact_version: '4.1.7',
