@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -16,16 +17,18 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil.getBearerToken;
 
+@Slf4j
 @Service
 public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdateService {
 
     @Override
     public CaseDetails update(String caseId, Object data, String eventId, String authorisation) {
+        log.debug("caseId: {}, eventId: {}, auth: {} \n data: {}", caseId, eventId, authorisation, data);
         User userDetails = getUser(authorisation);
         List<String> userRoles = Optional.ofNullable(
             userDetails.getUserDetails().getRoles()).orElse(Collections.emptyList()
         );
-
+        log.debug("started CCDApi:startEventForCaseWorker for case {}", caseId);
         if (userRoles.contains(CASEWORKER_ROLE) && !userRoles.contains(CITIZEN_ROLE)) {
             StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(
                 getBearerToken(authorisation),
@@ -49,6 +52,8 @@ public class CcdUpdateServiceImpl extends BaseCcdCaseService implements CcdUpdat
                 caseDataContent
             );
         }
+
+        log.debug("started CCDApi:startEventForCitizen for case {}", caseId);
 
         StartEventResponse startEventResponse = coreCaseDataApi.startEventForCitizen(
             getBearerToken(authorisation),
