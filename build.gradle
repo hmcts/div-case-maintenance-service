@@ -140,7 +140,7 @@ def versions = [
     springSecurityRsa: '1.0.9.RELEASE',
     tomcat: '9.0.43',
     unirest: '1.4.9',
-    wiremockVersion: '2.8.0'
+    wiremockVersion: '2.27.2'
 ]
 
 dependencies {
