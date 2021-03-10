@@ -41,6 +41,7 @@ public enum ApplicationStatus {
     DN_PRONOUNCED("DNPronounced"),
     DN_STARTED("DNStarted"),
     GENERAL_CONSIDERATION_COMPLETE("GeneralConsiderationComplete"),
+    ISSUED_TO_BAILIFF("IssuedToBailiff"),
     PENDING_REJECTION("PendingRejection"),
     PETITION_COMPLETED("PetitionCompleted"),
     REJECTED("Rejected"),
