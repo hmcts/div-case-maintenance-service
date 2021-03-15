@@ -17,6 +17,7 @@ public enum CaseState {
     AOS_STARTED("AosStarted", ApplicationStatus.AOS_STARTED),
     AOS_SUBMITTED_AWAITING_ANSWER("AosSubmittedAwaitingAnswer", ApplicationStatus.AOS_SUBMITTED_AWAITING_ANSWER),
     AWAITING_ADMIN_CLARIFICATION("AwaitingAdminClarification", ApplicationStatus.AWAITING_ADMIN_CLARIFICATION),
+    AWAITING_BAILIFF_SERVICE("AwaitingBailiffService", ApplicationStatus.AWAITING_BAILIFF_SERVICE),
     AWAITING_ALTERNATIVE_SERVICE("AwaitingAlternativeService", ApplicationStatus.AWAITING_ALTERNATIVE_SERVICE),
     AWAITING_AMEND_CASE("AwaitingAmendCase", ApplicationStatus.AWAITING_AMEND_CASE),
     AWAITING_CLARIFICATION("AwaitingClarification", ApplicationStatus.AWAITING_CLARIFICATION),
