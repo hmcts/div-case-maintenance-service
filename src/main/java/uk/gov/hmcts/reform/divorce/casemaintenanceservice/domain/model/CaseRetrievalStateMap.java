@@ -53,7 +53,8 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_PROCESS_SERVER_SERVICE,
                 CaseState.AWAITING_DWP_RESPONSE,
                 CaseState.AWAITING_GENERAL_REFERRAL_PAYMENT,
-                CaseState.GENERAL_CONSIDERATION_COMPLETE
+                CaseState.GENERAL_CONSIDERATION_COMPLETE,
+                CaseState.ISSUED_TO_BAILIFF
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
                 CaseState.AMEND_PETITION,
