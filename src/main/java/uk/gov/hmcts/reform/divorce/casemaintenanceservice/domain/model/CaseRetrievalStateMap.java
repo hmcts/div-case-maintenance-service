@@ -33,6 +33,7 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_DRAFTED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AOS_COMPLETED,
+                CaseState.AWAITING_BAILIFF_SERVICE,
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_CLARIFICATION,
