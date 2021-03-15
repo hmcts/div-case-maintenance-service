@@ -22,3 +22,4 @@ java:
                 - draft-store-api-encryption-key
                 - idam-caseworker-username
                 - idam-caseworker-password
+                - AppInsightsInstrumentationKey
