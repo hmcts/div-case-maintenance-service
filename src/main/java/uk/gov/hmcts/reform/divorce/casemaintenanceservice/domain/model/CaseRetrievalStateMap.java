@@ -30,8 +30,10 @@ public class CaseRetrievalStateMap {
                 CaseState.AOS_STARTED,
                 CaseState.AOS_COMPLETED,
                 CaseState.AOS_OVERDUE,
+                CaseState.AOS_DRAFTED,
                 CaseState.AOS_SUBMITTED_AWAITING_ANSWER,
                 CaseState.AOS_COMPLETED,
+                CaseState.AWAITING_BAILIFF_SERVICE,
                 CaseState.AWAITING_DECREE_NISI,
                 CaseState.AWAITING_LEGAL_ADVISOR_REFERRAL,
                 CaseState.AWAITING_CLARIFICATION,
@@ -52,7 +54,8 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_PROCESS_SERVER_SERVICE,
                 CaseState.AWAITING_DWP_RESPONSE,
                 CaseState.AWAITING_GENERAL_REFERRAL_PAYMENT,
-                CaseState.GENERAL_CONSIDERATION_COMPLETE
+                CaseState.GENERAL_CONSIDERATION_COMPLETE,
+                CaseState.ISSUED_TO_BAILIFF
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
                 CaseState.AMEND_PETITION,

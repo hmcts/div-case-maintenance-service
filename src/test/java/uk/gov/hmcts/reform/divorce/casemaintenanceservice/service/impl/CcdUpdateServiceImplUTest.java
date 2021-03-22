@@ -45,7 +45,7 @@ public class CcdUpdateServiceImplUTest {
         (String)ReflectionTestUtils.getField(CcdSubmissionServiceImpl.class,
             "DIVORCE_CASE_SUBMISSION_EVENT_DESCRIPTION");
 
-    @Mock
+    @Mock(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
     @Mock

@@ -10,3 +10,4 @@ spring:
                 div.draft-store-api-encryption-key: DRAFT_STORE_API_ENCRYPTION_KEY_VALUE
                 div.idam-caseworker-username: IDAM_CASEWORKER_USERNAME
                 div.idam-caseworker-password: IDAM_CASEWORKER_PASSWORD
+                div.AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key

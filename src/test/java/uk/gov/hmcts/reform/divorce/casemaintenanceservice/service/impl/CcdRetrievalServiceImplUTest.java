@@ -58,7 +58,7 @@ public class CcdRetrievalServiceImplUTest {
     private static final User USER = new User(TEST_BEARER_AUTHORISATION, USER_DETAILS);
     private static final Long CASE_ID_1 = 1L;
 
-    @Mock
+    @Mock(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
     @Mock

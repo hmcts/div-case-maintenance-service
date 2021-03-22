@@ -73,7 +73,7 @@ public class BulkCaseSubmissionITest extends MockSupport {
     @Autowired
     private MockMvc webClient;
 
-    @MockBean
+    @MockBean(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
     @Test
