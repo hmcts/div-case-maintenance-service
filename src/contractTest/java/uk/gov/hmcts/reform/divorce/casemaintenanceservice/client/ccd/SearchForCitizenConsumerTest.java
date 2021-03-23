@@ -5,14 +5,12 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.json.JSONException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.CcdConsumerTestBase;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +22,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 public class SearchForCitizenConsumerTest extends CcdConsumerTestBase {
 
     private static final String USER_ID = "123456";
+    private static final Long CASE_ID = 20000000L;
 
     Map<String, Object> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
@@ -43,7 +42,7 @@ public class SearchForCitizenConsumerTest extends CcdConsumerTestBase {
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .status(200)
             .body(
-                buildNewListOfCaseDetailsDsl(20000000L))
+                buildNewListOfCaseDetailsDsl(CASE_ID))
             .toPact();
     }
 

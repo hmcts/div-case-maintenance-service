@@ -40,8 +40,5 @@ public final class AssertionHelper {
         List<String> financialOrder = (ArrayList<String>) caseDataMap.get("D8FinancialOrderFor");
         assertEquals( financialOrder.get(0), "petitioner");
 
-        // TODO d8documentsUploaded is a bit nested to traverse , but can be done.
-        // String[] d8documentsUploaded = (String[]) caseDataMap.get("D8DocumentsUploaded");
-
     }
 }
