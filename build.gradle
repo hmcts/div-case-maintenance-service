@@ -391,7 +391,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
 
 task contract(type: Test) {
     group = 'Delivery pipeline'
-    description = 'Runs the consumer Pact tests'
+    description = 'Runs the Consumer Pact tests'
     useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
