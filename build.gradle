@@ -348,7 +348,6 @@ dependencies {
     contractTestRuntime group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
     contractTestRuntime group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
     contractTestRuntime group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
-
     contractTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
     contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
     contractTestRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit_jupiter
