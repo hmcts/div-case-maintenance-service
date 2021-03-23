@@ -461,6 +461,7 @@ jacocoTestCoverageVerification {
 }
 
 project.tasks['sonarqube'].dependsOn jacocoTestReport
+
 project.ext {
     pacticipant = 'divorce_caseMaintenanceService'
     pacticipantVersion = getCheckedOutGitCommitHash()
