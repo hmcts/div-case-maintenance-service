@@ -31,13 +31,11 @@ public class SearchForCitizenConsumerTest extends CcdConsumerTestBase {
     public RequestResponsePact searchForCitizen(PactDslWithProvider builder) {
         params = Collections.emptyMap();
 
-        // @formatter:off
         return builder
             .given("A Search cases for a Citizen is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Search Cases for a Citizen")
             .path(buildPath())
             .method("GET")
-            .query("")
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN,
                 SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -51,7 +49,7 @@ public class SearchForCitizenConsumerTest extends CcdConsumerTestBase {
 
     @Test
     @PactTestFor(pactMethod = "searchForCitizen")
-    public void searchForCitizen() throws IOException, JSONException {
+    public void searchForCitizen() throws JSONException {
         final Map<String, String> searchCriteria = Collections.EMPTY_MAP;
 
         List<CaseDetails> caseDetailsList = coreCaseDataApi.searchForCitizen(SOME_AUTHORIZATION_TOKEN,
