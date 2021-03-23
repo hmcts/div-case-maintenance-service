@@ -53,8 +53,7 @@ public class SearchCasesConsumerTest extends CcdConsumerTestBase {
 
         SearchResult searchResult = coreCaseDataApi.searchCases(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, "DIVORCE", queryString);
-        assertEquals(searchResult.getTotal(), 123);
         assertEquals(searchResult.getCases().size(), 1);
-        assertCaseDetails(searchResult.getCases().get(0)); // CaseDetail-1
+        assertCaseDetails(searchResult.getCases().get(0));
     }
 }
