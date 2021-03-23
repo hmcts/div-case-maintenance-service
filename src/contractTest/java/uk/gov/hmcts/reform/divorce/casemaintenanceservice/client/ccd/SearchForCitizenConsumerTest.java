@@ -49,8 +49,8 @@ public class SearchForCitizenConsumerTest extends CcdConsumerTestBase {
     @Test
     @PactTestFor(pactMethod = "searchForCitizen")
     public void searchForCitizen() throws JSONException {
-        final Map<String, String> searchCriteria = Collections.EMPTY_MAP;
 
+        final Map<String, String> searchCriteria = Collections.EMPTY_MAP;
         List<CaseDetails> caseDetailsList = coreCaseDataApi.searchForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
             caseType, searchCriteria);
