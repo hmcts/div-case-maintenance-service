@@ -42,7 +42,7 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest({
     "draft.store.api.baseurl : localhost:8891"
 })
-public class DraftStoreClientConsumerTest  {
+public class DraftStoreClientConsumerTest {
 
     public static final String DRAFT_ID = "12345";
     @Autowired

@@ -22,15 +22,13 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Obj
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContentWithPath;
 
-
 public class SubmitForCitizenConsumerTest extends CcdConsumerTestBase {
 
     private static final String VALID_PAYLOAD_PATH = "json/divorce-submit.json";
 
     @Override
     @BeforeAll
-    public void setUp() throws Exception {
-        Thread.sleep(2000);
+    public void setUp() {
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
             .event(
@@ -44,22 +42,15 @@ public class SubmitForCitizenConsumerTest extends CcdConsumerTestBase {
     }
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact submitForCitizen(PactDslWithProvider builder) throws Exception  {
-        // @formatter:off
+    public RequestResponsePact submitForCitizen(PactDslWithProvider builder) throws Exception {
         return builder
             .given("A Submit for a Citizen is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Submit For a Citizen")
-            .path("/citizens/"
-                + USER_ID
-                + "/jurisdictions/"
-                + jurisdictionId
-                + "/case-types/"
-                + caseType
-                + "/cases")
+            .path(buildPath())
             .query("ignore-warning=true")
             .method("POST")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
-                SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN,
+                SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .body(convertObjectToJsonString(getCaseDataContentWithPath(createEventId, VALID_PAYLOAD_PATH)))
             .willRespondWith()
@@ -76,7 +67,7 @@ public class SubmitForCitizenConsumerTest extends CcdConsumerTestBase {
 
         CaseDetails caseDetailsReponse = coreCaseDataApi.submitForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,true,caseDataContent);
+            caseType, true, caseDataContent);
 
         assertCaseDetails(caseDetailsReponse);
     }
@@ -88,4 +79,15 @@ public class SubmitForCitizenConsumerTest extends CcdConsumerTestBase {
         return caseDataContentMap;
     }
 
+    private String buildPath() {
+        return new StringBuilder()
+            .append("/citizens/")
+            .append(USER_ID)
+            .append("/jurisdictions/")
+            .append(jurisdictionId)
+            .append("/case-types/")
+            .append(caseType)
+            .append("/cases")
+            .toString();
+    }
 }

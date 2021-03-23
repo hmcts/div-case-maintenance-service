@@ -8,12 +8,12 @@ import org.apache.http.client.fluent.Executor;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
@@ -79,7 +79,6 @@ public abstract class CcdConsumerTestBase {
 
     @BeforeAll
     public void setUp() throws Exception {
-        Thread.sleep(2000);
         caseDetailsMap = getCaseDetailsAsMap("divorce-map.json");
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
@@ -93,11 +92,15 @@ public abstract class CcdConsumerTestBase {
             .build();
     }
 
+    @BeforeEach
+    public void prepareTest() throws Exception {
+        Thread.sleep(2000);
+    }
+
     @AfterEach
     void teardown() {
         Executor.closeIdleConnections();
     }
-
 
     protected Map<String, Object> getCaseDetailsAsMap(String fileName) throws JSONException, IOException {
         File file = getFile(fileName);

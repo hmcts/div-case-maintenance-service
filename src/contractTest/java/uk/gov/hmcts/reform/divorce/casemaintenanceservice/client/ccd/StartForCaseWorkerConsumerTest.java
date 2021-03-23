@@ -4,6 +4,7 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -25,17 +26,11 @@ public class StartForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     public static final String EVENT_ID = "eventId";
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact startForCaseWorker(PactDslWithProvider builder) {
-        // @formatter:off
+    public RequestResponsePact startForCaseWorker(PactDslWithProvider builder) {
         return builder
             .given("A Start for a Caseworker is requested", setUpStateMapForProviderWithoutCaseData())
             .uponReceiving("A Start for a Caseworker")
-            .path("/caseworkers/" + USER_ID + "/jurisdictions/"
-                + jurisdictionId + "/case-types/"
-                + caseType
-                + "/event-triggers/"
-                + createEventId
-                + "/token")
+            .path(buildPath())
             .method("GET")
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
                 SOME_SERVICE_AUTHORIZATION_TOKEN)
@@ -56,9 +51,7 @@ public class StartForCaseWorkerConsumerTest extends CcdConsumerTestBase {
             caseType, createEventId);
 
         assertThat(startEventResponse.getEventId(), equalTo(createEventId));
-
         assertNotNull(startEventResponse.getCaseDetails());
-
     }
 
     @Override
@@ -66,6 +59,20 @@ public class StartForCaseWorkerConsumerTest extends CcdConsumerTestBase {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithoutCaseData();
         caseDataContentMap.put(EVENT_ID, createEventId);
         return caseDataContentMap;
+    }
+
+    private String buildPath() {
+        return new StringBuilder()
+            .append("/caseworkers/")
+            .append(USER_ID)
+            .append("/jurisdictions/")
+            .append(jurisdictionId)
+            .append("/case-types/")
+            .append(caseType)
+            .append("/event-triggers/")
+            .append(createEventId)
+            .append("/token")
+            .toString();
     }
 
 }

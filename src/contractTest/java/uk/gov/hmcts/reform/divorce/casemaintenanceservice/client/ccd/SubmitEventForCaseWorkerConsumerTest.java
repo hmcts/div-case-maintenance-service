@@ -25,17 +25,11 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 public class SubmitEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact submitEventForCaseWorker(PactDslWithProvider builder) throws Exception {
-        // @formatter:off
+    public RequestResponsePact submitEventForCaseWorker(PactDslWithProvider builder) throws Exception {
         return builder
             .given("A Submit Event for a Caseworker is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Submit Event for a Caseworker")
-            .path("/caseworkers/" + USER_ID
-                + "/jurisdictions/" + jurisdictionId
-                + "/case-types/" + caseType
-                + "/cases/" + CASE_ID
-                + "/events"
-            )
+            .path(buildPath())
             .query("ignore-warning=true")
             .method("POST")
             .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
@@ -53,7 +47,6 @@ public class SubmitEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     public void verifySubmitEventForCaseworker() throws Exception {
 
         caseDataContent = PactDslFixtureHelper.getCaseDataContent(HWF_APPLICATION_ACCEPTED);
-
         final CaseDetails caseDetails = coreCaseDataApi.submitEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId, caseType, CASE_ID.toString(), true, caseDataContent);
 
@@ -69,5 +62,18 @@ public class SubmitEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
         return caseDataContentMap;
     }
 
+    private String buildPath() {
+        return new StringBuilder()
+            .append("/caseworkers/")
+            .append(USER_ID)
+            .append("/jurisdictions/")
+            .append(jurisdictionId)
+            .append("/case-types/")
+            .append(caseType)
+            .append("/cases/")
+            .append(CASE_ID)
+            .append("/events")
+            .toString();
+    }
 
 }

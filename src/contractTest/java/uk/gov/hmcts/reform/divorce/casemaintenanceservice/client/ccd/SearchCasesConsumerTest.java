@@ -24,13 +24,11 @@ public class SearchCasesConsumerTest extends CcdConsumerTestBase {
 
     @BeforeEach
     public void setUpEachTest() throws Exception {
-        Thread.sleep(2000);
         queryString = ResourceLoader.loadJson(VALID_QUERY);
     }
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     public RequestResponsePact searchCases(PactDslWithProvider builder) throws Exception {
-        // @formatter:off
         return builder
             .given("A Search for cases is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Search Cases request")
@@ -38,8 +36,8 @@ public class SearchCasesConsumerTest extends CcdConsumerTestBase {
             .query("ctid=DIVORCE")
             .method("POST")
             .body(queryString)
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
-                SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN,
+                SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .headers(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
@@ -55,11 +53,8 @@ public class SearchCasesConsumerTest extends CcdConsumerTestBase {
 
         SearchResult searchResult = coreCaseDataApi.searchCases(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, "DIVORCE", queryString);
-
         assertEquals(searchResult.getTotal(), 123);
         assertEquals(searchResult.getCases().size(), 1);
-
         assertCaseDetails(searchResult.getCases().get(0)); // CaseDetail-1
     }
-
 }

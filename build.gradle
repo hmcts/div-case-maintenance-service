@@ -353,9 +353,10 @@ dependencies {
     contractTestRuntime group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
 
     contractTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.3.2")
-    contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
-    contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
+    contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.7.1')
+    contractTestRuntime "org.junit.platform:junit-platform-commons:1.7.0"
 
 }
 
@@ -464,7 +465,8 @@ jacocoTestCoverageVerification {
 
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 project.ext {
-    pactVersion = getCheckedOutGitCommitHash()
+    pacticipant = 'divorce_caseMaintenanceService'
+    pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
 def debug = System.getProperty("debug")
@@ -490,10 +492,12 @@ def getCheckedOutGitCommitHash() {
 }
 
 pact {
+    broker {
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
+    }
     publish {
         pactDirectory = 'pacts'
-        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
         tags = [System.getenv("PACT_BRANCH_NAME") ?:'Dev']
-        version = project.pactVersion
+        version = project.pacticipantVersion
     }
 }

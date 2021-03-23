@@ -25,21 +25,14 @@ public class StartEventForCitizenConsumerTest extends CcdConsumerTestBase {
     public static final String PAYMENT_REFERENCE_GENERATED = "paymentReferenceGenerated";
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
-        // @formatter:off
+    public RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
         return builder
             .given("A Start Event for a Citizen is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Start Event a Citizen")
-            .path("/citizens/" + USER_ID + "/jurisdictions/"
-                + jurisdictionId + "/case-types/"
-                + caseType
-                + "/cases/" + CASE_ID
-                + "/event-triggers/"
-                + PAYMENT_REFERENCE_GENERATED
-                + "/token")
+            .path(buildPath())
             .method("GET")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
-                SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN,
+                SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -58,7 +51,6 @@ public class StartEventForCitizenConsumerTest extends CcdConsumerTestBase {
 
         assertThat(startEventResponse.getEventId(), equalTo(PAYMENT_REFERENCE_GENERATED));
         assertThat(startEventResponse.getCaseDetails().getId(), is(2000L));
-
         assertCaseDetails(startEventResponse.getCaseDetails());
 
     }
@@ -68,6 +60,22 @@ public class StartEventForCitizenConsumerTest extends CcdConsumerTestBase {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithCaseData(caseDataContent);
         caseDataContentMap.put(EVENT_ID, PAYMENT_REFERENCE_GENERATED);
         return caseDataContentMap;
+    }
+
+    private String buildPath() {
+        return new StringBuilder()
+            .append("/citizens/")
+            .append(USER_ID)
+            .append("/jurisdictions/")
+            .append(jurisdictionId)
+            .append("/case-types/")
+            .append(caseType)
+            .append("/cases/")
+            .append(CASE_ID)
+            .append("/event-triggers/")
+            .append(PAYMENT_REFERENCE_GENERATED)
+            .append("/token")
+            .toString();
     }
 
 }

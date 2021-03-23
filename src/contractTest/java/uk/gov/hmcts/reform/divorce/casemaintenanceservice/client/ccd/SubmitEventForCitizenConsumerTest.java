@@ -22,29 +22,19 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Obj
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildCaseDetailsDsl;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslFixtureHelper.getCaseDataContent;
 
-
 public class SubmitEventForCitizenConsumerTest extends CcdConsumerTestBase {
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact submitEventForCitizen(PactDslWithProvider builder) throws Exception {
-        // @formatter:off
+    public RequestResponsePact submitEventForCitizen(PactDslWithProvider builder) throws Exception {
         return builder
             .given("A Submit Event for a Citizen is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Submit Event for a Citizen")
-            .path("/citizens/"
-                + USER_ID
-                + "/jurisdictions/"
-                + jurisdictionId
-                + "/case-types/"
-                + caseType
-                + "/cases/"
-                + CASE_ID
-                + "/events")
+            .path(buildPath())
             .query("ignore-warning=true")
             .method("POST")
             .body(convertObjectToJsonString(getCaseDataContent(HWF_APPLICATION_ACCEPTED)))
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
-                SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN,
+                SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -58,7 +48,6 @@ public class SubmitEventForCitizenConsumerTest extends CcdConsumerTestBase {
     public void verifySubmitEventForCitizen() throws Exception {
 
         caseDataContent = PactDslFixtureHelper.getCaseDataContent(HWF_APPLICATION_ACCEPTED);
-
         CaseDetails caseDetails = coreCaseDataApi.submitEventForCitizen(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
             caseType, CASE_ID.toString(), true, caseDataContent);
@@ -73,6 +62,20 @@ public class SubmitEventForCitizenConsumerTest extends CcdConsumerTestBase {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithCaseData(caseDataContent);
         caseDataContentMap.put(EVENT_ID, caseDataContent.getEvent().getId());
         return caseDataContentMap;
+    }
+
+    private String buildPath() {
+        return new StringBuilder()
+            .append("/citizens/")
+            .append(USER_ID)
+            .append("/jurisdictions/")
+            .append(jurisdictionId)
+            .append("/case-types/")
+            .append(caseType)
+            .append("/cases/")
+            .append(CASE_ID)
+            .append("/events")
+            .toString();
     }
 
 }

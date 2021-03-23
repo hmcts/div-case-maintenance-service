@@ -30,9 +30,7 @@ public class SubmitForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
     @Override
     @BeforeAll
-    public void setUp() throws Exception {
-
-        Thread.sleep(2000);
+    public void setUp() {
         caseDataContent = CaseDataContent.builder()
             .eventToken("someEventToken")
             .event(
@@ -46,21 +44,15 @@ public class SubmitForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     }
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact submitCaseWorkerDetails(PactDslWithProvider builder) throws Exception {
-        // @formatter:off
+    public RequestResponsePact submitCaseWorkerDetails(PactDslWithProvider builder) throws Exception {
         return builder
             .given("A Submit for a Caseworker is requested", setUpStateMapForProviderWithoutCaseData())
             .uponReceiving("A Submit For a Caseworker")
-            .path("/caseworkers/"
-                + USER_ID
-                + "/jurisdictions/"
-                + jurisdictionId
-                + "/case-types/"
-                + caseType
-                + "/cases")
+            .path(buildPath())
             .query("ignore-warning=true")
             .method("POST")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN,
+                SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .body(convertObjectToJsonString(getCaseDataContentWithPath(createEventId, VALID_PAYLOAD_PATH)))
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
@@ -83,9 +75,7 @@ public class SubmitForCaseWorkerConsumerTest extends CcdConsumerTestBase {
         assertNotNull(caseDetailsReponse);
         assertNotNull(caseDetailsReponse.getCaseTypeId());
         assertEquals(caseDetailsReponse.getJurisdiction(), "DIVORCE");
-
         assertCaseDetails(caseDetailsReponse);
-
     }
 
     @Override
@@ -95,4 +85,15 @@ public class SubmitForCaseWorkerConsumerTest extends CcdConsumerTestBase {
         return caseDataContentMap;
     }
 
+    private String buildPath() {
+        return new StringBuilder()
+            .append("/caseworkers/")
+            .append(USER_ID)
+            .append("/jurisdictions/")
+            .append(jurisdictionId)
+            .append("/case-types/")
+            .append(caseType)
+            .append("/cases")
+            .toString();
+    }
 }

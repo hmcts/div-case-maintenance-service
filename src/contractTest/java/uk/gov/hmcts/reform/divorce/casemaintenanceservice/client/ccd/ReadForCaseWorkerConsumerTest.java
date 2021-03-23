@@ -17,22 +17,14 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 public class ReadForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact readForCaseDetails(PactDslWithProvider builder) {
-        // @formatter:off
+    public RequestResponsePact readForCaseDetails(PactDslWithProvider builder) {
         return builder
             .given("A Read for a Caseworker is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Read For a Caseworker")
-            .path("/caseworkers/"
-                + USER_ID
-                + "/jurisdictions/"
-                + jurisdictionId
-                + "/case-types/"
-                + caseType
-                + "/cases/"
-                +  CASE_ID)
+            .path(buildPath())
             .method("GET")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
-                SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN,
+                SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -45,12 +37,26 @@ public class ReadForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     @PactTestFor(pactMethod = "readForCaseDetails")
     public void verifyReadForCaseDetails() throws JSONException {
 
-        CaseDetails caseDetailsReponse = coreCaseDataApi.readForCaseWorker(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType,CASE_ID.toString());
-
+        CaseDetails caseDetailsReponse =
+            coreCaseDataApi.readForCaseWorker(
+                SOME_AUTHORIZATION_TOKEN,
+                SOME_SERVICE_AUTHORIZATION_TOKEN,
+                USER_ID,
+                jurisdictionId,
+                caseType,
+                CASE_ID.toString());
         assertCaseDetails(caseDetailsReponse);
-
     }
 
+    private String buildPath() {
+        return new StringBuilder()
+            .append("/caseworkers/")
+            .append(USER_ID)
+            .append("/jurisdictions/")
+            .append(jurisdictionId)
+            .append("/case-types/")
+            .append(caseType)
+            .append("/cases/")
+            .append(CASE_ID).toString();
+    }
 }
