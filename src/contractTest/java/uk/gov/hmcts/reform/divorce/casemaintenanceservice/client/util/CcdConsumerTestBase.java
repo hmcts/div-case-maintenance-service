@@ -41,6 +41,7 @@ public abstract class CcdConsumerTestBase {
     public static final String CASE_DATA_CONTENT = "caseDataContent";
     public static final String EVENT_ID = "eventId";
     public static final String HWF_APPLICATION_ACCEPTED = "hwfApplicationAccepted";
+    public static final int SLEEP_TIME = 2000;
 
     @Autowired
     protected CoreCaseDataApi coreCaseDataApi;
@@ -94,7 +95,7 @@ public abstract class CcdConsumerTestBase {
 
     @BeforeEach
     public void prepareTest() throws Exception {
-        Thread.sleep(2000);
+        Thread.sleep(SLEEP_TIME);
     }
 
     @AfterEach
