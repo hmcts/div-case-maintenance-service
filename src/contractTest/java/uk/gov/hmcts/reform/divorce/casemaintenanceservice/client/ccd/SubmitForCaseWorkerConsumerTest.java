@@ -46,7 +46,8 @@ public class SubmitForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     public RequestResponsePact submitCaseWorkerDetails(PactDslWithProvider builder) throws Exception {
         return builder
-            .given("A Submit for a Caseworker is requested", setUpStateMapForProviderWithoutCaseData())
+            .given("A Submit for a Caseworker is requested",
+                setUpStateMapForProviderWithoutCaseData())
             .uponReceiving("A Submit For a Caseworker")
             .path(buildPath())
             .query("ignore-warning=true")
@@ -67,7 +68,6 @@ public class SubmitForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     public void submitForCaseWorker() throws Exception {
 
         caseDataContent = getCaseDataContentWithPath(createEventId, VALID_PAYLOAD_PATH);
-
         CaseDetails caseDetailsReponse = coreCaseDataApi.submitForCaseworker(SOME_AUTHORIZATION_TOKEN,
             SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
             caseType, true, caseDataContent);
@@ -80,6 +80,7 @@ public class SubmitForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
     @Override
     protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) throws JSONException {
+
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithCaseData(caseDataContent);
         caseDataContentMap.put(EVENT_ID, createEventId);
         return caseDataContentMap;
