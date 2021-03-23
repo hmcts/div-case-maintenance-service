@@ -461,16 +461,16 @@ jacocoTestCoverageVerification {
 
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
-project.ext {
-    pacticipant = 'divorce_caseMaintenanceService'
-    pacticipantVersion = getCheckedOutGitCommitHash()
-}
-
 def debug = System.getProperty("debug")
 run {
     if (debug == 'true') {
         jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5010']
     }
+}
+
+project.ext {
+    pacticipant = 'divorce_caseMaintenanceService'
+    pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
 task runAndPublishConsumerPactTests(type: Test){
