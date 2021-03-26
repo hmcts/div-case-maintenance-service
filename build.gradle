@@ -123,6 +123,7 @@ def versions = [
     jackson: '2.11.0',
     jsonAssert: '1.2.3',
     junit: '4.13.1',
+    junit_jupiter: '5.7.1',
     lombok: '1.18.12',
     pact_version: '4.1.7',
     pitest: '1.5.2',
@@ -347,11 +348,11 @@ dependencies {
     contractTestRuntime group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
     contractTestRuntime group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
     contractTestRuntime group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
-
     contractTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.3.2")
-    contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
-    contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
+    contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
+    contractTestRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit_jupiter
+    contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
+    contractTestRuntime "org.junit.platform:junit-platform-commons:1.7.0"
 
 }
 
@@ -390,7 +391,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
 
 task contract(type: Test) {
     group = 'Delivery pipeline'
-    description = 'Runs the consumer Pact tests'
+    description = 'Runs the Consumer Pact tests'
     useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
@@ -459,15 +460,17 @@ jacocoTestCoverageVerification {
 }
 
 project.tasks['sonarqube'].dependsOn jacocoTestReport
-project.ext {
-    pactVersion = getCheckedOutGitCommitHash()
-}
 
 def debug = System.getProperty("debug")
 run {
     if (debug == 'true') {
         jvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5010']
     }
+}
+
+project.ext {
+    pacticipant = 'divorce_caseMaintenanceService'
+    pacticipantVersion = getCheckedOutGitCommitHash()
 }
 
 task runAndPublishConsumerPactTests(type: Test){
@@ -486,10 +489,12 @@ def getCheckedOutGitCommitHash() {
 }
 
 pact {
+    broker {
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
+    }
     publish {
         pactDirectory = 'pacts'
-        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
         tags = [System.getenv("PACT_BRANCH_NAME") ?:'Dev']
-        version = project.pactVersion
+        version = project.pacticipantVersion
     }
 }

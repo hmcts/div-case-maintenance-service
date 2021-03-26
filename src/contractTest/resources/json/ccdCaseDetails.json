@@ -1,0 +1,106 @@
+{
+  "data": {
+    "outsideUKGrantCopies": 6,
+    "applicationType": "Personal",
+    "deceasedAddress": {
+      "AddressLine2": "Westeros",
+      "AddressLine1": "Winterfell",
+      "PostTown": "London",
+      "PostCode": "SW17 0QT"
+    },
+    "deceasedAnyOtherNames": "No",
+    "primaryApplicantAddressFound": "Yes",
+    "deceasedAnyChildren": "No",
+    "uploadDocumentUrl": "http://document-management/document/12345",
+    "deceasedDateOfBirth": "1930-01-01",
+    "type": "GrantOfRepresentation",
+    "deceasedMartialStatus": "divorcedCivilPartnership",
+    "primaryApplicantEmailAddress": "someEmailAddress.com",
+    "deceasedAddressFound": "Yes",
+    "primaryApplicantRelationshipToDeceased": "adoptedChild",
+    "deceasedDateOfDeath": "2018-01-01",
+    "primaryApplicantForenames": "Jon",
+    "deceasedHasAssetsOutsideUK": "Yes",
+    "primaryApplicantAddress": {
+      "AddressLine2": "St. Georges Hospital",
+      "AddressLine1": "Pret a Manger",
+      "PostTown": "London",
+      "PostCode": "SW17 0QT"
+    },
+    "deceasedDivorcedInEnglandOrWales": "No",
+    "primaryApplicantPhoneNumber": "123455678",
+    "ihtNetValue": "100000",
+    "ihtReferenceNumber": "GOT123456",
+    "deceasedSpouseNotApplyingReason": "mentallyIncapable",
+    "childrenDied": "No",
+    "deceasedSurname": "Stark",
+    "deceasedAliasNameList": [
+      {
+        "value": {
+          "Forenames": "King",
+          "LastName": "North"
+        }
+      },
+      {
+        "value": {
+          "Forenames": "King",
+          "LastName": "North"
+        }
+      }
+    ],
+    "extraCopiesOfGrant": 3,
+    "deceasedOtherChildren": "Yes",
+    "deceasedForenames": "Ned",
+    "primaryApplicantAdoptionInEnglandOrWales": "Yes",
+    "assetsOverseasNetValue": "10050",
+    "executorsApplying": [
+      {
+        "value": {
+          "applyingExecutorLeadName": "Graham Garderner",
+          "applyingExecutorOtherNames": "Graham Poll",
+          "applyingExecutorPhoneNumber": "07981898999",
+          "applyingExecutorAgreed": "Yes",
+          "applyingExecutorAddress": {
+            "AddressLine2": "Westeros",
+            "AddressLine1": "Winterfell",
+            "PostTown": "London",
+            "PostCode": "SW17 0QT"
+          },
+          "applyingExecutorName": "Jon Snow",
+          "applyingExecutorEmail": "address@email.com",
+          "applyingExecutorInvitationId": "54321",
+          "applyingExecutorOtherNamesReason": "Divorce"
+        }
+      },
+      {
+        "value": {
+          "applyingExecutorLeadName": "Graham Garderner",
+          "applyingExecutorOtherNames": "Graham Poll",
+          "applyingExecutorPhoneNumber": "07981898999",
+          "applyingExecutorAgreed": "Yes",
+          "applyingExecutorAddress": {
+            "AddressLine2": "Westeros",
+            "AddressLine1": "Winterfell",
+            "PostTown": "London",
+            "PostCode": "SW17 0QT"
+          },
+          "applyingExecutorName": "Jon Snow",
+          "applyingExecutorEmail": "address@email.com",
+          "applyingExecutorInvitationId": "54321",
+          "applyingExecutorOtherNamesReason": "Divorce"
+        }
+      }
+    ],
+    "grandChildrenSurvivedUnderEighteen": "No",
+    "ihtFormCompletedOnline": "No",
+    "ihtGrossValue": "100000",
+    "registryLocation": "Oxford",
+    "ihtFormId": "IHT205",
+    "primaryApplicantSurname": "Snow",
+    "declarationCheckbox": "No",
+    "childrenOverEighteenSurvived": "Yes"
+  },
+  "case_type": "GRANT_OF_REPRESENTATION",
+  "id": "654321",
+  "state": "Draft"
+}

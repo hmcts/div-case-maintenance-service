@@ -1,0 +1,35 @@
+{
+    "total": 2,
+    "cases": [
+        {
+            "case_data": {
+                "D8PetitionerEmail": "test@email.com"
+            },
+            "jurisdiction": null,
+            "locked_by_user_id": null,
+            "id": 1,
+            "created_date": null,
+            "state": "Issued",
+            "security_classification": null,
+            "callback_response_status": null,
+            "last_modified": null,
+            "case_type_id": null,
+            "security_level": null
+        },
+        {
+            "case_data": {
+                "D8PetitionerEmail": "test@email.com"
+            },
+            "jurisdiction": null,
+            "locked_by_user_id": null,
+            "id": 2,
+            "created_date": null,
+            "state": "AwaitingDecreeNisi",
+            "security_classification": null,
+            "callback_response_status": null,
+            "last_modified": null,
+            "case_type_id": null,
+            "security_level": null
+        }
+    ]
+}
