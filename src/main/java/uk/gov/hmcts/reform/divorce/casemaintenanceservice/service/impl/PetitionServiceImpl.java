@@ -205,8 +205,10 @@ public class PetitionServiceImpl implements PetitionService,
         final List<?> previousReasonsForDivorce;
         if (refusal) {
             previousReasonsForDivorce = getPreviousReasonsForDivorce(oldCase, CcdCaseProperties.PREVIOUS_REASONS_DIVORCE_REFUSAL);
+            log.info("Old Case ID: {} - preparing amend case for refusal", oldCase.getId());
         } else {
             previousReasonsForDivorce = getPreviousReasonsForDivorce(oldCase, CcdCaseProperties.PREVIOUS_REASONS_DIVORCE);
+            log.info("Old Case ID: {} - preparing amend case", oldCase.getId());
         }
 
         Map<String, Object> caseData = oldCase.getData();
