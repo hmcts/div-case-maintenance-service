@@ -18,6 +18,7 @@ public enum ApplicationStatus {
     AWAITING_ALTERNATIVE_SERVICE("AwaitingAlternativeService"),
     AWAITING_AMEND_CASE("AwaitingAmendCase"),
     AWAITING_BAILIFF_SERVICE("AwaitingBailiffService"),
+    AWAITING_BAILIFF_REFERRAL("AwaitingBailiffReferral"),
     AWAITING_CLARIFICATION("AwaitingClarification"),
     AWAITING_CONSIDERATION("AwaitingConsideration"),
     AWAITING_CONSIDERATION_DN("AwaitingConsiderationDN"),

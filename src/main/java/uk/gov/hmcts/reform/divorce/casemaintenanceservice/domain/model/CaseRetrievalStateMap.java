@@ -101,7 +101,10 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_ADMIN_CLARIFICATION,
                 CaseState.SERVICE_APPLICATION_NOT_APPROVED,
                 CaseState.AWAITING_GENERAL_REFERRAL_PAYMENT,
-                CaseState.GENERAL_CONSIDERATION_COMPLETE)
+                CaseState.GENERAL_CONSIDERATION_COMPLETE,
+                CaseState.AWAITING_BAILIFF_REFERRAL,
+                CaseState.AWAITING_BAILIFF_SERVICE,
+                CaseState.ISSUED_TO_BAILIFF)
         );
 
 }
