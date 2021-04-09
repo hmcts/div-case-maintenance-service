@@ -22,5 +22,13 @@
         ],
         "PaymentTotal": "55000",
         "PaymentReference": null
+    },
+    "PetitionerOrganisationPolicy": {
+        "Organisation": {
+            "OrganisationID": "M2ZT9Q2",
+            "OrganisationName": "DivPetitionerSolicitorFirm"
+        },
+        "OrgPolicyReference": "DivPetitionerSolicitorFirm",
+        "OrgPolicyCaseAssignedRole": "[PETSOLICITOR]"
     }
 }

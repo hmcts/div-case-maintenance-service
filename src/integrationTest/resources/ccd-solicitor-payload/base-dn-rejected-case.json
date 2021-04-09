@@ -69,5 +69,13 @@
     "D8InferredPetitionerGender": "male",
     "RefusalRejectionReason": [
         "other"
-    ]
+    ],
+    "PetitionerOrganisationPolicy": {
+        "Organisation": {
+            "OrganisationID": "M2ZT9Q2",
+            "OrganisationName": "DivPetitionerSolicitorFirm"
+        },
+        "OrgPolicyReference": "DivPetitionerSolicitorFirm",
+        "OrgPolicyCaseAssignedRole": "[PETSOLICITOR]"
+    }
 }
