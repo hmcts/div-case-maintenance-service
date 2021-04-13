@@ -66,5 +66,13 @@
     "createdDate": "2019-04-02",
     "PetitionerSolicitorToEffectService": "Yes",
     "D8ReasonForDivorce": "adultery",
-    "D8InferredPetitionerGender": "male"
+    "D8InferredPetitionerGender": "male",
+    "PetitionerOrganisationPolicy": {
+        "Organisation": {
+            "OrganisationID": "M2ZT9Q2",
+            "OrganisationName": "DivPetitionerSolicitorFirm"
+        },
+        "OrgPolicyReference": "DivPetitionerSolicitorFirm",
+        "OrgPolicyCaseAssignedRole": "[PETSOLICITOR]"
+    }
 }
