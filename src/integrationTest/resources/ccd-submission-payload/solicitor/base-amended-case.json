@@ -1,0 +1,107 @@
+{
+    "PreviousReasonsForDivorceRefusal": [
+        "adultery"
+    ],
+    "PreviousRefusalRejectionReason": [
+        "other"
+    ],
+    "PreviousRefusalRejectionAdditionalInfo": "other reason",
+    "RespWillDefendDivorce": "No",
+    "D8caseReference": "EZ11D81111",
+    "createdDate": "2020-07-06",
+    "D8DivorceWho": "wife",
+    "D8MarriageIsSameSexCouple": "YES",
+    "D8MarriageDate": "2001-01-01",
+    "D8MarriedInUk": "YES",
+    "D8MarriagePlaceOfMarriage": "London",
+    "D8PetitionerNameDifferentToMarriageCert": "NO",
+    "D8PetitionerEmail": "Petitioner@mailinator.com",
+    "D8PetitionerPhoneNumber": "01234567890",
+    "D8PetitionerFirstName": "Petitioner",
+    "D8PetitionerLastName": "Petitioner",
+    "D8DerivedPetitionerCurrentFullName": "Petitioner Petitioner",
+    "D8PetitionerContactDetailsConfidential": "keep",
+    "D8PetitionerHomeAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "AddressLine3": null,
+        "PostTown": null,
+        "PostCode": null,
+        "County": null,
+        "Country": null
+    },
+    "D8DerivedPetitionerHomeAddress": "The Petitioner's home address\n2\nCM233BE",
+    "D8RespondentNameAsOnMarriageCertificate": "NO",
+    "D8RespondentFirstName": "Respondent",
+    "D8RespondentLastName": "Respondent",
+    "D8DerivedRespondentCurrentName": "Respondent Respondent",
+    "D8RespondentHomeAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "AddressLine3": null,
+        "PostTown": null,
+        "PostCode": null,
+        "County": null,
+        "Country": null
+    },
+    "D8DerivedRespondentHomeAddress": "The Respondent's home address (Optional) \n3\nCM233BE",
+    "D8RespondentCorrespondenceAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "AddressLine3": null,
+        "PostTown": null,
+        "PostCode": null,
+        "County": null,
+        "Country": null
+    },
+    "D8DerivedRespondentCorrespondenceAddr": "The Respondent's service address\n4\nCM233BE",
+    "D8LegalProceedings": "NO",
+    "D8ReasonForDivorce": "adultery",
+    "D8DerivedStatementOfCase": "Include what the petitioner believes they know about the adultery (the adultery that forms the basis of this petition). If the petitioner doesn't know any details of the adultery, say that they are unknown and explain why.",
+    "D8ReasonForDivorceAdultery3rdPartyFName": "Co-Respondent",
+    "D8ReasonForDivorceAdultery3rdPartyLName": "Co-Respondent",
+    "D8ReasonForDivorceAdulteryDetails": "Include what the petitioner believes they know about the adultery (the adultery that forms the basis of this petition). If the petitioner doesn't know any details of the adultery, say that they are unknown and explain why.",
+    "D8ReasonForDivorceAdulteryWishToName": "YES",
+    "D8ReasonForDivorceAdultery3rdAddress": {
+        "AddressLine1": null,
+        "AddressLine2": null,
+        "AddressLine3": null,
+        "PostTown": null,
+        "PostCode": null,
+        "County": null,
+        "Country": null
+    },
+    "D8FinancialOrder": "NO",
+    "D8JurisdictionConnection": [
+        "G",
+        "F",
+        "E",
+        "D",
+        "C",
+        "B",
+        "A"
+    ],
+    "D8DivorceUnit": "serviceCentre",
+    "D8ReasonForDivorceAdulteryAnyInfo2ndHand": "YES",
+    "D8ReasonForDivorceAdultery2ndHandDetails": "Include what the petitioner believes they know about the adultery (the adultery that forms the basis of this petition). If the petitioner doesn't know any details of the adultery, say that they are unknown and explain why.",
+    "D8MarriagePetitionerName": "Petitioner Petitioner",
+    "D8MarriageRespondentName": "Respondent Respondent",
+    "D8DerivedReasonForDivorceAdultery3dPtyNm": "Co-Respondent Co-Respondent",
+    "D8DerivedReasonForDivorceAdultery3rdAddr": "The Co-respondent's address\n6\nCM233BE",
+    "D8Cohort": "onlineSubmissionPrivateBeta",
+    "D8InferredPetitionerGender": "female",
+    "D8InferredRespondentGender": "female",
+    "RespondentContactDetailsConfidential": "share",
+    "PreviousCaseId": {
+        "CaseReference": "1593694526480034"
+    },
+    "PreviousIssueDate": "2020-07-02",
+    "PetitionerOrganisationPolicy": {
+        "Organisation": {
+            "OrganisationID": "M2ZT9Q2",
+            "OrganisationName": "DivPetitionerSolicitorFirm"
+        },
+        "OrgPolicyReference": "DivPetitionerSolicitorFirm",
+        "OrgPolicyCaseAssignedRole": "[PETSOLICITOR]"
+    }
+}
