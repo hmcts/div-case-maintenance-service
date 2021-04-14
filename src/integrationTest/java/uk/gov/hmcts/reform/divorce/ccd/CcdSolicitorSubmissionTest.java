@@ -1,17 +1,15 @@
 package uk.gov.hmcts.reform.divorce.ccd;
 
 import io.restassured.response.Response;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
-@Ignore
 public class CcdSolicitorSubmissionTest extends PetitionSupport {
 
     @Test
     public void shouldReturnCaseIdForValidAddressesSessionData() {
         String expectedStatus = "SOTAgreementPayAndSubmitRequired";
-        Response caseSubmitted = solicitorSubmitCase("base-case.json", getSolicitorUser());
+        Response caseSubmitted = solicitorSubmitCase("solicitor/base-case.json", getSolicitorUser());
         assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
         assertCaseStatus(caseSubmitted, expectedStatus);
 
@@ -20,7 +18,7 @@ public class CcdSolicitorSubmissionTest extends PetitionSupport {
     @Test
     public void shouldReturnCaseIdForValidAmendedSessionData() {
         String expectedStatus = "SOTAgreementPayAndSubmitRequired";
-        Response caseSubmitted = solicitorSubmitCase("base-amended-case.json", getSolicitorUser());
+        Response caseSubmitted = solicitorSubmitCase("solicitor/base-amended-case.json", getSolicitorUser());
         assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
         assertCaseStatus(caseSubmitted, expectedStatus);
 
@@ -28,46 +26,46 @@ public class CcdSolicitorSubmissionTest extends PetitionSupport {
 
     @Test
     public void shouldReturnCaseIdForValidHowNameChangedSessionData() {
-        solicitorSubmitAndAssertSuccess("how-name-changed.json");
+        solicitorSubmitAndAssertSuccess("solicitor/how-name-changed.json");
     }
 
     @Test
     public void shouldReturnCaseIdForValidJurisdiction6To12SessionData() {
-        solicitorSubmitAndAssertSuccess("jurisdiction-6-12.json");
+        solicitorSubmitAndAssertSuccess("solicitor/jurisdiction-6-12.json");
     }
 
     @Test
     public void shouldReturnCaseIdForValidJurisdictionAllSessionData() {
-        solicitorSubmitAndAssertSuccess("jurisdiction-all.json");
+        solicitorSubmitAndAssertSuccess("solicitor/jurisdiction-all.json");
     }
 
     @Test
     public void shouldReturnCaseIdForValidAdulterySessionData() {
-        solicitorSubmitAndAssertSuccess("reason-adultery.json");
+        solicitorSubmitAndAssertSuccess("solicitor/reason-adultery.json");
     }
 
     @Test
     public void shouldReturnCaseIdForValidDesertionSessionData() {
-        solicitorSubmitAndAssertSuccess("reason-desertion.json");
+        solicitorSubmitAndAssertSuccess("solicitor/reason-desertion.json");
     }
 
     @Test
     public void shouldReturnCaseIdForValidSeparationSessionData() {
-        solicitorSubmitAndAssertSuccess("reason-separation.json");
+        solicitorSubmitAndAssertSuccess("solicitor/reason-separation.json");
     }
 
     @Test
     public void shouldReturnCaseIdForValidUnreasonableBehaviourSessionData() {
-        solicitorSubmitAndAssertSuccess("reason-unreasonable-behaviour.json");
+        solicitorSubmitAndAssertSuccess("solicitor/reason-unreasonable-behaviour.json");
     }
 
     @Test
     public void shouldReturnCaseIdForValidSameSexSessionData() {
-        solicitorSubmitAndAssertSuccess("same-sex.json");
+        solicitorSubmitAndAssertSuccess("solicitor/same-sex.json");
     }
 
     @Test
     public void shouldReturnCaseIdForValidD8DocumentSessionData() {
-        solicitorSubmitAndAssertSuccess("d8-document.json");
+        solicitorSubmitAndAssertSuccess("solicitor/d8-document.json");
     }
 }

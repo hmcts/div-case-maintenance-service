@@ -1,0 +1,19 @@
+{
+    "CaseTitle" : "Cms test case",
+    "CaseList" : [ {
+        "value" : {
+            "CaseReference" : {
+                "CaseReference" : "1524482372442611"
+            },
+            "DNApprovalDate" : "2019-01-01",
+            "FamilyManReference" : "FA1215701",
+            "CostOrder" : "Yes",
+            "CaseParties" : "Name surname vs RespName RespSurname"
+        }
+    } ],
+    "CaseAcceptedList" : [ {
+        "value" : {
+            "CaseReference" : "1524482372442611"
+        }
+    } ]
+}
