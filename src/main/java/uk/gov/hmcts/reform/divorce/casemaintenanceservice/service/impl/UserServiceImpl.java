@@ -35,4 +35,5 @@ public class UserServiceImpl implements UserService {
     private String getIdamOauth2Token(String username, String password) {
         return idamClient.authenticateUser(username, password);
     }
+
 }
