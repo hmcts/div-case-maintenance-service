@@ -1,7 +1,7 @@
 
 idam:
     client:
-        redirect_uri: ${IDAM_API_REDIRECT_URL:http://localhost:8080/authenticated}
+        redirect_uri: ${IDAM_API_REDIRECT_URL:https://div-pfe-aat.service.core-compute-aat.internal/authenticated}
         id: divorce
         secret: ${AUTH2_CLIENT_SECRET:dummysecret}
     api:

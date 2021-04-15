@@ -74,7 +74,7 @@ To run all integration tests locally:
 * Replace the `replace_me` secrets in the _newly created_ files. You can get the values from SCM and Azure secrets key vault (the new files are in .gitignore and should ***not*** be committed to git)
 * Start the app with AAT config:
   * Using gradle: `./gradlew clean bootRunAat`
-  * Using IntelliJ: edit Run Configuration and set Environment variables to `http_proxy=http://proxyout.reform.hmcts.net:8080;SPRING_PROFILES_ACTIVE=aat`
+  * Using IntelliJ: edit Run Configuration and set Environment variables to `SPRING_PROFILES_ACTIVE=aat`
 * Start the test with AAT config using `./gradlew clean functional`
 
 ##Developing
