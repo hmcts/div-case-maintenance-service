@@ -195,10 +195,14 @@ public class DraftStoreClientConsumerTest {
                     .array("D8PetitionerNameChangedHow", a -> a.stringType("marriageCertificate"))
                     .stringType("D8PetitionerContactDetailsConfidential", "share")
                     .object("D8PetitionerHomeAddress", ha -> ha
+                        .stringType("AddressLine1", "82 Landor Road")
+                        .stringType("AddressLine2", "London")
                         .stringType("PostCode", "SW9 9PE")
                     )
                     .stringType("D8DerivedPetitionerHomeAddress", "82 Landor Road\nLondon\nSW9 9PE")
                     .object("D8PetitionerCorrespondenceAddress", ca -> ca
+                        .stringType("AddressLine1", "82 Landor Road")
+                        .stringType("AddressLine2", "London")
                         .stringType("PostCode", "SW9 9PE")
                     )
                     .stringType("D8DerivedPetitionerCorrespondenceAddr", "82 Landor Road\nLondon\nSW9 9PE")
