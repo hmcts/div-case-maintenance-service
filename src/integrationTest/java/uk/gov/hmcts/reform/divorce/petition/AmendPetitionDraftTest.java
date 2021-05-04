@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.petition;
 
 import io.restassured.response.Response;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
@@ -17,6 +18,7 @@ public class AmendPetitionDraftTest extends PetitionSupport {
         assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
     }
 
+    @Ignore
     @Test
     public void givenSingleCaseInCcd_whenAmendPetitionDraft_thenReturnTheDraft() throws Exception {
         final UserDetails userDetails = getUserDetails();
@@ -40,6 +42,7 @@ public class AmendPetitionDraftTest extends PetitionSupport {
         assertEquals(HttpStatus.NOT_FOUND.value(), cmsResponse.getStatusCode());
     }
 
+    @Ignore
     @Test
     public void givenMultipleSubmittedCaseInCcd_whenAmendPetitionDraft_thenReturn300() throws Exception {
         final UserDetails userDetails = getUserDetails();
