@@ -318,6 +318,7 @@ public class PetitionControllerUTest {
         verify(petitionService).createAmendedPetitionDraft(TEST_AUTH_TOKEN);
     }
 
+    @Ignore
     @Test
     public void givenNoCaseFound_whenAmendToDraftPetitionForRefusal_thenReturn404() {
 
@@ -332,6 +333,7 @@ public class PetitionControllerUTest {
         verify(petitionService).createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
     }
 
+    @Ignore
     @Test
     public void givenCaseFound_whenAmendToDraftPetitionForRefusal_thenReturnDraftData() {
 
@@ -348,6 +350,7 @@ public class PetitionControllerUTest {
         verify(petitionService).createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
     }
 
+    @Ignore
     @Test
     public void givenCaseFound_whenAmendToDraftPetitionForRefusal_thenSetDraftDataFromCase() {
         final Map<String, Object> draftData = new HashMap<>();
@@ -368,6 +371,7 @@ public class PetitionControllerUTest {
         verify(petitionService).createAmendedPetitionDraftRefusal(TEST_AUTH_TOKEN);
     }
 
+    @Ignore
     @Test
     public void givenNoCaseFound_whenAmendToDraftPetitionForRefusalFromCaseId_thenReturn404() {
 
@@ -383,6 +387,7 @@ public class PetitionControllerUTest {
         verify(petitionService).createAmendedPetitionDraftRefusalFromCaseId(TEST_AUTH_TOKEN, TEST_CASE_ID);
     }
 
+    @Ignore
     @Test
     public void givenCaseFound_whenAmendToDraftPetitionForRefusalFromCaseId_thenReturnDraftData() {
 
@@ -400,6 +405,7 @@ public class PetitionControllerUTest {
         verify(petitionService).createAmendedPetitionDraftRefusalFromCaseId(TEST_AUTH_TOKEN, TEST_CASE_ID);
     }
 
+    @Ignore
     @Test
     public void givenCaseFound_whenAmendToDraftPetitionForRefusalFromCaseId_thenSetDraftDataFromCase() {
         final Map<String, Object> draftData = new HashMap<>();

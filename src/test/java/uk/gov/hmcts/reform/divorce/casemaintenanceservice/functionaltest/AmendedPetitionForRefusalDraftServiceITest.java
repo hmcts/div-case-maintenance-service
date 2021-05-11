@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.google.common.collect.ImmutableList;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,7 @@ public class AmendedPetitionForRefusalDraftServiceITest extends MockSupport {
             .andExpect(status().isBadRequest());
     }
 
+    @Ignore
     @Test
     public void givenInvalidUserToken_whenAmendedPetitionDraftForRefusal_thenReturnForbiddenError() throws Exception {
         final String message = "some message";
@@ -109,6 +111,7 @@ public class AmendedPetitionForRefusalDraftServiceITest extends MockSupport {
             .andExpect(content().string(containsString(message)));
     }
 
+    @Ignore
     @Test
     public void givenCouldNotConnectToAuthService_whenAmendedPetitionDraftForRefusal_thenReturnHttp503() throws Exception {
         final String message = getUserDetails();
@@ -124,6 +127,7 @@ public class AmendedPetitionForRefusalDraftServiceITest extends MockSupport {
             .andExpect(status().isServiceUnavailable());
     }
 
+    @Ignore
     @Test
     public void givenValidRequestToAmend_whenAmendedPetitionDraftForRefusal_thenCreateAmendedPetitionDraft() throws Exception {
         final String message = getUserDetails();

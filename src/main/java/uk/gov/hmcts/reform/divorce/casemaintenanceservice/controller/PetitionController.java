@@ -126,17 +126,8 @@ public class PetitionController {
     public ResponseEntity<Map<String, Object>> createAmendedPetitionDraftRefusal(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
-        try {
-            Map<String, Object> newCaseDraftData = petitionService.createAmendedPetitionDraftRefusal(jwt);
 
-            if (newCaseDraftData == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(newCaseDraftData);
-        } catch (DuplicateCaseException e) {
-            log.warn(e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.MULTIPLE_CHOICES).build();
-        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping(path = "/amended-petition-draft-refusal/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.divorce.petition;
 
 import com.google.common.collect.ImmutableMap;
 import io.restassured.response.Response;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
@@ -15,6 +16,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
 public class AmendPetitionForRefusalDraftFromCaseIdTest extends PetitionSupport {
     private static final String AMEND_CASE_EVENT_ID = "amendCase";
 
+    @Ignore
     @Test
     public void givenSingleCaseInCcd_whenAmendPetitionDraftFromCaseId_thenReturnTheDraft() throws Exception {
         final UserDetails userDetails = getUserDetails();
