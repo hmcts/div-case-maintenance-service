@@ -269,7 +269,7 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-contexts'
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
-    integrationTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
+    integrationTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.0'
 
     contractTestImplementation group: 'org.springframework', name: 'spring-context-support'
     contractTestImplementation (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')
