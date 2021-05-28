@@ -352,7 +352,7 @@ dependencies {
     contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
     contractTestRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit_jupiter
     contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
-    contractTestRuntime "org.junit.platform:junit-platform-commons:1.7.1"
+    contractTestRuntime "org.junit.platform:junit-platform-commons:1.7.2"
 
 }
 
