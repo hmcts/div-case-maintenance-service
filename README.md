@@ -18,13 +18,13 @@ The project uses [Gradle](https://gradle.org) as a build tool but you don't have
 To build project please execute the following command:
 
 ```bash
-    ./gradlew build
+./gradlew build
 ```
 
 If the build failed because of tests try running the following
 
 ```bash
-    ./gradlew build -x test
+./gradlew build -x test
 ```
 This command will run the build task but it will exclude the test task
 
@@ -34,19 +34,19 @@ When the distribution has been created in `build/install/div-case-maintenance-se
 you can run the application by executing following command:
 
 ```bash
-    docker-compose up
+docker-compose up
 ```
 
 (If `build/install/div-case-maintenance-service` does not exist try running `./gradlew build` again )
 As a result the following container(s) will get created and started:
  - long living container for API application exposing port `4010`
 
-##Testing
+## Testing
 
 To run all unit tests please execute following command:
 
 ```bash
-    ./gradlew test
+./gradlew test
 ```
 
 **Coding style tests**
@@ -54,15 +54,14 @@ To run all unit tests please execute following command:
 To run all checks (including unit tests) please execute following command:
 
 ```bash
-    ./gradlew check
+./gradlew check
 ```
 **Mutation tests**
 
 To run all mutation tests execute the following command:
 
-```
+```bash
 /gradlew pitest
-
 ```
 
 **Integration tests**
