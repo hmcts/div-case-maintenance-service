@@ -40,7 +40,7 @@ you can run the application by executing following command:
 (If `build/install/div-case-maintenance-service` does not exist try running `./gradlew build` again )
 As a result the following container(s) will get created and started:
  - long living container for API application exposing port `4010`
-
+no changes
 ##Testing
 
 To run all unit tests please execute following command:
