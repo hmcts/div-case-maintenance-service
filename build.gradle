@@ -157,6 +157,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${versions.lombok}")
     integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
+    implementation group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.3.3'
     implementation group: 'org.springframework', name: 'spring-context-support'
     implementation (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')
         {
@@ -280,7 +281,6 @@ dependencies {
                 exclude group: 'io.reactivex', module: 'rxnetty-servo'
             }
     contractTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
-
 }
 
 sourceSets {
