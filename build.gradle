@@ -249,6 +249,7 @@ dependencies {
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
+    integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
     integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
     integrationTestImplementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3
     integrationTestImplementation group: 'org.skyscreamer', name:'jsonassert', version: versions.jsonAssert
