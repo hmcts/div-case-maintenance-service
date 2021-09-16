@@ -46,6 +46,7 @@ withNightlyPipeline(type, product, component) {
     env.Rules = params.SecurityRules
     enableFullFunctionalTest()
     enableMutationTest()
+    enableSecurityScan()
     enableFortifyScan()
 
     after('fortify-scan') {
