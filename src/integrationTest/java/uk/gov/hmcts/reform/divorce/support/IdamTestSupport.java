@@ -15,11 +15,12 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
 
 @Slf4j
 public class IdamTestSupport {
-    private static final String CASE_WORKER_USERNAME = "TEST_CASE_WORKER_USER";
+    private static final String CASE_WORKER_USERNAME = "divorce_as_caseworker_beta";
     private static final String SOLICITOR_USER_NAME = "divorce_as_petitioner_solicitor_02";
     private static final String EMAIL_DOMAIN = "@mailinator.com";
     private static final String GENERIC_PASSWORD = "genericPassword123";
     private static final String SOLICITOR_PASSWORD = "Testing1234";
+    private static final String CASEWORKER_PASSWORD = "Testing1234";
 
     private UserDetails defaultCaseWorkerUser;
     private UserDetails defaultSolicitorUser;
@@ -55,7 +56,7 @@ public class IdamTestSupport {
             synchronized (this) {
                 if (defaultCaseWorkerUser == null) {
                     String emailAddress = CASE_WORKER_USERNAME + EMAIL_DOMAIN;
-                    defaultCaseWorkerUser = getUser(CASE_WORKER_USERNAME, emailAddress, GENERIC_PASSWORD);
+                    defaultCaseWorkerUser = getUser(CASE_WORKER_USERNAME, emailAddress, CASEWORKER_PASSWORD);
                 }
 
                 return defaultCaseWorkerUser;
