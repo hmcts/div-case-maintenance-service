@@ -18,7 +18,9 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_HWF_DECISION,
                 CaseState.AWAITING_DECREE_NISI,
-                CaseState.AWAITING_PETITIONER
+                CaseState.AWAITING_PETITIONER,
+                CaseState.WELSH_RESPONSE_AWAITING_REVIEW,
+                CaseState.WELSH_BO_TRANSLATION_REQUESTED
             ),
             CaseStateGrouping.COMPLETE, Arrays.asList(
                 CaseState.SUBMITTED,
@@ -55,7 +57,9 @@ public class CaseRetrievalStateMap {
                 CaseState.AWAITING_DWP_RESPONSE,
                 CaseState.AWAITING_GENERAL_REFERRAL_PAYMENT,
                 CaseState.GENERAL_CONSIDERATION_COMPLETE,
-                CaseState.ISSUED_TO_BAILIFF
+                CaseState.ISSUED_TO_BAILIFF,
+                CaseState.WELSH_LA_DECISION,
+                CaseState.WELSH_DN_RECEIVED
             ),
             CaseStateGrouping.AMEND, Arrays.asList(
                 CaseState.AMEND_PETITION,

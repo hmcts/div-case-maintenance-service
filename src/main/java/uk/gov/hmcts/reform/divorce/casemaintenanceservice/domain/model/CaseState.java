@@ -52,6 +52,10 @@ public enum CaseState {
     REJECTED("Rejected", ApplicationStatus.REJECTED),
     SERVICE_APPLICATION_NOT_APPROVED("ServiceApplicationNotApproved", ApplicationStatus.SERVICE_APPLICATION_NOT_APPROVED),
     SUBMITTED("Submitted", ApplicationStatus.PETITION_COMPLETED),
+    WELSH_RESPONSE_AWAITING_REVIEW("WelshResponseAwaitingReview", ApplicationStatus.WELSH_RESPONSE_AWAITING_REVIEW),
+    WELSH_LA_DECISION("WelshLADecision", ApplicationStatus.WELSH_LA_DECISION),
+    WELSH_DN_RECEIVED("WelshDNReceived", ApplicationStatus.WELSH_DN_RECEIVED),
+    WELSH_BO_TRANSLATION_REQUESTED("BOTranslationRequested", ApplicationStatus.WELSH_BO_TRANSLATION_REQUESTED),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
     private final String value;

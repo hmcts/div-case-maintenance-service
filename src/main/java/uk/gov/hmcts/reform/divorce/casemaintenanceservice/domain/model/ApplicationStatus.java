@@ -48,6 +48,10 @@ public enum ApplicationStatus {
     PETITION_COMPLETED("PetitionCompleted"),
     REJECTED("Rejected"),
     SERVICE_APPLICATION_NOT_APPROVED("ServiceApplicationNotApproved"),
+    WELSH_RESPONSE_AWAITING_REVIEW("WelshResponseAwaitingReview"),
+    WELSH_LA_DECISION("WelshLADecision"),
+    WELSH_DN_RECEIVED("WelshDNReceived"),
+    WELSH_BO_TRANSLATION_REQUESTED("BOTranslationRequested"),
     UNKNOWN("DNCompleted");
 
     private final String value;
