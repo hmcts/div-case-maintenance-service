@@ -384,7 +384,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
     setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
     setClasspath(sourceSets.integrationTest.runtimeClasspath)
 
-    finalizedBy aggregate
+    //finalizedBy aggregate
 }
 
 task contract(type: Test) {
