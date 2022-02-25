@@ -128,7 +128,8 @@ def versions = [
     jsonAssert: '1.2.3',
     junit: '4.13.2',
     junit_jupiter: '5.7.1',
-    lombok: '1.18.14',
+    lombok: '1.18.22',
+    logbackVersion: '1.2.10',
     pact_version: '4.1.7',
     pitest: '1.5.2',
     puppyCrawl: '8.29',
@@ -143,7 +144,7 @@ def versions = [
     springfoxSwagger: '2.9.2',
     springSecurityCrypto: '5.4.5',
     springSecurityRsa: '1.0.9.RELEASE',
-    tomcat: '9.0.50',
+    tomcat: '9.0.58',
     unirest: '1.4.9',
     wiremockVersion: '2.27.2'
 ]
@@ -183,6 +184,9 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     implementation group: 'org.apache.commons', name: 'commons-lang3', version : versions.commonsLang3
     implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: versions.reformPropertiesVolume
+
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: versions.logbackVersion
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: versions.logbackVersion
 
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: versions.httpComponents
     implementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: versions.httpComponents
@@ -318,7 +322,7 @@ dependencyManagement {
         dependency group: 'org.yaml',name: 'snakeyaml', version: '1.29'
 
         // solves CVE-2014-3488, CVE-2015-2156, CVE-2019-16869
-        dependencySet(group: 'io.netty', version: '4.1.65.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.74.Final') {
             entry 'netty-buffer'
             entry 'netty-codec'
             entry 'netty-codec-http'
@@ -326,6 +330,24 @@ dependencyManagement {
             entry 'netty-handler'
             entry 'netty-resolver'
             entry 'netty-transport'
+        }
+
+        //CVE-2021-44228, CVE-2021-44832, CVE-2021-45046, CVE-2021-45105
+        dependencySet(group: 'org.apache.logging.log4j', version: '2.17.1') {
+            entry 'log4j-api'
+            entry 'log4j-to-slf4j'
+        }
+
+        dependencySet(group: 'org.springframework', version: '5.2.19.RELEASE') {
+            entry 'spring-aop'
+            entry 'spring-beans'
+            entry 'spring-context'
+            entry 'spring-context-support'
+            entry 'spring-core'
+            entry 'spring-expression'
+            entry 'spring-jcl'
+            entry 'spring-web'
+            entry 'spring-webmvc'
         }
 
         dependencySet(
@@ -384,7 +406,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
     setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
     setClasspath(sourceSets.integrationTest.runtimeClasspath)
 
-    finalizedBy aggregate
+    //finalizedBy aggregate
 }
 
 task contract(type: Test) {
