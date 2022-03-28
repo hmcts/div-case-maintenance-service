@@ -124,7 +124,7 @@ def versions = [
     guava: '30.1-jre',
     httpComponents: '4.5.13',
     idamClient: '1.1.0',
-    jackson: '2.13.2.1',
+    jackson: '2.13.2',
     jsonAssert: '1.2.3',
     junit: '4.13.2',
     junit_jupiter: '5.7.1',
