@@ -337,7 +337,8 @@ dependencyManagement {
             entry 'log4j-to-slf4j'
         }
 
-        dependencySet(group: 'org.springframework', version: '5.2.19.RELEASE') {
+        //CVE-2022-22965
+        dependencySet(group: 'org.springframework', version: '5.2.20.RELEASE') {
             entry 'spring-aop'
             entry 'spring-beans'
             entry 'spring-context'
