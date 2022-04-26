@@ -39,4 +39,9 @@
         <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
         <cpe>cpe:/a:fasterxml:jackson-databind</cpe>
     </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-core-5.2.21.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
+    </suppress>
 </suppressions>
