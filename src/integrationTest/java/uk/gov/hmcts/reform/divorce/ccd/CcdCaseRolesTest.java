@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.ccd;
 
 import io.restassured.response.Response;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import java.util.Map;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+@Ignore
 public class CcdCaseRolesTest extends PetitionSupport {
 
     private static final String SOL_PAYLOAD_CONTEXT_PATH = "ccd-solicitor-payload/";

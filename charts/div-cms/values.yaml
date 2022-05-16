@@ -2,6 +2,10 @@ java:
     applicationPort: 4010
     aadIdentityName: divorce
     ingressHost: "div-cms-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    autoscaling:
+      enabled: true
+      maxReplicas: 4
+      targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization    
     environment:
         AUTH_PROVIDER_SERVICE_CLIENT_BASEURL: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
         DRAFT_STORE_API_BASEURL: "http://draft-store-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"

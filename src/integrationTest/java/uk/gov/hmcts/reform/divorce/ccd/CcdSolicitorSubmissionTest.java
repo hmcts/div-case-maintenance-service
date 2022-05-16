@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.divorce.ccd;
 
 import io.restassured.response.Response;
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
+@Ignore
 public class CcdSolicitorSubmissionTest extends PetitionSupport {
 
     private static final String SOLICITOR_PATH = "solicitor/";

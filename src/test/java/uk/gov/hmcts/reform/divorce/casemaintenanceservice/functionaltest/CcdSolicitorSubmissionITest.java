@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import feign.FeignException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.T
     })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@Ignore
 public class CcdSolicitorSubmissionITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/solicitor-submit";
     private static final String VALID_PAYLOAD_PATH = "ccd-submission-payload/base-amended-case.json";
