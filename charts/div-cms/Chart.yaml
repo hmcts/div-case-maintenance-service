@@ -6,4 +6,4 @@ version: 2.0.9
 dependencies:
     - name: java
       version: 4.0.1
-      repository: "@hmctspublic"
+      repository: "https://hmctspublic.azurecr.io/helm/v1/repo/"
