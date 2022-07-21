@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CASEWORKER_ROLE;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.AuthUtil.getBearerToken;
 
 @Service
 @Slf4j
 public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRetrievalService {
+
+    public static final String ALL_CASES_QUERY = "{\"query\":{\"match_all\": {}}}";
 
     @Override
     public CaseDetails retrieveCase(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping,
@@ -109,29 +109,17 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
     @Override
     public CaseDetails retrieveCaseById(String authorisation, String caseId) {
-        User userDetails = getUser(authorisation);
-        List<String> userRoles = Optional.ofNullable(userDetails.getUserDetails().getRoles())
-            .orElse(Collections.emptyList());
-
-        if (userRoles.contains(CASEWORKER_ROLE) && !userRoles.contains(CITIZEN_ROLE)) {
-            return coreCaseDataApi.readForCaseWorker(
-                getBearerToken(authorisation),
-                getServiceAuthToken(),
-                userDetails.getUserDetails().getId(),
-                jurisdictionId,
-                caseType,
-                caseId
-            );
-        }
-
-        return coreCaseDataApi.readForCitizen(
+    CaseDetails caseDetails = null;
+        String searchQuery = buildQuery(caseId, "reference");
+        Optional<CaseDetails> caseDetailsOptional = coreCaseDataApi.searchCases(
             getBearerToken(authorisation),
             getServiceAuthToken(),
-            userDetails.getUserDetails().getId(),
-            jurisdictionId,
             caseType,
-            caseId
-        );
+            searchQuery).getCases().stream().findFirst();
+        if(caseDetailsOptional.isPresent()){
+             caseDetails = caseDetailsOptional.get();
+        }
+        return caseDetails;
     }
 
     @Override
@@ -154,16 +142,11 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     }
 
     private List<CaseDetails> getCaseListForUser(User user, DivCaseRole role) {
-        List<CaseDetails> cases = Optional.ofNullable(
-            coreCaseDataApi.searchForCitizen(
-                getBearerToken(user.getAuthToken()),
-                getServiceAuthToken(),
-                user.getUserDetails().getId(),
-                jurisdictionId,
-                caseType,
-                Collections.emptyMap())
-        ).orElse(Collections.emptyList());
-
+        List<CaseDetails> cases =  Optional.ofNullable(coreCaseDataApi.searchCases(
+            getBearerToken(user.getAuthToken()),
+            getServiceAuthToken(),
+            caseType,
+            ALL_CASES_QUERY).getCases()).orElse(Collections.emptyList());
         return cases.stream()
             .filter(caseDetails -> userHasSpecifiedRole(caseDetails, user.getUserDetails().getEmail(), role))
             .collect(Collectors.toList());
@@ -180,7 +163,8 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             case RESPONDENT:
                 return userEmail.equalsIgnoreCase((String) caseDetails.getData().get(CO_RESP_EMAIL_ADDRESS))
                     || userEmail.equalsIgnoreCase((String) caseDetails.getData().get(RESP_EMAIL_ADDRESS));
-            default: return false;
+            default:
+                return false;
         }
     }
 
@@ -192,4 +176,12 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
         return caseDetails;
     }
+
+    protected String buildQuery(String searchValue, String searchField) {
+        String searchString = "{\"query\":{\"term\":{ \""
+            + searchField
+            + "\":\"" + searchValue + "\"}}}";
+        return searchString;
+    }
+
 }
