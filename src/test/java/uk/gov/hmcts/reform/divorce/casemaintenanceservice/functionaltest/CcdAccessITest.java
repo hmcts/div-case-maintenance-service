@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
     "eureka.client.enabled=false"
-    })
+})
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CcdAccessITest extends MockSupport {
@@ -79,6 +80,9 @@ public class CcdAccessITest extends MockSupport {
     @Autowired
     private MockMvc webClient;
 
+    @Autowired
+    private CcdRetrievalServiceImpl ccdRetrievalService;
+
     @MockBean(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
@@ -98,7 +102,7 @@ public class CcdAccessITest extends MockSupport {
         stubCaseWorkerAuthentication(HttpStatus.BAD_GATEWAY);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isBadGateway());
     }
 
@@ -111,7 +115,7 @@ public class CcdAccessITest extends MockSupport {
         when(serviceTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isServiceUnavailable());
     }
 
@@ -125,17 +129,13 @@ public class CcdAccessITest extends MockSupport {
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        when(coreCaseDataApi.readForCaseWorker(
-            BEARER_CASE_WORKER_TOKEN,
-            TEST_SERVICE_TOKEN,
-            CASE_WORKER_USER_ID,
-            jurisdictionId,
-            caseType,
-            CASE_ID)
-        ).thenThrow(feignException);
+
+        String searchQuery = ccdRetrievalService.buildQuery(CASE_ID, "reference");
+        when(coreCaseDataApi
+            .searchCases(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenThrow(feignException);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isBadRequest());
     }
 
@@ -158,7 +158,7 @@ public class CcdAccessITest extends MockSupport {
         ).thenReturn(null);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isNotFound());
     }
 
@@ -182,7 +182,7 @@ public class CcdAccessITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
 
@@ -209,7 +209,7 @@ public class CcdAccessITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
 
@@ -239,7 +239,7 @@ public class CcdAccessITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
 
@@ -266,7 +266,7 @@ public class CcdAccessITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
 
@@ -296,7 +296,7 @@ public class CcdAccessITest extends MockSupport {
         ).thenReturn(caseDetails);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isUnauthorized());
     }
 
@@ -325,7 +325,7 @@ public class CcdAccessITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.FORBIDDEN, new EqualToPattern(USER_TOKEN), message);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isForbidden())
             .andExpect(content().string(containsString(message)));
     }
@@ -365,7 +365,7 @@ public class CcdAccessITest extends MockSupport {
             );
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isBadRequest());
     }
 
@@ -403,7 +403,7 @@ public class CcdAccessITest extends MockSupport {
 
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isOk());
     }
 
@@ -440,7 +440,7 @@ public class CcdAccessITest extends MockSupport {
             );
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isOk());
     }
 
@@ -483,7 +483,7 @@ public class CcdAccessITest extends MockSupport {
             );
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_SOL_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isOk());
     }
 
@@ -507,7 +507,7 @@ public class CcdAccessITest extends MockSupport {
             );
 
         webClient.perform(MockMvcRequestBuilders.put(ADD_PET_SOL_ROLE_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isOk());
     }
 }

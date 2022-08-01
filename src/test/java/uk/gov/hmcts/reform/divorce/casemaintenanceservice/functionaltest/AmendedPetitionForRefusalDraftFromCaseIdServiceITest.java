@@ -22,11 +22,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,6 +72,9 @@ public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSu
     @Autowired
     private MockMvc webClient;
 
+    @Autowired
+    private CcdRetrievalServiceImpl ccdRetrievalService;
+
     @MockBean(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
@@ -82,8 +87,8 @@ public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSu
     @Test
     public void givenJWTTokenIsNull_whenAmendedPetitionDraftForRefusalFromCaseId_thenReturnBadRequest() throws Exception {
         webClient.perform(MockMvcRequestBuilders.put(API_URL + "/" + TEST_CASE_ID)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
     }
 
@@ -94,9 +99,9 @@ public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSu
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL + "/" + TEST_CASE_ID)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isForbidden())
             .andExpect(content().string(containsString(message)));
     }
@@ -111,9 +116,9 @@ public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSu
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL + "/" + TEST_CASE_ID)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isServiceUnavailable());
     }
 
@@ -153,24 +158,19 @@ public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSu
         draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, Collections.singletonList(TEST_REASON_ADULTERY));
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+        String searchQuery = ccdRetrievalService.buildQuery(TEST_CASE_ID, "reference");
         when(coreCaseDataApi
-            .readForCaseWorker(
-                BEARER_CASE_WORKER_TOKEN,
-                TEST_SERVICE_TOKEN,
-                CASE_WORKER_USER_ID,
-                jurisdictionId,
-                caseType,
-                TEST_CASE_ID))
-            .thenReturn(oldCase);
+            .searchCases(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(oldCase)).build());
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), solicitorUserDetails);
         stubCaseWorkerAuthentication(HttpStatus.OK);
         stubToDivorceFormatEndpoint(caseDataFormatRequest, draftData);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL + "/" + TEST_CASE_ID)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
                 .json(ObjectMapperTestUtil
@@ -188,23 +188,20 @@ public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSu
             .data(caseData).id(caseId).state(CaseState.SUBMITTED.getValue()).build();
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
+        String searchQuery = ccdRetrievalService.buildQuery(TEST_CASE_ID, "reference");
         when(coreCaseDataApi
-            .readForCaseWorker(
-                BEARER_CASE_WORKER_TOKEN,
-                TEST_SERVICE_TOKEN,
-                CASE_WORKER_USER_ID,
-                jurisdictionId,
-                caseType,
-                TEST_CASE_ID))
-            .thenReturn(caseDetails);
+            .searchCases(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
+
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), solicitorUserDetails);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL + "/" + TEST_CASE_ID)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 
@@ -213,23 +210,19 @@ public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSu
         final String solicitorUserDetails = getSolicitorUserDetails();
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
+        String searchQuery = ccdRetrievalService.buildQuery(TEST_CASE_ID, "reference");
         when(coreCaseDataApi
-            .readForCaseWorker(
-                BEARER_CASE_WORKER_TOKEN,
-                TEST_SERVICE_TOKEN,
-                CASE_WORKER_USER_ID,
-                jurisdictionId,
-                caseType,
-                TEST_CASE_ID))
-            .thenReturn(null);
+            .searchCases(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenReturn(
+            SearchResult.builder().cases(null).build());
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), solicitorUserDetails);
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL + "/" + TEST_CASE_ID)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 

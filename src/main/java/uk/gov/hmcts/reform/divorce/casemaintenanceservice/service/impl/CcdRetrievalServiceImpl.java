@@ -109,15 +109,15 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
     @Override
     public CaseDetails retrieveCaseById(String authorisation, String caseId) {
-    CaseDetails caseDetails = null;
+        CaseDetails caseDetails = null;
         String searchQuery = buildQuery(caseId, "reference");
-        Optional<CaseDetails> caseDetailsOptional = coreCaseDataApi.searchCases(
+        SearchResult searchResult = coreCaseDataApi.searchCases(
             getBearerToken(authorisation),
             getServiceAuthToken(),
             caseType,
-            searchQuery).getCases().stream().findFirst();
-        if(caseDetailsOptional.isPresent()){
-             caseDetails = caseDetailsOptional.get();
+            searchQuery);
+        if (searchResult.getCases() != null && !searchResult.getCases().isEmpty()) {
+            caseDetails = searchResult.getCases().get(0);
         }
         return caseDetails;
     }
@@ -142,7 +142,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     }
 
     private List<CaseDetails> getCaseListForUser(User user, DivCaseRole role) {
-        List<CaseDetails> cases =  Optional.ofNullable(coreCaseDataApi.searchCases(
+        List<CaseDetails> cases = Optional.ofNullable(coreCaseDataApi.searchCases(
             getBearerToken(user.getAuthToken()),
             getServiceAuthToken(),
             caseType,
@@ -153,7 +153,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     }
 
     private boolean userHasSpecifiedRole(CaseDetails caseDetails, String userEmail, DivCaseRole role) {
-        if (role == null) {
+        if (role == null || caseDetails == null) {
             return false;
         }
 
@@ -177,7 +177,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         return caseDetails;
     }
 
-    protected String buildQuery(String searchValue, String searchField) {
+    public String buildQuery(String searchValue, String searchField) {
         String searchString = "{\"query\":{\"term\":{ \""
             + searchField
             + "\":\"" + searchValue + "\"}}}";
