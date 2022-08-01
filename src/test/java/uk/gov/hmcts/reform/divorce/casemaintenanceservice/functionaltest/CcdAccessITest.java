@@ -129,13 +129,17 @@ public class CcdAccessITest extends MockSupport {
         stubCaseWorkerAuthentication(HttpStatus.OK);
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-
-        String searchQuery = ccdRetrievalService.buildQuery(CASE_ID, "reference");
-        when(coreCaseDataApi
-            .searchCases(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenThrow(feignException);
+        when(coreCaseDataApi.readForCaseWorker(
+            BEARER_CASE_WORKER_TOKEN,
+            TEST_SERVICE_TOKEN,
+            CASE_WORKER_USER_ID,
+            jurisdictionId,
+            caseType,
+            CASE_ID)
+        ).thenThrow(feignException);
 
         webClient.perform(MockMvcRequestBuilders.post(LINK_RESP_URL)
-                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
+            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN))
             .andExpect(status().isBadRequest());
     }
 

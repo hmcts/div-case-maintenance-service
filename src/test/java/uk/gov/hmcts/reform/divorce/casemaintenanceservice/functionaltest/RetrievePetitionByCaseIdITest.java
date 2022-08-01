@@ -98,10 +98,11 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
         final CaseDetails caseDetails = createCaseDetails(caseId, "state");
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
+        String searchQuery = ccdRetrievalService.buildQuery(testCaseId, "reference");
         when(coreCaseDataApi
-            .readForCaseWorker(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, CASE_WORKER_USER_ID,
-                jurisdictionId, caseType, testCaseId))
-            .thenReturn(caseDetails);
+            .searchCases(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL + "/" + testCaseId)
                 .header(HttpHeaders.AUTHORIZATION, BEARER_CASE_WORKER_TOKEN)
