@@ -136,7 +136,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
 
     private void sleepThread() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
