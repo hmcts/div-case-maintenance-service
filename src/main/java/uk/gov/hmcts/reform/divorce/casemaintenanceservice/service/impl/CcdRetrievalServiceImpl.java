@@ -111,6 +111,11 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     public CaseDetails retrieveCaseById(String authorisation, String caseId) {
         CaseDetails caseDetails = null;
         String searchQuery = buildQuery(caseId, "reference");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         SearchResult searchResult = coreCaseDataApi.searchCases(
             getBearerToken(authorisation),
             getServiceAuthToken(),
@@ -124,6 +129,11 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
 
     @Override
     public SearchResult searchCase(String authorisation, String query) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return coreCaseDataApi.searchCases(
             getBearerToken(authorisation),
             getServiceAuthToken(),
@@ -142,6 +152,11 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     }
 
     private List<CaseDetails> getCaseListForUser(User user, DivCaseRole role) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         List<CaseDetails> cases = Optional.ofNullable(coreCaseDataApi.searchCases(
             getBearerToken(user.getAuthToken()),
             getServiceAuthToken(),
