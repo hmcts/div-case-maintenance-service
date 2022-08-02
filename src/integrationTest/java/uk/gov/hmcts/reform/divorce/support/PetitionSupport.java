@@ -87,6 +87,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     }
 
     protected Response getCase(String userToken) {
+        sleepThread();
         return
             RestUtil.getFromRestService(
                 getCaseRequestUrl(),
@@ -103,6 +104,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     }
 
     protected Response putAmendedPetitionDraft(String userToken) {
+        sleepThread();
         return
             RestUtil.putToRestService(
                 getGetAmendPetitionContextPath(),
