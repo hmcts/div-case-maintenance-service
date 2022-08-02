@@ -115,6 +115,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
         SearchResult searchResult = coreCaseDataApi.searchCases(
             getBearerToken(authorisation),
@@ -133,6 +134,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
         return coreCaseDataApi.searchCases(
             getBearerToken(authorisation),
@@ -156,6 +158,7 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
         List<CaseDetails> cases = Optional.ofNullable(coreCaseDataApi.searchCases(
             getBearerToken(user.getAuthToken()),
@@ -193,10 +196,9 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
     }
 
     public String buildQuery(String searchValue, String searchField) {
-        String searchString = "{\"query\":{\"term\":{ \""
+        return "{\"query\":{\"term\":{ \""
             + searchField
             + "\":\"" + searchValue + "\"}}}";
-        return searchString;
     }
 
 }
