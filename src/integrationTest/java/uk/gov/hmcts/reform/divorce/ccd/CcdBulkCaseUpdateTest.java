@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.divorce.ccd;
 
 import io.restassured.response.Response;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class CcdBulkCaseUpdateTest extends PetitionSupport {
 
     private static final String CASE_PAYLOAD_PATH = "bulk-case.json";
