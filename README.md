@@ -1,4 +1,4 @@
-# Divorce Case Maintenance Service [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Divorce Case Maintenance Service [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
 This is a case maintenance service. This service facilitates all the communication between Core Case Data and the
 Divorce system.
