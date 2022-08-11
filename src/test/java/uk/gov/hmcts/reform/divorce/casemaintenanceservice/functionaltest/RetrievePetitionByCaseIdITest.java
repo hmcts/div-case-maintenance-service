@@ -20,7 +20,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl;
+
+import java.util.Collections;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -34,7 +38,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.TestConstants.T
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
     "eureka.client.enabled=false"
-    })
+})
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RetrievePetitionByCaseIdITest extends MockSupport {
@@ -52,6 +56,9 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
     @Autowired
     private MockMvc webClient;
 
+    @Autowired
+    private CcdRetrievalServiceImpl ccdRetrievalService;
+
     @Test
     public void givenCaseExistsWithId_whenRetrievePetitionById_thenReturnCaseDetails()
         throws Exception {
@@ -64,13 +71,15 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
         final CaseDetails caseDetails = createCaseDetails(caseId, "state");
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
+        String searchQuery = ccdRetrievalService.buildQuery(testCaseId, "reference");
         when(coreCaseDataApi
-            .readForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, testCaseId))
-            .thenReturn(caseDetails);
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL + "/" + testCaseId)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
                 .json(ObjectMapperTestUtil
@@ -89,14 +98,15 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
         final CaseDetails caseDetails = createCaseDetails(caseId, "state");
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
+        String searchQuery = ccdRetrievalService.buildQuery(testCaseId, "reference");
         when(coreCaseDataApi
-            .readForCaseWorker(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, CASE_WORKER_USER_ID,
-                jurisdictionId, caseType, testCaseId))
-            .thenReturn(caseDetails);
+            .searchCases(BEARER_CASE_WORKER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL + "/" + testCaseId)
-            .header(HttpHeaders.AUTHORIZATION, BEARER_CASE_WORKER_TOKEN)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, BEARER_CASE_WORKER_TOKEN)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
                 .json(ObjectMapperTestUtil
@@ -112,13 +122,15 @@ public class RetrievePetitionByCaseIdITest extends MockSupport {
         final String testCaseId = String.valueOf(caseId);
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
+        String searchQuery = ccdRetrievalService.buildQuery(testCaseId, "reference");
         when(coreCaseDataApi
-            .readForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, testCaseId))
-            .thenReturn(null);
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, searchQuery)).thenReturn(
+            SearchResult.builder().cases(null).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL + "/" + testCaseId)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 

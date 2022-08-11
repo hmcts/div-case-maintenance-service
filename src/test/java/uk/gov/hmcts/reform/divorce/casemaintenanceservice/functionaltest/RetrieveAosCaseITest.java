@@ -24,11 +24,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.Draft;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.DraftList;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -121,8 +123,8 @@ public class RetrieveAosCaseITest extends MockSupport {
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(null);
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(null).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -140,9 +142,10 @@ public class RetrieveAosCaseITest extends MockSupport {
         final CaseDetails caseDetails = createCaseDetails(caseId, CaseState.AWAITING_DECREE_NISI.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Collections.singletonList(caseDetails));
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -165,9 +168,10 @@ public class RetrieveAosCaseITest extends MockSupport {
         final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AWAITING_DECREE_NISI.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Arrays.asList(caseDetails1, caseDetails2));
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2)).build());
 
         stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(TEST_SERVICE_TOKEN),
             Strings.EMPTY);
@@ -196,9 +200,10 @@ public class RetrieveAosCaseITest extends MockSupport {
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, CaseState.AOS_AWAITING.getValue());
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -219,8 +224,8 @@ public class RetrieveAosCaseITest extends MockSupport {
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Collections.singletonList(caseDetails));
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Arrays.asList(caseDetails)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -247,8 +252,8 @@ public class RetrieveAosCaseITest extends MockSupport {
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -274,9 +279,10 @@ public class RetrieveAosCaseITest extends MockSupport {
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state2");
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -301,9 +307,10 @@ public class RetrieveAosCaseITest extends MockSupport {
         final CaseDetails caseDetails3 = createCaseDetails(caseId3, "state3");
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Arrays.asList(caseDetails1, caseDetails2, caseDetails3));
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -325,9 +332,10 @@ public class RetrieveAosCaseITest extends MockSupport {
 
         stubGetDraftEndpoint(new EqualToPattern(USER_TOKEN), new EqualToPattern(TEST_SERVICE_TOKEN),
             ObjectMapperTestUtil.convertObjectToJsonString(draftList));
+
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(null);
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(null).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -358,8 +366,8 @@ public class RetrieveAosCaseITest extends MockSupport {
             ObjectMapperTestUtil.convertObjectToJsonString(caseData));
 
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(null);
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(null).build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)

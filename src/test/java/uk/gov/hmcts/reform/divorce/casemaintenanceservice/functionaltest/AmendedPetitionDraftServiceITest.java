@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
+import uk.gov.hmcts.reform.ccd.client.model.SearchResult;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.DraftStoreClient;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseState;
@@ -29,6 +30,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCasePr
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivorceSessionProperties;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.model.CreateDraft;
+import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +64,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=false",
     "eureka.client.enabled=false"
-    })
+})
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AmendedPetitionDraftServiceITest extends MockSupport {
@@ -86,11 +88,12 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
     @Value("${ccd.casetype}")
     private String caseType;
 
+
     @Test
     public void givenJWTTokenIsNull_whenAmendedPetitionDraft_thenReturnBadRequest() throws Exception {
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
     }
 
@@ -100,9 +103,9 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.FORBIDDEN, new EqualToPattern(USER_TOKEN), message);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isForbidden())
             .andExpect(content().string(containsString(message)));
     }
@@ -116,9 +119,9 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isServiceUnavailable());
     }
 
@@ -160,9 +163,11 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
             TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT, maxAge);
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Collections.singletonList(oldCase));
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(oldCase)).build());
+
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
         stubToDivorceFormatEndpoint(caseDataFormatRequest, draftData);
@@ -170,9 +175,9 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
         stubCreateDraftEndpoint(new EqualToPattern(TEST_SERVICE_TOKEN), createDraft);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content()
                 .json(ObjectMapperTestUtil
@@ -190,16 +195,16 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
             .data(caseData).id(caseId).state(CaseState.SUBMITTED.getValue()).build();
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(Collections.singletonList(caseDetails));
 
+        when(coreCaseDataApi
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 
@@ -208,16 +213,17 @@ public class AmendedPetitionDraftServiceITest extends MockSupport {
         final String message = getUserDetails();
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
+
         when(coreCaseDataApi
-            .searchForCitizen(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, Collections.emptyMap()))
-            .thenReturn(null);
+            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Collections.singletonList(null)).build());
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
 
         webClient.perform(MockMvcRequestBuilders.put(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 

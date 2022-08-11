@@ -98,14 +98,4 @@ public class CcdClientSupport {
             caseDataContent);
     }
 
-    public CaseDetails fetchCaseForUser(UserDetails userDetails, String caseId) {
-        final String serviceToken = authTokenGenerator.generate();
-        return coreCaseDataApi.readForCaseWorker(
-            userDetails.getAuthToken(),
-            serviceToken,
-            userDetails.getId(),
-            jurisdictionId,
-            caseType,
-            caseId);
-    }
 }

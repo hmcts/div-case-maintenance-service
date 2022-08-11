@@ -59,6 +59,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     }
 
     protected Response retrieveCase(String userToken) {
+        sleepThread();
         return
             RestUtil.getFromRestService(
                 getRetrieveCaseRequestUrl(),
@@ -67,6 +68,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     }
 
     protected Response retrieveCaseById(String userToken, String caseId) {
+        sleepThread();
         return
             RestUtil.getFromRestService(
                 getCaseRequestUrl() + "/" + caseId,
@@ -75,6 +77,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     }
 
     protected Response searchCases(String userToken, String query) {
+        sleepThread();
         return
             RestUtil.postToRestService(
                 getSearchRequestUrl(),
@@ -84,6 +87,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     }
 
     protected Response getCase(String userToken) {
+        sleepThread();
         return
             RestUtil.getFromRestService(
                 getCaseRequestUrl(),
@@ -100,6 +104,7 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     }
 
     protected Response putAmendedPetitionDraft(String userToken) {
+        sleepThread();
         return
             RestUtil.putToRestService(
                 getGetAmendPetitionContextPath(),
@@ -127,6 +132,14 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
                 "",
                 Collections.emptyMap()
             );
+    }
+
+    private void sleepThread() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private String getGetAmendPetitionContextPath() {
