@@ -23,6 +23,7 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
     private String contextBulkPath;
 
     protected Response updateCase(String fileName, Long caseId, String eventId, String userToken) {
+        sleepThread();
         return
             RestUtil.postToRestService(
                 getRequestUrl(caseId, eventId),
@@ -32,6 +33,7 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
     }
 
     protected Response updateCase(Map<String, Object> data, Long caseId, String eventId, String userToken) {
+        sleepThread();
         return
             RestUtil.postToRestService(
                 getRequestUrl(caseId, eventId),
@@ -41,6 +43,7 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
     }
 
     protected Response updateBulkCase(Map<String, Object> data, Long caseId, String eventId, String userToken) {
+        sleepThread();
         return
             RestUtil.postToRestService(
                 getBulkCaseRequestUrl(caseId, eventId),
@@ -67,5 +70,13 @@ public abstract class CcdUpdateSupport extends CcdSubmissionSupport {
         Response cmsResponse = submitCase("completed-case-submitted.json", userDetails);
 
         return cmsResponse.path("id");
+    }
+
+    private void sleepThread() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
