@@ -1,9 +1,9 @@
-package uk.gov.hmcts.reform.divorce.petition;
+//package uk.gov.hmcts.reform.divorce.petition;
 
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
-public class AmendPetitionForRefusalDraftTest extends PetitionSupport {
-    private static final String AMEND_CASE_EVENT_ID = "amendCase";
+//public class AmendPetitionForRefusalDraftTest extends PetitionSupport {
+//    private static final String AMEND_CASE_EVENT_ID = "amendCase";
 
     //    @Test
     //    public void givenSingleCaseInCcd_whenAmendPetitionDraft_thenReturnTheDraft() throws Exception {
@@ -19,4 +19,4 @@ public class AmendPetitionForRefusalDraftTest extends PetitionSupport {
     //        assertEquals(HttpStatus.OK.value(), cmsResponse.getStatusCode());
     //        assertEquals(String.valueOf(caseId), cmsResponse.path("previousCaseId"));
     //    }
-}
+//}
