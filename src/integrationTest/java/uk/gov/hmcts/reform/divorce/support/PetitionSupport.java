@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.divorce.support;
 
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.hmcts.reform.divorce.util.ResourceLoader;
 import uk.gov.hmcts.reform.divorce.util.RestUtil;
@@ -29,6 +31,11 @@ public abstract class PetitionSupport extends CcdUpdateSupport {
     private String amendPetitionRefusalContextPath;
 
     private String searchContextPath = "/casemaintenance/version/1/search";
+
+    @BeforeAll
+    public void init() {
+        RestAssured.useRelaxedHTTPSValidation();
+    }
 
     protected Response saveDraft(String userToken, String fileName, Map<String, Object> params) throws Exception {
         return
