@@ -318,7 +318,7 @@ dependencyManagement {
     dependencies {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
 
-        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.29'
+        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.31'
         //CVE-2022-25857
         dependencySet(group: 'org.yaml', version: '1.31') {
             entry 'snakeyaml'
