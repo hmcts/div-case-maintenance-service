@@ -15,14 +15,6 @@ public class CcdSubmissionTest extends PetitionSupport {
     //
     //    }
 
-    @Test
-    public void shouldReturnCaseIdForValidAddressesSessionDatas() throws Exception {
-        String expectedStatus = "AwaitingPayment";
-        Response caseSubmitted = submitCase("addresses-no-hwf.json", getUserDetails());
-        assertOkResponseAndCaseIdIsNotZero(caseSubmitted);
-        assertCaseStatus(caseSubmitted, expectedStatus);
-    }
-
     //    @Test
     //    public void shouldReturnCaseIdForValidHowNameChangedSessionData() throws Exception {
     //        submitAndAssertSuccess("how-name-changed.json");
@@ -32,11 +24,6 @@ public class CcdSubmissionTest extends PetitionSupport {
     //    public void shouldReturnCaseIdForValidJurisdiction6To12SessionData() throws Exception {
     //        submitAndAssertSuccess("jurisdiction-6-12.json");
     //    }
-
-    @Test
-    public void shouldReturnCaseIdForValidJurisdictionAllSessionData() throws Exception {
-        submitAndAssertSuccess("jurisdiction-all.json");
-    }
 
     //    @Test
     //    public void shouldReturnCaseIdForValidAdulterySessionData() throws Exception {
@@ -57,11 +44,6 @@ public class CcdSubmissionTest extends PetitionSupport {
     //    public void shouldReturnCaseIdForValidUnreasonableBehaviourSessionData() throws Exception {
     //        submitAndAssertSuccess("reason-unreasonable-behaviour.json");
     //    }
-
-    @Test
-    public void shouldReturnCaseIdForValidSameSexSessionData() throws Exception {
-        submitAndAssertSuccess("same-sex.json");
-    }
 
     //    @Test
     //    public void shouldReturnCaseIdForValidD8DocumentSessionData() throws Exception {

@@ -38,11 +38,6 @@ public class CcdSolicitorSubmissionTest extends PetitionSupport {
     }
 
     @Test
-    public void shouldReturnCaseIdForValidJurisdictionAllSessionData() {
-        solicitorSubmitAndAssertSuccess(buildSolicitorPath("jurisdiction-all.json"));
-    }
-
-    @Test
     public void shouldReturnCaseIdForValidAdulterySessionData() {
         solicitorSubmitAndAssertSuccess(buildSolicitorPath("reason-adultery.json"));
     }
@@ -60,11 +55,6 @@ public class CcdSolicitorSubmissionTest extends PetitionSupport {
     @Test
     public void shouldReturnCaseIdForValidUnreasonableBehaviourSessionData() {
         solicitorSubmitAndAssertSuccess(buildSolicitorPath("reason-unreasonable-behaviour.json"));
-    }
-
-    @Test
-    public void shouldReturnCaseIdForValidSameSexSessionData() {
-        solicitorSubmitAndAssertSuccess(buildSolicitorPath("same-sex.json"));
     }
 
     @Test
