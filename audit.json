@@ -4,5 +4,8 @@
     "100000_A Client Error response code was returned by the server_https://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
     "10036_Server Leaks Version Information via \"Server\" HTTP Response Header Field_https://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
     "10038_Content Security Policy (CSP) Header Not Set_https://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET":"ignore",
-    "100000_A Client Error response code was returned by the server_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET":"ignore"
+    "100000_A Client Error response code was returned by the server_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET":"ignore",
+    "f10010_Cookie No HttpOnly Flag_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
+    "10054_Cookie without SameSite Attribute_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
+    "90033_Loosely Scoped Cookie_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore"
 }
