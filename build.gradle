@@ -144,7 +144,7 @@ def versions = [
     springfoxSwagger: '2.9.2',
     springSecurityCrypto: '5.4.5',
     springSecurityRsa: '1.0.9.RELEASE',
-    tomcat: '9.0.58',
+    tomcat: '9.0.67',
     unirest: '1.4.9',
     wiremockVersion: '2.27.2'
 ]
@@ -318,14 +318,14 @@ dependencyManagement {
     dependencies {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
 
-        dependency group: 'org.yaml',name: 'snakeyaml', version: '1.29'
+
         //CVE-2022-25857
-        dependencySet(group: 'org.yaml', version: '1.31') {
+        dependencySet(group: 'org.yaml', version: '1.33') {
             entry 'snakeyaml'
         }
 
         // solves CVE-2014-3488, CVE-2015-2156, CVE-2019-16869
-        dependencySet(group: 'io.netty', version: '4.1.74.Final') {
+        dependencySet(group: 'io.netty', version: '4.1.82.Final') {
             entry 'netty-buffer'
             entry 'netty-codec'
             entry 'netty-codec-http'
