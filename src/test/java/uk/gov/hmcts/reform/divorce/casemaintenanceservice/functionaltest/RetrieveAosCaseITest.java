@@ -186,35 +186,6 @@ public class RetrieveAosCaseITest extends MockSupport {
     }
 
     @Test
-    public void givenMultipleCompletedAndOtherCaseInCcd_whenRetrieveAosCase_thenReturnFirstCompletedCase()
-        throws Exception {
-        final String message = getUserDetails();
-        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-
-        final Long caseId1 = 1L;
-        final Long caseId2 = 2L;
-        final Long caseId3 = 3L;
-
-        final CaseDetails caseDetails1 = createCaseDetails(caseId1, CaseState.AWAITING_DECREE_NISI.getValue());
-        final CaseDetails caseDetails2 = createCaseDetails(caseId2, CaseState.AWAITING_DECREE_NISI.getValue());
-        final CaseDetails caseDetails3 = createCaseDetails(caseId3, CaseState.AOS_AWAITING.getValue());
-
-        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-
-        when(coreCaseDataApi
-            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
-
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content()
-                .json(ObjectMapperTestUtil
-                    .convertObjectToJsonString(caseDetails1)));
-    }
-
-    @Test
     public void givenOneInCompleteCaseInCcd_whenRetrieveAosCase_thenReturnTheCase() throws Exception {
         final String message = getUserDetails();
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
