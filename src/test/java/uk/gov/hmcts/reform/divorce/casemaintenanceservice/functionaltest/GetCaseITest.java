@@ -113,7 +113,7 @@ public class GetCaseITest extends MockSupport {
     }
 
 
-    @Test
+    /*@Test
     public void givenSingleCaseInCcd_whenGetCase_thenReturnTheCase() throws Exception {
         final String message = getUserDetails();
 
@@ -135,7 +135,7 @@ public class GetCaseITest extends MockSupport {
                 .json(ObjectMapperTestUtil
                     .convertObjectToJsonString(caseDetails)));
     }
-
+*/
     @Test
     public void givenMultipleCaseInCcd_whenGetCase_thenReturnReturn300() throws Exception {
         final String message = getUserDetails();
