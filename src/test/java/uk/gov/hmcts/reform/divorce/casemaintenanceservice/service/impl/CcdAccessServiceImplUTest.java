@@ -100,7 +100,7 @@ public class CcdAccessServiceImplUTest {
     );
 
     @Rule
-    public ExpectedException expectedException = none();
+    public ExpectedException thrown = ExpectedException.none();
 
     @Mock(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
@@ -129,8 +129,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenNoCaseFound_whenLinkRespondent_thenThrowCaseNotFoundException() {
-        expectedException.expect(CaseNotFoundException.class);
-        expectedException
+        thrown.expect(CaseNotFoundException.class);
+        thrown
             .expectMessage(NOT_FOUND_MESSAGE);
 
         mockCaseDetails(null);
@@ -140,8 +140,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenNoCaseDataFound_whenLinkRespondent_thenThrowCaseNotFoundException() {
-        expectedException.expect(InvalidRequestException.class);
-        expectedException.expectMessage(INVALID_MESSAGE);
+        thrown.expect(InvalidRequestException.class);
+        thrown.expectMessage(INVALID_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder().build();
 
         mockCaseDetails(caseDetails);
@@ -151,8 +151,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenLetterHolderIdIsNull_whenLinkRespondent_thenThrowInvalidRequestException() {
-        expectedException.expect(InvalidRequestException.class);
-        expectedException.expectMessage(INVALID_MESSAGE);
+        thrown.expect(InvalidRequestException.class);
+        thrown.expectMessage(INVALID_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
             .data(Collections.singletonMap(
@@ -166,8 +166,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenLetterHolderIdIsBlank_whenLinkRespondent_thenThrowInvalidRequestException() {
-        expectedException.expect(InvalidRequestException.class);
-        expectedException.expectMessage(INVALID_MESSAGE);
+        thrown.expect(InvalidRequestException.class);
+        thrown.expectMessage(INVALID_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .data(Collections.singletonMap(
                 RESP_LETTER_HOLDER_ID_FIELD, TEST_LETTER_HOLDER_ID_CODE
@@ -180,8 +180,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenLetterHolderIdInCaseIsNull_whenLinkRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(Collections.emptyMap()).build();
@@ -193,8 +193,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenLetterHolderIdsDoNotMatch_whenLinkRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
 
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
@@ -211,8 +211,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenLetterHolderIdsDoNotMatch_whenLinkCoRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
             .id(Long.decode(CASE_ID))
@@ -228,8 +228,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenCaseAlreadyLinked_whenLinkRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
@@ -252,8 +252,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenUserIsPetitioner_whenLinkRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
@@ -277,8 +277,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenUserIsPetitioner_whenLinkCoRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
@@ -302,8 +302,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenCaseAlreadyLinked_whenLinkCoRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.ISSUED.getValue())
             .id(Long.decode(CASE_ID))
@@ -326,8 +326,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenRespondentEmailNotMatch_whenLinkRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(RESP_UNAUTHORIZED_MESSAGE);
 
         CaseDetails caseDetails = CaseDetails.builder()
             .id(1000L)
@@ -352,8 +352,8 @@ public class CcdAccessServiceImplUTest {
 
     @Test
     public void givenRespondentEmailNotMatch_whenLinkCoRespondent_thenThrowUnauthorizedException() {
-        expectedException.expect(UnauthorizedException.class);
-        expectedException.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
+        thrown.expect(UnauthorizedException.class);
+        thrown.expectMessage(CO_RESP_UNAUTHORIZED_MESSAGE);
         CaseDetails caseDetails = CaseDetails.builder()
             .state(CaseState.AOS_AWAITING.getValue())
             .id(Long.decode(CASE_ID))

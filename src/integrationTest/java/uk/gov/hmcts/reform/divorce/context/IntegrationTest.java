@@ -27,9 +27,6 @@ public abstract class IntegrationTest {
     @Value("${case.maintenance.service.base.uri}")
     protected String serverUrl;
 
-    @Value("${http.proxy:#{null}}")
-    protected String httpProxy;
-
     @Autowired
     protected IdamTestSupport idamTestSupport;
 
@@ -46,22 +43,6 @@ public abstract class IntegrationTest {
     @PostConstruct
     public void init() {
         RestAssured.useRelaxedHTTPSValidation();
-        if (!Strings.isNullOrEmpty(httpProxy)) {
-            try {
-                URL proxy = new URL(httpProxy);
-                // check proxy connectivity
-                if (!InetAddress.getByName(proxy.getHost()).isReachable(2000)) {
-                    throw new IOException();
-                }
-                System.setProperty("http.proxyHost", proxy.getHost());
-                System.setProperty("http.proxyPort", Integer.toString(proxy.getPort()));
-                System.setProperty("https.proxyHost", proxy.getHost());
-                System.setProperty("https.proxyPort", Integer.toString(proxy.getPort()));
-            } catch (IOException e) {
-                log.error("Error setting up proxy - are you connected to the VPN?", e);
-                throw new RuntimeException("Error setting up proxy", e);
-            }
-        }
     }
 
     protected UserDetails getUserDetails() {

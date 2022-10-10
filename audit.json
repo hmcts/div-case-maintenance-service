@@ -9,4 +9,5 @@
     "10054_Cookie without SameSite Attribute_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
     "90033_Loosely Scoped Cookie_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
     "10010_Cookie No HttpOnly Flag_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore"
+    "90033_Loosely Scoped Cookie_http://div-cms-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore"
 }
