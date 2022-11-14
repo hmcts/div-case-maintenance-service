@@ -1,80 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
-      <notes><![CDATA[file name: jackson-databind-2.13.2.jar]]></notes>
-      <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
+        <notes><![CDATA[file name: jackson-databind-2.13.2.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
         <cve>CVE-2020-36518</cve>
-    </suppress>
-    <suppress>
-        <gav regex="true">.*</gav>
-        <cve>CVE-2018-10237</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-                file name: spring-security-rsa-1.0.8.RELEASE.jar
-                This has been updated, but it still shown some vulnerabilities that shouldn't be there
-                Issue reported on the DependencyCheck GitHub repo
-                https://github.com/jeremylong/DependencyCheck/issues/1665
-            ]]>
-        </notes>
-        <gav regex="true">.*</gav>
-        <cve>CVE-2018-1258</cve>
-    </suppress>
-    <suppress until="2021-09-16Z">
-        <notes><![CDATA[
-   file name: jakarta.el-3.0.3.jar
-   ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.glassfish/jakarta\.el@.*$</packageUrl>
-        <cve>CVE-2021-28170</cve>
-    </suppress>
-
-    <suppress until="2022-11-01Z">
-        <notes><![CDATA[Suppress tomcat CVE as there is no updated version.]]></notes>
-        <vulnerabilityName>CVE-2021-42340</vulnerabilityName>
-    </suppress>
-    <suppress until="2030-01-01">
-        <notes><![CDATA[
-                 https://nvd.nist.gov/vuln/detail/CVE-2021-22096#range-7096083
-                 Temporary suppression until upgrade to Spring Boot 2.5.6 (current) https://docs.spring.io/spring-boot/docs/current/reference/html/dependency-versions.html#dependency-versions
-                ]]></notes>
-        <cve>CVE-2021-22096</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[file name: jackson-databind-2.13.3.jar]]></notes>
-        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
         <cve>CVE-2022-42003</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[file name: jackson-databind-2.13.3.jar]]></notes>
-        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
         <cve>CVE-2022-42004</cve>
     </suppress>
+
     <suppress>
         <notes><![CDATA[file name: spring-core-5.2.21.RELEASE.jar]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
         <cve>CVE-2016-1000027</cve>
-    </suppress>
-    <suppress>
-      <notes><![CDATA[file name: spring-core-5.2.21.RELEASE.jar]]></notes>
-      <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
-      <cve>CVE-2022-22970</cve>
-    </suppress>
-    <suppress>
-      <notes><![CDATA[file name: spring-core-5.2.21.RELEASE.jar]]></notes>
-      <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
-      <cve>CVE-2022-22971</cve>
-    </suppress>
-    <suppress>
-      <notes><![CDATA[file name: tomcat-embed-websocket-9.0.58.jar]]></notes>
-      <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-websocket@.*$</packageUrl>
-      <cve>CVE-2022-34305</cve>
-    </suppress>
-    <suppress>
-        <cve>CVE-2020-0187</cve>
         <cve>CVE-2022-22970</cve>
-        <cve>CVE-2021-22044</cve>
-        <cve>CVE-2020-5408</cve>
-        <cve>CVE-2022-22976</cve>
-        <cve>CVE-2016-1000027</cve>
+        <cve>CVE-2022-22971</cve>
     </suppress>
+
+    
 </suppressions>
