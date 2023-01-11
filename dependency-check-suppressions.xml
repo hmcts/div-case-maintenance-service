@@ -122,4 +122,85 @@
         <packageUrl regex="true">^pkg:maven/commons\-logging/commons\-logging@.*$</packageUrl>
         <cve>CVE-2021-37533</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[file name: LatencyUtils-2.0.3.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.latencyutils/LatencyUtils@.*$</packageUrl>
+        <cve>CVE-2021-4277</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: bcprov-jdk15on-1.64.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcprov\-jdk15on@.*$</packageUrl>
+        <cve>CVE-2020-15522</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: snakeyaml-1.33.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
+        <cve>CVE-2022-3064</cve>
+        <cve>CVE-2021-4235</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-aop-5.2.21.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-aop@.*$</packageUrl>
+        <cve>CVE-2022-22971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-beans-5.2.21.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-beans@.*$</packageUrl>
+        <cve>CVE-2022-22971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-cloud-netflix-archaius-2.1.2.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/spring\-cloud\-netflix\-archaius@.*$</packageUrl>
+        <cve>CVE-2020-5412</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-cloud-netflix-ribbon-2.1.2.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.cloud/spring\-cloud\-netflix\-ribbon@.*$</packageUrl>
+        <cve>CVE-2020-5412</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-context-5.2.21.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-context@.*$</packageUrl>
+        <cve>CVE-2022-22971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-context-support-5.2.21.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-context\-support@.*$</packageUrl>
+        <cve>CVE-2022-22971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-expression-5.2.21.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-expression@.*$</packageUrl>
+        <cve>CVE-2022-22971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-jcl-5.2.21.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-jcl@.*$</packageUrl>
+        <cve>CVE-2022-22971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-security-crypto-5.4.5.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
+        <cve>CVE-2022-22978</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-security-crypto-5.4.5.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
+        <cve>CVE-2021-22119</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: spring-webmvc-5.2.21.RELEASE.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-webmvc@.*$</packageUrl>
+        <cve>CVE-2022-22971</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: tomcat-embed-core-9.0.68.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-core@.*$</packageUrl>
+        <cve>CVE-2022-45143</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: tomcat-embed-websocket-9.0.68.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-websocket@.*$</packageUrl>
+        <cve>CVE-2022-45143</cve>
+    </suppress>
 </suppressions>
