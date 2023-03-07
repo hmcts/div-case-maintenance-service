@@ -78,9 +78,14 @@
         <cve>CVE-2016-1000027</cve>
     </suppress>
     <suppress>
-        <notes><![CDATA[file name: commons-beanutils-1.9.4.jar]]></notes>
-        <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
-        <cve>CVE-2021-37533</cve>
+        <notes><![CDATA[file name: commons-fileupload-1.4.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/commons\-fileupload/commons\-fileupload@.*$</packageUrl>
+        <cve>CVE-2023-24998</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: jackson-core-2.13.2.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-core@.*$</packageUrl>
+        <cve>CVE-2022-45688</cve>
     </suppress>
     <suppress>
         <notes><![CDATA[file name: commons-codec-1.14.jar]]></notes>
