@@ -210,7 +210,7 @@
     </suppress>
     <suppress>
         <notes><![CDATA[file name: snakeyaml-1.33.jar]]></notes>
-        <packageUrl regex="true">^pkg:maven/org.yaml/snakeyaml@1.33, cpe:2.3:a:snakeyaml_project:snakeyaml:1.33:*:*:*:*:*:*:*)</packageUrl>
+        <packageUrl regex="true">^pkg:maven/org.yaml/snakeyaml@1.33, cpe:2.3:a:snakeyaml_project:snakeyaml:1.33:*:*:*:*:*:*:*</packageUrl>
         <cve>CVE-2022-1471</cve>
     </suppress>
 </suppressions>
