@@ -227,4 +227,8 @@
         <cve>CVE-2022-45143</cve>
         <cve>CVE-2023-28708</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[file name: org.springframework.spring-boot-starter-2.3.11.jar]]></notes>
+        <cve>CVE-2023-20883</cve>
+    </suppress>
 </suppressions>
