@@ -232,4 +232,9 @@
         <notes><![CDATA[file name: org.springframework.spring-boot-starter-2.3.11.jar]]></notes>
         <cve>CVE-2023-20883</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[file name: guava-30.1-jre.jar]]></notes>
+        <packageUrl regex="true">pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
+        <cve>CVE-2023-2976</cve>
+    </suppress>
 </suppressions>
