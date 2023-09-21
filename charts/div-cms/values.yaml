@@ -21,9 +21,15 @@ java:
         "div":
             resourceGroup: div
             secrets:
-                - ccd-submission-s2s-auth-secret
-                - idam-secret
-                - draft-store-api-encryption-key
-                - idam-caseworker-username
-                - idam-caseworker-password
-                - AppInsightsInstrumentationKey
+                - name: app-insights-connection-string
+                  alias: app-insights-connection-string
+                - name: ccd-submission-s2s-auth-secret
+                  alias: AUTH_PROVIDER_SERVICE_CLIENT_KEY
+                - name: idam-secret
+                  alias: AUTH2_CLIENT_SECRET
+                - name: draft-store-api-encryption-key
+                  alias: DRAFT_STORE_API_ENCRYPTION_KEY_VALUE
+                - name: idam-caseworker-username
+                  alias: IDAM_CASEWORKER_USERNAME
+                - name: idam-caseworker-password
+                  alias: IDAM_CASEWORKER_PASSWORD

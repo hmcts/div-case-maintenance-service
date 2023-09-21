@@ -25,3 +25,8 @@ application-*.yml
 application-*.yaml
 application-local.properties
 /pacts/
+
+*.log
+
+lib/applicationinsights-agent-*.jar
+lib/applicationinsights.log
