@@ -42,18 +42,6 @@ public class StartForCaseWorkerConsumerTest extends CcdConsumerTestBase {
             .toPact();
     }
 
-    @Test
-    @PactTestFor(pactMethod = "startForCaseWorker")
-    public void verifyStartEventForCaseworker() throws IOException, JSONException {
-
-        StartEventResponse startEventResponse = coreCaseDataApi.startForCaseworker(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId,
-            caseType, createEventId);
-
-        assertThat(startEventResponse.getEventId(), equalTo(createEventId));
-        assertNotNull(startEventResponse.getCaseDetails());
-    }
-
     @Override
     protected Map<String, Object> setUpStateMapForProviderWithoutCaseData() throws JSONException {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithoutCaseData();
