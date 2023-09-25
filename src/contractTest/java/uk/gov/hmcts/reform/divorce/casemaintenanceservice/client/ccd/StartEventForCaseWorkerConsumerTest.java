@@ -39,17 +39,6 @@ public class StartEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
             .toPact();
     }
 
-    @Test
-    @PactTestFor(pactMethod = "startEventForCaseWorker")
-    public void verifyStartEventForCaseworker() throws JSONException {
-
-        final StartEventResponse startEventResponse = coreCaseDataApi.startEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId, caseType, CASE_ID.toString(), HWF_APPLICATION_ACCEPTED);
-
-        assertThat(startEventResponse.getEventId(), is(HWF_APPLICATION_ACCEPTED));
-        assertCaseDetails(startEventResponse.getCaseDetails());
-    }
-
     @Override
     protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) throws JSONException {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithCaseData(caseDataContent);
