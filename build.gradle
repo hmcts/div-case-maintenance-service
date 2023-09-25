@@ -35,12 +35,11 @@ def versions = [
     reformPropertiesVolume: '0.0.4',
     reformsJavaLogging: '5.1.7',
     restAssured: '4.2.1',
-    serenity: '2.5.8',
-    serenityCucumber: '1.9.51',
+    serenity: '3.2.5',
     serviceTokenGenerator: '3.0.0',
     sonarPitest: '0.5',
     springCloudDependencies: '2.2.1.RELEASE',
-    springfoxSwagger: '2.9.2',
+    springDoc : '1.6.9',
     springSecurityCrypto: '5.4.5',
     springSecurityRsa: '1.0.9.RELEASE',
     tomcat: '9.0.68',
@@ -63,6 +62,35 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir('src/integrationTest/java')
+        }
+        resources {
+            srcDir('src/integrationTest/resources')
+        }
+    }
+    contractTest {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+            srcDir file('src/contractTest/java')
+        }
+        resources.srcDir file('src/contractTest/resources')
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven { url 'https://repo.spring.io/libs-milestone' }
+    maven { url "https://jitpack.io" }
 }
 
 jar {
@@ -89,13 +117,7 @@ compileTestJava {
     options.compilerArgs << '-Xlint:deprecation'
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    maven { url 'https://repo.spring.io/libs-milestone' }
-    maven { url "https://jitpack.io" }
-}
+
 
 distributions {
     main {
@@ -149,7 +171,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-aop')
     implementation('org.springframework.boot:spring-boot-starter-validation')
-
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
     compileOnly("org.projectlombok:lombok:${versions.lombok}")
 
     testImplementation("org.projectlombok:lombok:${versions.lombok}")
@@ -174,8 +196,6 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
     implementation group: 'com.puppycrawl.tools', name: 'checkstyle', version:  versions.puppyCrawl
     implementation group: 'commons-io', name: 'commons-io', version: versions.commonsIo
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
     implementation group: 'org.apache.commons', name: 'commons-lang3', version : versions.commonsLang3
     implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: versions.reformPropertiesVolume
 
@@ -207,6 +227,10 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-contexts'
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
+
+    implementation("org.springdoc:springdoc-openapi-ui") {
+        exclude group: "org.yaml", module: "snakeyaml"
+    }
 
     implementation (group: 'org.apache.tomcat.embed', name:'tomcat-embed-core', version: versions.tomcat) {
         force = true
@@ -242,13 +266,14 @@ dependencies {
     //integration test
     integrationTestImplementation group: 'com.mashape.unirest', name: 'unirest-java', version: versions.unirest
     integrationTestImplementation group: 'junit', name: 'junit', version: versions.junit
-    integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-    integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-cucumber', version: versions.serenityCucumber
+    integrationTestImplementation("net.serenity-bdd:serenity-core:3.2.5") {
+        exclude group: "commons-net", module: "commons-net"
+        exclude group: "org.apache.commons", module: "commons-compress"
+    }
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     integrationTestImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
-    integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
-    integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
+    integrationTestImplementation group: 'io.rest-assured', name: 'rest-assured'
     integrationTestImplementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3
     integrationTestImplementation group: 'org.skyscreamer', name:'jsonassert', version: versions.jsonAssert
     integrationTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
@@ -288,75 +313,31 @@ dependencies {
     contractTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
 }
 
-sourceSets {
-    integrationTest {
-        java {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-            srcDir('src/integrationTest/java')
-        }
-        resources {
-            srcDir('src/integrationTest/resources')
-        }
-    }
-    contractTest {
-        java {
-            compileClasspath += main.output
-            runtimeClasspath += main.output
-            srcDir file('src/contractTest/java')
-        }
-        resources.srcDir file('src/contractTest/resources')
-    }
-}
-
 dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudBomVersion}"
+        mavenBom "io.rest-assured:rest-assured-bom:${restAssuredBomVersion}"
+    }
     dependencies {
-        dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
-
-
-        //CVE-2022-25857
-        dependencySet(group: 'org.yaml', version: '1.33') {
-            entry 'snakeyaml'
+        //CVE-2022-42252
+        dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.80') {
+            entry 'tomcat-embed-core'
+            entry 'tomcat-embed-websocket'
         }
-
-        // solves CVE-2014-3488, CVE-2015-2156, CVE-2019-16869
-        dependencySet(group: 'io.netty', version: '4.1.87.Final') {
-            entry 'netty-buffer'
-            entry 'netty-codec'
-            entry 'netty-codec-http'
-            entry 'netty-common'
-            entry 'netty-handler'
-            entry 'netty-resolver'
-            entry 'netty-transport'
+        //VE-2022-31692, CVE-2022-31690 CVE-2023-20862
+        dependencySet(group: 'org.springframework.security', version: '6.1.3') {
+            entry 'spring-security-crypto'
         }
-
-        //CVE-2021-44228, CVE-2021-44832, CVE-2021-45046, CVE-2021-45105
-        dependencySet(group: 'org.apache.logging.log4j', version: '2.19.0') {
-            entry 'log4j-api'
-            entry 'log4j-to-slf4j'
-        }
-
-        //CVE-2022-22965
-        dependencySet(group: 'org.springframework', version: '5.2.21.RELEASE') {
+        //CVE-2023-20861
+        dependencySet(group: 'org.springframework', version: '5.3.29') {
             entry 'spring-aop'
             entry 'spring-beans'
             entry 'spring-context'
-            entry 'spring-context-support'
             entry 'spring-core'
             entry 'spring-expression'
             entry 'spring-jcl'
-            entry 'spring-web'
             entry 'spring-webmvc'
         }
-
-        dependencySet(
-            group: 'com.fasterxml.jackson.core',
-            version: versions.jackson
-        ) {
-            entry 'jackson-core'
-            entry 'jackson-databind'
-        }
-        dependency group: 'org.glassfish', name: 'jakarta.el', version: '3.0.4'
     }
 }
 
@@ -509,3 +490,6 @@ task fortifyScan(type: JavaExec)  {
     jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
 }
 
+tasks.withType(Copy) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
