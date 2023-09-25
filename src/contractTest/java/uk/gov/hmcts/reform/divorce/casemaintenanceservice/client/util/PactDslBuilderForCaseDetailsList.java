@@ -45,7 +45,7 @@ public final class PactDslBuilderForCaseDetailsList {
 
     private static void getCaseData(final LambdaDslObject dataMap) {
         dataMap
-            .stringType("createdDate", null)
+            .stringType("createdDate", "")
             .stringMatcher("D8ScreenHasMarriageBroken", "Yes|No|YES|NO", "YES")
             .stringMatcher("D8ScreenHasRespondentAddress", "Yes|No|YES|NO", "YES")
             .stringMatcher("D8ScreenHasMarriageCert", "Yes|No|YES|NO", "YES")
@@ -64,22 +64,22 @@ public final class PactDslBuilderForCaseDetailsList {
                 stringMatcher("marriageCertificate|certificateTODO", "marriageCertificate"), 1)
             .stringType("D8PetitionerContactDetailsConfidential", "share")
             .object("D8PetitionerHomeAddress", (address) ->
-                address.stringType("AddressLine1", null)
-                    .stringType("AddressLine2", null)
-                    .stringType("AddressLine3", null)
-                    .stringType("Country", null)
-                    .stringType("County", null)
-                    .stringType("PostTown", null)
+                address.stringType("AddressLine1", "")
+                    .stringType("AddressLine2", "")
+                    .stringType("AddressLine3", "")
+                    .stringType("Country", "")
+                    .stringType("County", "")
+                    .stringType("PostTown", "")
                     .stringType("PostCode", "SW17 0QT")
             )
             .stringType("D8DerivedPetitionerHomeAddress", "\"82 Landor Road\nLondon\nSW9 9PE")
             .object("D8PetitionerCorrespondenceAddress", (addr) -> {
-                addr.stringType("AddressLine1", null);
-                addr.stringType("AddressLine2", null);
-                addr.stringType("AddressLine3", null);
-                addr.stringType("Country", null);
+                addr.stringType("AddressLine1", "");
+                addr.stringType("AddressLine2", "");
+                addr.stringType("AddressLine3", "");
+                addr.stringType("Country", "");
                 addr.stringType("PostCode", "SM1 2JE");
-                addr.stringType("PostTown", null);
+                addr.stringType("PostTown", "");
             })
             .stringType("D8PetitionerCorrespondenceUseHomeAddress", "NO")
             .stringType("D8DerivedPetitionerCorrespondenceAddr", "84 Landor Road\nLondon\nSW9 9PE")
@@ -89,23 +89,23 @@ public final class PactDslBuilderForCaseDetailsList {
             .stringType("D8DerivedRespondentCurrentName", "Jane Jamed")
             .stringType("D8DerivedRespondentSolicitorDetails", "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE")
             .object("D8RespondentHomeAddress", (addr) -> {
-                addr.stringType("AddressLine1", null);
-                addr.stringType("AddressLine2", null);
-                addr.stringType("AddressLine3", null);
-                addr.stringType("Country", null);
+                addr.stringType("AddressLine1", "");
+                addr.stringType("AddressLine2", "");
+                addr.stringType("AddressLine3", "");
+                addr.stringType("Country", "");
                 addr.stringType("PostCode", "SM1 2JE");
-                addr.stringType("PostTown", null);
+                addr.stringType("PostTown", "");
             })
             .stringType("D8RespondentCorrespondenceUseHomeAddress", "Solicitor")
 
             .stringType("D8DerivedRespondentHomeAddress", "88 Landor Road\nLondon\nSW9 9PE")
             .object("D8RespondentCorrespondenceAddress", (addr) -> {
-                addr.stringType("AddressLine1", null);
-                addr.stringType("AddressLine2", null);
-                addr.stringType("AddressLine3", null);
-                addr.stringType("Country", null);
+                addr.stringType("AddressLine1", "");
+                addr.stringType("AddressLine2", "");
+                addr.stringType("AddressLine3", "");
+                addr.stringType("Country", "");
                 addr.stringType("PostCode", "SM1 2JE");
-                addr.stringType("PostTown", null);
+                addr.stringType("PostTown", "");
             })
             .stringType("D8RespondentCorrespondenceUseHomeAddress", "Solicitor")
             .stringType("D8DerivedRespondentCorrespondenceAddr", "82 Landor Road\nLondon\nSW9 9PE")
@@ -113,12 +113,12 @@ public final class PactDslBuilderForCaseDetailsList {
             .stringMatcher("D8LivingArrangementsLastLivedTogether", "Yes|No|YES|NO", "NO")
             .stringMatcher("D8LivingArrangementsLiveTogether", "Yes|No|YES|NO", "NO")
             .object("D8LivingArrangementsLastLivedTogethAddr", (addr) -> {
-                addr.stringType("AddressLine1", null);
-                addr.stringType("AddressLine2", null);
-                addr.stringType("AddressLine3", null);
-                addr.stringType("Country", null);
+                addr.stringType("AddressLine1", "");
+                addr.stringType("AddressLine2", "");
+                addr.stringType("AddressLine3", "");
+                addr.stringType("Country", "");
                 addr.stringType("PostCode", "SM1 2JE");
-                addr.stringType("PostTown", null);
+                addr.stringType("PostTown", "");
             })
             .stringMatcher("D8LegalProceedings", "Yes|No|YES|NO", "YES")
             .array("D8LegalProceedingsRelated", (s) -> {
@@ -177,12 +177,12 @@ public final class PactDslBuilderForCaseDetailsList {
             .stringType("D8DerivedLivingArrangementsLastLivedAddr", "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE")
             .object("D8Connections", (d8) -> {
                 d8.stringType("A", "The Petitioner and the Respondent are habitually resident in England and Wales");
-                d8.stringType("B", null);
+                d8.stringType("B", "");
                 d8.stringType("C", "The Respondent is habitually resident in England and Wales");
-                d8.stringType("D", null);
-                d8.stringType("E", null);
-                d8.stringType("F", null);
-                d8.stringType("G", null);
+                d8.stringType("D", "");
+                d8.stringType("E", "");
+                d8.stringType("F", "");
+                d8.stringType("G", "");
 
 
             })
@@ -197,7 +197,7 @@ public final class PactDslBuilderForCaseDetailsList {
 
     private static DslPart getCaseData() {
         PactDslJsonBody body = new PactDslJsonBody();
-        body.stringType("createdDate", null)
+        body.stringType("createdDate", "")
             .stringMatcher("D8ScreenHasMarriageBroken", "Yes|No|YES|NO", "YES")
             .stringMatcher("D8ScreenHasRespondentAddress", "Yes|No|YES|NO", "YES")
             .stringMatcher("D8ScreenHasMarriageCert", "Yes|No|YES|NO", "YES")
@@ -216,24 +216,24 @@ public final class PactDslBuilderForCaseDetailsList {
                 stringMatcher("marriageCertificate|certificateTODO", "marriageCertificate"), 1)
             .stringType("D8PetitionerContactDetailsConfidential", "share")
             .object("D8PetitionerHomeAddress")
-            .stringType("AddressLine1", null)
-            .stringType("AddressLine2", null)
-            .stringType("AddressLine3", null)
-            .stringType("Country", null)
-            .stringType("County", null)
-            .stringType("PostTown", null)
+            .stringType("AddressLine1", "")
+            .stringType("AddressLine2", "")
+            .stringType("AddressLine3", "")
+            .stringType("Country", "")
+            .stringType("County", "")
+            .stringType("PostTown", "")
             .stringType("PostCode", "SW17 0QT")
             .closeObject();
 
 
         body.stringType("D8DerivedPetitionerHomeAddress", "\"82 Landor Road\nLondon\nSW9 9PE")
             .object("D8PetitionerCorrespondenceAddress")
-            .stringType("AddressLine1", null)
-            .stringType("AddressLine2", null)
-            .stringType("AddressLine3", null)
-            .stringType("Country", null)
+            .stringType("AddressLine1", "")
+            .stringType("AddressLine2", "")
+            .stringType("AddressLine3", "")
+            .stringType("Country", "")
             .stringType("PostCode", "SM1 2JE")
-            .stringType("PostTown", null).closeObject();
+            .stringType("PostTown", "").closeObject();
 
         body
             .stringType("D8PetitionerCorrespondenceUseHomeAddress", "NO")
@@ -244,24 +244,24 @@ public final class PactDslBuilderForCaseDetailsList {
             .stringType("D8DerivedRespondentCurrentName", "Jane Jamed")
             .stringType("D8DerivedRespondentSolicitorDetails", "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE")
             .object("D8RespondentHomeAddress")
-            .stringType("AddressLine1", null)
-            .stringType("AddressLine2", null)
-            .stringType("AddressLine3", null)
-            .stringType("Country", null)
+            .stringType("AddressLine1", "")
+            .stringType("AddressLine2", "")
+            .stringType("AddressLine3", "")
+            .stringType("Country", "")
             .stringType("PostCode", "SM1 2JE")
-            .stringType("PostTown", null)
+            .stringType("PostTown", "")
             .closeObject();
 
         body.stringType("D8RespondentCorrespondenceUseHomeAddress", "Solicitor")
 
             .stringType("D8DerivedRespondentHomeAddress", "88 Landor Road\nLondon\nSW9 9PE")
             .object("D8RespondentCorrespondenceAddress")
-            .stringType("AddressLine1", null)
-            .stringType("AddressLine2", null)
-            .stringType("AddressLine3", null)
-            .stringType("Country", null)
+            .stringType("AddressLine1", "")
+            .stringType("AddressLine2", "")
+            .stringType("AddressLine3", "")
+            .stringType("Country", "")
             .stringType("PostCode", "SM1 2JE")
-            .stringType("PostTown", null)
+            .stringType("PostTown", "")
             .closeObject();
         body.stringType("D8RespondentCorrespondenceUseHomeAddress", "Solicitor")
             .stringType("D8DerivedRespondentCorrespondenceAddr", "82 Landor Road\nLondon\nSW9 9PE")
@@ -269,12 +269,12 @@ public final class PactDslBuilderForCaseDetailsList {
             .stringMatcher("D8LivingArrangementsLastLivedTogether", "Yes|No|YES|NO", "NO")
             .stringMatcher("D8LivingArrangementsLiveTogether", "Yes|No|YES|NO", "NO")
             .object("D8LivingArrangementsLastLivedTogethAddr")
-            .stringType("AddressLine1", null)
-            .stringType("AddressLine2", null)
-            .stringType("AddressLine3", null)
-            .stringType("Country", null)
+            .stringType("AddressLine1", "")
+            .stringType("AddressLine2", "")
+            .stringType("AddressLine3", "")
+            .stringType("Country", "")
             .stringType("PostCode", "SM1 2JE")
-            .stringType("PostTown", null)
+            .stringType("PostTown", "")
             .closeObject();
         body.stringMatcher("D8LegalProceedings", "Yes|No|YES|NO", "YES")
             .array("D8LegalProceedingsRelated")
@@ -330,12 +330,12 @@ public final class PactDslBuilderForCaseDetailsList {
             .stringType("D8DerivedLivingArrangementsLastLivedAddr", "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE")
             .object("D8Connections")
             .stringType("A", "The Petitioner and the Respondent are habitually resident in England and Wales")
-            .stringType("B", null)
+            .stringType("B", "")
             .stringType("C", "The Respondent is habitually resident in England and Wales")
-            .stringType("D", null)
-            .stringType("E", null)
-            .stringType("F", null)
-            .stringType("G", null)
+            .stringType("D", "")
+            .stringType("E", "")
+            .stringType("F", "")
+            .stringType("G", "")
             .closeObject();
 
         body.stringMatcher("D8ReasonForDivorceHasMarriage", "Yes|No|YES|NO", "YES")
@@ -367,7 +367,7 @@ public final class PactDslBuilderForCaseDetailsList {
                 .minArrayLike("cases", 1, (cd) -> {
                     cd.numberType("id", 200);
                     cd.stringType("jurisdiction", "divorce");
-                    cd.stringType("callback_response_status", null);
+                    cd.stringType("callback_response_status", "");
                     cd.object("case_data", (dataMap) -> {
                         getCaseData(dataMap);
                     });
