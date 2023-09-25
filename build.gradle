@@ -381,11 +381,10 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
 task contract(type: Test) {
     group = 'Delivery pipeline'
     description = 'Runs the Consumer Pact tests'
-    useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
-    include "uk/gov/hmcts/reform/divorce/casemaintenanceservice/client/**"
     systemProperty 'pact.rootDir', "pacts"
+    include "uk/gov/hmcts/reform/divorce/casemaintenanceservice/client/**"
     environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
 }
 
@@ -475,11 +474,9 @@ def getCheckedOutGitCommitHash() {
 }
 
 pact {
-    broker {
-        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
-    }
     publish {
         pactDirectory = 'pacts'
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
         tags = [System.getenv("PACT_BRANCH_NAME") ?:'Dev']
         version = project.pacticipantVersion
     }
