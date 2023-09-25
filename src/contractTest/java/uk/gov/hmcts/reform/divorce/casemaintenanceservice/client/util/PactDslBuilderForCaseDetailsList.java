@@ -17,11 +17,11 @@ public final class PactDslBuilderForCaseDetailsList {
     public static DslPart buildStartEventReponse(String eventId) {
         return newJsonBody((o) -> {
             o.stringType("event_id", eventId)
-                .stringType("token", null)
+                .stringType("token", "")
                 .object("case_details", (cd) -> {
                     cd.numberType("id", 2000);
                     cd.stringMatcher("jurisdiction", ALPHABETIC_REGEX, "DIVORCE");
-                    cd.stringType("callback_response_status",null);
+                    cd.stringType("callback_response_status","");
                     //cd.stringMatcher("case_type", ALPHABETIC_REGEX, "DIVORCE");
                     cd.object("case_data", PactDslBuilderForCaseDetailsList::getCaseData);
                 });
@@ -31,11 +31,11 @@ public final class PactDslBuilderForCaseDetailsList {
     public static DslPart buildStartEventResponseWithEmptyCaseDetails(String eventId) {
         return newJsonBody((o) -> {
             o.stringType("event_id", eventId)
-                .stringType("token", null)
+                .stringType("token", "")
                 .object("case_details", (cd) -> {
-                    cd.numberType("id", null);
+                    cd.numberType("id", "");
                     cd.stringMatcher("jurisdiction", ALPHABETIC_REGEX, "DIVORCE");
-                    cd.stringType("callback_response_status",null);
+                    cd.stringType("callback_response_status","");
                     cd.stringMatcher("case_type_id", ALPHABETIC_REGEX, "DIVORCE");
                     cd.object("case_data", data -> {
                     });
