@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util;
 
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
+import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.fluent.Executor;
@@ -27,7 +28,7 @@ import java.util.Map;
 
 @ExtendWith(PactConsumerTestExt.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "ccdDataStoreAPI_Cases", port = "8891")
+@PactTestFor(providerName = "ccdDataStoreAPI_Cases", port = "8891", pactVersion = PactSpecVersion.V3)
 @PactFolder("pacts")
 @SpringBootTest({
     "core_case_data.api.url : localhost:8891"
