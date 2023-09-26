@@ -267,6 +267,7 @@ dependencies {
     testImplementation group: 'org.springframework.cloud', name: 'spring-cloud-contract-wiremock', version: versions.springCloudDependencies
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
+    testImplementation group: 'junit', name: 'junit', version: versions.junit
 
     //integration test
     integrationTestImplementation group: 'com.mashape.unirest', name: 'unirest-java', version: versions.unirest
