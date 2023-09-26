@@ -378,7 +378,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
     //finalizedBy aggregate
 }
 
-task contract(type: Test) {
+task contractTest(type: Test) {
     group = 'Delivery pipeline'
     description = 'Runs the Consumer Pact tests'
     testClassesDirs = sourceSets.contractTest.output.classesDirs
@@ -457,7 +457,7 @@ run {
 }
 
 task runAndPublishConsumerPactTests(type: Test){
-    dependsOn(contract)
+    dependsOn(contractTest)
     logger.lifecycle("Runs pact Tests")
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
