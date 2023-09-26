@@ -29,7 +29,7 @@ def versions = [
     junit_jupiter: '5.7.1',
     lombok: '1.18.28',
     logbackVersion: '1.2.10',
-    pact_version: '4.6.2',
+    pact_version: '4.1.11',
     pitest: '1.5.2',
     puppyCrawl: '8.29',
     reformPropertiesVolume: '0.0.4',
@@ -464,10 +464,6 @@ task runAndPublishConsumerPactTests(type: Test){
     finalizedBy(pactPublish)
 
 }
-
-runAndPublishConsumerPactTests.dependsOn contract
-
-runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 def getCheckedOutGitCommitHash() {
     'git rev-parse --verify --short HEAD'.execute().text.trim()
