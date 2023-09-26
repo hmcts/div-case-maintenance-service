@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.google.common.collect.ImmutableMap;
-import feign.FeignException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceService
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.domain.model.CitizenCaseState;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
