@@ -479,22 +479,6 @@ pact {
     }
 }
 
-tasks.withType(JavaExec).configureEach {
-    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
-}
-
-tasks.withType(Test) {
-    useJUnitPlatform()
-
-    testLogging {
-        exceptionFormat = 'full'
-    }
-}
-
-test {
-    failFast = true
-}
-
 
 task fortifyScan(type: JavaExec)  {
     main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
@@ -504,4 +488,12 @@ task fortifyScan(type: JavaExec)  {
 
 tasks.withType(Copy) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(JavaExec).configureEach {
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
+test {
+    failFast = true
 }
