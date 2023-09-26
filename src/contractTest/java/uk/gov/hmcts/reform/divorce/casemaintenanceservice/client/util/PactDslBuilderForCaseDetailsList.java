@@ -2,12 +2,12 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util;
 
 
 import au.com.dius.pact.consumer.dsl.DslPart;
-import io.pactfoundation.consumer.dsl.LambdaDslObject;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
+import io.pactfoundation.consumer.dsl.LambdaDslObject;
 
+import static au.com.dius.pact.consumer.dsl.PactDslJsonRootValue.stringMatcher;
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonArray;
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
-import static au.com.dius.pact.consumer.dsl.PactDslJsonRootValue.stringMatcher;
 
 public final class PactDslBuilderForCaseDetailsList {
 

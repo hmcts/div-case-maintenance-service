@@ -4,7 +4,6 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
@@ -32,13 +31,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.junit.Assert.assertNotNull;
 
 @ExtendWith(PactConsumerTestExt.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@PactTestFor(providerName = "draftStore_draft", port = "8891", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "draftStore_draft", port = "8891")
 @PactFolder("pacts")
 @SpringBootTest({
     "draft.store.api.baseurl : localhost:8891"
