@@ -48,8 +48,8 @@ def versions = [
 ]
 
 project.ext {
-    pactVersion = getCheckedOutGitCommitHash()
     pacticipant = 'divorce_caseMaintenanceService'
+    pacticipantVersion = getCheckedOutGitCommitHash()
     springCloudBomVersion = "2021.0.8"
     restAssuredBomVersion = "5.3.2"
 }
@@ -75,7 +75,7 @@ sourceSets {
             srcDir('src/integrationTest/resources')
         }
     }
-    contract {
+    contractTest {
         java {
             compileClasspath += main.output
             runtimeClasspath += main.output
@@ -152,6 +152,8 @@ tasks.withType(Checkstyle).each { checkstyleTask ->
 configurations {
     integrationTestImplementation.extendsFrom testImplementation
     integrationTestRuntime.extendsFrom testRuntime
+    contractTestImplementation.extendsFrom testImplementation
+    contractTestRuntimeOnly.extendsFrom testRuntime
 }
 
 // https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
@@ -256,10 +258,6 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
 
-    implementation("org.springdoc:springdoc-openapi-ui") {
-        exclude group: "org.yaml", module: "snakeyaml"
-    }
-
     implementation (group: 'org.apache.tomcat.embed', name:'tomcat-embed-core', version: versions.tomcat) {
         force = true
     }
@@ -330,36 +328,36 @@ dependencies {
         }
     integrationTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.0'
 
-    contractImplementation group: 'org.springframework', name: 'spring-context-support'
-    contractImplementation (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')
+    contractTestImplementation group: 'org.springframework', name: 'spring-context-support'
+    contractTestImplementation (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')
         {
             exclude group: 'io.reactivex', module: 'io.reactivex'
             exclude group: 'io.reactivex', module: 'rxnetty'
             exclude group: 'io.reactivex', module: 'rxnetty-contexts'
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
-    contractImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
+    contractTestImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
 
-    contractImplementation sourceSets.main.runtimeClasspath
-    contractImplementation sourceSets.test.runtimeClasspath
+    contractTestImplementation sourceSets.main.runtimeClasspath
+    contractTestImplementation sourceSets.test.runtimeClasspath
 
     integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     integrationTestImplementation(sourceSets.test.output)
 
-    contractImplementation group: 'org.apache.httpcomponents', name: 'httpclient', version: versions.httpComponents
-    contractImplementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: versions.httpComponents
+    contractTestImplementation group: 'org.apache.httpcomponents', name: 'httpclient', version: versions.httpComponents
+    contractTestImplementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: versions.httpComponents
 
-    contractRuntimeOnly group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
-    contractRuntimeOnly group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
-    contractImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
-    contractImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
-    contractImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
-    contractRuntimeOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
-    contractImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    contractImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
-    contractRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit_jupiter
-    contractImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
-    contractRuntimeOnly "org.junit.platform:junit-platform-commons:1.7.2"
+    contractTestRuntimeOnly group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
+    contractTestRuntimeOnly group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
+    contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
+    contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
+    contractTestImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
+    contractTestRuntimeOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
+    contractTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
+    contractTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit_jupiter
+    contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
+    contractTestRuntimeOnly "org.junit.platform:junit-platform-commons:1.7.2"
 }
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
@@ -381,13 +379,14 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
     //finalizedBy aggregate
 }
 
-task contractTest(type: Test) {
+task contract(type: Test) {
     group = 'Delivery pipeline'
     description = 'Runs the Consumer Pact tests'
-    testClassesDirs = sourceSets.contract.output.classesDirs
-    classpath = sourceSets.contract.runtimeClasspath
-    systemProperty 'pact.rootDir', "pacts"
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.contractTest.output.classesDirs
+    classpath = sourceSets.contractTest.runtimeClasspath
     include "uk/gov/hmcts/reform/divorce/casemaintenanceservice/client/**"
+    systemProperty 'pact.rootDir', "pacts"
     environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
 }
 
@@ -460,23 +459,28 @@ run {
 }
 
 task runAndPublishConsumerPactTests(type: Test){
-    dependsOn(contractTest)
     logger.lifecycle("Runs pact Tests")
-    testClassesDirs = sourceSets.contract.output.classesDirs
-    classpath = sourceSets.contract.runtimeClasspath
-    finalizedBy(pactPublish)
+    testClassesDirs = sourceSets.contractTest.output.classesDirs
+    classpath = sourceSets.contractTest.runtimeClasspath
+
 }
+
+runAndPublishConsumerPactTests.dependsOn contract
+
+runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 static def getCheckedOutGitCommitHash() {
     'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
 
 pact {
+    broker {
+        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
+    }
     publish {
         pactDirectory = 'pacts'
-        pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
         tags = [System.getenv("PACT_BRANCH_NAME") ?:'Dev']
-        version = project.pactVersion
+        version = project.pacticipantVersion
     }
 }
 
