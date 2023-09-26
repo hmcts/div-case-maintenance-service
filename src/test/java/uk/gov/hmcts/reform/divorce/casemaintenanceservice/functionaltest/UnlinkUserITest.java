@@ -103,7 +103,8 @@ public class UnlinkUserITest  extends MockSupport {
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         Response mockResponse = Response.builder()
-            .request(Request.create(Request.HttpMethod.GET, "http//example.com", Collections.emptyMap(), null))
+            .request(Request.create(Request.HttpMethod.GET, "http//example.com", Collections.emptyMap(), null,
+                null, null))
             .status(NOT_FOUND)
             .headers(Collections.emptyMap())
             .build();

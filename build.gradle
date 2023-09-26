@@ -2,7 +2,8 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 buildscript {
     ext {
-        springBootVersion = '2.3.11.RELEASE'
+        springBootVersion = '2.7.14'
+        springCloudBomVersion = "2021.0.8"
     }
     repositories {
         mavenCentral()
@@ -20,20 +21,19 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.39.0'
     id 'com.jfrog.bintray' version '1.8.5'
     id 'info.solidsoft.pitest' version '1.5.2'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'jacoco'
     id 'org.owasp.dependencycheck' version '8.0.2'
     id 'org.sonarqube' version '4.2.0.3129'
-    id 'org.springframework.boot' version '2.3.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.14'
     id 'au.com.dius.pact' version '4.2.3'
+    id 'uk.gov.hmcts.java' version '0.12.27'
 }
 
 apply plugin: 'net.serenity-bdd.aggregator'
 
 group = 'uk.gov.hmcts.reform.divorce'
 version = '1.0.0'
-sourceCompatibility = 11
-targetCompatibility = 11
 
 jar {
     manifest {
@@ -95,6 +95,28 @@ tasks.withType(Checkstyle).each { checkstyleTask ->
     }
 }
 
+tasks.withType(JavaExec).configureEach {
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+test {
+    failFast = true
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 configurations {
     integrationTestImplementation.extendsFrom testImplementation
     integrationTestRuntime.extendsFrom testRuntime
@@ -121,9 +143,9 @@ def versions = [
     commonsIo: '2.7',
     commonsLang3: '3.7',
     gradlePitest: '1.5.2',
-    guava: '30.1-jre',
+    guava: '32.1.2-jre',
     httpComponents: '4.5.13',
-    idamClient: '1.1.0',
+    idamClient: '2.1.1',
     jackson: '2.13.2',
     jsonAssert: '1.2.3',
     junit: '4.13.2',
@@ -136,15 +158,15 @@ def versions = [
     reformPropertiesVolume: '0.0.4',
     reformsJavaLogging: '5.1.7',
     restAssured: '4.2.1',
-    serenity: '2.5.8',
+    serenity: '2.6.0',
     serenityCucumber: '1.9.51',
     serviceTokenGenerator: '3.0.0',
     sonarPitest: '0.5',
     springCloudDependencies: '2.2.1.RELEASE',
-    springfoxSwagger: '2.9.2',
-    springSecurityCrypto: '5.4.5',
+    springDoc: '1.6.9',
+    springSecurityCrypto: '6.1.2',
     springSecurityRsa: '1.0.9.RELEASE',
-    tomcat: '9.0.68',
+    tomcat: '9.0.80',
     unirest: '1.4.9',
     wiremockVersion: '2.27.2'
 ]
@@ -155,10 +177,10 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-aop')
     implementation('org.springframework.boot:spring-boot-starter-validation')
 
-    compileOnly("org.projectlombok:lombok:${versions.lombok}")
+    implementation("org.projectlombok:lombok:${versions.lombok}")
 
-    testCompileOnly("org.projectlombok:lombok:${versions.lombok}")
-    testCompile('com.github.hmcts:fortify-client:1.2.0:all')
+    testImplementation("org.projectlombok:lombok:${versions.lombok}")
+    testImplementation('com.github.hmcts:fortify-client:1.2.0:all')
     annotationProcessor("org.projectlombok:lombok:${versions.lombok}")
     testAnnotationProcessor("org.projectlombok:lombok:${versions.lombok}")
     integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
@@ -179,8 +201,8 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
     implementation group: 'com.puppycrawl.tools', name: 'checkstyle', version:  versions.puppyCrawl
     implementation group: 'commons-io', name: 'commons-io', version: versions.commonsIo
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
+    implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.15'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version : versions.commonsLang3
     implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: versions.reformPropertiesVolume
 
@@ -196,7 +218,7 @@ dependencies {
     implementation (group: 'uk.gov.hmcts.reform', name: 'logging-httpcomponents', version: versions.reformsJavaLogging){
         exclude group: 'org.apache.httpcomponents', 'module': 'httpclient'
     }
-    implementation group: 'uk.gov.hmcts.reform', name: 'idam-client', version: versions.idamClient
+    implementation group: 'com.github.hmcts', name: 'idam-java-client', version: versions.idamClient
     implementation (group: 'uk.gov.hmcts.reform', name:'service-auth-provider-client', version: versions.serviceTokenGenerator)
         {
             exclude group: 'io.reactivex', module: 'io.reactivex'
@@ -242,7 +264,7 @@ dependencies {
     testImplementation group: 'com.github.tomakehurst', name:'wiremock', version: versions.wiremockVersion
     testImplementation group: 'org.springframework.cloud', name: 'spring-cloud-contract-wiremock', version: versions.springCloudDependencies
     testImplementation('org.springframework.boot:spring-boot-starter-test')
-    runtime('org.springframework.boot:spring-boot-devtools')
+    runtimeOnly('org.springframework.boot:spring-boot-devtools')
 
     //integration test
     integrationTestImplementation group: 'com.mashape.unirest', name: 'unirest-java', version: versions.unirest
@@ -315,6 +337,9 @@ sourceSets {
 }
 
 dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudBomVersion}"
+    }
     dependencies {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
 
@@ -342,7 +367,7 @@ dependencyManagement {
         }
 
         //CVE-2022-22965
-        dependencySet(group: 'org.springframework', version: '5.2.21.RELEASE') {
+        dependencySet(group: 'org.springframework', version: '5.3.29') {
             entry 'spring-aop'
             entry 'spring-beans'
             entry 'spring-context'
@@ -369,17 +394,17 @@ dependencies {
     integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     integrationTestImplementation(sourceSets.test.output)
 
-    contractTestCompile group: 'org.apache.httpcomponents', name: 'httpclient', version: versions.httpComponents
-    contractTestCompile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: versions.httpComponents
+    contractTestImplementation group: 'org.apache.httpcomponents', name: 'httpclient', version: versions.httpComponents
+    contractTestImplementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: versions.httpComponents
 
-    contractTestCompile group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
-    contractTestCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
-    contractTestCompile group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
+    contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
+    contractTestImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
+    contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
     contractTestRuntime group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
     contractTestRuntime group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
     contractTestRuntime group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
-    contractTestCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
+    contractTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
     contractTestRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit_jupiter
     contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit_jupiter
     contractTestRuntime "org.junit.platform:junit-platform-commons:1.7.2"
@@ -392,7 +417,6 @@ task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verificatio
 }
 
 task bootRunAat(type: BootRun, description: 'Runs the app using AAT config', dependsOn: 'classes', group: 'Application') {
-    main = bootJar.mainClassName
     doFirst() {
         classpath = sourceSets.main.runtimeClasspath
         systemProperties = System.properties
@@ -467,9 +491,9 @@ jacocoTestReport {
     executionData(test)
 
     reports {
-        xml.enabled = true
-        html.enabled = true
-        xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+        xml.required = true
+        html.required = true
+        xml.outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
@@ -525,8 +549,12 @@ pact {
 
 
 task fortifyScan(type: JavaExec)  {
-    main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+    mainClass.set("uk.gov.hmcts.fortifyclient.FortifyClientMainApp")
     classpath += sourceSets.test.runtimeClasspath
     jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+}
+
+tasks.withType(Copy) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
