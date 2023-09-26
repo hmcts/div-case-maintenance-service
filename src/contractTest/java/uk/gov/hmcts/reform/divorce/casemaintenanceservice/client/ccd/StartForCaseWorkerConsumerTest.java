@@ -1,24 +1,15 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.ccd;
 
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
-import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.CcdConsumerTestBase;
 
-import java.io.IOException;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.PactDslBuilderForCaseDetailsList.buildStartEventResponseWithEmptyCaseDetails;
 
 public class StartForCaseWorkerConsumerTest extends CcdConsumerTestBase {
@@ -43,7 +34,7 @@ public class StartForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     }
 
     @Override
-    protected Map<String, Object> setUpStateMapForProviderWithoutCaseData() throws JSONException {
+    protected Map<String, Object> setUpStateMapForProviderWithoutCaseData() {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithoutCaseData();
         caseDataContentMap.put(EVENT_ID, createEventId);
         return caseDataContentMap;
