@@ -23,7 +23,7 @@ java:
               - name: app-insights-connection-string
                 alias: app-insights-connection-string
               - name: AppInsightsInstrumentationKey
-                alias: APP_INSIGHTS_KEY
+                alias: azure.application-insights.instrumentation-key
               - name: ccd-submission-s2s-auth-secret
                 alias: AUTH_PROVIDER_SERVICE_CLIENT_KEY
               - name: idam-secret
