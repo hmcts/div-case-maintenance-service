@@ -3,8 +3,8 @@ FROM hmctspublic.azurecr.io/base/java${PLATFORM}:17-distroless
 
 ENV APP div-case-maintenance-service.jar
 
-COPY lib/applicationinsights.json /opt/app/
 COPY build/libs/$APP /opt/app/
+COPY lib/applicationinsights.json /opt/app/
 
 EXPOSE 4010
 
