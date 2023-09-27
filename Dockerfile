@@ -1,5 +1,5 @@
 ARG APP_INSIGHTS_AGENT_VERSION=3.4.11
-FROM hmctspublic.azurecr.io/base/java${PLATFORM}:17-distroless
+FROM hmctspublic.azurecr.io/base/java:17-distroless
 
 ENV APP div-case-maintenance-service.jar
 
