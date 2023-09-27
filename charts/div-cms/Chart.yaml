@@ -5,5 +5,5 @@ name: div-cms
 version: 2.0.14
 dependencies:
     - name: java
-      version: 4.1.5
+      version: 4.2.0
       repository: "https://hmctspublic.azurecr.io/helm/v1/repo/"
