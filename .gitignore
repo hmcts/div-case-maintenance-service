@@ -24,8 +24,4 @@ java-rpm-packaging/
 application-*.yml
 application-*.yaml
 application-local.properties
-
-*.log
-
-lib/applicationinsights-agent-*.jar
-lib/applicationinsights.log
+/pacts/
