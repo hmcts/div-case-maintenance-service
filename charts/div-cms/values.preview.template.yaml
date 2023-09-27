@@ -1,11 +1,6 @@
 java:
     environment:
         IDAM_API_BASEURL: "https://idam-api.aat.platform.hmcts.net"
-    keyVaults:
-        div:
-            secrets:
-                - name: AppInsightsInstrumentationKey
-                  alias: azure.application-insights.instrumentation-key
 
     # Don't modify below here
     image: ${IMAGE_NAME}
