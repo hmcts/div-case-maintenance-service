@@ -1,5 +1,4 @@
-ARG APP_INSIGHTS_AGENT_VERSION=3.2.6
-ARG PLATFORM=""
+ARG APP_INSIGHTS_AGENT_VERSION=2.5.1
 FROM hmctspublic.azurecr.io/base/java${PLATFORM}:17-distroless
 
 ENV APP div-case-maintenance-service.jar
