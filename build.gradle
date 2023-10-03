@@ -173,6 +173,10 @@ test {
 }
 
 dependencies {
+
+    contractTestImplementation sourceSets.main.runtimeClasspath
+    contractTestImplementation sourceSets.test.runtimeClasspath
+
     implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-aop')
@@ -410,6 +414,8 @@ dependencies {
     contractTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit5
     contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit5
     contractTestRuntimeOnly "org.junit.platform:junit-platform-commons:1.7.2"
+
+
 }
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
