@@ -7,4 +7,6 @@ ENV APP div-case-maintenance-service.jar
 COPY lib/AI-Agent.xml /opt/app/
 COPY build/libs/$APP /opt/app/
 
+EXPOSE 4010
+
 CMD ["div-case-maintenance-service.jar"]

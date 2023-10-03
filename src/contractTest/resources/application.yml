@@ -12,6 +12,8 @@ spring:
       ACCEPT_SINGLE_VALUE_AS_ARRAY: true
     serialization:
       FAIL_ON_EMPTY_BEANS: false
+    config:
+        import: optional:configtree:/mnt/secrets/div/
 
 server:
   port: 4010
