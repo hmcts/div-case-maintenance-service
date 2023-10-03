@@ -23,7 +23,10 @@ def secrets = [
         secret("idam-secret", "AUTH_IDAM_CLIENT_SECRET"),
         secret("ccd-submission-s2s-auth-secret", "AUTH_PROVIDER_SERVICE_CLIENT_KEY"),
         secret("idam-secret", "AUTH2_CLIENT_SECRET"),
-        secret("draft-store-api-encryption-key", "DRAFT_STORE_API_ENCRYPTION_KEY_VALUE")
+        secret("draft-store-api-encryption-key", "DRAFT_STORE_API_ENCRYPTION_KEY_VALUE"),
+        secret("AppInsightsInstrumentationKey", "azure.application-insights.instrumentation-key"),
+        secret("idam-caseworker-username", "IDAM_CASEWORKER_USERNAME"),
+        secret("idam-caseworker-password", "IDAM_CASEWORKER_PASSWORD"),
     ]
 ]
 
