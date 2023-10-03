@@ -437,7 +437,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
     doFirst(){
         printf ("Available processors:::::::::: " + Runtime.runtime.availableProcessors().intdiv(2).toString())
     }
-
+    useJUnitPlatform()
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     forkEvery = 10
     setTestClassesDirs(sourceSets.integrationTest.output.classesDirs)
