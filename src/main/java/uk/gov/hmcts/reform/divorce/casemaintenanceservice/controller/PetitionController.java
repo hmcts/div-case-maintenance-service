@@ -1,10 +1,9 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +33,6 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 
 @RestController
 @RequestMapping(path = "casemaintenance/version/1")
-@Api(value = "Case Maintenance Services", consumes = "application/json", produces = "application/json")
 @Slf4j
 public class PetitionController {
 
@@ -42,15 +40,15 @@ public class PetitionController {
     private PetitionService petitionService;
 
     @GetMapping(path = "/retrieveCase", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Retrieves a divorce case from CCD or Draft store")
+    @Operation(description = "Retrieves a divorce case from CCD or Draft store")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
-        @ApiResponse(code = 204, message = "When there are no petition exists"),
-        @ApiResponse(code = 300, message = "Multiple Petition found")
+        @ApiResponse(responseCode = "200", description = "A Petition exists. The petition is in the response body"),
+        @ApiResponse(responseCode = "204", description = "When there are no petition exists"),
+        @ApiResponse(responseCode = "300", description = "Multiple Petition found")
         })
     public ResponseEntity<CaseDetails> retrievePetition(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
 
         try {
             CaseDetails caseDetails = petitionService.retrievePetition(jwt, PETITIONER_CASE_STATE_GROUPING);
@@ -63,15 +61,15 @@ public class PetitionController {
     }
 
     @GetMapping(path = "/retrieveAosCase", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Retrieves a divorce case from CCD of Draft store")
+    @Operation(description = "Retrieves a divorce case from CCD of Draft store")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "A Petition exists. The petition is in the response body"),
-        @ApiResponse(code = 204, message = "When there are no petition exists"),
-        @ApiResponse(code = 300, message = "Multiple Petition found")
+        @ApiResponse(responseCode = "200", description = "A Petition exists. The petition is in the response body"),
+        @ApiResponse(responseCode = "204", description = "When there are no petition exists"),
+        @ApiResponse(responseCode = "300", description = "Multiple Petition found")
         })
     public ResponseEntity<CaseDetails> retrieveCaseForRespondent(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
 
         try {
             CaseDetails caseDetails = petitionService.retrievePetitionForAos(jwt);
@@ -84,15 +82,15 @@ public class PetitionController {
     }
 
     @GetMapping(path = "/case", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Retrieves a divorce case from CCD")
+    @Operation(description = "Retrieves a divorce case from CCD")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "A Case exists. The case is in the response body"),
-        @ApiResponse(code = 404, message = "When no case exists"),
-        @ApiResponse(code = 300, message = "Multiple Cases found")
+        @ApiResponse(responseCode = "200", description = "A Case exists. The case is in the response body"),
+        @ApiResponse(responseCode = "404", description = "When no case exists"),
+        @ApiResponse(responseCode = "300", description = "Multiple Cases found")
         })
     public ResponseEntity<CaseDetails> retrieveCase(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         try {
             CaseDetails caseDetails = petitionService.retrievePetition(jwt);
             return caseDetails == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(caseDetails);
@@ -103,15 +101,15 @@ public class PetitionController {
     }
 
     @PutMapping(path = "/amended-petition-draft", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Creates a new draft petition for an amend petition workflow")
+    @Operation(description = "Creates a new draft petition for an amend petition workflow")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message =
+        @ApiResponse(responseCode = "200", description =
             "A draft amendment case was created based on the users previously rejected petition"),
-        @ApiResponse(code = 404, message = "When no case exists"),
-        @ApiResponse(code = 300, message = "Multiple cases found")})
+        @ApiResponse(responseCode = "404", description = "When no case exists"),
+        @ApiResponse(responseCode = "300", description = "Multiple cases found")})
     public ResponseEntity<Map<String, Object>> createAmendedPetitionDraft(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         try {
             Map<String, Object> newCaseDraftData = petitionService.createAmendedPetitionDraft(jwt);
 
@@ -126,15 +124,15 @@ public class PetitionController {
     }
 
     @PutMapping(path = "/amended-petition-draft-refusal", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
+    @Operation(description = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message =
+        @ApiResponse(responseCode = "200", description =
             "A draft amendment case was created based on the users previously rejected petition"),
-        @ApiResponse(code = 404, message = "When no case exists"),
-        @ApiResponse(code = 300, message = "Multiple cases found")})
+        @ApiResponse(responseCode = "404", description = "When no case exists"),
+        @ApiResponse(responseCode = "300", description = "Multiple cases found")})
     public ResponseEntity<Map<String, Object>> createAmendedPetitionDraftRefusal(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         try {
             Map<String, Object> newCaseDraftData = petitionService.createAmendedPetitionDraftRefusal(jwt);
 
@@ -149,16 +147,16 @@ public class PetitionController {
     }
 
     @PutMapping(path = "/amended-petition-draft-refusal/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
+    @Operation(description = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message =
+        @ApiResponse(responseCode = "200", description =
             "A draft amendment case was created based on the users previously rejected petition"),
-        @ApiResponse(code = 404, message = "When no case exists"),
-        @ApiResponse(code = 300, message = "Multiple cases found")})
+        @ApiResponse(responseCode = "404", description = "When no case exists"),
+        @ApiResponse(responseCode = "300", description = "Multiple cases found")})
     public ResponseEntity<Map<String, Object>> createAmendedPetitionDraftRefusalFromCaseId(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
-        @PathVariable @ApiParam(value = "caseId", required = true) String caseId
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @PathVariable @Parameter(description = "caseId", required = true) String caseId
     ) {
         try {
             log.info("Creating a new CCD amended petition (for DN refusal) for Case id: {}", caseId);
@@ -177,45 +175,45 @@ public class PetitionController {
     }
 
     @PutMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Saves or updates a draft to draft store")
+    @Operation(description = "Saves or updates a draft to draft store")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Draft saved")})
+        @ApiResponse(responseCode = "200", description = "Draft saved")})
     public ResponseEntity<Void> saveDraft(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt,
         @RequestBody
-        @ApiParam(value = "The case draft", required = true)
+        @Parameter(description = "The case draft", required = true)
         @NotNull final Map<String, Object> data,
         @RequestParam(value = "divorceFormat", required = false)
-        @ApiParam(value = "Boolean flag indicting the data is in divorce format") final Boolean divorceFormat) {
+        @Parameter(description = "Boolean flag indicting the data is in divorce format") final Boolean divorceFormat) {
         log.debug("Received request to save a draft");
         petitionService.saveDraft(jwt, data, Optional.ofNullable(divorceFormat).orElse(false));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(path = "/drafts", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Create a new draft in draft store")
+    @Operation(description = "Create a new draft in draft store")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Draft saved")})
+        @ApiResponse(responseCode = "200", description = "Draft saved")})
     public ResponseEntity<Void> createDraft(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt,
         @RequestBody
-        @ApiParam(value = "The  case draft", required = true)
+        @Parameter(description = "The  case draft", required = true)
         @NotNull final Map<String, Object> data,
         @RequestParam(value = "divorceFormat", required = false)
-        @ApiParam(value = "Boolean flag indicting the data is in divorce format") final Boolean divorceFormat) {
+        @Parameter(description = "Boolean flag indicting the data is in divorce format") final Boolean divorceFormat) {
         log.debug("Received request to create a draft");
         petitionService.createDraft(jwt, data, Optional.ofNullable(divorceFormat).orElse(false));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/drafts")
-    @ApiOperation(value = "Deletes a divorce case draft")
+    @Operation(description = "Deletes a divorce case draft")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "The divorce draft has been deleted successfully")})
+        @ApiResponse(responseCode = "200", description = "The divorce draft has been deleted successfully")})
     public ResponseEntity<Void> deleteDraft(@RequestHeader("Authorization")
-                                            @ApiParam(value = "JWT authorisation token issued by IDAM",
+                                            @Parameter(description = "JWT authorisation token issued by IDAM",
                                                 required = true) final String jwt) {
         log.debug("Received request to delete a divorce session draft");
         petitionService.deleteDraft(jwt);
@@ -223,26 +221,26 @@ public class PetitionController {
     }
 
     @GetMapping(path = "/drafts", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Retrieve All the Drafts for a given user")
+    @Operation(description = "Retrieve All the Drafts for a given user")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Returns all the saved drafts for a given user")})
+        @ApiResponse(responseCode = "200", description = "Returns all the saved drafts for a given user")})
     public ResponseEntity<DraftList> retrieveAllDrafts(@RequestHeader(HttpHeaders.AUTHORIZATION)
-                                                        @ApiParam(value = "JWT authorisation token issued by IDAM",
+                                                        @Parameter(description = "JWT authorisation token issued by IDAM",
                                                             required = true)final String jwt) {
         return ResponseEntity.ok(petitionService.getAllDrafts(jwt));
     }
 
     @GetMapping(path = "/case/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Retrieve CCD case by CaseId")
+    @Operation(description = "Retrieve CCD case by CaseId")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Returns case with CaseId"),
-        @ApiResponse(code = 404, message = "Returns case not found or not authorised to view")
+        @ApiResponse(responseCode = "200", description = "Returns case with CaseId"),
+        @ApiResponse(responseCode = "404", description = "Returns case not found or not authorised to view")
         })
     public ResponseEntity<CaseDetails> retrieveCaseById(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt,
         @PathVariable("caseId")
-        @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId
+        @Parameter(description = "Unique identifier of the session that was submitted to CCD") String caseId
     ) {
         CaseDetails retrievedCase = Optional.ofNullable(
             petitionService.retrievePetitionByCaseId(jwt, caseId)

@@ -25,7 +25,7 @@ public class StartEventForCitizenConsumerTest extends CcdConsumerTestBase {
     public static final String PAYMENT_REFERENCE_GENERATED = "paymentReferenceGenerated";
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    public RequestResponsePact startEventForCitizen(PactDslWithProvider builder) {
+    public RequestResponsePact startEventForCitizen(PactDslWithProvider builder) throws JSONException {
         return builder
             .given("A Start Event for a Citizen is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Start Event a Citizen")

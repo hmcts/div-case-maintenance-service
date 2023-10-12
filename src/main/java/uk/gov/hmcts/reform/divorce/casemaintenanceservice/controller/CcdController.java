@@ -1,10 +1,11 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping(path = "casemaintenance/version/1")
-@Api(value = "Case Maintenance Services", consumes = "application/json", produces = "application/json")
 public class CcdController {
     @Autowired
     private CcdSubmissionService ccdSubmissionService;
@@ -45,103 +45,101 @@ public class CcdController {
 
 
     @PostMapping(path = "/submit", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Submits a divorce session to CCD")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200,
-            message = "Case Data was submitted to CCD. The body payload returns the complete case back",
-            response = CaseDetails.class)
-        }
+    @Operation(summary = "Submits a divorce session to CCD")
+    @ApiResponses(value = @ApiResponse(responseCode = "200",
+        description =
+            "Case Data was submitted to CCD. The body payload returns the complete case back",
+        content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class))})
+
     )
     public ResponseEntity<CaseDetails> submitCase(
-        @RequestBody @ApiParam(value = "Case Data", required = true) Map<String, Object> data,
+        @RequestBody @Parameter(description = "Case Data", required = true) Map<String, Object> data,
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         return ResponseEntity.ok(ccdSubmissionService.submitCase(data, jwt));
     }
 
     @PostMapping(path = "/solicitor-submit", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Submits given case data to CCD")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200,
-            message = "Case Data was submitted to CCD. The body payload returns the complete case back",
-            response = CaseDetails.class)
-        }
+    @Operation(summary = "Submits given case data to CCD")
+    @ApiResponses(value = @ApiResponse(responseCode = "200",
+        description = "Case Data was submitted to CCD. The body payload returns the complete case back",
+        content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class))})
+
     )
     public ResponseEntity<CaseDetails> submitCaseForSolicitor(
-        @RequestBody @ApiParam(value = "Case Data", required = true) Map<String, Object> data,
+        @RequestBody @Parameter(description = "Case Data", required = true) Map<String, Object> data,
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         return ResponseEntity.ok(ccdSubmissionService.submitCaseForSolicitor(data, jwt));
     }
 
     @PostMapping(path = "/bulk/submit", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Submits a divorce session to CCD")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200,
-            message = "Case Data was submitted to CCD. The body payload returns the complete case back",
-            response = CaseDetails.class)
-        }
+    @Parameter(description = "Submits a divorce session to CCD")
+    @ApiResponses(value = @ApiResponse(responseCode = "200",
+        description = "Case Data was submitted to CCD. The body payload returns the complete case back",
+        content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class))})
+
     )
     public ResponseEntity<CaseDetails> submitBulkCase(
-        @RequestBody @ApiParam(value = "Bulk case data", required = true) Map<String, Object> data,
+        @RequestBody @Parameter(description = "Bulk case data", required = true) Map<String, Object> data,
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         return ResponseEntity.ok(ccdSubmissionService.submitBulkCase(data, jwt));
     }
 
     @PostMapping(path = "/updateCase/{caseId}/{eventId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Updates case details")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200,
-            message = "A request to update the case details was sent to CCD. The body payload "
+    @Operation(description = "Updates case details")
+    @ApiResponses(value = @ApiResponse(responseCode = "200",
+        description = "A request to update the case details was sent to CCD. The body payload "
             + "will return the latest version of the case after the update.",
-            response = CaseDetails.class)
-        }
+        content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class))})
+
     )
     public ResponseEntity<CaseDetails> updateCase(
-        @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId,
+        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD") String caseId,
         @RequestBody
-        @ApiParam(value = "The update event that requires the resubmission to CCD", required = true) Object data,
-        @PathVariable("eventId") @ApiParam(value = "Update Event Type Id", required = true) String eventId,
+        @Parameter(description = "The update event that requires the resubmission to CCD", required = true) Object data,
+        @PathVariable("eventId") @Parameter(description = "Update Event Type Id", required = true) String eventId,
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
-        return ResponseEntity.ok(ccdUpdateService. update(caseId, data, eventId, jwt));
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        return ResponseEntity.ok(ccdUpdateService.update(caseId, data, eventId, jwt));
     }
 
     @PostMapping(path = "/bulk/updateCase/{caseId}/{eventId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Updates bulk case details")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200,
-            message = "A request to update the bulk case details was sent to CCD. The body payload "
+    @Operation(description = "Updates bulk case details")
+    @ApiResponses(value = @ApiResponse(responseCode = "200",
+        description = "A request to update the bulk case details was sent to CCD. The body payload "
             + "will return the latest version of the case after the update.",
-            response = CaseDetails.class)
-        }
+        content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CaseDetails.class))})
+
     )
     public ResponseEntity<CaseDetails> updateBulkCase(
-        @PathVariable("caseId") @ApiParam("Unique identifier of the bulk case that was submitted to CCD") String caseId,
+        @PathVariable("caseId") @Parameter(description = "Unique identifier of the bulk case that was submitted to CCD") String caseId,
         @RequestBody
-        @ApiParam(value = "The update event that requires the resubmission to CCD", required = true) Object data,
-        @PathVariable("eventId") @ApiParam(value = "Update Event Type Id", required = true) String eventId,
+        @Parameter(description = "The update event that requires the resubmission to CCD", required = true) Object data,
+        @PathVariable("eventId") @Parameter(description = "Update Event Type Id", required = true) String eventId,
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
         return ResponseEntity.ok(ccdUpdateService.updateBulkCase(caseId, data, eventId, jwt));
     }
 
     @PostMapping(path = "/link-respondent/{caseId}/{letterHolderId}")
-    @ApiOperation(value = "Updates case details")
+    @Operation(description = "Updates case details")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Returned when case with id and letter holder id exists and the access is granted to the respondent user"),
-        @ApiResponse(code = 404, message = "Returned when case with id not found"),
-        @ApiResponse(code = 400, message = "Returned when data is missing from request or case"),
-        @ApiResponse(code = 401, message = "Returned when case letter holder ID does not match corresponding case data or case is already linked"),
+        @ApiResponse(responseCode = "200", description = "Returned when case with id and letter "
+            + "holder id exists and the access is granted to the respondent user"),
+        @ApiResponse(responseCode = "404", description = "Returned when case with id not found"),
+        @ApiResponse(responseCode = "400", description = "Returned when data is missing from request or case"),
+        @ApiResponse(responseCode = "401", description = "Returned when case letter holder ID does not match "
+            + "corresponding case data or case is already linked"),
         }
     )
     public ResponseEntity<Void> linkRespondent(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token of the respondent", required = true) final String authToken,
-        @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId,
+        @Parameter(description = "JWT authorisation token of the respondent", required = true) final String authToken,
+        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD") String caseId,
         @PathVariable("letterHolderId")
-        @ApiParam(value = "Letter holder id from the pin user", required = true) String letterHolderId) {
+        @Parameter(description = "Letter holder id from the pin user", required = true) String letterHolderId) {
 
         ccdAccessService.linkRespondent(authToken, caseId, letterHolderId);
 
@@ -149,16 +147,16 @@ public class CcdController {
     }
 
     @DeleteMapping(path = "/link-respondent/{caseId}")
-    @ApiOperation(value = "Removes user permission on a case")
+    @Operation(description = "Removes user permission on a case")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Returned when case with id exists and the access is removed to the respondent user"),
-        @ApiResponse(code = 404, message = "Returned when case with id not found"),
+        @ApiResponse(responseCode = "200", description = "Returned when case with id exists and the access is removed to the respondent user"),
+        @ApiResponse(responseCode = "404", description = "Returned when case with id not found"),
         }
     )
     public ResponseEntity<Void> unlinkRespondent(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token of the respondent", required = true) final String authToken,
-        @PathVariable("caseId") @ApiParam("Unique identifier of the session that was submitted to CCD") String caseId) {
+        @Parameter(description = "JWT authorisation token of the respondent", required = true) final String authToken,
+        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD") String caseId) {
 
         ccdAccessService.unlinkRespondent(authToken, caseId);
 
@@ -166,29 +164,29 @@ public class CcdController {
     }
 
     @PostMapping(path = "/search", produces = APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Retrieve CCD case by CaseId")
+    @Operation(description = "Retrieve CCD case by CaseId")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Returns list of cases based on search criteria"),
-        @ApiResponse(code = 404, message = "Returns case not found or not authorised to view")
-        })
+        @ApiResponse(responseCode = "200", description = "Returns list of cases based on search criteria"),
+        @ApiResponse(responseCode = "404", description = "Returns case not found or not authorised to view")
+    })
     public ResponseEntity<SearchResult> search(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM", required = true) final String jwt,
-        @RequestBody @ApiParam(value = "query", required = true) String query
+        @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt,
+        @RequestBody @Parameter(description = "query", required = true) String query
     ) {
         return ResponseEntity.ok(ccdRetrievalService.searchCase(jwt, query));
     }
 
     @PutMapping(path = "/add-petitioner-solicitor-role/{caseId}", produces = APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Assign the role of [PETSOLICITOR] for user and case")
+    @Operation(description = "Assign the role of [PETSOLICITOR] for user and case")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Role of [PETSOLICITOR] was added to the given case"),
-        @ApiResponse(code = 404, message = "Case not found with given ID")
-        })
+        @ApiResponse(responseCode = "200", description = "Role of [PETSOLICITOR] was added to the given case"),
+        @ApiResponse(responseCode = "404", description = "Case not found with given ID")
+    })
     public ResponseEntity<Void> addPetitionerSolicitorRole(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @ApiParam(value = "JWT authorisation token issued by IDAM for solicitor user", required = true) final String jwt,
-        @PathVariable @ApiParam(value = "caseId", required = true) String caseId
+        @Parameter(description = "JWT authorisation token issued by IDAM for solicitor user", required = true) final String jwt,
+        @PathVariable @Parameter(description = "caseId", required = true) String caseId
     ) {
         ccdAccessService.addPetitionerSolicitorRole(jwt, caseId);
         return ResponseEntity.ok().build();

@@ -27,7 +27,7 @@ public class SearchForCitizenConsumerTest extends CcdConsumerTestBase {
     Map<String, Object> params = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    public RequestResponsePact searchForCitizen(PactDslWithProvider builder) {
+    public RequestResponsePact searchForCitizen(PactDslWithProvider builder) throws JSONException {
         params = Collections.emptyMap();
 
         return builder

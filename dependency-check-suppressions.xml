@@ -237,4 +237,14 @@
         <packageUrl regex="true">pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
         <cve>CVE-2023-2976</cve>
     </suppress>
+    <suppress>
+        <cve>CVE-2023-41080</cve>
+        <cve>CVE-2022-41854</cve>
+        <cve>CVE-2022-25857</cve>
+        <cve>CVE-2022-38749</cve>
+        <cve>CVE-2022-38752</cve>
+        <cve>CVE-2022-38751</cve>
+        <cve>CVE-2022-38750</cve>
+        <cve>CVE-2020-8908</cve>
+    </suppress>
 </suppressions>

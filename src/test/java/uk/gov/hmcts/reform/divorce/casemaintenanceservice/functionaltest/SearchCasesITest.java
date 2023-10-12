@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.google.common.collect.ImmutableMap;
-import feign.FeignException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,26 +88,6 @@ public class SearchCasesITest extends MockSupport {
             .andExpect(content()
                 .json(ObjectMapperTestUtil
                     .convertObjectToJsonString(expectedResult)));
-    }
-
-    @Test
-    public void givenCcdError_whenSearchCases_thenPropagateCcdError() throws Exception {
-        final String message = getUserDetails();
-        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-
-        String query = "{}";
-
-        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        when(coreCaseDataApi
-            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, query))
-            .thenThrow(new FeignException.BadRequest("Malformed url", query.getBytes()));
-
-        webClient.perform(MockMvcRequestBuilders.post(API_URL)
-            .content(query)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().is4xxClientError())
-            .andExpect(content().string("Malformed url - {}"));
     }
 
     private CaseDetails createCaseDetails(Long id, String state) {

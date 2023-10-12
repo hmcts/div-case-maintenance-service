@@ -21,7 +21,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.client.util.Pac
 public class ReadForCitizenConsumerTest extends CcdConsumerTestBase {
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    public RequestResponsePact readForCitizen(PactDslWithProvider builder) {
+    public RequestResponsePact readForCitizen(PactDslWithProvider builder) throws JSONException {
         return builder
             .given("A Read for a Citizen is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Read For a Citizen")

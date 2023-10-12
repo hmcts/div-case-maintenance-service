@@ -24,7 +24,7 @@ public class StartEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     public static final String HWF_APPLICATION_ACCEPTED = "hwfApplicationAccepted";
 
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
-    public RequestResponsePact startEventForCaseWorker(PactDslWithProvider builder) {
+    public RequestResponsePact startEventForCaseWorker(PactDslWithProvider builder) throws JSONException {
         return builder
             .given("A Start Event for a Caseworker is  requested", setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Start Event for a Caseworker")

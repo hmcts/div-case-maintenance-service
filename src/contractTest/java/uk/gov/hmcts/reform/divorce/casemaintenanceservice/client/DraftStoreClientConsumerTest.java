@@ -66,7 +66,7 @@ public class DraftStoreClientConsumerTest {
     private UpdateDraft updateDraft;
 
     @BeforeEach
-    public void setUpEachTest() throws InterruptedException, IOException {
+    public void setUpEachTest() throws InterruptedException, IOException, JSONException {
         Thread.sleep(2000);
         this.draftMap = this.getDraftAsMap("base-case.json");
         this.createDraft = draftModelFactory.createDraft(draftMap, true);
@@ -118,7 +118,7 @@ public class DraftStoreClientConsumerTest {
 
 
     @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact createSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException {
+    RequestResponsePact createSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException, JSONException {
         // @formatter:off
 
         String jsonObject = createJsonObject(createDraft);
@@ -138,7 +138,7 @@ public class DraftStoreClientConsumerTest {
 
 
     @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact updateSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException {
+    RequestResponsePact updateSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException, JSONException {
         // @formatter:off
         String jsonObject = createJsonObject(updateDraft);
 

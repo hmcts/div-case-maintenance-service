@@ -53,7 +53,7 @@ public class StartForCitizenConsumerTest extends CcdConsumerTestBase {
     }
 
     @Override
-    protected Map<String, Object> setUpStateMapForProviderWithoutCaseData() throws JSONException {
+    protected Map<String, Object> setUpStateMapForProviderWithoutCaseData() {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithoutCaseData();
         caseDataContentMap.put(EVENT_ID, createEventId);
         return caseDataContentMap;
