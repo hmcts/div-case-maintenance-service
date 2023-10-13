@@ -2,8 +2,8 @@ apiVersion: v2
 appVersion: "1.0"
 description: Divorce - Case Maintenance Service
 name: div-cms
-version: 2.0.14
+version: 2.0.15
 dependencies:
     - name: java
-      version: 4.0.13
+      version: 5.0.0
       repository: "https://hmctspublic.azurecr.io/helm/v1/repo/"
