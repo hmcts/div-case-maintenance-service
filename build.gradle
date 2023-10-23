@@ -139,7 +139,7 @@ def versions = [
     logbackVersion: '1.2.10',
     pact_version: '4.1.7',
     pitest: '1.5.2',
-    puppyCrawl: '8.29',
+    puppyCrawl: '8.45.1',
     reformPropertiesVolume: '0.0.4',
     reformsJavaLogging: '5.1.7',
     restAssured: '4.2.1',
