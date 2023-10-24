@@ -126,7 +126,7 @@ def versions = [
     ccdStoreClient: '4.7.6',
     commonsBeanUtils: '1.9.4',
     commonsIo: '2.14.0',
-    commonsLang3: '3.7',
+    commonsLang3: '3.13.0',
     gradlePitest: '1.15.0',
     guava: '32.1.3-jre',
     httpComponents: '4.5.14',
