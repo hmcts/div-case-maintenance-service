@@ -148,7 +148,7 @@ def versions = [
     serviceTokenGenerator: '3.0.0',
     sonarPitest: '0.5',
     springCloudDependencies: '2.2.6.RELEASE',
-    springDoc : '1.6.9',
+    springDoc : '1.7.0',
     springSecurityCrypto: '5.4.5',
     springSecurityRsa: '1.0.9.RELEASE',
     tomcat: '9.0.82',
