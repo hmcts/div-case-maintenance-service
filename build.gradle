@@ -125,7 +125,7 @@ def versions = [
     bcpkixJdk15on: '1.70',
     ccdStoreClient: '4.7.6',
     commonsBeanUtils: '1.9.4',
-    commonsIo: '2.14.0',
+    commonsIo: '2.15.0',
     commonsLang3: '3.13.0',
     gradlePitest: '1.15.0',
     guava: '32.1.3-jre',
