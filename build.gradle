@@ -140,7 +140,7 @@ def versions = [
     pact_version: '4.1.7',
     pitest: '1.15.2',
     puppyCrawl: '8.45.1',
-    reformPropertiesVolume: '0.0.4',
+    reformPropertiesVolume: '0.1.0',
     reformsJavaLogging: '5.1.7',
     restAssured: '4.2.1',
     serenity: '2.5.8',
