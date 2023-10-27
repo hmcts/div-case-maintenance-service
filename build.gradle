@@ -145,7 +145,7 @@ def versions = [
     restAssured: '4.2.1',
     serenity: '2.5.8',
     serenityCucumber: '1.9.51',
-    serviceTokenGenerator: '3.0.0',
+    serviceTokenGenerator: '3.1.4',
     sonarPitest: '0.5',
     springCloudDependencies: '2.2.6.RELEASE',
     springDoc : '1.7.0',
