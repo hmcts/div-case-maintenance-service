@@ -134,7 +134,7 @@ def versions = [
     jackson: '2.13.2',
     jsonAssert: '1.5.1',
     junit: '4.13.2',
-    junit5: '5.9.3',
+    junit5: '5.10.0',
     lombok: '1.18.30',
     logbackVersion: '1.2.10',
     pact_version: '4.1.7',
@@ -414,7 +414,7 @@ dependencies {
     contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit5
     contractTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit5
     contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit5
-    contractTestRuntimeOnly "org.junit.platform:junit-platform-commons:1.7.2"
+    contractTestRuntimeOnly "org.junit.platform:junit-platform-commons:1.10.0"
 
 
 }
