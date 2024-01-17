@@ -238,11 +238,6 @@
         <cve>CVE-2023-2976</cve>
     </suppress>
     <suppress>
-        <notes><![CDATA[file name: guava-30.1-jre.jar]]></notes>
-        <packageUrl regex="true">pkg:maven/com\.google\.guava/guava@.*$</packageUrl>
-        <cve>CVE-2023-2976</cve>
-    </suppress>
-    <suppress>
         <cve>CVE-2023-41080</cve>
         <cve>CVE-2022-41854</cve>
         <cve>CVE-2022-25857</cve>
