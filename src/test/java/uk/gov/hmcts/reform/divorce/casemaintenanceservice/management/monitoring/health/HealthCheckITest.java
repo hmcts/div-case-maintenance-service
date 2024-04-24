@@ -54,9 +54,6 @@ public class HealthCheckITest {
     @LocalServerPort
     private int port;
 
-    @Value("${idam.s2s-auth.url}/health")
-    private String serviceAuthHealthUrl;
-
     @Value("${case.formatter.service.api.baseurl}/health")
     private String caseFormatterServiceHealthUrl;
 
@@ -97,7 +94,6 @@ public class HealthCheckITest {
     @Test
     public void givenAllDependenciesAreUp_whenCheckHealth_thenReturnStatusUp() throws Exception {
         mockEndpointAndResponse(caseFormatterServiceHealthUrl, true);
-        mockEndpointAndResponse(serviceAuthHealthUrl, true);
         mockServiceCcdHealthCheck(true);
 
         HttpResponse response = getHealth();
@@ -105,8 +101,6 @@ public class HealthCheckITest {
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(200));
         assertThat(JsonPath.read(body, "$.status").toString(), equalTo("UP"));
-        assertThat(JsonPath.read(body, "$.components.serviceAuthProviderHealthCheck.status").toString(),
-            equalTo("UP"));
         assertThat(JsonPath.read(body, "$.components.caseFormatterServiceHealthCheck.status").toString(),
             equalTo("UP"));
         assertThat(JsonPath.read(body, "$.components.coreCaseData.status").toString(),
@@ -117,7 +111,6 @@ public class HealthCheckITest {
     @Test
     public void givenAllDependenciesAreDown_whenCheckHealth_thenReturnStatusDown() throws Exception {
         mockEndpointAndResponse(caseFormatterServiceHealthUrl, false);
-        mockEndpointAndResponse(serviceAuthHealthUrl, false);
         mockServiceCcdHealthCheck(false);
 
         HttpResponse response = getHealth();
@@ -125,39 +118,16 @@ public class HealthCheckITest {
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(503));
         assertThat(JsonPath.read(body, "$.status").toString(), equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.components.serviceAuthProviderHealthCheck.status").toString(),
-            equalTo("DOWN"));
         assertThat(JsonPath.read(body, "$.components.caseFormatterServiceHealthCheck.status").toString(),
             equalTo("DOWN"));
         assertThat(JsonPath.read(body, "$.components.coreCaseData.status").toString(),
             equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.components.diskSpace.status").toString(), equalTo("UP"));
-    }
-
-    @Test
-    public void givenAuthServiceIsDown_whenCheckHealth_thenReturnStatusDown() throws Exception {
-        mockEndpointAndResponse(caseFormatterServiceHealthUrl, true);
-        mockEndpointAndResponse(serviceAuthHealthUrl, false);
-        mockServiceCcdHealthCheck(true);
-
-        HttpResponse response = getHealth();
-        String body = EntityUtils.toString(response.getEntity());
-
-        assertThat(response.getStatusLine().getStatusCode(), equalTo(503));
-        assertThat(JsonPath.read(body, "$.status").toString(), equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.components.serviceAuthProviderHealthCheck.status").toString(),
-            equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.components.caseFormatterServiceHealthCheck.status").toString(),
-            equalTo("UP"));
-        assertThat(JsonPath.read(body, "$.components.coreCaseData.status").toString(),
-            equalTo("UP"));
         assertThat(JsonPath.read(body, "$.components.diskSpace.status").toString(), equalTo("UP"));
     }
 
     @Test
     public void givenCcdIsDown_whenCheckHealth_thenReturnStatusDown() throws Exception {
         mockEndpointAndResponse(caseFormatterServiceHealthUrl, true);
-        mockEndpointAndResponse(serviceAuthHealthUrl, true);
         mockServiceCcdHealthCheck(false);
 
         HttpResponse response = getHealth();
@@ -165,8 +135,6 @@ public class HealthCheckITest {
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(503));
         assertThat(JsonPath.read(body, "$.status").toString(), equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.components.serviceAuthProviderHealthCheck.status").toString(),
-            equalTo("UP"));
         assertThat(JsonPath.read(body, "$.components.caseFormatterServiceHealthCheck.status").toString(),
             equalTo("UP"));
         assertThat(JsonPath.read(body, "$.components.coreCaseData.status").toString(),
@@ -177,7 +145,6 @@ public class HealthCheckITest {
     @Test
     public void givenCaseFormatterServiceIsDown_whenCheckHealth_thenReturnStatusDown() throws Exception {
         mockEndpointAndResponse(caseFormatterServiceHealthUrl, false);
-        mockEndpointAndResponse(serviceAuthHealthUrl, true);
         mockServiceCcdHealthCheck(true);
 
         HttpResponse response = getHealth();
@@ -185,8 +152,6 @@ public class HealthCheckITest {
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(503));
         assertThat(JsonPath.read(body, "$.status").toString(), equalTo("DOWN"));
-        assertThat(JsonPath.read(body, "$.components.serviceAuthProviderHealthCheck.status").toString(),
-            equalTo("UP"));
         assertThat(JsonPath.read(body, "$.components.caseFormatterServiceHealthCheck.status").toString(),
             equalTo("DOWN"));
         assertThat(JsonPath.read(body, "$.components.coreCaseData.status").toString(),
