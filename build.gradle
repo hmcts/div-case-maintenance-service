@@ -130,7 +130,7 @@ def versions = [
     gradlePitest: '1.15.0',
     guava: '32.1.3-jre',
     httpComponents: '4.5.14',
-    idamClient: '1.1.0',
+    idamClient: '1.5.5',
     jackson: '2.15.3',
     jsonAssert: '1.5.1',
     junit: '4.13.2',
