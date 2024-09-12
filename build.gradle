@@ -276,7 +276,7 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-contexts'
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
-    integrationTestImplementation (group: 'com.github.hmcts', name:'service-auth-provider-client', version: versions.serviceTokenGenerator)
+    integrationTestImplementation (group: 'com.github.hmcts', name:'service-auth-provider-java-client', version: versions.serviceTokenGenerator)
         {
             exclude group: 'io.reactivex', module: 'io.reactivex'
             exclude group: 'io.reactivex', module: 'rxnetty'
