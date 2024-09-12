@@ -37,7 +37,7 @@ apply plugin: 'java'
 apply plugin: 'org.owasp.dependencycheck'
 apply plugin: 'net.serenity-bdd.aggregator'
 
-group = 'com.github.hmcts'
+group = 'uk.gov.hmcts.reform.divorce'
 version = '1.0.0'
 
 java {
