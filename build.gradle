@@ -438,20 +438,20 @@ task contract(type: Test) {
     useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
-    include "com/github/hmcts/divorce/casemaintenanceservice/client/**"
+    include "uk/gov/hmcts/reform/divorce/casemaintenanceservice/client/**"
     systemProperty 'pact.rootDir', "pacts"
     environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
 }
 
 pitest {
-    targetClasses = ['com.github.hmcts.divorce.casemaintenanceservice.controller.*',
-                     'com.github.hmcts.divorce.casemaintenanceservice.controller.support.*',
-                     'com.github.hmcts.divorce.casemaintenanceservice.draftstore.factory.*',
-                     'com.github.hmcts.divorce.casemaintenanceservice.event.ccd.submission.*',
-                     'com.github.hmcts.divorce.casemaintenanceservice.event.config',
-                     'com.github.hmcts.divorce.casemaintenanceservice.management.monitoring.health.*',
-                     'com.github.hmcts.divorce.casemaintenanceservice.service.*',
-                     'com.github.hmcts.divorce.casemaintenanceservice.util.*']
+    targetClasses = ['uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller.*',
+                     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.controller.support.*',
+                     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.*',
+                     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.ccd.submission.*',
+                     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.event.config',
+                     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.management.monitoring.health.*',
+                     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.*',
+                     'uk.gov.hmcts.reform.divorce.casemaintenanceservice.util.*']
     excludedClasses = [ ]
     threads = 10
     outputFormats = ['XML', 'HTML']
@@ -460,11 +460,11 @@ pitest {
 }
 
 def sonarExclusions = [
-    '**com/github/hmcts/divorce/casemaintenanceservice/domain/**/*',
-    '**com/github/hmcts/divorce/casemaintenanceservice/**/model/**/*',
-    '**com/github/hmcts/divorce/casemaintenanceservice/**/config/**/*',
-    '**com/github/hmcts/divorce/casemaintenanceservice/CaseMaintenanceServiceApplication.java',
-    '**com/github/hmcts/divorce/casemaintenanceservice/client/DraftStoreClient.java'
+        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/domain/**/*',
+        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/**/model/**/*',
+        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/**/config/**/*',
+        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/CaseMaintenanceServiceApplication.java',
+        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/client/DraftStoreClient.java'
 ]
 
 sonarqube {
