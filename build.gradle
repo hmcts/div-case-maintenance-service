@@ -55,7 +55,7 @@ bootJar {
 }
 
 springBoot {
-    mainClass = 'com.github.hmcts.casemaintenanceservice.CaseMaintenanceServiceApplication'
+    mainClass = 'uk.gov.hmcts.reform.divorce.hmcts.casemaintenanceservice.CaseMaintenanceServiceApplication'
 }
 
 compileJava {
