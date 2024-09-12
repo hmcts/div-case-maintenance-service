@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import uk.gov.hmcts.reform.idam.client.models.User;
 import uk.gov.hmcts.reform.idam.client.models.UserDetails;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Value("${idam.caseworker.username}")
@@ -17,7 +19,6 @@ public class UserServiceImpl implements UserService {
     @Value("${idam.caseworker.password}")
     private String caseworkerPassword;
 
-    @Autowired
     private IdamClient idamClient;
 
     @Override
