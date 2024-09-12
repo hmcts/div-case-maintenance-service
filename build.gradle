@@ -81,9 +81,12 @@ distributions {
     }
 }
 
-checkstyle.toolVersion = '8.32'
-checkstyle.configFile = new File(rootDir, "checkstyle.xml")
-checkstyle.maxWarnings(0)
+checkstyle {
+    maxWarnings = 0
+    ignoreFailures = true
+    toolVersion = '10.14.0'
+    getConfigDirectory().set(new File(rootDir, 'config/checkstyle'))
+}
 
 // make build fail on Checkstyle issues (https://github.com/gradle/gradle/issues/881)
 tasks.withType(Checkstyle).each { checkstyleTask ->
