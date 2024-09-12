@@ -405,7 +405,7 @@ dependencies {
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
     useJUnit {
-        includeCategories 'com.github.hmcts.divorce.casemaintenanceservice.category.SmokeTest'
+        includeCategories 'uk.gov.hmcts.reform.divorce.casemaintenanceservice.category.SmokeTest'
     }
 }
 
