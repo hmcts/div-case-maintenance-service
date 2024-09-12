@@ -215,27 +215,15 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
 
-    implementation (group: 'org.apache.tomcat.embed', name:'tomcat-embed-core', version: versions.tomcat) {
-        force = true
+    dependencySet(group: 'org.apache.tomcat.embed', version: versions.tomcat) {
+        entry 'tomcat-embed-core'
+        entry 'tomcat-embed-websocket'
+        entry 'tomcat-embed-el'
     }
-    implementation (group: 'org.apache.tomcat.embed', name:'tomcat-embed-websocket', version: versions.tomcat) {
-        force = true
-    }
-    implementation (group: 'org.apache.tomcat.embed', name:'tomcat-embed-el', version: versions.tomcat) {
-        force = true
-    }
-    implementation (group: 'com.google.guava', name:'guava', version: versions.guava) {
-        force = true
-    }
-    implementation (group: 'org.bouncycastle', name:'bcpkix-jdk15on', version: versions.bcpkixJdk15on) {
-        force = true
-    }
-    implementation (group: 'org.springframework.security', name:'spring-security-rsa', version: versions.springSecurityRsa) {
-        force = true
-    }
-    implementation (group: 'org.springframework.security', name:'spring-security-crypto', version: versions.springSecurityCrypto) {
-        force = true
-    }
+    implementation(group: 'com.google.guava', name: 'guava', version: versions.guava)
+    implementation (group: 'org.bouncycastle', name:'bcpkix-jdk15on', version: versions.bcpkixJdk15on)
+    implementation (group: 'org.springframework.security', name:'spring-security-rsa', version: versions.springSecurityRsa)
+    implementation (group: 'org.springframework.security', name:'spring-security-crypto', version: versions.springSecurityCrypto)
 
     implementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     implementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
