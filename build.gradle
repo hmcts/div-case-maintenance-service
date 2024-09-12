@@ -465,9 +465,9 @@ jacocoTestReport {
     executionData(test)
 
     reports {
-        xml.enabled = true
-        html.enabled = true
-        xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+        xml.required = true
+        html.required = true
+        xml.outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
 
