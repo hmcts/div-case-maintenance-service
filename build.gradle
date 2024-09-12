@@ -460,11 +460,11 @@ pitest {
 }
 
 def sonarExclusions = [
-        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/domain/**/*',
-        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/**/model/**/*',
-        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/**/config/**/*',
-        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/CaseMaintenanceServiceApplication.java',
-        '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/client/DraftStoreClient.java'
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/domain/**/*',
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/**/model/**/*',
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/**/config/**/*',
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/CaseMaintenanceServiceApplication.java',
+    '**uk/gov/hmcts/reform/divorce/casemaintenanceservice/client/DraftStoreClient.java'
 ]
 
 sonarqube {
