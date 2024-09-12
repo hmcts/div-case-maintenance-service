@@ -215,11 +215,6 @@ dependencies {
             exclude group: 'io.reactivex', module: 'rxnetty-servo'
         }
 
-    dependencySet(group: 'org.apache.tomcat.embed', version: versions.tomcat) {
-        entry 'tomcat-embed-core'
-        entry 'tomcat-embed-websocket'
-        entry 'tomcat-embed-el'
-    }
     implementation(group: 'com.google.guava', name: 'guava', version: versions.guava)
     implementation (group: 'org.bouncycastle', name:'bcpkix-jdk15on', version: versions.bcpkixJdk15on)
     implementation (group: 'org.springframework.security', name:'spring-security-rsa', version: versions.springSecurityRsa)
@@ -312,6 +307,12 @@ dependencyManagement {
     dependencies {
         dependency group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils
 
+        // CVE-2020-9484
+        dependencySet(group: 'org.apache.tomcat.embed', version: versions.tomcat) {
+            entry 'tomcat-embed-core'
+            entry 'tomcat-embed-websocket'
+            entry 'tomcat-embed-el'
+        }
 
         //CVE-2022-25857
         dependencySet(group: 'org.yaml', version: '1.33') {
