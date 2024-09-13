@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -63,6 +64,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
     "eureka.client.enabled=false"
 })
 @AutoConfigureMockMvc
+@ActiveProfiles("functional-tests")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/amended-petition-draft-refusal";

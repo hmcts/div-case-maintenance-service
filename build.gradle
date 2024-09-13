@@ -156,6 +156,7 @@ tasks.withType(Test).configureEach {
 test {
     useJUnit()
     failFast = true
+    systemProperty 'spring.profiles.active', 'functional-tests'
 }
 
 dependencies {
