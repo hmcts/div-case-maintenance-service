@@ -176,6 +176,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:${versions.lombok}")
     integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
+    implementation(group: 'commons-beanutils', name: 'commons-beanutils', version: versions.commonsBeanUtils)
     implementation group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '4.0.5'
     implementation group: 'org.springframework', name: 'spring-context-support'
     implementation (group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign')
@@ -190,7 +191,6 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jackson
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
-    implementation group: 'com.puppycrawl.tools', name: 'checkstyle', version:  versions.puppyCrawl
     implementation group: 'commons-io', name: 'commons-io', version: versions.commonsIo
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
     implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.18'
