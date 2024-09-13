@@ -64,7 +64,7 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cm
     "eureka.client.enabled=false"
 })
 @AutoConfigureMockMvc
-@ActiveProfiles("functional-tests")
+@ActiveProfiles("unit-tests")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AmendedPetitionForRefusalDraftFromCaseIdServiceITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/amended-petition-draft-refusal";

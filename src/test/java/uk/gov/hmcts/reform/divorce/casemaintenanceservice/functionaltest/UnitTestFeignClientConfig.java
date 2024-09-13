@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile("functional-tests")
+@Profile("unit-tests")
 @EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.idam.client"})
-public class FunctionalTestFeignClientConfig {
+public class UnitTestFeignClientConfig {
     // Additional configuration for functional tests if needed
 }
