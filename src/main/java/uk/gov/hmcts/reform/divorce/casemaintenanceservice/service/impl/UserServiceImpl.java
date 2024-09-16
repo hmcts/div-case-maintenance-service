@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserService {
     private final IdamClient idamClient;
 
     @Override
+    @SuppressWarnings("deprecation")
     public User retrieveUser(String authorisation) {
         UserDetails userDetails = idamClient.getUserDetails(authorisation);
 
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
         return retrieveUser(getIdamOauth2Token(caseworkerUserName, caseworkerPassword));
     }
 
+    @SuppressWarnings("deprecation")
     private String getIdamOauth2Token(String username, String password) {
         return idamClient.authenticateUser(username, password);
     }
