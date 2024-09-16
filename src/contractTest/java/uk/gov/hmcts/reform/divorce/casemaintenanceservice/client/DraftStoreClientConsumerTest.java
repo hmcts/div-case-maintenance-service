@@ -19,7 +19,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.ResourceUtils;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.draftstore.factory.DraftModelFactory;
@@ -43,7 +42,6 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest({
     "draft.store.api.baseurl : localhost:8891"
 })
-@ActiveProfiles("unit-tests")
 public class DraftStoreClientConsumerTest {
 
     public static final String DRAFT_ID = "12345";
