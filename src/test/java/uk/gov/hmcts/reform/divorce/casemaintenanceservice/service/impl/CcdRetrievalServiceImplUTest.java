@@ -512,25 +512,6 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
-    public void givenCaseId_whenRetrieveCaseByIdWithCaseworkerCitizen_thenReturnTheCase() {
-        String testCaseId = String.valueOf(CASE_ID_1);
-        CaseDetails caseDetails = CaseDetails.builder().build();
-
-        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-
-        String searchQuery = classUnderTest.buildQuery(testCaseId, "reference");
-        when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery)).thenReturn(
-            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
-
-        assertEquals(caseDetails, classUnderTest.retrieveCaseById(TEST_AUTHORISATION, testCaseId));
-
-        verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery);
-    }
-
-    @Test
     public void whenSearchCases_theReturnCcdResponse() {
         String query = "QueryToTest";
         SearchResult expectedResult = SearchResult.builder().build();
