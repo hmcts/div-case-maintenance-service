@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
-import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrie
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.when;
@@ -159,7 +159,7 @@ public class GetCaseITest extends MockSupport {
     private CaseDetails createCaseDetails() {
         return CaseDetails
             .builder()
-            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
+            .data(Map.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
             .build();
     }
 

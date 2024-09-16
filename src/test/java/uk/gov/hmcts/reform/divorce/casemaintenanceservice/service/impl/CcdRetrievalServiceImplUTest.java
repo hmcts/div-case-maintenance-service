@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -418,7 +417,7 @@ public class CcdRetrievalServiceImplUTest {
     @Test
     public void givenMultipleCaseInCcd_whenRespondentRetrieveCase_thenReturnCaseWithValidRole() {
         CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
-            ImmutableMap.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
+            Map.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
         List<CaseDetails> caseDetailsList = Arrays.asList(
             createCaseDetails(1L, CaseState.SUBMITTED.getValue()),
             expectedCase);
@@ -435,7 +434,7 @@ public class CcdRetrievalServiceImplUTest {
     @Test
     public void givenMultipleCaseInCcd_whenCoRespondentRetrieveCase_thenReturnCaseWithValidRole() {
         CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
-            ImmutableMap.of(CO_RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
+            Map.of(CO_RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
         List<CaseDetails> caseDetailsList = Arrays.asList(
             createCaseDetails(1L, CaseState.SUBMITTED.getValue()),
             expectedCase);
@@ -578,7 +577,7 @@ public class CcdRetrievalServiceImplUTest {
             .id(id)
             .state(state)
             .createdDate(createdTime)
-            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
+            .data(Map.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
             .build();
     }
 

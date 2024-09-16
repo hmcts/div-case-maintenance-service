@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
-import com.google.common.collect.ImmutableMap;
 import joptsimple.internal.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -371,7 +370,7 @@ public class RetrieveAosCaseITest extends MockSupport {
     private CaseDetails createCaseDetails(Long id, String state) {
         return CaseDetails.builder()
             .id(id)
-            .data(ImmutableMap.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL))
+            .data(Map.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL))
             .state(state)
             .build();
     }
