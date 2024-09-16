@@ -494,7 +494,7 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
-    public void givenCaseId_whenRetrieveCaseByIdWithCaseworker_thenReturnTheCase() {
+    public void givenCaseId_whenRetrieveCaseById_thenReturnTheCase() {
         String testCaseId = String.valueOf(CASE_ID_1);
         CaseDetails caseDetails = CaseDetails.builder().build();
 
