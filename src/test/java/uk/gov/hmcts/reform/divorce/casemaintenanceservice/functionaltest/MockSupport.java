@@ -33,8 +33,11 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest.
 
 public abstract class MockSupport {
     private static final String IDAM_USER_DETAILS_CONTEXT_PATH = "/details";
-    private static final String IDAM_USER_AUTHENTICATE_CONTEXT_PATH = "/oauth2/authorize";
-    private static final String IDAM_USER_AUTH_TOKEN_CONTEXT_PATH = "/oauth2/token";
+    private static final String IDAM_EXCHANGE_CODE_CONTEXT_PATH = "/oauth2/token";
+    public static final String TEST_CODE = "test.code";
+    private static final String IDAM_AUTHORIZE_CONTEXT_PATH = "/oauth2/authorize";
+    private static final AuthenticateUserResponse AUTHENTICATE_USER_RESPONSE =
+        AuthenticateUserResponse.builder().code(TEST_CODE).build();
 
     static final String USER_ID = "1";
     static final String CASE_WORKER_USER_ID = "2";
@@ -57,6 +60,11 @@ public abstract class MockSupport {
         + "CJpZCI6IjEwMCIsImZvcmVuYW1lIjoiSm9obiIsInN1cm5hbWUiOiJEb2UiLCJkZWZhdWx0LXNlcnZpY2UiOiJEaXZvcmNlIiwibG9hIjoxL"
         + "CJkZWZhdWx0LXVybCI6Imh0dHBzOi8vd3d3Lmdvdi51ayIsImdyb3VwIjoiZGl2b3JjZSJ9.lkNr1vpAP5_Gu97TQa0cRtHu8I-QESzu8kMX"
         + "CJOQrMM";
+
+    private static final TokenExchangeResponse TOKEN_EXCHANGE_RESPONSE =
+            TokenExchangeResponse.builder()
+                    .accessToken(CASE_WORKER_TOKEN)
+                    .build();
 
     static final String BEARER_CASE_WORKER_TOKEN = BEARER + " " + CASE_WORKER_TOKEN;
 
@@ -111,70 +119,38 @@ public abstract class MockSupport {
 
     private static final String APP_FORM_DATA_UTF8_HEADER = MediaType.APPLICATION_FORM_URLENCODED_VALUE + "; charset=UTF-8";
     void stubCaseWorkerAuthentication(HttpStatus status) {
-//        idamUserDetailsServer.stubFor(
-//            post(IDAM_USER_AUTHENTICATE_CONTEXT_PATH)
-//                .withHeader(AUTHORIZATION, new EqualToPattern(CASEWORKER_BASIC_AUTH_HEADER))
-//                .withHeader(CONTENT_TYPE, new EqualToPattern("application/x-www-form-urlencoded; charset=UTF-8"))
-//                .withRequestBody(new EqualToPattern(authorisedBody()))
-//                .willReturn(aResponse()
-//                    .withStatus(status.value())
-//                    .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-//                    .withBody(convertObjectToJsonString(new AuthenticateUserResponse(CASE_WORKER_AUTH_CODE)))
-//                )
-//        );
-//
-//        idamUserDetailsServer.stubFor(
-//            post(IDAM_USER_AUTH_TOKEN_CONTEXT_PATH)
-//                    .withHeader(CONTENT_TYPE, new EqualToPattern(APP_FORM_DATA_UTF8_HEADER))
-////                .withRequestBody(new EqualToPattern(tokenBody()))
-//                .willReturn(aResponse()
-//                    .withStatus(HttpStatus.OK.value())
-//                    .withBody("{ \"access_token\" : \"" + CASE_WORKER_TOKEN + "\" }")));
         stubSignInForCaseworker(status);
 
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(BEARER_CASE_WORKER_TOKEN),
             getCaseWorkerUserDetails());
     }
-    public static final String TEST_CODE = "test.code";
-    private static final String IDAM_AUTHORIZE_CONTEXT_PATH = "/oauth2/authorize";
-    private static final AuthenticateUserResponse AUTHENTICATE_USER_RESPONSE =
-            AuthenticateUserResponse.builder()
-                    .code(TEST_CODE)
-                    .build();
-    void stubAuthoriseEndpoint(HttpStatus status, String authorisation, String responseBody) {
+
+    void stubCaseworkerAuthoriseEndpoint(HttpStatus status, String responseBody) {
         idamUserDetailsServer.stubFor(post(IDAM_AUTHORIZE_CONTEXT_PATH)
-                .withHeader(AUTHORIZATION, new EqualToPattern(authorisation))
+                .withHeader(AUTHORIZATION, new EqualToPattern(CASEWORKER_BASIC_AUTH_HEADER))
                 .withHeader(CONTENT_TYPE, new EqualToPattern(APP_FORM_DATA_UTF8_HEADER))
                 .willReturn(aResponse()
-                        .withStatus(status.value())
-                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .withBody(responseBody)));
+                    .withStatus(status.value())
+                    .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .withBody(responseBody)));
     }
-    private static final String IDAM_EXCHANGE_CODE_CONTEXT_PATH = "/oauth2/token";
-    public static final String AUTH_TOKEN_1 = "test.auth.token1";
-    void stubTokenExchangeEndpoint(HttpStatus status, String responseBody) {
+
+    private void stubTokenExchangeEndpoint(String responseBody) {
         idamUserDetailsServer.stubFor(post(IDAM_EXCHANGE_CODE_CONTEXT_PATH)
                 .withHeader(CONTENT_TYPE, new EqualToPattern(APP_FORM_DATA_UTF8_HEADER))
                 .willReturn(aResponse()
-                        .withStatus(status.value())
-                        .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-                        .withBody(responseBody)));
+                    .withStatus(HttpStatus.OK.value())
+                    .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                    .withBody(responseBody)));
     }
-    private static final TokenExchangeResponse TOKEN_EXCHANGE_RESPONSE =
-            TokenExchangeResponse.builder()
-                    .accessToken(CASE_WORKER_TOKEN)
-                    .build();
+
     void stubSignInForCaseworker(HttpStatus status) {
         try {
-            stubAuthoriseEndpoint(status, CASEWORKER_BASIC_AUTH_HEADER,
-                    convertObjectToJsonString(AUTHENTICATE_USER_RESPONSE));
-
-            stubTokenExchangeEndpoint(HttpStatus.OK, convertObjectToJsonString(TOKEN_EXCHANGE_RESPONSE));
-
+            stubCaseworkerAuthoriseEndpoint(status, convertObjectToJsonString(AUTHENTICATE_USER_RESPONSE));
+            stubTokenExchangeEndpoint(convertObjectToJsonString(TOKEN_EXCHANGE_RESPONSE));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(BEARER_CASE_WORKER_TOKEN),
                 getCaseWorkerUserDetails());
     }
@@ -211,10 +187,6 @@ public abstract class MockSupport {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    private String authorisedBody() {
-        return "response_type=code&redirect_uri=" + getRedirectUri() + "&client_id=" + authClientId;
     }
 
     FeignException getMockedFeignException(int statusCode) {
