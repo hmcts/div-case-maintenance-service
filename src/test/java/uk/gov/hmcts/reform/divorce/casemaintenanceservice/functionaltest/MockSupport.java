@@ -14,9 +14,6 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.idam.AuthenticateUserResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.idam.TokenExchangeResponse;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
