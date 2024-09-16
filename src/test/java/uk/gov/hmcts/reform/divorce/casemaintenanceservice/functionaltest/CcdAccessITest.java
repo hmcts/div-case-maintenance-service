@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
-import com.google.common.collect.ImmutableMap;
 import feign.FeignException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +24,6 @@ import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
 import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 import uk.gov.hmcts.reform.ccd.client.model.CaseUser;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceServiceApplication;
-import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,9 +77,6 @@ public class CcdAccessITest extends MockSupport {
 
     @Autowired
     private MockMvc webClient;
-
-    @Autowired
-    private CcdRetrievalServiceImpl ccdRetrievalService;
 
     @MockBean(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
@@ -223,7 +218,7 @@ public class CcdAccessITest extends MockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
-            .data(ImmutableMap.of(
+            .data(Map.of(
                 RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
                 D8_PETITIONER_EMAIL, TEST_USER_EMAIL
             ))
@@ -280,7 +275,7 @@ public class CcdAccessITest extends MockSupport {
 
         final CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
-            .data(ImmutableMap.of(
+            .data(Map.of(
                 CO_RESP_LETTER_HOLDER_ID_FIELD, LETTER_HOLDER_ID,
                 D8_PETITIONER_EMAIL, TEST_USER_EMAIL
             ))

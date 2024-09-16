@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,8 +40,6 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CASEWORKER_ROLE;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
 
@@ -418,7 +415,7 @@ public class CcdRetrievalServiceImplUTest {
     @Test
     public void givenMultipleCaseInCcd_whenRespondentRetrieveCase_thenReturnCaseWithValidRole() {
         CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
-            ImmutableMap.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
+            Map.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
         List<CaseDetails> caseDetailsList = Arrays.asList(
             createCaseDetails(1L, CaseState.SUBMITTED.getValue()),
             expectedCase);
@@ -435,7 +432,7 @@ public class CcdRetrievalServiceImplUTest {
     @Test
     public void givenMultipleCaseInCcd_whenCoRespondentRetrieveCase_thenReturnCaseWithValidRole() {
         CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
-            ImmutableMap.of(CO_RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
+            Map.of(CO_RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
         List<CaseDetails> caseDetailsList = Arrays.asList(
             createCaseDetails(1L, CaseState.SUBMITTED.getValue()),
             expectedCase);
@@ -515,50 +512,10 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
-    public void givenCaseId_whenRetrieveCaseByIdWithCaseworker_thenReturnTheCase() {
-        String testCaseId = String.valueOf(CASE_ID_1);
-        CaseDetails caseDetails = CaseDetails.builder().build();
-
-        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        String searchQuery = classUnderTest.buildQuery(testCaseId, "reference");
-        when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery)).thenReturn(
-            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
-
-        assertEquals(caseDetails, classUnderTest.retrieveCaseById(TEST_AUTHORISATION, testCaseId));
-
-        verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery);
-    }
-
-    @Test
-    public void givenCaseId_whenRetrieveCaseByIdWithCaseworkerCitizen_thenReturnTheCase() {
-        String testCaseId = String.valueOf(CASE_ID_1);
-        CaseDetails caseDetails = CaseDetails.builder().build();
-        List<String> userRoles = Arrays.asList(CASEWORKER_ROLE, CITIZEN_ROLE);
-
-        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-
-        String searchQuery = classUnderTest.buildQuery(testCaseId, "reference");
-        when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery)).thenReturn(
-            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
-
-        assertEquals(caseDetails, classUnderTest.retrieveCaseById(TEST_AUTHORISATION, testCaseId));
-
-        verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery);
-    }
-
-    @Test
     public void whenSearchCases_theReturnCcdResponse() {
         String query = "QueryToTest";
         SearchResult expectedResult = SearchResult.builder().build();
 
-        final UserDetails userDetails = UserDetails.builder()
-            .id(USER_ID).roles(Arrays.asList(CASEWORKER_ROLE)).build();
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         when(coreCaseDataApi.searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, query))
@@ -578,7 +535,7 @@ public class CcdRetrievalServiceImplUTest {
             .id(id)
             .state(state)
             .createdDate(createdTime)
-            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
+            .data(Map.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
             .build();
     }
 
