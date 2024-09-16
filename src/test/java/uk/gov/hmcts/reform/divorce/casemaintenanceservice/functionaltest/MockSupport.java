@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.idam.AuthenticateUserResponse;
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.idam.TokenExchangeResponse;
-import uk.gov.hmcts.reform.idam.client.IdamClient;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -68,7 +67,6 @@ public abstract class MockSupport {
 
     static final String BEARER_CASE_WORKER_TOKEN = BEARER + " " + CASE_WORKER_TOKEN;
 
-    private static final String CASE_WORKER_AUTH_CODE = "AuthCode";
     private static final String SOLICITOR_ROLE = "caseworker-divorce-solicitor";
 
     @Value("${idam.client.redirect_uri}")
@@ -171,14 +169,6 @@ public abstract class MockSupport {
         return "{\"id\":\"" + userId
             + "\",\"email\":\"" + TEST_USER_EMAIL
             + "\",\"forename\":\"forename\",\"surname\":\"Surname\",\"roles\":[\"" + role + "\"]}";
-    }
-
-    private String getRedirectUri() {
-        try {
-            return URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     FeignException getMockedFeignException(int statusCode) {

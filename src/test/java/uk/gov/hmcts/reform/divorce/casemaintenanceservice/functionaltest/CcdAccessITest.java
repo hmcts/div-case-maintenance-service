@@ -80,9 +80,6 @@ public class CcdAccessITest extends MockSupport {
     @Autowired
     private MockMvc webClient;
 
-    @Autowired
-    private CcdRetrievalServiceImpl ccdRetrievalService;
-
     @MockBean(name = "uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi")
     private CoreCaseDataApi coreCaseDataApi;
 
