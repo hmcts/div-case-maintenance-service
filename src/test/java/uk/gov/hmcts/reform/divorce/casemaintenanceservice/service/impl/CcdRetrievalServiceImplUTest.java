@@ -40,8 +40,6 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CASEWORKER_ROLE;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
 
@@ -517,7 +515,6 @@ public class CcdRetrievalServiceImplUTest {
     public void givenCaseId_whenRetrieveCaseByIdWithCaseworkerCitizen_thenReturnTheCase() {
         String testCaseId = String.valueOf(CASE_ID_1);
         CaseDetails caseDetails = CaseDetails.builder().build();
-        List<String> userRoles = Arrays.asList(CASEWORKER_ROLE, CITIZEN_ROLE);
 
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
@@ -538,8 +535,6 @@ public class CcdRetrievalServiceImplUTest {
         String query = "QueryToTest";
         SearchResult expectedResult = SearchResult.builder().build();
 
-        final UserDetails userDetails = UserDetails.builder()
-            .id(USER_ID).roles(Arrays.asList(CASEWORKER_ROLE)).build();
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         when(coreCaseDataApi.searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, query))
