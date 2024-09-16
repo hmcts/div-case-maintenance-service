@@ -173,14 +173,6 @@ public abstract class MockSupport {
             + "\",\"forename\":\"forename\",\"surname\":\"Surname\",\"roles\":[\"" + role + "\"]}";
     }
 
-    private String tokenBody() {
-        return "code=" + CASE_WORKER_AUTH_CODE
-            + "&grant_type=" + IdamClient.GRANT_TYPE
-            + "&redirect_uri=" + getRedirectUri()
-            + "&client_secret=" + authClientSecret
-            + "&client_id=" + authClientId;
-    }
-
     private String getRedirectUri() {
         try {
             return URLEncoder.encode(authRedirectUrl, StandardCharsets.UTF_8.name());
