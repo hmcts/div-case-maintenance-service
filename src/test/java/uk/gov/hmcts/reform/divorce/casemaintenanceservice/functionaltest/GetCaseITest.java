@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.CaseMaintenanceService
 import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrievalServiceImpl;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -112,30 +111,6 @@ public class GetCaseITest extends MockSupport {
             .andExpect(status().isNotFound());
     }
 
-
-    /*@Test
-    public void givenSingleCaseInCcd_whenGetCase_thenReturnTheCase() throws Exception {
-        final String message = getUserDetails();
-
-        stubUserDetailsEndpoint(HttpStatus.OK, new EqualToPattern(USER_TOKEN), message);
-
-        final CaseDetails caseDetails = createCaseDetails();
-
-        when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-
-        when(coreCaseDataApi
-            .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
-
-        webClient.perform(MockMvcRequestBuilders.get(API_URL)
-            .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content()
-                .json(ObjectMapperTestUtil
-                    .convertObjectToJsonString(caseDetails)));
-    }
-*/
     @Test
     public void givenMultipleCaseInCcd_whenGetCase_thenReturnReturn300() throws Exception {
         final String message = getUserDetails();
