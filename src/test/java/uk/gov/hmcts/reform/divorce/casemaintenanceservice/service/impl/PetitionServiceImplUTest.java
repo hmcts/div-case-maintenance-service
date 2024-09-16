@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -422,12 +420,12 @@ public class PetitionServiceImplUTest {
     public void givenAmendPetitionDraft_whenRetrieveCase_thenReturnDraft() {
         Map<String, Object> documentMap = new HashMap<>();
         documentMap.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
-        Draft draft = buildDraft(ImmutableMap.of(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID));
+        Draft draft = buildDraft(Map.of(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID));
         when(draftService.getDraft(TEST_AUTH_TOKEN))
             .thenReturn(draft);
 
         CaseDetails petition = classUnderTest.retrievePetition(TEST_AUTH_TOKEN, RESPONDENT_CASE_STATE_GROUPING);
-        Draft expectedDraft = buildDraft(ImmutableMap.of(
+        Draft expectedDraft = buildDraft(Map.of(
             DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID,
             PetitionServiceImpl.IS_DRAFT_KEY, true
         ));
@@ -516,7 +514,7 @@ public class PetitionServiceImplUTest {
 
         final Map<String, Object> draftData = new HashMap<>();
         draftData.put(DivorceSessionProperties.PREVIOUS_CASE_ID, TEST_CASE_ID);
-        draftData.put(PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, ImmutableList.of(
+        draftData.put(PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, List.of(
             TEST_REASON_UNREASONABLE_BEHAVIOUR, TEST_REASON_ADULTERY)
         );
 
@@ -597,7 +595,7 @@ public class PetitionServiceImplUTest {
         caseData.put(D_8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
         // Case Data to be Removed
         caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, YES_VALUE);
-        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+        caseData.put(D_8_CONNECTIONS, List.of("A", "B"));
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(Long.decode(TEST_CASE_ID)).build();
         final Map<String, Object> draftData = new HashMap<>();
@@ -632,7 +630,7 @@ public class PetitionServiceImplUTest {
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList(REJECTION_NO_CRITERIA));
         // Case Data to Keep
         caseData.put(D_8_DIVORCE_WHO, TEST_RELATIONSHIP);
-        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+        caseData.put(D_8_CONNECTIONS, List.of("A", "B"));
         // Case Data to be Removed
         caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, YES_VALUE);
         caseData.put(D_8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
@@ -670,7 +668,7 @@ public class PetitionServiceImplUTest {
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, Collections.singletonList(REJECTION_INSUFFICIENT_DETAILS));
         // Case Data to Keep
         caseData.put(D_8_DIVORCE_WHO, TEST_RELATIONSHIP);
-        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+        caseData.put(D_8_CONNECTIONS, List.of("A", "B"));
         // Case Data to be Removed
         caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, YES_VALUE);
         caseData.put(D_8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
@@ -705,7 +703,7 @@ public class PetitionServiceImplUTest {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
-        List<String> refusalRejectionReasons = ImmutableList.of(
+        List<String> refusalRejectionReasons = List.of(
             REJECTION_NO_JURISDICTION, REJECTION_NO_CRITERIA, REJECTION_INSUFFICIENT_DETAILS
         );
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, refusalRejectionReasons);
@@ -714,7 +712,7 @@ public class PetitionServiceImplUTest {
         // Case Data to be Removed
         caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, YES_VALUE);
         caseData.put(D_8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
-        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+        caseData.put(D_8_CONNECTIONS, List.of("A", "B"));
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData).id(Long.decode(TEST_CASE_ID)).build();
         final Map<String, Object> draftData = new HashMap<>();
@@ -758,7 +756,7 @@ public class PetitionServiceImplUTest {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
-        List<String> refusalRejectionReasons = ImmutableList.of(
+        List<String> refusalRejectionReasons = List.of(
             REJECTION_NO_JURISDICTION, REJECTION_NO_CRITERIA, REJECTION_INSUFFICIENT_DETAILS
         );
         caseData.put(REFUSAL_ORDER_REJECTION_REASONS, refusalRejectionReasons);
@@ -767,7 +765,7 @@ public class PetitionServiceImplUTest {
         // Case Data to be Removed
         caseData.put(D_8_HELP_WITH_FEES_NEED_HELP, YES_VALUE);
         caseData.put(D_8_REASON_FOR_DIVORCE, TEST_REASON_ADULTERY);
-        caseData.put(D_8_CONNECTIONS, ImmutableList.of("A", "B"));
+        caseData.put(D_8_CONNECTIONS, List.of("A", "B"));
 
         final CaseDetails caseDetails = CaseDetails.builder().data(caseData)
             .id(Long.decode(TEST_CASE_ID)).build();
