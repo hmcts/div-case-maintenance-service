@@ -170,7 +170,7 @@ dependencies {
     implementation("org.projectlombok:lombok:${versions.lombok}")
 
     testImplementation("org.projectlombok:lombok:${versions.lombok}")
-    testImplementation('com.github.hmcts:fortify-client:1.3.0:all')
+    testImplementation('com.github.hmcts:fortify-client:1.4.8:all')
     annotationProcessor("org.projectlombok:lombok:${versions.lombok}")
     testAnnotationProcessor("org.projectlombok:lombok:${versions.lombok}")
     integrationTestImplementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
