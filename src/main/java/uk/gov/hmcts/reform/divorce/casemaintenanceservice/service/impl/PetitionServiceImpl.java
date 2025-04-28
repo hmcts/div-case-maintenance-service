@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 
 import static java.util.Collections.emptyList;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
@@ -116,7 +115,7 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @Override
-    public void onApplicationEvent(@Nonnull CaseSubmittedEvent event) {
+    public void onApplicationEvent(CaseSubmittedEvent event) {
         deleteDraft(event.getAuthToken());
     }
 
