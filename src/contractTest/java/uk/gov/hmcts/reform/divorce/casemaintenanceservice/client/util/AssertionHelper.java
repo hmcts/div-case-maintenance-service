@@ -30,7 +30,7 @@ public final class AssertionHelper {
 
         //D8PetitionerNameChangedHow
         List<String> nameChangedHow = (ArrayList<String>) caseDataMap.get("D8PetitionerNameChangedHow");
-        assertEquals( nameChangedHow.get(0), "marriageCertificate");
+        assertEquals(nameChangedHow.get(0), "marriageCertificate");
 
         //D8PetitionerHomeAddress
         Map<String,String> homeAddressMap = (Map<String,String>)caseDataMap.get("D8PetitionerHomeAddress");
@@ -38,7 +38,7 @@ public final class AssertionHelper {
 
         // D8FinancialOrderFor
         List<String> financialOrder = (ArrayList<String>) caseDataMap.get("D8FinancialOrderFor");
-        assertEquals( financialOrder.get(0), "petitioner");
+        assertEquals(financialOrder.get(0), "petitioner");
 
     }
 }

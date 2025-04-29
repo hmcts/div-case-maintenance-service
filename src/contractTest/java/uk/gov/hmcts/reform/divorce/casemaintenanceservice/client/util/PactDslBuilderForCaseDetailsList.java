@@ -157,8 +157,9 @@ public final class PactDslBuilderForCaseDetailsList {
                                 .stringMatcher("DocumentDateAdded", REGEX_DATE, "2017-12-11")
                                 .stringType("DocumentType", "other")
                                 .object("DocumentLink", (link) ->
-                                    link.stringType("document_url", "http://dm-store-aat."
-                                        + "service.core-compute-aat.internal/documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"))
+                                    link.stringType("document_url",
+                                            "http://dm-store-aat.service.core-compute-aat.internal/"
+                                                    + "documents/7f63ca9b-c361-49ab-aa8c-8fbdb6bc2936"))
                         ) // document_link object
             ) // minArray
             .stringType("D8DivorceUnit", "eastMidlands")

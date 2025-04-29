@@ -110,7 +110,8 @@ public abstract class CcdConsumerTestBase {
         return map;
     }
 
-    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) throws JSONException {
+    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent)
+            throws JSONException {
         Map<String, Object> map = this.setUpStateMapForProviderWithoutCaseData();
         Map<String, Object> caseDataContentMap = objectMapper.convertValue(caseDataContent, Map.class);
         map.put(CASE_DATA_CONTENT, caseDataContentMap);

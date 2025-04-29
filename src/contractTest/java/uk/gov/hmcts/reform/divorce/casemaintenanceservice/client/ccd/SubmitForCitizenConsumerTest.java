@@ -73,7 +73,8 @@ public class SubmitForCitizenConsumerTest extends CcdConsumerTestBase {
     }
 
     @Override
-    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) throws JSONException {
+    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent)
+            throws JSONException {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithCaseData(caseDataContent);
         caseDataContentMap.put(EVENT_ID, createEventId);
         return caseDataContentMap;
