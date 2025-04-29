@@ -91,7 +91,8 @@ public class DraftServiceImplUTest {
 
         classUnderTest.saveDraft(TEST_AUTHORISATION, data, DIVORCE_FORMAT);
 
-        verify(draftStoreClient).createSingleDraft(createDraft, TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, ENCRYPTED_USER_ID);
+        verify(draftStoreClient).createSingleDraft(createDraft, TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN,
+            ENCRYPTED_USER_ID);
     }
 
     @Test
@@ -134,7 +135,8 @@ public class DraftServiceImplUTest {
 
         classUnderTest.createDraft(TEST_AUTHORISATION, data, DIVORCE_FORMAT);
 
-        verify(draftStoreClient).createSingleDraft(createDraft, TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, ENCRYPTED_USER_ID);
+        verify(draftStoreClient).createSingleDraft(createDraft, TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN,
+            ENCRYPTED_USER_ID);
     }
 
     @Test

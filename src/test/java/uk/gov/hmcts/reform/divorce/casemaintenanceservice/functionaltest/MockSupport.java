@@ -112,7 +112,9 @@ public abstract class MockSupport {
                 .withBody(message)));
     }
 
-    private static final String APP_FORM_DATA_UTF8_HEADER = MediaType.APPLICATION_FORM_URLENCODED_VALUE + "; charset=UTF-8";
+    private static final String APP_FORM_DATA_UTF8_HEADER = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+        + "; charset=UTF-8";
+
     void stubCaseWorkerAuthentication(HttpStatus status) {
         stubSignInForCaseworker(status);
 

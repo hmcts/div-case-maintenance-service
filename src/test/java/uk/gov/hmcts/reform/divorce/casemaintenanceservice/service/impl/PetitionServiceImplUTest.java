@@ -105,7 +105,8 @@ public class PetitionServiceImplUTest {
     public void givenCcdRetrievalServiceReturnsCase_whenRetrievePetition_thenProceedAsExpected() {
         final CaseDetails caseDetails = CaseDetails.builder().build();
 
-        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(caseDetails);
+        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER))
+            .thenReturn(caseDetails);
 
         CaseDetails actual = classUnderTest.retrievePetition(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING);
 
@@ -117,7 +118,8 @@ public class PetitionServiceImplUTest {
     public void givenCcdRetrievalServiceReturnsAmendCase_whenRetrievePetition_thenReturnCaseAsDraft() {
         final CaseDetails caseDetails = buildAdulteryCaseData();
 
-        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(caseDetails);
+        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER))
+            .thenReturn(caseDetails);
 
         Map<String, Object> expectedCaseData = new HashMap<>();
         expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
@@ -141,7 +143,8 @@ public class PetitionServiceImplUTest {
         final Draft draft = new Draft("1", Collections.singletonMap("test", "value"), null);
 
         when(draftService.getDraft(TEST_AUTH_TOKEN)).thenReturn(draft);
-        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(caseDetails);
+        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER))
+            .thenReturn(caseDetails);
 
         Map<String, Object> expectedCaseData = new HashMap<>();
         expectedCaseData.put(PetitionServiceImpl.IS_DRAFT_KEY, true);
@@ -168,7 +171,8 @@ public class PetitionServiceImplUTest {
         final Draft draft = new Draft("1", amendedDraft, null);
 
         when(draftService.getDraft(TEST_AUTH_TOKEN)).thenReturn(draft);
-        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(caseDetails);
+        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER))
+            .thenReturn(caseDetails);
 
         CaseDetails actual = classUnderTest.retrievePetition(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING);
 
@@ -195,8 +199,8 @@ public class PetitionServiceImplUTest {
 
     @Test
     public void givenNoDataInCcdOrDraft_whenRetrievePetition_thenReturnNull() {
-
-        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER)).thenReturn(null);
+        when(ccdRetrievalService.retrieveCase(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING, PETITIONER))
+            .thenReturn(null);
         when(draftService.getDraft(TEST_AUTH_TOKEN)).thenReturn(null);
 
         assertNull(classUnderTest.retrievePetition(TEST_AUTH_TOKEN, PETITIONER_CASE_STATE_GROUPING));
@@ -661,7 +665,8 @@ public class PetitionServiceImplUTest {
     }
 
     @Test
-    public void whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForInsufficientDetails_thenProceedAsExpected() {
+    public void
+        whenCreateAmendedPetitionDraftForRefusal_whenCaseIsRejectedForInsufficientDetails_thenProceedAsExpected() {
 
         final Map<String, Object> caseData = new HashMap<>();
         caseData.put(D8_CASE_REFERENCE, TEST_CASE_REF);
@@ -771,7 +776,8 @@ public class PetitionServiceImplUTest {
             .id(Long.decode(TEST_CASE_ID)).build();
 
         final User user = new User(TEST_AUTH_TOKEN, UserDetails.builder().forename(USER_FIRST_NAME).build());
-        final User caseworkerUser = new User(TEST_AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME).build());
+        final User caseworkerUser = new User(TEST_AUTHORISATION, UserDetails.builder().forename(USER_FIRST_NAME)
+            .build());
         when(ccdRetrievalService.retrieveCaseById(TEST_AUTHORISATION, TEST_CASE_ID)).thenReturn(caseDetails);
         when(userService.retrieveUser(TEST_AUTH_TOKEN)).thenReturn(user);
         when(userService.retrieveAnonymousCaseWorkerDetails()).thenReturn(caseworkerUser);
@@ -794,7 +800,8 @@ public class PetitionServiceImplUTest {
     }
 
     private Draft buildDraft(Map<String, Object> properties) {
-        return new Draft(DRAFT_ID, properties, TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT);
+        return new Draft(DRAFT_ID, properties,
+            TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT);
     }
 
     private CaseDetails buildAdulteryCaseData() {
@@ -812,7 +819,8 @@ public class PetitionServiceImplUTest {
     }
 
     private Map<String, Object> verifyCcdCaseDataToBeTransformed() {
-        verify(formatterServiceClient).transformToDivorceFormat(ccdCaseDataArgumentCaptor.capture(), eq(TEST_AUTH_TOKEN));
+        verify(formatterServiceClient).transformToDivorceFormat(ccdCaseDataArgumentCaptor.capture(),
+            eq(TEST_AUTH_TOKEN));
         Map<String, Object> ccdCaseDataToBeTransformed = (Map) ccdCaseDataArgumentCaptor.getValue();
         assertThat(ccdCaseDataToBeTransformed, allOf(
             not(hasKey(D8_DOCUMENTS_UPLOADED)),

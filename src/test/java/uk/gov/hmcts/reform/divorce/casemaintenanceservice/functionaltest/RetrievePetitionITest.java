@@ -179,7 +179,8 @@ public class RetrievePetitionITest extends MockSupport {
 
         when(coreCaseDataApi
             .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4)).build());
+            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4))
+                .build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -452,7 +453,7 @@ public class RetrievePetitionITest extends MockSupport {
         return createDraft(id, new HashMap<>(), documentType);
     }
 
-    private Draft createDraft(String id, Map<String, Object> document ,String documentType) {
+    private Draft createDraft(String id, Map<String, Object> document, String documentType) {
         return new Draft(id, document, documentType);
     }
 }

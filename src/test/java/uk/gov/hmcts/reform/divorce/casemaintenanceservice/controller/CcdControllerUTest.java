@@ -78,7 +78,8 @@ public class CcdControllerUTest {
 
     @Test
     public void whenUpdateCase_thenProceedAsExpected() {
-        when(ccdUpdateService.update(TEST_CASE_ID, CASE_DATA_CONTENT,  TEST_EVENT_ID, TEST_AUTH_TOKEN)).thenReturn(CASE_DETAILS);
+        when(ccdUpdateService.update(TEST_CASE_ID, CASE_DATA_CONTENT,  TEST_EVENT_ID, TEST_AUTH_TOKEN))
+            .thenReturn(CASE_DETAILS);
 
         ResponseEntity<CaseDetails> responseEntity =
             classUnderTest.updateCase(TEST_CASE_ID, CASE_DATA_CONTENT, TEST_EVENT_ID, TEST_AUTH_TOKEN);
@@ -154,7 +155,8 @@ public class CcdControllerUTest {
 
     @Test
     public void whenUpdateBulkCase_thenProceedAsExpected() {
-        when(ccdUpdateService.updateBulkCase(TEST_CASE_ID, CASE_DATA_CONTENT,  TEST_EVENT_ID, TEST_AUTH_TOKEN)).thenReturn(CASE_DETAILS);
+        when(ccdUpdateService.updateBulkCase(TEST_CASE_ID, CASE_DATA_CONTENT,  TEST_EVENT_ID, TEST_AUTH_TOKEN))
+            .thenReturn(CASE_DETAILS);
 
         ResponseEntity<CaseDetails> responseEntity =
             classUnderTest.updateBulkCase(TEST_CASE_ID, CASE_DATA_CONTENT, TEST_EVENT_ID, TEST_AUTH_TOKEN);

@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.rules.ExpectedException.none;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -77,7 +76,8 @@ public class CcdAccessServiceImplUTest {
     private static final String UNAUTHORIZED_MESSAGE_WRONG_HOLDER_ID =
         "Case with caseId [12345678] and letter holder id [WrongHolderId] mismatch.";
     private static final String INVALID_MESSAGE = "Case details or letter holder data are invalid";
-    private static final String NOT_FOUND_MESSAGE = "Case with caseId [12345678] and letter holder id [test.letter.holder.id] not found";
+    private static final String NOT_FOUND_MESSAGE = "Case with caseId [12345678] and letter holder id "
+        + "[test.letter.holder.id] not found";
 
     private static final User CASE_WORKER_USER = new User(
         CASEWORKER_AUTHORISATION,
@@ -470,7 +470,7 @@ public class CcdAccessServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdMatchesAndEmailMatchedAndSolicitorRepresentingRespFieldIsYes_whenLinkRespondent_thenGrantCorrectUserPermissions() {
+    public void givenLtrIdAndEmailMatchAndSolRepRespYes_whenLinkResp_thenGrantUserPerms() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
@@ -501,7 +501,7 @@ public class CcdAccessServiceImplUTest {
     // test for temporary fix until we implement setting respondentSolicitorRepresented from CCD for RespSols
     // in all scenarios https://tools.hmcts.net/jira/browse/DIV-5759
     @Test
-    public void givenLetterHolderIdMatchesAndEmailMatchedAndSolRepresentingRespWithoutRespSolRepFieldPresent_whenLinkRespondent_thenGrantCorrectUserPermissions() {
+    public void givenMatchingLtrIdAndEmail_whenLinkedToResp_thenGrantUserPerms() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
@@ -531,7 +531,7 @@ public class CcdAccessServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdMatchesRespondentLetterAndSolNameAndCompanyNull_whenLinkRespondent_thenRespondentTypeIsRespondent() {
+    public void givenLetterHolderIdMatchesRespLetterAndSolNameAndCompanyNull_whenLinkRespondent_thenRespTypeIsResp() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(
@@ -557,7 +557,7 @@ public class CcdAccessServiceImplUTest {
     }
 
     @Test
-    public void givenLetterHolderIdMatchesRespondentLetterAndSolNameAndCompanyEmptyString_whenLinkRespondent_thenRespondentTypeIsRespondent() {
+    public void givenLetterHolderIdMatchesRespLetterAndSolNameAndCoEmptyStr_whenLinkRespondent_thenRespTypeIsResp() {
         CaseDetails caseDetails = CaseDetails.builder()
             .id(Long.decode(CASE_ID))
             .data(ImmutableMap.of(

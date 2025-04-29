@@ -29,7 +29,6 @@ import uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl.CcdRetrie
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import static org.mockito.Mockito.when;

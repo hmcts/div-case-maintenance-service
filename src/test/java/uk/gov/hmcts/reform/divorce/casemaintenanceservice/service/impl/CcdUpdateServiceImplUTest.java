@@ -92,19 +92,19 @@ public class CcdUpdateServiceImplUTest {
 
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        when(coreCaseDataApi.startEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId, CASE_EVENT_ID)).thenReturn(startEventResponse);
-        when(coreCaseDataApi.submitEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
+        when(coreCaseDataApi.startEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId, CASE_EVENT_ID)).thenReturn(startEventResponse);
+        when(coreCaseDataApi.submitEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
 
         CaseDetails actual = classUnderTest.update(caseId, caseData, CASE_EVENT_ID, TEST_AUTHORISATION);
 
         assertEquals(actual, expected);
 
-        verify(coreCaseDataApi).startEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId, CASE_EVENT_ID);
-        verify(coreCaseDataApi).submitEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId,true, caseDataContent);
+        verify(coreCaseDataApi).startEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId, CASE_EVENT_ID);
+        verify(coreCaseDataApi).submitEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId,true, caseDataContent);
     }
 
     @Test
@@ -137,19 +137,19 @@ public class CcdUpdateServiceImplUTest {
 
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        when(coreCaseDataApi.startEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId, CASE_EVENT_ID)).thenReturn(startEventResponse);
-        when(coreCaseDataApi.submitEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
+        when(coreCaseDataApi.startEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId, CASE_EVENT_ID)).thenReturn(startEventResponse);
+        when(coreCaseDataApi.submitEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
 
         CaseDetails actual = classUnderTest.update(caseId, caseData, CASE_EVENT_ID, TEST_AUTHORISATION);
 
         assertEquals(actual, expected);
 
-        verify(coreCaseDataApi).startEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId, CASE_EVENT_ID);
-        verify(coreCaseDataApi).submitEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId,true, caseDataContent);
+        verify(coreCaseDataApi).startEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId, CASE_EVENT_ID);
+        verify(coreCaseDataApi).submitEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId,true, caseDataContent);
     }
 
     @Test
@@ -181,19 +181,19 @@ public class CcdUpdateServiceImplUTest {
 
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        when(coreCaseDataApi.startEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId, CASE_EVENT_ID)).thenReturn(startEventResponse);
-        when(coreCaseDataApi.submitEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
+        when(coreCaseDataApi.startEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId, CASE_EVENT_ID)).thenReturn(startEventResponse);
+        when(coreCaseDataApi.submitEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
 
         CaseDetails actual = classUnderTest.update(caseId, caseData, CASE_EVENT_ID, TEST_AUTHORISATION);
 
         assertEquals(actual, expected);
 
-        verify(coreCaseDataApi).startEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId, CASE_EVENT_ID);
-        verify(coreCaseDataApi).submitEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            TEST_CASE_TYPE, caseId,true, caseDataContent);
+        verify(coreCaseDataApi).startEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId, CASE_EVENT_ID);
+        verify(coreCaseDataApi).submitEventForCitizen(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, TEST_CASE_TYPE, caseId,true, caseDataContent);
     }
 
     @Test
@@ -223,18 +223,18 @@ public class CcdUpdateServiceImplUTest {
 
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(userDetails);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        when(coreCaseDataApi.startEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            BULK_CASE_TYPE, caseId, CASE_EVENT_ID)).thenReturn(startEventResponse);
-        when(coreCaseDataApi.submitEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            BULK_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
+        when(coreCaseDataApi.startEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, BULK_CASE_TYPE, caseId, CASE_EVENT_ID)).thenReturn(startEventResponse);
+        when(coreCaseDataApi.submitEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, BULK_CASE_TYPE, caseId,true, caseDataContent)).thenReturn(expected);
 
         CaseDetails actual = classUnderTest.updateBulkCase(caseId, caseData, CASE_EVENT_ID, TEST_AUTHORISATION);
 
         assertEquals(actual, expected);
 
-        verify(coreCaseDataApi).startEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            BULK_CASE_TYPE, caseId, CASE_EVENT_ID);
-        verify(coreCaseDataApi).submitEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId, TEST_JURISDICTION_ID,
-            BULK_CASE_TYPE, caseId,true, caseDataContent);
+        verify(coreCaseDataApi).startEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, BULK_CASE_TYPE, caseId, CASE_EVENT_ID);
+        verify(coreCaseDataApi).submitEventForCaseWorker(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, userId,
+            TEST_JURISDICTION_ID, BULK_CASE_TYPE, caseId,true, caseDataContent);
     }
 }

@@ -112,7 +112,8 @@ public class AmendedPetitionForRefusalDraftServiceITest extends MockSupport {
     }
 
     @Test
-    public void givenCouldNotConnectToAuthService_whenAmendedPetitionDraftForRefusal_thenReturnHttp503() throws Exception {
+    public void givenCouldNotConnectToAuthService_whenAmendedPetitionDraftForRefusal_thenReturnHttp503()
+        throws Exception {
         final String message = getUserDetails();
 
         when(serviceTokenGenerator.generate()).thenThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE));
@@ -127,7 +128,8 @@ public class AmendedPetitionForRefusalDraftServiceITest extends MockSupport {
     }
 
     @Test
-    public void givenValidRequestToAmend_whenAmendedPetitionDraftForRefusal_thenCreateAmendedPetitionDraft() throws Exception {
+    public void givenValidRequestToAmend_whenAmendedPetitionDraftForRefusal_thenCreateAmendedPetitionDraft()
+        throws Exception {
         final String message = getUserDetails();
 
         final Map<String, Object> caseData = new HashMap<>();
@@ -159,7 +161,8 @@ public class AmendedPetitionForRefusalDraftServiceITest extends MockSupport {
         draftData.put(DivorceSessionProperties.DIVORCE_WHO, TEST_RELATIONSHIP);
         draftData.put(DivorceSessionProperties.SCREEN_HAS_MARRIAGE_BROKEN, YES_VALUE);
         draftData.put(DivorceSessionProperties.COURTS, CmsConstants.CTSC_SERVICE_CENTRE);
-        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, Collections.singletonList(TEST_REASON_ADULTERY));
+        draftData.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL,
+            Collections.singletonList(TEST_REASON_ADULTERY));
 
         final CreateDraft createDraft = new CreateDraft(draftData,
             TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT, maxAge);
