@@ -8,13 +8,11 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.PetitionSupport;
 
-import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 
 public class CcdRetrieveAosCaseTest extends PetitionSupport {
 
     private static final String TEST_AOS_RESPONDED_EVENT = "testAosStarted";
-    private static final String TEST_AOS_AWAITING_DN = "testAwaitingDecreeNisi";
 
     @Value("${case.maintenance.aos-case.context-path}")
     private String retrieveAosCaseContextPath;
@@ -33,7 +31,8 @@ public class CcdRetrieveAosCaseTest extends PetitionSupport {
         assertEquals(HttpStatus.MULTIPLE_CHOICES.value(), cmsResponse.getStatusCode());
     }
 
-    private Response createACaseUpdateStateAndReturnTheCase(UserDetails userDetails, String eventName) throws Exception {
+    private Response createACaseUpdateStateAndReturnTheCase(UserDetails userDetails, String eventName)
+            throws Exception {
         Long caseId = getCaseIdFromSubmittingANewCase(userDetails);
 
         return updateCase((String) null, caseId, eventName, userDetails.getAuthToken());

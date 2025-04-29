@@ -35,7 +35,8 @@ public class RetryRule implements TestRule {
                         failCount++;
                         log.error("{} run {} failed. - {}", description.getDisplayName(), (i + 1), t.getMessage());
                         if (totalRetries >= MAX_RETRIES) {
-                            log.warn("Maximum retry limit across test suite exceeded (max. {}): not retrying failed test.", MAX_RETRIES);
+                            log.warn("Maximum retry limit across test suite exceeded (max. {}):"
+                                    + " not retrying failed test.", MAX_RETRIES);
                             break;
                         } else {
                             totalRetries++;
