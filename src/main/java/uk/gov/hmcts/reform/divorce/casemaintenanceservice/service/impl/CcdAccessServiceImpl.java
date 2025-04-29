@@ -97,7 +97,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             );
         }
 
-        updateCaseRoles(caseworkerUser, caseId, linkingUser.getUserDetails().getId(), getRolesForRespondentType(respondentType));
+        updateCaseRoles(caseworkerUser, caseId, linkingUser.getUserDetails().getId(),
+                getRolesForRespondentType(respondentType));
     }
 
     private void updateCaseRoles(User anonymousCaseWorker, String caseId, String userId, Set<String> caseRoles) {
@@ -123,7 +124,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
 
     private RespondentType validateLetterIdAndUserType(String letterHolderId, CaseDetails caseDetails, String caseId) {
         if (caseDetails.getData() == null || StringUtils.isBlank(letterHolderId)) {
-            throw new InvalidRequestException(format("Case details or letter holder data are invalid for case ID: [%s]", caseId));
+            throw new InvalidRequestException(
+                    format("Case details or letter holder data are invalid for case ID: [%s]", caseId));
         }
         final String respondentLetterHolderId = (String) caseDetails.getData().get(RESP_LETTER_HOLDER_ID_FIELD);
         final String coRespondentLetterHolderId = (String) caseDetails.getData().get(CO_RESP_LETTER_HOLDER_ID_FIELD);
@@ -167,7 +169,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
             final String petitionerEmail = (String) caseData.get(D8_PETITIONER_EMAIL);
 
             if (userEmailAddress.equalsIgnoreCase(petitionerEmail)) {
-                log.warn("Attempt made to link petitioner as {} to case {}. Failed validation.", respondentType, caseId);
+                log.warn("Attempt made to link petitioner as {} to case {}. Failed validation.", respondentType,
+                        caseId);
                 return false;
             }
 
@@ -181,7 +184,8 @@ public class CcdAccessServiceImpl extends BaseCcdCaseService implements CcdAcces
         if (emailAddressesMatch) {
             log.info("User's e-mail address matches the {} e-mail address in the case [{}].", respondentType, caseId);
         } else {
-            log.warn("User's e-mail address doesn't match the {} e-mail address in the case [{}].", respondentType, caseId);
+            log.warn("User's e-mail address doesn't match the {} e-mail address in the case [{}].", respondentType,
+                    caseId);
         }
 
         return emailAddressesMatch;

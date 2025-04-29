@@ -30,7 +30,8 @@ public enum CaseState {
     AWAITING_DECREE_NISI("AwaitingDecreeNisi", ApplicationStatus.AWAITING_DECREE_NISI),
     AWAITING_DOCUMENTS("AwaitingDocuments", ApplicationStatus.PETITION_COMPLETED),
     AWAITING_DWP_RESPONSE("AwaitingDWPResponse", ApplicationStatus.AWAITING_DWP_RESPONSE),
-    AWAITING_GENERAL_REFERRAL_PAYMENT("AwaitingGeneralReferralPayment", ApplicationStatus.AWAITING_GENERAL_REFERRAL_PAYMENT),
+    AWAITING_GENERAL_REFERRAL_PAYMENT("AwaitingGeneralReferralPayment",
+        ApplicationStatus.AWAITING_GENERAL_REFERRAL_PAYMENT),
     AWAITING_HWF_DECISION("AwaitingHWFDecision", ApplicationStatus.PETITION_COMPLETED),
     AWAITING_LEGAL_ADVISOR_REFERRAL("AwaitingLegalAdvisorReferral", ApplicationStatus.AWAITING_LEGAL_ADVISOR_REFERRAL),
     AWAITING_PAYMENT("AwaitingPayment", ApplicationStatus.AWAITING_PAYMENT),
@@ -50,7 +51,8 @@ public enum CaseState {
     ISSUED("Issued", ApplicationStatus.PETITION_COMPLETED),
     PENDING_REJECTION("PendingRejection", ApplicationStatus.PENDING_REJECTION),
     REJECTED("Rejected", ApplicationStatus.REJECTED),
-    SERVICE_APPLICATION_NOT_APPROVED("ServiceApplicationNotApproved", ApplicationStatus.SERVICE_APPLICATION_NOT_APPROVED),
+    SERVICE_APPLICATION_NOT_APPROVED("ServiceApplicationNotApproved", ApplicationStatus
+        .SERVICE_APPLICATION_NOT_APPROVED),
     SUBMITTED("Submitted", ApplicationStatus.PETITION_COMPLETED),
     UNKNOWN("Unknown", ApplicationStatus.UNKNOWN);
 
