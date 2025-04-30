@@ -2,7 +2,7 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 buildscript {
     ext {
-        springBootVersion = '2.7.17'
+        springBootVersion = '2.7.18'
         springCloudBomVersion = "2021.0.8"
     }
     repositories {
