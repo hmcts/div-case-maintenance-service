@@ -125,6 +125,7 @@ def versions = [
     puppyCrawl: '8.45.1',
     reformPropertiesVolume: '0.1.0',
     reformLogging: '6.1.9',
+    apacheLogging: '2.24.3',
     restAssured: '4.5.1',
     serenity: '2.6.0',
     serenityCucumber: '1.9.51',
@@ -167,6 +168,10 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-validation')
 
     implementation("org.projectlombok:lombok:${versions.lombok}")
+
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: versions.apacheLogging
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versions.apacheLogging
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: versions.apacheLogging
 
     testImplementation("org.projectlombok:lombok:${versions.lombok}")
     testImplementation('com.github.hmcts:fortify-client:1.4.9:all')
@@ -323,12 +328,6 @@ dependencyManagement {
             entry 'netty-handler'
             entry 'netty-resolver'
             entry 'netty-transport'
-        }
-
-        //CVE-2021-44228, CVE-2021-44832, CVE-2021-45046, CVE-2021-45105
-        dependencySet(group: 'org.apache.logging.log4j', version: '2.24.3') {
-            entry 'log4j-api'
-            entry 'log4j-to-slf4j'
         }
 
         //CVE-2022-22965
