@@ -120,12 +120,11 @@ def versions = [
     junit: '4.13.2',
     junit5: '5.10.1',
     lombok: '1.18.30',
-    logbackVersion: '1.2.10',
     pact_version: '4.1.7',
     pitest: '1.15.3',
     puppyCrawl: '8.45.1',
     reformPropertiesVolume: '0.1.0',
-    hmctsLogging: '6.1.6',
+    reformLogging: '6.1.9',
     restAssured: '4.5.1',
     serenity: '2.6.0',
     serenityCucumber: '1.9.51',
@@ -195,13 +194,10 @@ dependencies {
     implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.18'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version : versions.commonsLang3
 
-    implementation group: 'ch.qos.logback', name: 'logback-classic', version: versions.logbackVersion
-    implementation group: 'ch.qos.logback', name: 'logback-core', version: versions.logbackVersion
-
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: versions.httpComponents
     implementation group: 'org.apache.httpcomponents', name: 'fluent-hc', version: versions.httpComponents
 
-    implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.hmctsLogging
+    implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
 
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: versions.idamClient
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: versions.serviceTokenGenerator
