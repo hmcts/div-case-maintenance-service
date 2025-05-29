@@ -114,7 +114,6 @@ def versions = [
     lombok: '1.18.30',
     pact_version: '4.1.7',
     pitest: '1.15.3',
-    puppyCrawl: '8.45.1',
     reformPropertiesVolume: '0.1.0',
     reformLogging: '6.1.9',
     apacheLogging: '2.24.3',
