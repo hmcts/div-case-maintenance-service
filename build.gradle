@@ -99,7 +99,7 @@ dependencyCheck {
 
 def versions = [
     bcpkixJdk15on: '1.70',
-    ccdStoreClient: '5.1.0',
+    ccdStoreClient: '4.7.6',
     commonsBeanUtils: '1.9.4',
     commonsIo: '2.15.0',
     commonsLang3: '3.13.0',
@@ -198,7 +198,13 @@ dependencies {
     implementation group: 'com.github.hmcts', name: 'idam-java-client', version: versions.idamClient
     implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: versions.serviceTokenGenerator
 
-    implementation group: 'com.github.hmcts', name: 'core-case-data-store-client', version: versions.ccdStoreClient
+    implementation (group: 'com.github.hmcts', name: 'core-case-data-store-client', version: versions.ccdStoreClient)
+        {
+            exclude group: 'io.reactivex', module: 'io.reactivex'
+            exclude group: 'io.reactivex', module: 'rxnetty'
+            exclude group: 'io.reactivex', module: 'rxnetty-contexts'
+            exclude group: 'io.reactivex', module: 'rxnetty-servo'
+        }
 
     implementation(group: 'com.google.guava', name: 'guava', version: versions.guava)
     implementation (group: 'org.bouncycastle', name:'bcpkix-jdk15on', version: versions.bcpkixJdk15on)
@@ -227,7 +233,13 @@ dependencies {
     integrationTestImplementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3
     integrationTestImplementation group: 'org.skyscreamer', name:'jsonassert', version: versions.jsonAssert
     integrationTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    integrationTestImplementation group: 'com.github.hmcts', name: 'core-case-data-store-client', version: versions.ccdStoreClient
+    integrationTestImplementation (group: 'com.github.hmcts', name: 'core-case-data-store-client', version: versions.ccdStoreClient)
+        {
+            exclude group: 'io.reactivex', module: 'io.reactivex'
+            exclude group: 'io.reactivex', module: 'rxnetty'
+            exclude group: 'io.reactivex', module: 'rxnetty-contexts'
+            exclude group: 'io.reactivex', module: 'rxnetty-servo'
+        }
     integrationTestImplementation (group: 'com.github.hmcts', name:'service-auth-provider-java-client', version: versions.serviceTokenGenerator)
         {
             exclude group: 'io.reactivex', module: 'io.reactivex'
