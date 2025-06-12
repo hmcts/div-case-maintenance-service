@@ -87,7 +87,8 @@ public class CcdController {
         return ResponseEntity.ok(ccdSubmissionService.submitBulkCase(data, jwt));
     }
 
-    @PostMapping(path = "/updateCase/{caseId}/{eventId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/updateCase/{caseId}/{eventId}", consumes = APPLICATION_JSON_VALUE, produces
+            = APPLICATION_JSON_VALUE)
     @Operation(description = "Updates case details")
     @ApiResponses(value = @ApiResponse(responseCode = "200",
         description = "A request to update the case details was sent to CCD. The body payload "
@@ -96,7 +97,8 @@ public class CcdController {
 
     )
     public ResponseEntity<CaseDetails> updateCase(
-        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD") String caseId,
+        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD")
+        String caseId,
         @RequestBody
         @Parameter(description = "The update event that requires the resubmission to CCD", required = true) Object data,
         @PathVariable("eventId") @Parameter(description = "Update Event Type Id", required = true) String eventId,
@@ -105,7 +107,8 @@ public class CcdController {
         return ResponseEntity.ok(ccdUpdateService.update(caseId, data, eventId, jwt));
     }
 
-    @PostMapping(path = "/bulk/updateCase/{caseId}/{eventId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/bulk/updateCase/{caseId}/{eventId}", consumes = APPLICATION_JSON_VALUE, produces
+            = APPLICATION_JSON_VALUE)
     @Operation(description = "Updates bulk case details")
     @ApiResponses(value = @ApiResponse(responseCode = "200",
         description = "A request to update the bulk case details was sent to CCD. The body payload "
@@ -114,7 +117,8 @@ public class CcdController {
 
     )
     public ResponseEntity<CaseDetails> updateBulkCase(
-        @PathVariable("caseId") @Parameter(description = "Unique identifier of the bulk case that was submitted to CCD") String caseId,
+        @PathVariable("caseId") @Parameter(description = "Unique identifier of the bulk case that was submitted to CCD")
+        String caseId,
         @RequestBody
         @Parameter(description = "The update event that requires the resubmission to CCD", required = true) Object data,
         @PathVariable("eventId") @Parameter(description = "Update Event Type Id", required = true) String eventId,
@@ -137,7 +141,8 @@ public class CcdController {
     public ResponseEntity<Void> linkRespondent(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @Parameter(description = "JWT authorisation token of the respondent", required = true) final String authToken,
-        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD") String caseId,
+        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD")
+        String caseId,
         @PathVariable("letterHolderId")
         @Parameter(description = "Letter holder id from the pin user", required = true) String letterHolderId) {
 
@@ -149,14 +154,16 @@ public class CcdController {
     @DeleteMapping(path = "/link-respondent/{caseId}")
     @Operation(description = "Removes user permission on a case")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Returned when case with id exists and the access is removed to the respondent user"),
+        @ApiResponse(responseCode = "200", description = "Returned when case with id exists and the access is removed"
+                + " to the respondent user"),
         @ApiResponse(responseCode = "404", description = "Returned when case with id not found"),
         }
     )
     public ResponseEntity<Void> unlinkRespondent(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @Parameter(description = "JWT authorisation token of the respondent", required = true) final String authToken,
-        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD") String caseId) {
+        @PathVariable("caseId") @Parameter(description = "Unique identifier of the session that was submitted to CCD")
+        String caseId) {
 
         ccdAccessService.unlinkRespondent(authToken, caseId);
 
@@ -185,7 +192,8 @@ public class CcdController {
     })
     public ResponseEntity<Void> addPetitionerSolicitorRole(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
-        @Parameter(description = "JWT authorisation token issued by IDAM for solicitor user", required = true) final String jwt,
+        @Parameter(description = "JWT authorisation token issued by IDAM for solicitor user", required = true)
+        final String jwt,
         @PathVariable @Parameter(description = "caseId", required = true) String caseId
     ) {
         ccdAccessService.addPetitionerSolicitorRole(jwt, caseId);

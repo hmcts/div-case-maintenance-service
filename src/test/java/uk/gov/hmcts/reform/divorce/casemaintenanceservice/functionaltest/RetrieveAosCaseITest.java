@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
-import com.google.common.collect.ImmutableMap;
 import joptsimple.internal.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -63,7 +61,6 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Cc
     "eureka.client.enabled=false"
     })
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RetrieveAosCaseITest extends MockSupport {
     private static final String API_URL = "/casemaintenance/version/1/retrieveAosCase";
     private static final String DRAFTS_CONTEXT_PATH = "/drafts";
@@ -371,7 +368,7 @@ public class RetrieveAosCaseITest extends MockSupport {
     private CaseDetails createCaseDetails(Long id, String state) {
         return CaseDetails.builder()
             .id(id)
-            .data(ImmutableMap.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL))
+            .data(Map.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL))
             .state(state)
             .build();
     }

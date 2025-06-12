@@ -55,7 +55,8 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     }
 
     protected Response solicitorSubmitCase(String fileName, UserDetails userDetails) {
-        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(), getSolicitorSubmissionRequestUrl());
+        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(),
+                getSolicitorSubmissionRequestUrl());
     }
 
     protected Response submitCaseJson(String jsonCase, String userToken, String contextUrl) {
@@ -68,8 +69,8 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     }
 
     protected Response submitBulkCase(String fileName, UserDetails userDetails) {
-
-        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(), getBulkCaseSubmissionRequestUrl());
+        return submitCaseJson(loadJson(fileName, userDetails), userDetails.getAuthToken(),
+                getBulkCaseSubmissionRequestUrl());
 
     }
 
@@ -124,7 +125,7 @@ public abstract class CcdSubmissionSupport extends IntegrationTest {
     }
 
     protected void assertCaseStatus(Response cmsResponse, String caseStatus) {
-        assertTrue(String.format("Expected [%s] status not found", caseStatus) ,
+        assertTrue(String.format("Expected [%s] status not found", caseStatus),
             cmsResponse.getBody().asString().contains(caseStatus));
     }
 }

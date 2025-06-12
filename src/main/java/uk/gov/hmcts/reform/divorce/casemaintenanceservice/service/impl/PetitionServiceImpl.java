@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 
 import static java.util.Collections.emptyList;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CaseRetrievalStateMap.RESPONDENT_CASE_STATE_GROUPING;
@@ -57,7 +56,8 @@ public class PetitionServiceImpl implements PetitionService,
     private UserService userService;
 
     @Override
-    public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping, List<CaseState>> caseStateGrouping) {
+    public CaseDetails retrievePetition(String authorisation, Map<CaseStateGrouping,
+            List<CaseState>> caseStateGrouping) {
 
         Draft draft = draftService.getDraft(authorisation);
 
@@ -82,7 +82,8 @@ public class PetitionServiceImpl implements PetitionService,
 
     @Override
     public CaseDetails retrievePetition(String authorisation) {
-        return ccdRetrievalService.retrieveCase(authorisation, PETITIONER);
+        return ccdRetrievalService.retrieveCase(authorisation,
+                PETITIONER);
     }
 
     @Override
@@ -116,7 +117,7 @@ public class PetitionServiceImpl implements PetitionService,
     }
 
     @Override
-    public void onApplicationEvent(@Nonnull CaseSubmittedEvent event) {
+    public void onApplicationEvent(CaseSubmittedEvent event) {
         deleteDraft(event.getAuthToken());
     }
 
@@ -204,10 +205,12 @@ public class PetitionServiceImpl implements PetitionService,
     private Map<String, Object> getDraftAmendmentCase(CaseDetails oldCase, String authorisation, boolean refusal) {
         final List<?> previousReasonsForDivorce;
         if (refusal) {
-            previousReasonsForDivorce = getPreviousReasonsForDivorce(oldCase, CcdCaseProperties.PREVIOUS_REASONS_DIVORCE_REFUSAL);
+            previousReasonsForDivorce = getPreviousReasonsForDivorce(oldCase, CcdCaseProperties
+                    .PREVIOUS_REASONS_DIVORCE_REFUSAL);
             log.info("Old Case ID: {} - preparing amend case for refusal", oldCase.getId());
         } else {
-            previousReasonsForDivorce = getPreviousReasonsForDivorce(oldCase, CcdCaseProperties.PREVIOUS_REASONS_DIVORCE);
+            previousReasonsForDivorce = getPreviousReasonsForDivorce(oldCase, CcdCaseProperties
+                    .PREVIOUS_REASONS_DIVORCE);
             log.info("Old Case ID: {} - preparing amend case", oldCase.getId());
         }
 
@@ -226,10 +229,12 @@ public class PetitionServiceImpl implements PetitionService,
 
         caseData.put(CcdCaseProperties.D8_DIVORCE_UNIT, CmsConstants.CTSC_SERVICE_CENTRE);
 
-        Map<String, Object> amendmentCaseDraft = formatterServiceClient.transformToDivorceFormat(caseData, authorisation);
+        Map<String, Object> amendmentCaseDraft = formatterServiceClient.transformToDivorceFormat(caseData,
+                authorisation);
 
         if (refusal) {
-            amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL, previousReasonsForDivorce);
+            amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE_REFUSAL,
+                    previousReasonsForDivorce);
         } else {
             amendmentCaseDraft.put(DivorceSessionProperties.PREVIOUS_REASONS_FOR_DIVORCE, previousReasonsForDivorce);
         }
@@ -243,14 +248,18 @@ public class PetitionServiceImpl implements PetitionService,
             .map(List.class::cast)
             .orElse(emptyList());
 
-        List<String> propertiesToRemove = new ArrayList<>(Arrays.asList(AmendCaseRemovedProps.getPropertiesToRemoveForRejection()));
+        List<String> propertiesToRemove = new ArrayList<>(Arrays.asList(AmendCaseRemovedProps
+                .getPropertiesToRemoveForRejection()));
 
         if (rejectionReasons.contains(REJECTION_NO_JURISDICTION)) {
-            propertiesToRemove.addAll(Arrays.asList(AmendCaseRemovedProps.getPropertiesToRemoveForRejectionJurisdiction()));
+            propertiesToRemove.addAll(Arrays.asList(AmendCaseRemovedProps
+                    .getPropertiesToRemoveForRejectionJurisdiction()));
         }
 
-        if (rejectionReasons.contains(REJECTION_NO_CRITERIA) || rejectionReasons.contains(REJECTION_INSUFFICIENT_DETAILS)) {
-            propertiesToRemove.addAll(Arrays.asList(AmendCaseRemovedProps.getPropertiesToRemoveForRejectionAboutDivorce()));
+        if (rejectionReasons.contains(REJECTION_NO_CRITERIA) || rejectionReasons
+                .contains(REJECTION_INSUFFICIENT_DETAILS)) {
+            propertiesToRemove.addAll(Arrays.asList(AmendCaseRemovedProps
+                    .getPropertiesToRemoveForRejectionAboutDivorce()));
         }
 
         propertiesToRemove.forEach(caseData::remove);

@@ -98,7 +98,7 @@ public class DraftStoreClientConsumerTest {
     }
 
     @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact getAllDraftsForLoggedInUserAfterPage(PactDslWithProvider builder) throws IOException {
+    RequestResponsePact getAllDraftsForLoggedInUserAfterPage(PactDslWithProvider builder) {
         // @formatter:off
         return builder
             .given("A draft exists after a given page for a logged in user", draftMap)
@@ -118,7 +118,8 @@ public class DraftStoreClientConsumerTest {
 
 
     @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact createSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException, JSONException {
+    RequestResponsePact createSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException,
+            JSONException {
         // @formatter:off
 
         String jsonObject = createJsonObject(createDraft);
@@ -138,7 +139,8 @@ public class DraftStoreClientConsumerTest {
 
 
     @Pact(provider = "draftStore_draft", consumer = "divorce_caseMaintenanceService")
-    RequestResponsePact updateSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException, JSONException {
+    RequestResponsePact updateSingleDraftsForLoggedInUser(PactDslWithProvider builder) throws IOException,
+            JSONException {
         // @formatter:off
         String jsonObject = createJsonObject(updateDraft);
 
@@ -222,7 +224,8 @@ public class DraftStoreClientConsumerTest {
                         .stringType("AddressLine2", "London")
                         .stringType("PostCode", "SW9 9PE")
                     )
-                    .stringType("D8DerivedRespondentCorrespondenceAddr", "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE")
+                    .stringType("D8DerivedRespondentCorrespondenceAddr",
+                            "Justin\nCase\n90 Landor Road\nLondon\nSW9 9PE")
                     .stringType("D8RespondentCorrespondenceUseHomeAddress", "Solicitor")
                     .stringMatcher("D8RespondentLivesAtLastAddress", "YES|NO", "YES")
                     .stringMatcher("D8LivingArrangementsLastLivedTogether", "YES|NO", "YES")
@@ -280,7 +283,8 @@ public class DraftStoreClientConsumerTest {
                     .stringType("D8DerivedRespondentSolicitorAddr", "90 Landor Road\nLondon\nSW9 9PE")
                     .stringType("D8DerivedLivingArrangementsLastLivedAddr", "Flat A-B\n86 Landor Road\nLondon\nSW9 9PE")
                     .object("D8Connections", dc -> dc
-                        .stringType("A", "The Petitioner and the Respondent are habitually resident in England and Wales")
+                        .stringType("A",
+                                "The Petitioner and the Respondent are habitually resident in England and Wales")
                     )
                     .stringMatcher("D8ReasonForDivorceHasMarriage", "YES|NO", "YES")
                     .stringMatcher("D8ReasonForDivorceShowFiveYearsSeparatio", "YES|NO", "YES")

@@ -27,12 +27,14 @@ public class SubmitEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     @Pact(provider = "ccdDataStoreAPI_Cases", consumer = "divorce_caseMaintenanceService")
     public RequestResponsePact submitEventForCaseWorker(PactDslWithProvider builder) throws Exception {
         return builder
-            .given("A Submit Event for a Caseworker is requested", setUpStateMapForProviderWithCaseData(caseDataContent))
+            .given("A Submit Event for a Caseworker is requested",
+                    setUpStateMapForProviderWithCaseData(caseDataContent))
             .uponReceiving("A Submit Event for a Caseworker")
             .path(buildPath())
             .query("ignore-warning=true")
             .method("POST")
-            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION, SOME_SERVICE_AUTHORIZATION_TOKEN)
+            .headers(HttpHeaders.AUTHORIZATION, SOME_AUTHORIZATION_TOKEN, SERVICE_AUTHORIZATION,
+                    SOME_SERVICE_AUTHORIZATION_TOKEN)
             .body(convertObjectToJsonString(getCaseDataContent(HWF_APPLICATION_ACCEPTED)))
             .matchHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .willRespondWith()
@@ -48,7 +50,8 @@ public class SubmitEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
 
         caseDataContent = PactDslFixtureHelper.getCaseDataContent(HWF_APPLICATION_ACCEPTED);
         final CaseDetails caseDetails = coreCaseDataApi.submitEventForCaseWorker(SOME_AUTHORIZATION_TOKEN,
-            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId, caseType, CASE_ID.toString(), true, caseDataContent);
+            SOME_SERVICE_AUTHORIZATION_TOKEN, USER_ID, jurisdictionId, caseType, CASE_ID.toString(), true,
+                caseDataContent);
 
         assertThat(caseDetails.getId(), is(CASE_ID));
         assertThat(caseDetails.getJurisdiction(), is("DIVORCE"));
@@ -56,7 +59,8 @@ public class SubmitEventForCaseWorkerConsumerTest extends CcdConsumerTestBase {
     }
 
     @Override
-    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) throws JSONException {
+    protected Map<String, Object> setUpStateMapForProviderWithCaseData(CaseDataContent caseDataContent) 
+            throws JSONException {
         Map<String, Object> caseDataContentMap = super.setUpStateMapForProviderWithCaseData(caseDataContent);
         caseDataContentMap.put(EVENT_ID, HWF_APPLICATION_ACCEPTED);
         return caseDataContentMap;

@@ -42,7 +42,8 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         }
 
         if (caseDetailsList.size() > 1) {
-            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getUserDetails().getId());
+            log.warn("[{}] cases found for the user [{}]", caseDetailsList.size(), userDetails.getUserDetails()
+                .getId());
         }
 
         Map<CaseStateGrouping, List<CaseDetails>> statusCaseDetailsMap = caseDetailsList.stream()

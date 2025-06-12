@@ -118,7 +118,8 @@ public class SaveDraftServiceITest extends MockSupport {
     public void givenThereIsNoDraft_whenSaveDraft_thenSaveDraft() throws Exception {
         final String message = getUserDetails();
 
-        final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(), TEST_DRAFT_DOCUMENT_TYPE_CCD_FORMAT, maxAge);
+        final CreateDraft createDraft = new CreateDraft(Collections.emptyMap(), TEST_DRAFT_DOCUMENT_TYPE_CCD_FORMAT,
+            maxAge);
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 

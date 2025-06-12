@@ -137,3 +137,5 @@ feign:
         readTimeout: 10000
         loggerLevel: full
 
+azure:
+  app_insights_key: ${APPINSIGHTS_INSTRUMENTATIONKEY:false}

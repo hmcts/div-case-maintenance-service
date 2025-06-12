@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.runners.SerenityRunner;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationMethodRule;
-import org.assertj.core.util.Strings;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,6 @@ import uk.gov.hmcts.reform.divorce.model.UserDetails;
 import uk.gov.hmcts.reform.divorce.support.IdamTestSupport;
 import uk.gov.hmcts.reform.divorce.util.RetryRule;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URL;
 import javax.annotation.PostConstruct;
 
 @Slf4j

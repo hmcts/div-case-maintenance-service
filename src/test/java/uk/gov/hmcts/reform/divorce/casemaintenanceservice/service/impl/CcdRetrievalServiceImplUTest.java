@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.service.impl;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,8 +40,6 @@ import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.Ca
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.CO_RESP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.D8_PETITIONER_EMAIL;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CcdCaseProperties.RESP_EMAIL_ADDRESS;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CASEWORKER_ROLE;
-import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.CmsConstants.CITIZEN_ROLE;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.PETITIONER;
 import static uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model.DivCaseRole.RESPONDENT;
 
@@ -80,18 +77,21 @@ public class CcdRetrievalServiceImplUTest {
     public void givenNoCaseInCcd_whenRetrieveCase_thenReturnNull() {
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(
             SearchResult.builder().cases(null).build());
 
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
 
-        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
+        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,
+            PETITIONER);
 
         assertNull(actual);
 
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -103,16 +103,19 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
 
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(
             SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
 
-        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
+        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,
+            PETITIONER);
 
         assertEquals(caseDetails, actual);
 
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -131,17 +134,21 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4)).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(
+            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4))
+                .build());
 
-        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
+        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,
+            PETITIONER);
 
         assertEquals(caseDetails1, actual);
 
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -156,17 +163,20 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2,
+                caseDetails3)).build());
 
-        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
+        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,
+            PETITIONER);
 
         assertEquals(caseDetails1, actual);
 
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -177,8 +187,9 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Collections.singletonList(expectedCaseDetails)).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(Collections
+                .singletonList(expectedCaseDetails)).build());
 
 
         CaseDetails caseDetails = classUnderTest.retrieveCase(TEST_AUTHORISATION,
@@ -196,17 +207,20 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(
             SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
 
-        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
+        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,
+            PETITIONER);
 
         assertEquals(caseDetails, actual);
 
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -222,17 +236,20 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2,
+            caseDetails3)).build());
 
-        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
+        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,
+            PETITIONER);
 
         assertEquals(caseDetails1, actual);
 
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test(expected = DuplicateCaseException.class)
@@ -249,15 +266,17 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2,
+                caseDetails3)).build());
 
         classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
 
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -273,17 +292,20 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3)).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2,
+            caseDetails3)).build());
 
-        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING, PETITIONER);
+        CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER_CASE_STATE_GROUPING,
+            PETITIONER);
 
         assertNull(actual);
 
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
 
@@ -295,8 +317,8 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList).build());
 
         assertEquals(caseDetails, classUnderTest.retrieveCase(TEST_AUTHORISATION,
             PETITIONER_CASE_STATE_GROUPING, PETITIONER));
@@ -304,7 +326,8 @@ public class CcdRetrievalServiceImplUTest {
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY);
     }
 
     @Test
@@ -316,8 +339,8 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList).build());
 
         assertEquals(caseDetailsSubmitted, classUnderTest.retrieveCase(TEST_AUTHORISATION,
             PETITIONER_CASE_STATE_GROUPING, PETITIONER));
@@ -325,7 +348,8 @@ public class CcdRetrievalServiceImplUTest {
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -337,8 +361,8 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList).build());
 
         assertEquals(caseDetailsAwaiting, classUnderTest.retrieveCase(TEST_AUTHORISATION,
             PETITIONER_CASE_STATE_GROUPING, PETITIONER));
@@ -346,7 +370,8 @@ public class CcdRetrievalServiceImplUTest {
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -365,8 +390,9 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList)
+                .build());
 
         assertEquals(caseDetailsNewest, classUnderTest.retrieveCase(TEST_AUTHORISATION,
             PETITIONER_CASE_STATE_GROUPING, PETITIONER));
@@ -374,7 +400,8 @@ public class CcdRetrievalServiceImplUTest {
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -382,8 +409,8 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(null).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(null).build());
 
         CaseDetails actual = classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER);
 
@@ -392,7 +419,8 @@ public class CcdRetrievalServiceImplUTest {
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY);
     }
 
     @Test(expected = DuplicateCaseException.class)
@@ -404,21 +432,23 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList)
+                .build());
 
         classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER);
 
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY);
     }
 
     @Test
     public void givenMultipleCaseInCcd_whenRespondentRetrieveCase_thenReturnCaseWithValidRole() {
         CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
-            ImmutableMap.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
+            Map.of(RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
         List<CaseDetails> caseDetailsList = Arrays.asList(
             createCaseDetails(1L, CaseState.SUBMITTED.getValue()),
             expectedCase);
@@ -426,8 +456,9 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList)
+                .build());
 
         assertThat(expectedCase, equalTo(classUnderTest.retrieveCase(TEST_AUTHORISATION, RESPONDENT)));
     }
@@ -435,7 +466,7 @@ public class CcdRetrievalServiceImplUTest {
     @Test
     public void givenMultipleCaseInCcd_whenCoRespondentRetrieveCase_thenReturnCaseWithValidRole() {
         CaseDetails expectedCase = createCaseDetails(2L, CaseState.SUBMITTED.getValue(),
-            ImmutableMap.of(CO_RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
+            Map.of(CO_RESP_EMAIL_ADDRESS, TEST_USER_EMAIL));
         List<CaseDetails> caseDetailsList = Arrays.asList(
             createCaseDetails(1L, CaseState.SUBMITTED.getValue()),
             expectedCase);
@@ -443,8 +474,9 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList)
+                .build());
 
         assertThat(expectedCase, equalTo(classUnderTest.retrieveCase(TEST_AUTHORISATION, RESPONDENT)));
     }
@@ -457,8 +489,9 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList)
+                .build());
 
         assertNull(classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER));
     }
@@ -471,8 +504,9 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE,
+                CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList)
+            .build());
 
         assertNull(classUnderTest.retrieveCase(TEST_AUTHORISATION, null));
     }
@@ -485,15 +519,16 @@ public class CcdRetrievalServiceImplUTest {
         when(userService.retrieveUser(TEST_BEARER_AUTHORISATION)).thenReturn(USER);
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(caseDetailsList).build());
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY)).thenReturn(SearchResult.builder().cases(caseDetailsList).build());
 
         assertEquals(caseDetails, classUnderTest.retrieveCase(TEST_AUTHORISATION, PETITIONER));
 
         verify(userService).retrieveUser(TEST_BEARER_AUTHORISATION);
         verify(authTokenGenerator).generate();
         verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl.ALL_CASES_QUERY);
+            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, CcdRetrievalServiceImpl
+                .ALL_CASES_QUERY);
     }
 
     @Test
@@ -515,50 +550,10 @@ public class CcdRetrievalServiceImplUTest {
     }
 
     @Test
-    public void givenCaseId_whenRetrieveCaseByIdWithCaseworker_thenReturnTheCase() {
-        String testCaseId = String.valueOf(CASE_ID_1);
-        CaseDetails caseDetails = CaseDetails.builder().build();
-
-        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-        String searchQuery = classUnderTest.buildQuery(testCaseId, "reference");
-        when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery)).thenReturn(
-            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
-
-        assertEquals(caseDetails, classUnderTest.retrieveCaseById(TEST_AUTHORISATION, testCaseId));
-
-        verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery);
-    }
-
-    @Test
-    public void givenCaseId_whenRetrieveCaseByIdWithCaseworkerCitizen_thenReturnTheCase() {
-        String testCaseId = String.valueOf(CASE_ID_1);
-        CaseDetails caseDetails = CaseDetails.builder().build();
-        List<String> userRoles = Arrays.asList(CASEWORKER_ROLE, CITIZEN_ROLE);
-
-        when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
-
-        String searchQuery = classUnderTest.buildQuery(testCaseId, "reference");
-        when(coreCaseDataApi
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery)).thenReturn(
-            SearchResult.builder().cases(Collections.singletonList(caseDetails)).build());
-
-        assertEquals(caseDetails, classUnderTest.retrieveCaseById(TEST_AUTHORISATION, testCaseId));
-
-        verify(authTokenGenerator).generate();
-        verify(coreCaseDataApi)
-            .searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, searchQuery);
-    }
-
-    @Test
     public void whenSearchCases_theReturnCcdResponse() {
         String query = "QueryToTest";
         SearchResult expectedResult = SearchResult.builder().build();
 
-        final UserDetails userDetails = UserDetails.builder()
-            .id(USER_ID).roles(Arrays.asList(CASEWORKER_ROLE)).build();
         when(authTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
 
         when(coreCaseDataApi.searchCases(TEST_BEARER_AUTHORISATION, TEST_SERVICE_TOKEN, TEST_CASE_TYPE, query))
@@ -578,7 +573,7 @@ public class CcdRetrievalServiceImplUTest {
             .id(id)
             .state(state)
             .createdDate(createdTime)
-            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
+            .data(Map.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
             .build();
     }
 

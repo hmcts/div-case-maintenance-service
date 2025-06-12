@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import com.google.common.collect.ImmutableList;
 import feign.Feign;
 import feign.Request;
 import feign.RequestInterceptor;
@@ -35,6 +34,8 @@ import uk.gov.hmcts.reform.divorce.idam.utils.StrategicIdamUtils;
 import uk.gov.hmcts.reform.divorce.idam.utils.TacticalIdamUtils;
 import uk.gov.hmcts.reform.divorce.support.IdamTestSupport;
 import uk.gov.hmcts.reform.divorce.support.client.CcdClientSupport;
+
+import java.util.List;
 
 @Lazy
 @Configuration
@@ -99,7 +100,7 @@ public class ServiceContextConfiguration {
     public Decoder feignDecoder() {
         MappingJackson2HttpMessageConverter jacksonConverter =
             new MappingJackson2HttpMessageConverter(customObjectMapper());
-        jacksonConverter.setSupportedMediaTypes(ImmutableList.of(MediaType.APPLICATION_JSON));
+        jacksonConverter.setSupportedMediaTypes(List.of(MediaType.APPLICATION_JSON));
 
         ObjectFactory<HttpMessageConverters> objectFactory = () -> new HttpMessageConverters(jacksonConverter);
         return new ResponseEntityDecoder(new SpringDecoder(objectFactory));

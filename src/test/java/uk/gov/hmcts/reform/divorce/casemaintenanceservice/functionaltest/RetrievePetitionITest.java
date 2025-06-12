@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.divorce.casemaintenanceservice.functionaltest;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
-import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,7 +179,8 @@ public class RetrievePetitionITest extends MockSupport {
 
         when(coreCaseDataApi
             .searchCases(USER_TOKEN, TEST_SERVICE_TOKEN, caseType, CcdRetrievalServiceImpl.ALL_CASES_QUERY)).thenReturn(
-            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4)).build());
+            SearchResult.builder().cases(Arrays.asList(caseDetails1, caseDetails2, caseDetails3, caseDetails4))
+                .build());
 
         webClient.perform(MockMvcRequestBuilders.get(API_URL)
             .header(HttpHeaders.AUTHORIZATION, USER_TOKEN)
@@ -395,7 +395,7 @@ public class RetrievePetitionITest extends MockSupport {
         final String message = getUserDetails();
 
         final DraftList draftList = new DraftList(Arrays.asList(
-            createDraft("1", ImmutableMap.of(DivorceSessionProperties.PREVIOUS_CASE_ID, "1"),
+            createDraft("1", Map.of(DivorceSessionProperties.PREVIOUS_CASE_ID, "1"),
                 TEST_DRAFT_DOC_TYPE_DIVORCE_FORMAT)),
             null);
 
@@ -416,7 +416,7 @@ public class RetrievePetitionITest extends MockSupport {
             .andExpect(status().isOk())
             .andExpect(content().json(ObjectMapperTestUtil.convertObjectToJsonString(CaseDetails
                 .builder()
-                .data(ImmutableMap.of(DivorceSessionProperties.PREVIOUS_CASE_ID, "1"))
+                .data(Map.of(DivorceSessionProperties.PREVIOUS_CASE_ID, "1"))
                 .build())));
     }
 
@@ -445,7 +445,7 @@ public class RetrievePetitionITest extends MockSupport {
         return CaseDetails.builder()
             .id(id)
             .state(state)
-            .data(ImmutableMap.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
+            .data(Map.of(D8_PETITIONER_EMAIL, TEST_USER_EMAIL))
             .build();
     }
 
@@ -453,7 +453,7 @@ public class RetrievePetitionITest extends MockSupport {
         return createDraft(id, new HashMap<>(), documentType);
     }
 
-    private Draft createDraft(String id, Map<String, Object> document ,String documentType) {
+    private Draft createDraft(String id, Map<String, Object> document, String documentType) {
         return new Draft(id, document, documentType);
     }
 }

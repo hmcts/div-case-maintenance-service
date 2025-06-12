@@ -124,7 +124,8 @@ public class PetitionController {
     }
 
     @PutMapping(path = "/amended-petition-draft-refusal", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
+    @Operation(description
+            = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description =
             "A draft amendment case was created based on the users previously rejected petition"),
@@ -147,7 +148,8 @@ public class PetitionController {
     }
 
     @PutMapping(path = "/amended-petition-draft-refusal/{caseId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(description = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
+    @Operation(description
+            = "Creates a new draft petition for an amend petition workflow due to Refusal Order Rejection")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description =
             "A draft amendment case was created based on the users previously rejected petition"),
@@ -225,8 +227,9 @@ public class PetitionController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Returns all the saved drafts for a given user")})
     public ResponseEntity<DraftList> retrieveAllDrafts(@RequestHeader(HttpHeaders.AUTHORIZATION)
-                                                        @Parameter(description = "JWT authorisation token issued by IDAM",
-                                                            required = true)final String jwt) {
+                                                       @Parameter(description
+                                                           = "JWT authorisation token issued by IDAM",
+                                                               required = true)final String jwt) {
         return ResponseEntity.ok(petitionService.getAllDrafts(jwt));
     }
 

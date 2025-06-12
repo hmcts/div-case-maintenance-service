@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.divorce.casemaintenanceservice.domain.model;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,7 @@ import java.util.Map;
 public class CaseRetrievalStateMap {
 
     public static final Map<CaseStateGrouping, List<CaseState>> PETITIONER_CASE_STATE_GROUPING =
-        ImmutableMap.of(
+        Map.of(
             CaseStateGrouping.INCOMPLETE, Arrays.asList(
                 CaseState.AWAITING_PAYMENT,
                 CaseState.AWAITING_HWF_DECISION,
@@ -64,7 +63,7 @@ public class CaseRetrievalStateMap {
         );
 
     public static final Map<CaseStateGrouping, List<CaseState>> RESPONDENT_CASE_STATE_GROUPING =
-        ImmutableMap.of(
+        Map.of(
             CaseStateGrouping.INCOMPLETE, Arrays.asList(
                 CaseState.AOS_STARTED,
                 CaseState.AWAITING_ALTERNATIVE_SERVICE,

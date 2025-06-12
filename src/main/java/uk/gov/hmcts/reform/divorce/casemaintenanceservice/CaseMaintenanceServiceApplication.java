@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import uk.gov.hmcts.reform.authorisation.ServiceAuthAutoConfiguration;
 
-@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.divorce"})
+@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.divorce", "uk.gov.hmcts.reform.idam.client"})
 @SpringBootApplication(scanBasePackages = {"uk.gov.hmcts.reform.divorce",
-    "uk.gov.hmcts.reform.logging.appinsights" } ,
+    "uk.gov.hmcts.reform.logging.appinsights" },
     exclude = {ServiceAuthAutoConfiguration.class})
 public class CaseMaintenanceServiceApplication {
 

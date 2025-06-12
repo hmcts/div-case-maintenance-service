@@ -128,7 +128,8 @@ public class CcdSolicitorSubmissionITest extends MockSupport {
     }
 
     @Test
-    public void givenCcdThrowsFeignExceptionOnStartForCaseworker_whenSolicitorSubmitCase_thenReturnFeignError() throws Exception {
+    public void givenCcdThrowsFeignExceptionOnStartForCaseworker_whenSolicitorSubmitCase_thenReturnFeignError()
+        throws Exception {
         final String message = getUserDetails();
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
 
@@ -138,7 +139,8 @@ public class CcdSolicitorSubmissionITest extends MockSupport {
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, solicitorCreateEventId))
+            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
+                solicitorCreateEventId))
             .thenThrow(feignException);
 
         webClient.perform(post(API_URL)
@@ -151,7 +153,8 @@ public class CcdSolicitorSubmissionITest extends MockSupport {
     }
 
     @Test
-    public void givenCcdThrowsFeignExceptionOnSubmitForCaseworker_whenSolicitorSubmitCase_thenReturnFeignError() throws Exception {
+    public void givenCcdThrowsFeignExceptionOnSubmitForCaseworker_whenSolicitorSubmitCase_thenReturnFeignError()
+        throws Exception {
         final String caseData = ResourceLoader.loadJson(VALID_PAYLOAD_PATH);
         final String message = getUserDetails();
         final int feignStatusCode = HttpStatus.BAD_REQUEST.value();
@@ -178,7 +181,8 @@ public class CcdSolicitorSubmissionITest extends MockSupport {
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, solicitorCreateEventId))
+            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
+                solicitorCreateEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
             .submitForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
@@ -221,7 +225,8 @@ public class CcdSolicitorSubmissionITest extends MockSupport {
 
         when(serviceTokenGenerator.generate()).thenReturn(TEST_SERVICE_TOKEN);
         when(coreCaseDataApi
-            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType, solicitorCreateEventId))
+            .startForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,
+                solicitorCreateEventId))
             .thenReturn(startEventResponse);
         when(coreCaseDataApi
             .submitForCaseworker(USER_TOKEN, TEST_SERVICE_TOKEN, USER_ID, jurisdictionId, caseType,

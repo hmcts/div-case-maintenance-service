@@ -34,7 +34,8 @@ public class CcdCaseRolesTest extends PetitionSupport {
     @SuppressWarnings("unchecked")
     @Test
     public void givenSolicitorCreatedCase_whenAssignPetitionerSolRole_thenReturnOk() {
-        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(SOL_PAYLOAD_CONTEXT_PATH + "base-case.json", Map.class);
+        Map<String, Object> caseData = ResourceLoader.loadJsonToObject(SOL_PAYLOAD_CONTEXT_PATH
+                + "base-case.json", Map.class);
         UserDetails solicitorUser = getSolicitorUser();
         CaseDetails caseDetails = ccdClientSupport.submitCaseForSolicitor(caseData, solicitorUser);
         Long caseId = caseDetails.getId();
