@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import feign.FeignException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -242,7 +243,10 @@ public class CcdSubmissionITest extends MockSupport {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails))));
+            .andExpect(result ->
+                JSONAssert.assertEquals(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails),
+                    result.getResponse().getContentAsString(), false)
+            );
     }
 
     @Test
@@ -286,7 +290,10 @@ public class CcdSubmissionITest extends MockSupport {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails))));
+            .andExpect(result ->
+                JSONAssert.assertEquals(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails),
+                    result.getResponse().getContentAsString(), false)
+            );
     }
 
     private void stubDeleteDraftEndpoint(StringValuePattern authHeader, StringValuePattern serviceToken) {
