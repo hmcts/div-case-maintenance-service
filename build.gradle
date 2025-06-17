@@ -108,7 +108,7 @@ def versions = [
     httpComponents: '4.5.14',
     idamClient: '2.1.1',
     jackson: '2.18.3',
-    jsonAssert: '1.5.1',
+    jsonAssert: '1.5.3',
     junit: '4.13.2',
     junit5: '5.10.1',
     lombok: '1.18.30',
