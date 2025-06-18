@@ -72,9 +72,7 @@ public class PetitionController {
         @Parameter(description = "JWT authorisation token issued by IDAM", required = true) final String jwt) {
 
         try {
-            log.info("Received request /retrieveAosCase");
             CaseDetails caseDetails = petitionService.retrievePetitionForAos(jwt);
-            log.info("Retrieved case details: {}", caseDetails);
 
             return caseDetails == null ? ResponseEntity.noContent().build() : ResponseEntity.ok(caseDetails);
         } catch (DuplicateCaseException e) {

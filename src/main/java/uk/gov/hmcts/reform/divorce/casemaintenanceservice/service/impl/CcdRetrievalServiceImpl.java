@@ -37,8 +37,6 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
         User userDetails = getUser(authorisation);
         List<CaseDetails> caseDetailsList = getCaseListForUser(userDetails, role);
 
-        log.warn("retrieveCase found: {}", caseDetailsList);
-
         if (CollectionUtils.isEmpty(caseDetailsList)) {
             return null;
         }
@@ -62,14 +60,12 @@ public class CcdRetrievalServiceImpl extends BaseCcdCaseService implements CcdRe
             ));
 
         List<CaseDetails> completedCases = statusCaseDetailsMap.get(CaseStateGrouping.COMPLETE);
-        log.warn("retrieve complete cases found for the user [{}]", userDetails.getUserDetails());
 
         if (CollectionUtils.isNotEmpty(completedCases)) {
             return updateApplicationStatus(completedCases.get(0));
         }
 
         List<CaseDetails> incompleteCases = statusCaseDetailsMap.get(CaseStateGrouping.INCOMPLETE);
-        log.warn("retrieve incomplete cases found for the user [{}]", userDetails.getUserDetails());
 
         if (CollectionUtils.isEmpty(incompleteCases)) {
             List<CaseDetails> amendCases = statusCaseDetailsMap.get(CaseStateGrouping.AMEND);
