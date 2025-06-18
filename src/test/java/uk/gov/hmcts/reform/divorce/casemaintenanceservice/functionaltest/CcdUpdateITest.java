@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import feign.FeignException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -235,7 +236,10 @@ public class CcdUpdateITest extends MockSupport {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails))));
+            .andExpect(result ->
+                JSONAssert.assertEquals(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails),
+                    result.getResponse().getContentAsString(), false)
+            );
     }
 
     @Test
@@ -282,7 +286,10 @@ public class CcdUpdateITest extends MockSupport {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails))));
+            .andExpect(result ->
+                JSONAssert.assertEquals(ObjectMapperTestUtil.convertObjectToJsonString(caseDetails),
+                    result.getResponse().getContentAsString(), false)
+            );
     }
 
     private String getApiUrl() {
