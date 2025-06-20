@@ -126,7 +126,7 @@ def versions = [
     springDoc : '1.7.0',
     springSecurityCrypto: '5.8.16',
     springSecurityRsa: '1.1.5',
-    tomcat: '9.0.104',
+    tomcat: '9.0.106',
     unirest: '1.4.9',
     wiremockVersion: '2.27.2'
 ]
