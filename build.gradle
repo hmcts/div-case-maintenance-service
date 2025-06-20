@@ -187,7 +187,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
     implementation group: 'commons-io', name: 'commons-io', version: versions.commonsIo
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
-    implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.33'
+    implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.34'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version : versions.commonsLang3
 
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: versions.httpComponents
